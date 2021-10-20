@@ -2,6 +2,8 @@
 
 # Default location for output (needs to match output_dir's value found in nanoc.yaml)
 output/
+out/
+.idea/
 
 # Temporary file directory
 tmp/nanoc/
