@@ -12,6 +12,7 @@ public class Main {
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
+        window.setMaxFrameRate(60);
 
         // make images
         MinuetoImage elfenlandImage;
