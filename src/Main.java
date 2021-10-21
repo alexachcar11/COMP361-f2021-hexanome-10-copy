@@ -6,7 +6,10 @@ import org.minueto.window.*;
 // run main and you can click on the window that will print the mouse button and the x, y in console
 // problem:     draw boot repeatedly in the while loop and when player clicks on map it should redraw boot
 //              at position x, y where mouse click was detected.
-// solution:    currently I think everything is set up except for how to use the x, y from the mouse input
+// solution:    in the main while loop, redraw the background everytime and update position of boot
+//              that needs to be drawn when player clicks on map
+//
+//              currently I think everything is set up except for how to use the x, y from the mouse input
 //              to redraw the boot on the map, I've tried different ways but nothing worked so far.
 
 class MouseHandler_MovingBoot implements MinuetoMouseHandler {
