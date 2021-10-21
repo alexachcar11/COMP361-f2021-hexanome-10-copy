@@ -11,6 +11,7 @@ public class TestMinueto {
         MinuetoImage demoImage;
 
         window = new MinuetoFrame(640, 480, true);
+        window.setMaxFrameRate(60);
 
         try {
             demoImage = new MinuetoImageFile("böppels-and-boots/boot-black.png");
