@@ -19,19 +19,31 @@ public class Main {
         List<String> bootFileNames = new ArrayList<>();
         // add file names of boot images to the bootFiles list
         for (File file : bootDir.listFiles()) {
-            if (file.getName().substring(-3) == "png") {
-                bootFileNames.add(file.getName());
-            }
+            if (file.getName().substring(0, 5).equals("boot-"))
+                bootFileNames.add("böppels-and-boots/" + file.getName());
         }
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         MinuetoEventQueue mEventQueue = new MinuetoEventQueue();
+        window.registerMouseHandler(new MinuetoMouseHandler() {
+            public void handleMousePress(int x, int y, int button) {
+                System.out.println(x + ", " + y);
+            }
+
+            public void handleMouseRelease(int x, int y, int button) {
+            }
+
+            public void handleMouseMove(int x, int y) {
+
+            }
+        }, mEventQueue);
 
         // make images
         MinuetoImage elfenlandImage;
         MinuetoImage elfengoldImage;
         List<MinuetoImage> bootImages = getBootImages(bootFileNames);
+
         configImages(bootImages);
         try {
             elfengoldImage = new MinuetoImageFile("elfengold.png");
@@ -52,7 +64,10 @@ public class Main {
             }
             for (int i = 0; i < bootImages.size(); i++) {
                 // not how we actually want to draw them
-                window.draw(bootImages.get(i), 300 + 20 * i, 200 + 20 * i);
+                window.draw(bootImages.get(i), 600 + 20 * (i % 4), 300 + 20 * (i / 4));
+            }
+            while (mEventQueue.hasNext()) {
+                mEventQueue.handle();
             }
 
             window.render();
@@ -75,10 +90,8 @@ public class Main {
 
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
-            MinuetoImage newImage = pImages.get(i);
-            newImage.rotate(-90);
-            newImage.scale(.125, .125);
-            pImages.set(i, newImage);
+            pImages.set(i, pImages.get(i).rotate(-90));
+            pImages.set(i, pImages.get(i).scale(.125, .125));
         }
     }
 
