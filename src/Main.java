@@ -2,6 +2,7 @@ import org.minueto.*;
 import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -39,11 +40,10 @@ public class Main {
 
         // create player
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(bootImages.get(0), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
+        Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
         Player p2 = new Player(bootImages.get(0), 600 + 20 * (1 % 4), 300 + 20 * (1 / 4));
         players.add(p1);
         players.add(p2);
-        boolean starting = true;
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
@@ -78,24 +78,12 @@ public class Main {
             } else {
                 window.draw(elfenlandImage, 0, 0);
             }
-                if (starting)
-                {
-                    // draw players at starting position
-                    for (int i = 0; i < players.size(); i++)
-                    {
-                        window.draw(players.get(i).getIcon(), players.get(i).getxPos(), players.get(i).getyPos());
-                    }
-                    players.get(0).isTurn = true;
-                } else {
-                    for (int i = 0; i < players.size(); i++)
-                    {
-                        if (players.get(i).isTurn())
-                        {
-                            window.draw(players.get(i).getIcon(), players.get(i).getxPos(), players.get(i).getyPos());
-                        }
-                    }
-                }
 
+            // draw boots
+            for (int i = 0; i < players.size(); i++) {
+                window.draw(players.get(i).getIcon(), players.get(i).getxPos(), players.get(i).getyPos());
+            }
+            players.get(0).isTurn = true;   // only player 1 can move
 
             while (mEventQueue.hasNext()) {
                 mEventQueue.handle();
@@ -105,9 +93,6 @@ public class Main {
             Thread.yield();
         }
     }
-
-
-
 
     private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
