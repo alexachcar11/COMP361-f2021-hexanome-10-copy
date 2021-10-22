@@ -27,13 +27,16 @@ public class Main {
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         MinuetoEventQueue mEventQueue = new MinuetoEventQueue();
         window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
             public void handleMousePress(int x, int y, int button) {
                 System.out.println(x + ", " + y);
             }
 
+            @Override
             public void handleMouseRelease(int x, int y, int button) {
             }
 
+            @Override
             public void handleMouseMove(int x, int y) {
 
             }
