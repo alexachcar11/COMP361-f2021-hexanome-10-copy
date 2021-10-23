@@ -2,6 +2,7 @@ import org.minueto.*;
 import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -39,7 +40,7 @@ public class Main {
 
         // create player
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(bootImages.get(0), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
+        Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
         Player p2 = new Player(bootImages.get(0), 600 + 20 * (1 % 4), 300 + 20 * (1 / 4));
         players.add(p1);
         players.add(p2);
