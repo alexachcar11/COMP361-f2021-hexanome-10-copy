@@ -1,5 +1,7 @@
 import org.minueto.image.MinuetoImage;
 
+/* This class contains all info relevant to a single Player */
+
 public class Player {
     MinuetoImage icon;
     int xPos;
