@@ -110,6 +110,10 @@ public class Main {
                 }
             } else if (gameWindow.currentlyShowing == GameWindow.Screen.LOGIN) {
                 gameWindow.window.draw(loginScreenImage, 0, 0);
+
+                // TODO: TO THE PERSON CODING LOGIN: in your input handler you should change gameWindow.currentlyShowing to ELFENLAND or ELFENGOLD
+                // in order for the login page to stop being drawn and the board game to be start being drawn
+
             } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND) {
                 gameWindow.window.draw(elfenlandImage, 0, 0);
             } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
