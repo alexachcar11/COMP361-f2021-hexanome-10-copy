@@ -6,6 +6,7 @@ import org.minueto.window.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import java.util.Stack;
 
 public class Main {
 
@@ -27,12 +28,15 @@ public class Main {
         List<MinuetoImage> bootImages = getBootImages(bootFileNames);
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
+        MinuetoImage whiteBoxImage;
         configImages(bootImages);
         try {
             elfengoldImage = new MinuetoImageFile("elfengold.png");
             elfenlandImage = new MinuetoImageFile("elfenland.png");
             playScreenImage = new MinuetoImageFile("play.png");
             loginScreenImage = new MinuetoImageFile("login.png");
+            whiteBoxImage = new MinuetoRectangle(470,50,MinuetoColor.WHITE,true);
+
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
@@ -50,6 +54,11 @@ public class Main {
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
         // make window visible
         gameWindow.window.setVisible(true);
+
+        /**
+         * stack for a word
+         */
+        Stack<String> writtenWord = new Stack<>();
 
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
@@ -77,6 +86,172 @@ public class Main {
                 // Do nothing
             }
         }, entryScreenQueue);
+
+        // create login screen keyboard and mouse handler
+        MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
+
+        gameWindow.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+            @Override
+
+            public void handleKeyPress(int i) {
+                // press on enter key takes you to the next screen
+                if(i == MinuetoKeyboard.KEY_ENTER) {
+                    gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                }
+                else if(i == MinuetoKeyboard.KEY_A) {
+                    writtenWord.push("a");
+                }
+                else if(i == MinuetoKeyboard.KEY_B) {
+                    writtenWord.push("b");
+                }
+                else if(i == MinuetoKeyboard.KEY_C) {
+                    writtenWord.push("c");
+                }
+                else if(i == MinuetoKeyboard.KEY_D) {
+                    writtenWord.push("d");
+                }
+                else if(i == MinuetoKeyboard.KEY_E) {
+                    writtenWord.push("e");
+                }
+                else if(i == MinuetoKeyboard.KEY_F) {
+                    writtenWord.push("f");
+                }
+                else if(i == MinuetoKeyboard.KEY_G) {
+                    writtenWord.push("g");
+                }
+                else if(i == MinuetoKeyboard.KEY_H) {
+                    writtenWord.push("h");
+                }
+                else if(i == MinuetoKeyboard.KEY_I) {
+                    writtenWord.push("i");
+                }
+                else if(i == MinuetoKeyboard.KEY_J) {
+                    writtenWord.push("j");
+                }
+                else if(i == MinuetoKeyboard.KEY_K) {
+                    writtenWord.push("k");
+                }
+                if(i == MinuetoKeyboard.KEY_L) {
+                    writtenWord.push("l");
+                }
+                else if(i == MinuetoKeyboard.KEY_M) {
+                    writtenWord.push("m");
+                }
+                else if(i == MinuetoKeyboard.KEY_N) {
+                    writtenWord.push("n");
+                }
+                else if(i == MinuetoKeyboard.KEY_O) {
+                    writtenWord.push("o");
+                }
+                else if(i == MinuetoKeyboard.KEY_P) {
+                    writtenWord.push("p");
+                }
+                else if(i == MinuetoKeyboard.KEY_Q) {
+                    writtenWord.push("q");
+                }
+                else if(i == MinuetoKeyboard.KEY_R) {
+                    writtenWord.push("r");
+                }
+                else if(i == MinuetoKeyboard.KEY_S) {
+                    writtenWord.push("s");
+                }
+                else if(i == MinuetoKeyboard.KEY_T) {
+                    writtenWord.push("t");
+                }
+                else if(i == MinuetoKeyboard.KEY_U) {
+                    writtenWord.push("u");
+                }
+                else if(i == MinuetoKeyboard.KEY_V) {
+                    writtenWord.push("v");
+                }
+                else if(i == MinuetoKeyboard.KEY_W) {
+                    writtenWord.push("w");
+                }
+                else if(i == MinuetoKeyboard.KEY_X) {
+                    writtenWord.push("x");
+                }
+                else if(i == MinuetoKeyboard.KEY_Y) {
+                    writtenWord.push("y");
+                }
+                else if(i == MinuetoKeyboard.KEY_Z) {
+                    writtenWord.push("z");
+                }
+                else if(i == MinuetoKeyboard.KEY_DELETE) {
+
+                    writtenWord.pop();
+                }
+            }
+
+            @Override
+            public void handleKeyRelease(int i) {
+                //do nothing
+            }
+
+            @Override
+            public void handleKeyType(char c) {
+                //do nothing
+            }
+        }, loginScreenQueue);
+
+        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
+            public void handleMousePress(int x, int y, int button) {
+
+                MinuetoFont fontArial20 = new MinuetoFont("Arial",19,false,false);
+
+                /**
+                 *
+                 * Create an image for a white box
+                 *
+                 * every time I type, add a white box then draw on top of the box
+                 *
+                 */
+
+                // CLICK INSIDE THE USERNAME BOX
+                if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
+
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160,350);
+
+                    // type inside the textbox for username
+
+                    MinuetoImage username = new MinuetoText(writtenWord.toString(), fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(username, 200, 360);
+                    writtenWord.clear();
+                }
+
+                // CLICK INSIDE THE PASSWORD BOX
+                if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
+
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160,440);
+
+                    // type inside the textbox for password
+                    MinuetoImage password = new MinuetoText(writtenWord.toString(), fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(password, 200, 450);
+                    writtenWord.clear();
+                }
+
+                // CLICK ON THE LOGIN BOX AREA
+                if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
+
+                    // switch the game to playing ElfenGold - can be changed to either
+                    gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+
+                }
+
+            }
+
+            @Override
+            public void handleMouseRelease(int i, int i1, int i2) {
+                // Do nothing
+            }
+
+            @Override
+            public void handleMouseMove(int i, int i1) {
+                // Do nothing
+            }
+        }, loginScreenQueue);
 
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
@@ -110,9 +285,9 @@ public class Main {
                 }
             } else if (gameWindow.currentlyShowing == GameWindow.Screen.LOGIN) {
                 gameWindow.window.draw(loginScreenImage, 0, 0);
-
-                // TODO: TO THE PERSON CODING LOGIN: in your input handler you should change gameWindow.currentlyShowing to ELFENLAND or ELFENGOLD
-                // in order for the login page to stop being drawn and the board game to be start being drawn
+                while (loginScreenQueue.hasNext()) {
+                    loginScreenQueue.handle();
+                }
 
             } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND) {
                 gameWindow.window.draw(elfenlandImage, 0, 0);
