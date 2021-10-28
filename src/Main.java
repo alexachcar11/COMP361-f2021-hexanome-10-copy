@@ -280,6 +280,11 @@ public class Main {
         }
     }
 
+    /*
+     * @pre: pNames is a list of filenames of the boot images
+     * 
+     * @return: List of images corresponding to the filenames
+     */
     private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
         for (String name : pNames) {
@@ -293,6 +298,12 @@ public class Main {
         return toReturn;
     }
 
+    /*
+     * @pre: pImages is a list of MinuetoImages which are boots
+     * 
+     * @post: contents of pImages are changed to be centered at starting town on
+     * game window, and rotated and sized properly
+     */
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
             pImages.set(i, pImages.get(i).rotate(-90));
