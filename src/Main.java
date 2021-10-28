@@ -3,10 +3,15 @@ import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.util.Stack;
+
 
 public class Main {
 
@@ -29,6 +34,9 @@ public class Main {
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
+
+
+
         configImages(bootImages);
         try {
             elfengoldImage = new MinuetoImageFile("elfengold.png");
@@ -42,6 +50,9 @@ public class Main {
             return;
         }
 
+        // Play Music
+        playSound("flute.mid");
+
         // create player
         List<Player> players = new ArrayList<>();
         Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
@@ -51,6 +62,7 @@ public class Main {
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
+        window.setMaxFrameRate(60);
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
         window.setMaxFrameRate(60);
 
@@ -125,18 +137,14 @@ public class Main {
         }, loginScreenQueue);
 
         gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+
+            private Boolean usernameFilled = false;
+            private Boolean passwordFilled = false;
+
             @Override
             public void handleMousePress(int x, int y, int button) {
 
                 MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
-
-                /**
-                 *
-                 * Create an image for a white box
-                 *
-                 * every time I type, add a white box then draw on top of the box
-                 *
-                 */
 
                 // CLICK INSIDE THE USERNAME BOX
                 if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
@@ -152,6 +160,7 @@ public class Main {
 
                     MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
+                    usernameFilled = true;
                     writtenWord.clear();
                 }
 
@@ -168,6 +177,7 @@ public class Main {
                     }
                     MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
+                    passwordFilled = true;
                     writtenWord.clear();
                 }
 
@@ -175,8 +185,33 @@ public class Main {
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
                     // switch the game to playing ElfenGold - can be changed to either
-                    gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                    if((usernameFilled && passwordFilled) == true) {
+                        gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                    }
+                    else if((usernameFilled == true) && (passwordFilled == false)) {
+                        // no password
+                        String passFail = "Please enter a password";
+                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(passwordFailed, 200, 450);
 
+                    }
+                    else if((usernameFilled == false) && (passwordFilled == true)) {
+                        // no username
+                        String usernameFail = "Please enter a username";
+                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(usernameFailed, 200, 360);
+
+                    }
+                    else {
+                        String passFail = "Please enter a password";
+                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(passwordFailed, 200, 450);
+
+                        String usernameFail = "Please enter a username";
+                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(usernameFailed, 200, 360);
+
+                    }
                 }
 
             }
@@ -277,6 +312,11 @@ public class Main {
         }
     }
 
+    /*
+     * @pre: pNames is a list of filenames of the boot images
+     * 
+     * @return: List of images corresponding to the filenames
+     */
     private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
         for (String name : pNames) {
@@ -290,11 +330,34 @@ public class Main {
         return toReturn;
     }
 
+    /*
+     * @pre: pImages is a list of MinuetoImages which are boots
+     * 
+     * @post: contents of pImages are changed to be centered at starting town on
+     * game window, and rotated and sized properly
+     */
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
             pImages.set(i, pImages.get(i).rotate(-90));
             pImages.set(i, pImages.get(i).scale(.125, .125));
         }
+    }
+
+    /**
+     * Play Music
+     * @param soundFile
+     */
+    static void playSound(String soundFile) {
+        File f = new File("./" + soundFile);
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch(Exception e) {
+
+        }
+
     }
 
 }
