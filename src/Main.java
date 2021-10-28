@@ -143,8 +143,12 @@ public class Main {
                     loginScreenImage.draw(whiteBoxImage, 160, 350);
 
                     // type inside the textbox for username
+                    String userString = "";
+                    while (!writtenWord.empty()) {
+                        userString = writtenWord.pop() + userString;
+                    }
 
-                    MinuetoImage username = new MinuetoText(writtenWord.toString(), fontArial20, MinuetoColor.BLACK);
+                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
                     writtenWord.clear();
                 }
@@ -156,7 +160,11 @@ public class Main {
                     loginScreenImage.draw(whiteBoxImage, 160, 440);
 
                     // type inside the textbox for password
-                    MinuetoImage password = new MinuetoText(writtenWord.toString(), fontArial20, MinuetoColor.BLACK);
+                    String passString = "";
+                    while (!writtenWord.empty()) {
+                        passString = writtenWord.pop() + passString;
+                    }
+                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
                     writtenWord.clear();
                 }
