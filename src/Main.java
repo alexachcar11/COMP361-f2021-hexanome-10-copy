@@ -62,7 +62,6 @@ public class Main {
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
-        window.setMaxFrameRate(60);
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
         window.setMaxFrameRate(60);
 
@@ -233,9 +232,11 @@ public class Main {
             int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
+                // for left click : move boot
                 if (button == 1) {
                     players.get(ind).moveBoot(x, y);
                 }
+                // for right click : change next player
                 else if (button == 3) {
                     ind++;
                     if (ind == players.size()) { ind = 0; } // reset index if we reached last player

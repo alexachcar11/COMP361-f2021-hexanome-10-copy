@@ -15,8 +15,8 @@ public class Player {
     }
 
     public void moveBoot(int x, int y) {
-        xPos = x;
-        yPos = y;
+        xPos = x-35;
+        yPos = y-55;
     }
 
     public MinuetoImage getIcon() {
