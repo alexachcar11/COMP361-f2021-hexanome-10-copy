@@ -10,3 +10,5 @@ tmp/nanoc/
 
 # Crash Log
 crash.log
+
+.vscode/settings.json
