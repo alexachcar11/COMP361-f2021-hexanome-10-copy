@@ -3,10 +3,15 @@ import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.util.Stack;
+
 
 public class Main {
 
@@ -29,6 +34,9 @@ public class Main {
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
+
+
+
         configImages(bootImages);
         try {
             elfengoldImage = new MinuetoImageFile("elfengold.png");
@@ -42,6 +50,9 @@ public class Main {
             return;
         }
 
+        // Play Music
+        playSound("flute.mid");
+
         // create player
         List<Player> players = new ArrayList<>();
         Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
@@ -51,6 +62,7 @@ public class Main {
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
+        window.setMaxFrameRate(60);
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
         // make window visible
         gameWindow.window.setVisible(true);
@@ -59,14 +71,6 @@ public class Main {
          * stack for a word
          */
         Stack<String> writtenWord = new Stack<>();
-
-
-        /**
-         * Boolean for checking if a username and password have been added
-         */
-        Boolean usernameFilled = false;
-        Boolean passwordFilled = false;
-
 
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
@@ -298,6 +302,23 @@ public class Main {
             pImages.set(i, pImages.get(i).rotate(-90));
             pImages.set(i, pImages.get(i).scale(.125, .125));
         }
+    }
+
+    /**
+     * Play Music
+     * @param soundFile
+     */
+    static void playSound(String soundFile) {
+        File f = new File("./" + soundFile);
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch(Exception e) {
+
+        }
+
     }
 
 }
