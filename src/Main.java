@@ -52,6 +52,8 @@ public class Main {
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
+        window.setMaxFrameRate(60);
+
         // make window visible
         gameWindow.window.setVisible(true);
 
@@ -193,13 +195,39 @@ public class Main {
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+            int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
-                for (int i = 0; i < players.size(); i++) {
-                    if (players.get(i).isTurn) {
-                        players.get(i).moveBoot(x, y);
-                    }
+                if (button == 1) {
+                    players.get(ind).moveBoot(x, y);
                 }
+                else if (button == 3) {
+                    ind++;
+                    if (ind == players.size()) { ind = 0; } // reset index if we reached last player
+                }
+
+                /*for (int i = 0; i < players.size(); i++) {
+                    // check for player's turn and if button is left click
+                    if (players.get(i).isTurn && button == 1) {
+                        players.get(i).moveBoot(x, y);
+                        break;
+                    }
+                    // if press right mouse button, change to next player
+                    if (button == 3) {
+                        // set isTurn to false for current player
+                        players.get(i).setTurn(false);
+
+                        // if we reached last player, go back to first player
+                        if (i == players.size()-1) {
+                            players.get(0).setTurn(true);
+                        }
+                        else {
+                            // change isTurn to true for next player
+                            players.get(i + 1).setTurn(true);
+                        }
+                        break;
+                    }
+                }*/
             }
 
             @Override

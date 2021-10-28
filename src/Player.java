@@ -34,4 +34,6 @@ public class Player {
     public boolean isTurn() {
         return isTurn;
     }
+
+    public void setTurn(boolean bool) { isTurn = bool; }
 }
