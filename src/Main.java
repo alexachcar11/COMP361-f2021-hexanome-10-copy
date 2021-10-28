@@ -35,7 +35,7 @@ public class Main {
             elfenlandImage = new MinuetoImageFile("elfenland.png");
             playScreenImage = new MinuetoImageFile("play.png");
             loginScreenImage = new MinuetoImageFile("login.png");
-            whiteBoxImage = new MinuetoRectangle(470,50,MinuetoColor.WHITE,true);
+            whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -91,105 +91,34 @@ public class Main {
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
         gameWindow.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
-            @Override
+            private boolean shift = false;
 
+            @Override
             public void handleKeyPress(int i) {
                 // press on enter key takes you to the next screen
-                if(i == MinuetoKeyboard.KEY_ENTER) {
+                if (i == MinuetoKeyboard.KEY_ENTER) {
                     gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
-                }
-                else if(i == MinuetoKeyboard.KEY_A) {
-                    writtenWord.push("a");
-                }
-                else if(i == MinuetoKeyboard.KEY_B) {
-                    writtenWord.push("b");
-                }
-                else if(i == MinuetoKeyboard.KEY_C) {
-                    writtenWord.push("c");
-                }
-                else if(i == MinuetoKeyboard.KEY_D) {
-                    writtenWord.push("d");
-                }
-                else if(i == MinuetoKeyboard.KEY_E) {
-                    writtenWord.push("e");
-                }
-                else if(i == MinuetoKeyboard.KEY_F) {
-                    writtenWord.push("f");
-                }
-                else if(i == MinuetoKeyboard.KEY_G) {
-                    writtenWord.push("g");
-                }
-                else if(i == MinuetoKeyboard.KEY_H) {
-                    writtenWord.push("h");
-                }
-                else if(i == MinuetoKeyboard.KEY_I) {
-                    writtenWord.push("i");
-                }
-                else if(i == MinuetoKeyboard.KEY_J) {
-                    writtenWord.push("j");
-                }
-                else if(i == MinuetoKeyboard.KEY_K) {
-                    writtenWord.push("k");
-                }
-                if(i == MinuetoKeyboard.KEY_L) {
-                    writtenWord.push("l");
-                }
-                else if(i == MinuetoKeyboard.KEY_M) {
-                    writtenWord.push("m");
-                }
-                else if(i == MinuetoKeyboard.KEY_N) {
-                    writtenWord.push("n");
-                }
-                else if(i == MinuetoKeyboard.KEY_O) {
-                    writtenWord.push("o");
-                }
-                else if(i == MinuetoKeyboard.KEY_P) {
-                    writtenWord.push("p");
-                }
-                else if(i == MinuetoKeyboard.KEY_Q) {
-                    writtenWord.push("q");
-                }
-                else if(i == MinuetoKeyboard.KEY_R) {
-                    writtenWord.push("r");
-                }
-                else if(i == MinuetoKeyboard.KEY_S) {
-                    writtenWord.push("s");
-                }
-                else if(i == MinuetoKeyboard.KEY_T) {
-                    writtenWord.push("t");
-                }
-                else if(i == MinuetoKeyboard.KEY_U) {
-                    writtenWord.push("u");
-                }
-                else if(i == MinuetoKeyboard.KEY_V) {
-                    writtenWord.push("v");
-                }
-                else if(i == MinuetoKeyboard.KEY_W) {
-                    writtenWord.push("w");
-                }
-                else if(i == MinuetoKeyboard.KEY_X) {
-                    writtenWord.push("x");
-                }
-                else if(i == MinuetoKeyboard.KEY_Y) {
-                    writtenWord.push("y");
-                }
-                else if(i == MinuetoKeyboard.KEY_Z) {
-                    writtenWord.push("z");
-                }
-                else if(i == MinuetoKeyboard.KEY_DELETE) {
-
+                } else if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = true;
+                } else if (i == MinuetoKeyboard.KEY_DELETE) {
                     writtenWord.pop();
+                } else if (shift) {
+                    writtenWord.push("" + (char) i); // uppercase
+                } else {
+                    writtenWord.push("" + (char) (i + 32)); // lowercase
                 }
             }
 
             @Override
             public void handleKeyRelease(int i) {
-                //do nothing
+                if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = false;
+                }
             }
 
             @Override
             public void handleKeyType(char c) {
-                //do nothing
+                // do nothing
             }
         }, loginScreenQueue);
 
@@ -197,7 +126,7 @@ public class Main {
             @Override
             public void handleMousePress(int x, int y, int button) {
 
-                MinuetoFont fontArial20 = new MinuetoFont("Arial",19,false,false);
+                MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
 
                 /**
                  *
@@ -211,7 +140,7 @@ public class Main {
                 if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
 
                     // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160,350);
+                    loginScreenImage.draw(whiteBoxImage, 160, 350);
 
                     // type inside the textbox for username
 
@@ -224,7 +153,7 @@ public class Main {
                 if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
 
                     // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160,440);
+                    loginScreenImage.draw(whiteBoxImage, 160, 440);
 
                     // type inside the textbox for password
                     MinuetoImage password = new MinuetoText(writtenWord.toString(), fontArial20, MinuetoColor.BLACK);
@@ -258,7 +187,6 @@ public class Main {
         gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
             @Override
             public void handleMousePress(int x, int y, int button) {
-                System.out.println(x + ", " + y);
                 for (int i = 0; i < players.size(); i++) {
                     if (players.get(i).isTurn) {
                         players.get(i).moveBoot(x, y);
@@ -295,12 +223,14 @@ public class Main {
                 gameWindow.window.draw(elfengoldImage, 0, 0);
             }
 
-            if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND || gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
+            if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND
+                    || gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
                 // draw boots
                 for (int i = 0; i < players.size(); i++) {
-                    gameWindow.window.draw(players.get(i).getIcon(), players.get(i).getxPos(), players.get(i).getyPos());
+                    gameWindow.window.draw(players.get(i).getIcon(), players.get(i).getxPos(),
+                            players.get(i).getyPos());
                 }
-                players.get(0).isTurn = true;   // only player 1 can move
+                players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
                     moveBootQueue.handle();
                 }
