@@ -3,10 +3,15 @@ import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.util.Stack;
+
 
 public class Main {
 
@@ -29,6 +34,9 @@ public class Main {
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
+
+
+
         configImages(bootImages);
         try {
             elfengoldImage = new MinuetoImageFile("elfengold.png");
@@ -42,6 +50,9 @@ public class Main {
             return;
         }
 
+        // Play Music
+        playSound("flute.mid");
+
         // create player
         List<Player> players = new ArrayList<>();
         Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
@@ -52,6 +63,8 @@ public class Main {
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
+        window.setMaxFrameRate(60);
+
         // make window visible
         gameWindow.window.setVisible(true);
 
@@ -59,14 +72,6 @@ public class Main {
          * stack for a word
          */
         Stack<String> writtenWord = new Stack<>();
-
-
-        /**
-         * Boolean for checking if a username and password have been added
-         */
-        Boolean usernameFilled = false;
-        Boolean passwordFilled = false;
-
 
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
@@ -224,13 +229,41 @@ public class Main {
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+            int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
-                for (int i = 0; i < players.size(); i++) {
-                    if (players.get(i).isTurn) {
-                        players.get(i).moveBoot(x, y);
-                    }
+                // for left click : move boot
+                if (button == 1) {
+                    players.get(ind).moveBoot(x, y);
                 }
+                // for right click : change next player
+                else if (button == 3) {
+                    ind++;
+                    if (ind == players.size()) { ind = 0; } // reset index if we reached last player
+                }
+
+                /*for (int i = 0; i < players.size(); i++) {
+                    // check for player's turn and if button is left click
+                    if (players.get(i).isTurn && button == 1) {
+                        players.get(i).moveBoot(x, y);
+                        break;
+                    }
+                    // if press right mouse button, change to next player
+                    if (button == 3) {
+                        // set isTurn to false for current player
+                        players.get(i).setTurn(false);
+
+                        // if we reached last player, go back to first player
+                        if (i == players.size()-1) {
+                            players.get(0).setTurn(true);
+                        }
+                        else {
+                            // change isTurn to true for next player
+                            players.get(i + 1).setTurn(true);
+                        }
+                        break;
+                    }
+                }*/
             }
 
             @Override
@@ -280,6 +313,11 @@ public class Main {
         }
     }
 
+    /*
+     * @pre: pNames is a list of filenames of the boot images
+     * 
+     * @return: List of images corresponding to the filenames
+     */
     private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
         for (String name : pNames) {
@@ -293,11 +331,34 @@ public class Main {
         return toReturn;
     }
 
+    /*
+     * @pre: pImages is a list of MinuetoImages which are boots
+     * 
+     * @post: contents of pImages are changed to be centered at starting town on
+     * game window, and rotated and sized properly
+     */
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
             pImages.set(i, pImages.get(i).rotate(-90));
             pImages.set(i, pImages.get(i).scale(.125, .125));
         }
+    }
+
+    /**
+     * Play Music
+     * @param soundFile
+     */
+    static void playSound(String soundFile) {
+        File f = new File("./" + soundFile);
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch(Exception e) {
+
+        }
+
     }
 
 }
