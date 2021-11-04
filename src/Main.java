@@ -49,7 +49,7 @@ public class Main {
         }
 
         // Play Music
-        playSound("flute.mid");
+        playSound("music/flute.mid");
 
         // create players
         List<Player> players = new ArrayList<>();
