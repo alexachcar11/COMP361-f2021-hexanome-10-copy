@@ -39,10 +39,10 @@ public class Main {
 
         configImages(bootImages);
         try {
-            elfengoldImage = new MinuetoImageFile("elfengold.png");
-            elfenlandImage = new MinuetoImageFile("elfenland.png");
-            playScreenImage = new MinuetoImageFile("play.png");
-            loginScreenImage = new MinuetoImageFile("login.png");
+            elfengoldImage = new MinuetoImageFile("images/elfengold.png");
+            elfenlandImage = new MinuetoImageFile("images/elfenland.png");
+            playScreenImage = new MinuetoImageFile("images/play.png");
+            loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
 
         } catch (MinuetoFileException e) {
