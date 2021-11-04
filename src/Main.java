@@ -20,12 +20,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File bootDir = new File("böppels-and-boots/"); // dir containing boot image files
+        File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
         List<String> bootFileNames = new ArrayList<>();
         // add file names of boot images to the bootFiles list
         for (File file : bootDir.listFiles()) {
             if (file.getName().startsWith("boot-"))
-                bootFileNames.add("böppels-and-boots/" + file.getName());
+                bootFileNames.add("images/böppels-and-boots/" + file.getName());
         }
 
         // make images
