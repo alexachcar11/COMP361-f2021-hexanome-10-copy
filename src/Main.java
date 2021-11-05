@@ -1,12 +1,15 @@
+// minueto
 import org.minueto.*;
 import org.minueto.handlers.*;
 import org.minueto.image.*;
 import org.minueto.window.*;
 
+// music
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+// other
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -17,14 +20,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // dir containing boot image files
-        File bootDir = new File("böppels-and-boots/");
-
+        File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
         List<String> bootFileNames = new ArrayList<>();
         // add file names of boot images to the bootFiles list
         for (File file : bootDir.listFiles()) {
-            if (file.getName().substring(0, 5).equals("boot-"))
-                bootFileNames.add("böppels-and-boots/" + file.getName());
+            if (file.getName().startsWith("boot-"))
+                bootFileNames.add("images/böppels-and-boots/" + file.getName());
         }
 
         // make images
@@ -35,25 +36,22 @@ public class Main {
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
 
-
-
         configImages(bootImages);
         try {
-            elfengoldImage = new MinuetoImageFile("elfengold.png");
-            elfenlandImage = new MinuetoImageFile("elfenland.png");
-            playScreenImage = new MinuetoImageFile("play.png");
-            loginScreenImage = new MinuetoImageFile("login.png");
+            elfengoldImage = new MinuetoImageFile("images/elfengold.png");
+            elfenlandImage = new MinuetoImageFile("images/elfenland.png");
+            playScreenImage = new MinuetoImageFile("images/play.png");
+            loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
-
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
         }
 
         // Play Music
-        playSound("flute.mid");
+        playSound("music/flute.mid");
 
-        // create player
+        // create players
         List<Player> players = new ArrayList<>();
         Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
         Player p2 = new Player(bootImages.get(0), 600 + 20 * (1 % 4), 300 + 20 * (1 / 4));
@@ -68,9 +66,7 @@ public class Main {
         // make window visible
         gameWindow.window.setVisible(true);
 
-        /**
-         * stack for a word
-         */
+        // stack for a word
         Stack<String> writtenWord = new Stack<>();
 
         // create entry screen mouse handler
@@ -184,17 +180,18 @@ public class Main {
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
                     // switch the game to playing ElfenGold - can be changed to either
-                    if((usernameFilled && passwordFilled) == true) {
+                    if(usernameFilled && passwordFilled) {
                         gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
                     }
-                    else if((usernameFilled == true) && (passwordFilled == false)) {
+
+                    else if(usernameFilled  && !passwordFilled) {
                         // no password
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(passwordFailed, 200, 450);
 
                     }
-                    else if((usernameFilled == false) && (passwordFilled == true)) {
+                    else if(!usernameFilled && passwordFilled) {
                         // no username
                         String usernameFail = "Please enter a username";
                         MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
@@ -298,9 +295,9 @@ public class Main {
             if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND
                     || gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
                 // draw boots
-                for (int i = 0; i < players.size(); i++) {
-                    gameWindow.window.draw(players.get(i).getIcon(), players.get(i).getxPos(),
-                            players.get(i).getyPos());
+                for (Player player : players) {
+                    gameWindow.window.draw(player.getIcon(), player.getxPos(),
+                            player.getyPos());
                 }
                 players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
@@ -346,7 +343,7 @@ public class Main {
 
     /**
      * Play Music
-     * @param soundFile
+     * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
         File f = new File("./" + soundFile);
@@ -356,7 +353,7 @@ public class Main {
             clip.open(audioIn);
             clip.start();
         } catch(Exception e) {
-
+            // TODO: was this catch block intended to be empty?
         }
 
     }
