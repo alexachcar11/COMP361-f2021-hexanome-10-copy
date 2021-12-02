@@ -137,7 +137,7 @@ public class Main {
             private Boolean passwordFilled = false;
 
             private String finalPassword;
-            private Strin finalUsername;
+            private String finalUsername;
 
             @Override
             public void handleMousePress(int x, int y, int button) {
