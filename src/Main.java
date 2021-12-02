@@ -136,6 +136,9 @@ public class Main {
             private Boolean usernameFilled = false;
             private Boolean passwordFilled = false;
 
+            private String finalPassword;
+            private Strin finalUsername;
+
             @Override
             public void handleMousePress(int x, int y, int button) {
 
@@ -155,6 +158,7 @@ public class Main {
 
                     MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
+                    finalUsername = userString;
                     usernameFilled = true;
                     writtenWord.clear();
                 }
@@ -172,6 +176,7 @@ public class Main {
                     }
                     MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
+                    finalPassword = passString;
                     passwordFilled = true;
                     writtenWord.clear();
                 }
