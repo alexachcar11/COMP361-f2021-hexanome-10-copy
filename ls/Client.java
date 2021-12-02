@@ -14,4 +14,9 @@ public class Client implements NetworkNode {
         }
     }
 
+    @Override
+    public void start() {
+
+    }
+
 }

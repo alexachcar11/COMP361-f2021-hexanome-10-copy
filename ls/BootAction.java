@@ -1,4 +1,6 @@
-public class MoveBoot implements Action {
+public class BootAction extends Action {
+
+    // private
 
     @Override
     public boolean isValid() {

@@ -1,6 +1,6 @@
-public interface Action {
+public abstract class Action {
 
-    public boolean isValid();
+    public abstract boolean isValid();
 
-    public void execute();
+    public abstract void execute();
 }
