@@ -3,5 +3,8 @@
         "lib/**/*.jar",
         "~/Documents/'Course Material'/'U2 F21'/COMP361/f2021-hexanome-10",
         "minueto.jar"
+    ],
+    "java.project.sourcePaths": [
+        "ls"
     ]
 }
