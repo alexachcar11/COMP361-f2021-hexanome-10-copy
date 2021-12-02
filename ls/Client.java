@@ -19,4 +19,8 @@ public class Client implements NetworkNode {
 
     }
 
+    public String getHost() {
+        return aSocket.getInetAddress().getHostName();
+    }
+
 }
