@@ -60,23 +60,23 @@ public class Main {
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
-        GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
+        GUI gui = new GUI(window, GUI.Screen.MENU);
         window.setMaxFrameRate(60);
 
         // make window visible
-        gameWindow.window.setVisible(true);
+        gui.window.setVisible(true);
 
         // stack for a word
         Stack<String> writtenWord = new Stack<>();
 
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             @Override
             public void handleMousePress(int x, int y, int button) {
                 // click on Play
                 if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
-                    gameWindow.currentlyShowing = GameWindow.Screen.LOGIN;
+                    gui.currentBackground = GUI.Screen.LOGIN;
                 }
 
                 // click on Quit
@@ -99,14 +99,14 @@ public class Main {
         // create login screen keyboard and mouse handler
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
-        gameWindow.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+        gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
             private boolean shift = false;
 
             @Override
             public void handleKeyPress(int i) {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
-                    gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                    gui.currentBackground = GUI.Screen.ELFENGOLD;
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
@@ -131,7 +131,7 @@ public class Main {
             }
         }, loginScreenQueue);
 
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
 
             private Boolean usernameFilled = false;
             private Boolean passwordFilled = false;
@@ -181,7 +181,7 @@ public class Main {
 
                     // switch the game to playing ElfenGold - can be changed to either
                     if(usernameFilled && passwordFilled) {
-                        gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                        gui.currentBackground = GUI.Screen.ELFENGOLD;
                     }
 
                     else if(usernameFilled  && !passwordFilled) {
@@ -225,7 +225,7 @@ public class Main {
 
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
@@ -275,28 +275,28 @@ public class Main {
 
         // draw on the window
         while (true) {
-            if (gameWindow.currentlyShowing == GameWindow.Screen.ENTRY) {
-                gameWindow.window.draw(playScreenImage, 0, 0);
+            if (gui.currentBackground == GUI.Screen.MENU) {
+                gui.window.draw(playScreenImage, 0, 0);
                 while (entryScreenQueue.hasNext()) {
                     entryScreenQueue.handle();
                 }
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.LOGIN) {
-                gameWindow.window.draw(loginScreenImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.LOGIN) {
+                gui.window.draw(loginScreenImage, 0, 0);
                 while (loginScreenQueue.hasNext()) {
                     loginScreenQueue.handle();
                 }
 
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND) {
-                gameWindow.window.draw(elfenlandImage, 0, 0);
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
-                gameWindow.window.draw(elfengoldImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+                gui.window.draw(elfenlandImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
+                gui.window.draw(elfengoldImage, 0, 0);
             }
 
-            if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND
-                    || gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
+            if (gui.currentBackground == GUI.Screen.ELFENLAND
+                    || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
                 for (Player player : players) {
-                    gameWindow.window.draw(player.getIcon(), player.getxPos(),
+                    gui.window.draw(player.getIcon(), player.getxPos(),
                             player.getyPos());
                 }
                 players.get(0).isTurn = true; // only player 1 can move
