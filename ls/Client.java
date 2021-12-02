@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class Client implements NetworkNode {
     private Socket aSocket;
 
     public Client(String pHost, int pPort) {
