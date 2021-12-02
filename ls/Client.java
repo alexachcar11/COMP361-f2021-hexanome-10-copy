@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class Client implements NetworkNode {
     private Socket aSocket;
 
     public Client(String pHost, int pPort) {
@@ -12,6 +12,11 @@ public class Client {
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
         }
+    }
+
+    @Override
+    public void start() {
+
     }
 
 }
