@@ -5,6 +5,7 @@ import java.util.*;
 public class Player {
 
     boolean isTurn = false;
+
     private Client aClient;
     private Boot aBoot;
 
@@ -18,7 +19,12 @@ public class Player {
 
     public Player(Client pClient, Color pColor) {
         aClient = pClient;
-
+        aName = aClient.getHost();
+        aBoot = new Boot(pColor);
+        this.gold = 0;
+        // TODO: guiDisplayed
+        this.cardsInHand = new ArrayList<>();
+        this.tokensInHand = new ArrayList<>();
     }
 
     public void setTurn(boolean bool) {

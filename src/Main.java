@@ -53,8 +53,8 @@ public class Main {
 
         // create players
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player("username1", Color.YELLOW);
-        Player p2 = new Player("username2", Color.BLACK);
+        Player p1 = new Player(null, Color.YELLOW);
+        Player p2 = new Player(null, Color.BLACK);
         players.add(p1);
         players.add(p2);
 

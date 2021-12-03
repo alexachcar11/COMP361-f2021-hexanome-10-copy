@@ -50,9 +50,4 @@ public class Boot {
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
-
-    public void move(int pX, int pY) {
-
-        // TODO: add code to update UI
-    }
 }
