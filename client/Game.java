@@ -12,6 +12,7 @@ public class Game {
    private ArrayList<Player> players;
    private int numberOfPlayers;
    public ArrayList<Town> towns; 
+   public ArrayList<Route> routes;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
