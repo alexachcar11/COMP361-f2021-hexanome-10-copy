@@ -63,32 +63,32 @@ public class Image {
     }
 
     /**
-     * GETTER : Returns the bottom-most border of the image
-     * @return minY bottom-most border of the image
+     * GETTER : Returns the top-most border of the image
+     * @return minY top-most border of the image
      */
     public int getMinY() {
         return minY;
     }
 
     /**
-     * SETTER: set the bottom-most border of the image to minY
-     * @param minY bottom-most border of the image
+     * SETTER: set the top-most border of the image to minY
+     * @param minY top-most border of the image
      */
     public void setMinY(int minY) {
         this.minY = minY;
     }
 
     /**
-     * GETTER : Returns the top-most border of the image
-     * @return maxY top-most border of the image
+     * GETTER : Returns the bottom-most border of the image
+     * @return maxY bottom-most border of the image
      */
     public int getMaxY() {
         return maxY;
     }
 
     /**
-     * SETTER: set the top-most border of the image to maxY
-     * @param maxY top-most border of the image
+     * SETTER: set the bottom-most border of the image to maxY
+     * @param maxY bottom-most border of the image
      */
     public void setMaxY(int maxY) {
         this.maxY = maxY;
