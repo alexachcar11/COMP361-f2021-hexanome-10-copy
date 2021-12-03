@@ -76,6 +76,12 @@ public class Main {
             public void handleMousePress(int x, int y, int button) {
                 // click on Play
                 if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
+
+                    // TODO: Add create lobby instance
+                    // create lobby instance if it's not there already
+
+                    
+
                     gui.currentBackground = GUI.Screen.LOGIN;
                 }
 
@@ -185,11 +191,18 @@ public class Main {
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
                     // switch the game to playing ElfenGold - can be changed to either
-                    if(usernameFilled && passwordFilled) {
-                        gui.currentBackground = GUI.Screen.ELFENGOLD;
-                    }
+                    // if(usernameFilled && passwordFilled) {
+                    //     gui.currentBackground = GUI.Screen.ELFENGOLD;
+                    // }
+                    
+                    // TODO: Check if the username exists in the list of usernames 
+                    // if it exists -> check if password matches -
+                    //      if password matches --> send to availableGamesScreen
+                    //      else --> send red text to reflect outcome
+                    // if it doesn't exist -> send red text to reflect outcome
 
-                    else if(usernameFilled  && !passwordFilled) {
+                    // this should be else if
+                    if(usernameFilled  && !passwordFilled) {
                         // no password
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
