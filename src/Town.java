@@ -1,28 +1,65 @@
 public class Town {
 
-
-
     //fields
     private String townName;
-    private Hitbox townHitbox;
+    int minX;
+    int maxX;
+    int minY;
+    int maxY;
 
     /**
-     * CONSTRUCTOR : Creates a TownMarker object (the cubes)
-     * @param townName town in which the townmarker is placed
-     * @param townHitbox Hitbox: an array of integers representing the town's hitbox on the game window
+     * CONSTRUCTOR : Creates a Town object
+     * @param townName town's name
+     * @param minX left-most border of the town
+     * @param maxX right-most border of the town
+     * @param minY bottom-most border of the town
+     * @param maxY top-most border of the town
      */
-    //constructor
-    public Town(String townName, Hitbox townHitbox){
+    public Town(String townName, int minX, int maxX, int minY, int maxY) {
         this.townName = townName;
-        this.townHitbox = new Hitbox(0,0,0,0);
-
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
     }
 
-    // get functions
-    public Hitbox getTownHitbox() {
-        return townHitbox;
-    }
-    public String getTownName(){
+    /**
+     * GETTER : get the town's name
+     * @return townName
+     */
+    public String getTownName() {
         return townName;
+    }
+
+    /**
+     * GETTER : get the left-most border of the town
+     * @return minX
+     */
+    public int getMinX() {
+        return minX;
+    }
+
+    /**
+     * GETTER : get the right-most border of the town
+     * @return minX
+     */
+    public int getMaxX() {
+        return maxX;
+    }
+
+    /**
+     * GETTER : get the bottom-most border of the town
+     * @return minX
+     */
+    public int getMinY() {
+        return minY;
+    }
+
+    /**
+     * GETTER : get the top-most border of the town
+     * @return minX
+     */
+    public int getMaxY() {
+        return maxY;
     }
 }
