@@ -7,18 +7,17 @@ import java.util.*;
 
 public class Boot {
 
-    private Hitbox hitbox;
-    private MinuetoImage aImage;
+    private Image image;
 
 
     /**
      * CONSTRUCTOR : Creates a boot object
-     * @param pColor color of the boot
-     * @param hitbox hitbox associated with the boot
+     * @param color color associated with the boot
      */
-    public Boot(Color pColor, Hitbox hitbox) {
-        this.hitbox = hitbox;
-        this.aImage = getBootImage(pColor);
+    public Boot(Color color) {
+        MinuetoImage bootImage = Boot.getBootImage(color);
+        // TODO: fix these values
+        this.image = new Image(100, 100, 100, 100, bootImage);
     }
 
     // TODO: write documentation for this method
@@ -47,7 +46,7 @@ public class Boot {
      * @param pColor color of the boot
      * @return MinuetoImage associated with pColor
      */
-    private static MinuetoImage getBootImage(Color pColor) {
+    public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
 }

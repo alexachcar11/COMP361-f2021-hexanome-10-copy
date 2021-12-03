@@ -53,8 +53,8 @@ public class Main {
 
         // create players
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
-        Player p2 = new Player(bootImages.get(0), 600 + 20 * (1 % 4), 300 + 20 * (1 / 4));
+        Player p1 = new Player("username1", Color.YELLOW);
+        Player p2 = new Player("username2", Color.BLACK);
         players.add(p1);
         players.add(p2);
 
@@ -235,14 +235,14 @@ public class Main {
             @Override
             public void handleMousePress(int x, int y, int button) {
                 // for left click : move boot
-                if (button == 1) {
+                /*if (button == 1) {
                     players.get(ind).moveBoot(x, y);
                 }
                 // for right click : change next player
                 else if (button == 3) {
                     ind++;
                     if (ind == players.size()) { ind = 0; } // reset index if we reached last player
-                }
+                }*/
 
                 /*for (int i = 0; i < players.size(); i++) {
                     // check for player's turn and if button is left click
@@ -300,11 +300,11 @@ public class Main {
             if (gui.currentBackground == GUI.Screen.ELFENLAND
                     || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
-                for (Player player : players) {
+                /*for (Player player : players) {
                     gui.window.draw(player.getIcon(), player.getxPos(),
                             player.getyPos());
-                }
-                players.get(0).isTurn = true; // only player 1 can move
+                }*/
+                //players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
                     moveBootQueue.handle();
                 }

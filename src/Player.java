@@ -1,39 +1,24 @@
-import org.minueto.image.MinuetoImage;
-
 /* This class contains all info relevant to a single Player */
 
+import org.minueto.image.MinuetoImage;
+import java.util.ArrayList;
+
 public class Player {
-    MinuetoImage icon;
-    int xPos;
-    int yPos;
-    boolean isTurn = false;
 
-    public Player(MinuetoImage pIcon, int x, int y) {
-        icon = pIcon;
-        xPos = x;
-        yPos = y;
+    String username;
+    int gold;
+    GUI guiDisplayed; // TODO: initialize this
+    Boot boot;
+    ArrayList<Card> cardsInHand;
+    ArrayList<Token> tokensInHand;
+
+    public Player(String username, Color color) {
+        this.username = username;
+        this.boot = new Boot(color);
+        this.gold = 0;
+        // TODO: guiDisplayed
+        this.cardsInHand = new ArrayList<>();
+        this.tokensInHand = new ArrayList<>();
     }
 
-    public void moveBoot(int x, int y) {
-        xPos = x-35;
-        yPos = y-55;
-    }
-
-    public MinuetoImage getIcon() {
-        return icon;
-    }
-
-    public int getxPos() {
-        return xPos;
-    }
-
-    public int getyPos() {
-        return yPos;
-    }
-
-    public boolean isTurn() {
-        return isTurn;
-    }
-
-    public void setTurn(boolean bool) { isTurn = bool; }
 }

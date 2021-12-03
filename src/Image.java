@@ -1,14 +1,18 @@
 /*
-Instances of the Hitbox class contain a min/max x and min/max y coordinates to locate the object on the screen.
+Instances of the Image class contain a min/max x and min/max y coordinates to locate the object on the screen
+and an image to display
  */
 
 
-public class Hitbox {
+import org.minueto.image.MinuetoImage;
+
+public class Image {
 
     private int minX;
     private int maxX;
     private int minY;
     private int maxY;
+    private MinuetoImage image;
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -16,12 +20,14 @@ public class Hitbox {
      * @param maxX right-most border of the image
      * @param minY bottom-most border of the image
      * @param maxY top-most border of the image
+     * @param image MinuetoImage to display
      */
-    public Hitbox(int minX, int maxX, int minY, int maxY) {
+    public Image(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
+        this.image = image;
     }
 
     /**
