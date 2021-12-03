@@ -1,9 +1,12 @@
 /* This class contains all info relevant to a single Player */
 import java.util.*;
+// import org.minueto.*;
+import org.minueto.image.*;
 
 public class Player {
 
     boolean isTurn = false;
+
     private Client aClient;
     private Boot aBoot;
     
@@ -25,25 +28,6 @@ public class Player {
         this.tokensInHand = new ArrayList<>();
     }
 
-    public void moveBoot(int x, int y) {
-        aBoot.move(x, y);
-    }
-
-    public MinuetoImage getIcon() {
-        return aBoot.getImage();
-    }
-
-    public int[] getCoords() {
-        return aBoot.getCoords();
-    }
-
-    public int getxPos() {
-        return this.getCoords()[0];
-    }
-
-    public int getyPos() {
-        return this.getCoords()[1];
-    }
     public void setTurn(boolean bool) {
         isTurn = bool;
     }
