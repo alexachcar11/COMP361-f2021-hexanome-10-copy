@@ -5,7 +5,7 @@ import org.minueto.image.MinuetoImageFile;
 import java.io.File;
 import java.util.*;
 
-public class Boot extends Image{
+public class Boot extends Image {
 
     Color color;
 
