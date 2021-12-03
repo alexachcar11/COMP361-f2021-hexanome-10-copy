@@ -1,10 +1,11 @@
 /*
-Interface representing a Card.
+Abstract class for Tokens
  */
+
 
 import org.minueto.image.MinuetoImage;
 
-public abstract class Card extends Image{
+public abstract class Token extends Image{
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -15,7 +16,7 @@ public abstract class Card extends Image{
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public Card(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
+    public Token(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
         super(minX, maxX, minY, maxY, image);
     }
 }
