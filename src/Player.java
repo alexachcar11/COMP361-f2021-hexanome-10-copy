@@ -2,7 +2,6 @@
 import java.util.*;
 
 public class Player {
-
     boolean isTurn = false;
 
     private Client aClient;

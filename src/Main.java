@@ -50,13 +50,13 @@ public class Main {
 
         // Play Music
         playSound("music/flute.mid");
-
+        
         // create players
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(null, Color.YELLOW);
-        Player p2 = new Player(null, Color.BLACK);
-        players.add(p1);
-        players.add(p2);
+        // Player p1 = new Player(null, Color.YELLOW);
+        // Player p2 = new Player(null, Color.BLACK);
+        // players.add(p1);
+        // players.add(p2);
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
