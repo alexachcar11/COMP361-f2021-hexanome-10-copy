@@ -53,30 +53,36 @@ public class Main {
 
         // create players
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(bootImages.get(1), 600 + 20 * (0 % 4), 300 + 20 * (0 / 4));
-        Player p2 = new Player(bootImages.get(0), 600 + 20 * (1 % 4), 300 + 20 * (1 / 4));
+        Player p1 = new Player("username1", Color.YELLOW);
+        Player p2 = new Player("username2", Color.BLACK);
         players.add(p1);
         players.add(p2);
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
-        GameWindow gameWindow = new GameWindow(window, GameWindow.Screen.ENTRY);
+        GUI gui = new GUI(window, GUI.Screen.MENU);
         window.setMaxFrameRate(60);
 
         // make window visible
-        gameWindow.window.setVisible(true);
+        gui.window.setVisible(true);
 
         // stack for a word
         Stack<String> writtenWord = new Stack<>();
 
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             @Override
             public void handleMousePress(int x, int y, int button) {
                 // click on Play
                 if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
-                    gameWindow.currentlyShowing = GameWindow.Screen.LOGIN;
+
+                    // TODO: Add create lobby instance
+                    // create lobby instance if it's not there already
+
+                    
+
+                    gui.currentBackground = GUI.Screen.LOGIN;
                 }
 
                 // click on Quit
@@ -99,14 +105,14 @@ public class Main {
         // create login screen keyboard and mouse handler
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
-        gameWindow.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+        gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
             private boolean shift = false;
 
             @Override
             public void handleKeyPress(int i) {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
-                    gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
+                    gui.currentBackground = GUI.Screen.ELFENGOLD;
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
@@ -131,10 +137,13 @@ public class Main {
             }
         }, loginScreenQueue);
 
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
 
             private Boolean usernameFilled = false;
             private Boolean passwordFilled = false;
+
+            private String finalPassword;
+            private String finalUsername;
 
             @Override
             public void handleMousePress(int x, int y, int button) {
@@ -155,6 +164,7 @@ public class Main {
 
                     MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
+                    finalUsername = userString;
                     usernameFilled = true;
                     writtenWord.clear();
                 }
@@ -172,6 +182,7 @@ public class Main {
                     }
                     MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
+                    finalPassword = passString;
                     passwordFilled = true;
                     writtenWord.clear();
                 }
@@ -180,11 +191,18 @@ public class Main {
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
                     // switch the game to playing ElfenGold - can be changed to either
-                    if(usernameFilled && passwordFilled) {
-                        gameWindow.currentlyShowing = GameWindow.Screen.ELFENGOLD;
-                    }
+                    // if(usernameFilled && passwordFilled) {
+                    //     gui.currentBackground = GUI.Screen.ELFENGOLD;
+                    // }
+                    
+                    // TODO: Check if the username exists in the list of usernames 
+                    // if it exists -> check if password matches -
+                    //      if password matches --> send to availableGamesScreen
+                    //      else --> send red text to reflect outcome
+                    // if it doesn't exist -> send red text to reflect outcome
 
-                    else if(usernameFilled  && !passwordFilled) {
+                    // this should be else if
+                    if(usernameFilled  && !passwordFilled) {
                         // no password
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
@@ -225,19 +243,19 @@ public class Main {
 
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
-        gameWindow.window.registerMouseHandler(new MinuetoMouseHandler() {
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
                 // for left click : move boot
-                if (button == 1) {
+                /*if (button == 1) {
                     players.get(ind).moveBoot(x, y);
                 }
                 // for right click : change next player
                 else if (button == 3) {
                     ind++;
                     if (ind == players.size()) { ind = 0; } // reset index if we reached last player
-                }
+                }*/
 
                 /*for (int i = 0; i < players.size(); i++) {
                     // check for player's turn and if button is left click
@@ -275,31 +293,31 @@ public class Main {
 
         // draw on the window
         while (true) {
-            if (gameWindow.currentlyShowing == GameWindow.Screen.ENTRY) {
-                gameWindow.window.draw(playScreenImage, 0, 0);
+            if (gui.currentBackground == GUI.Screen.MENU) {
+                gui.window.draw(playScreenImage, 0, 0);
                 while (entryScreenQueue.hasNext()) {
                     entryScreenQueue.handle();
                 }
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.LOGIN) {
-                gameWindow.window.draw(loginScreenImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.LOGIN) {
+                gui.window.draw(loginScreenImage, 0, 0);
                 while (loginScreenQueue.hasNext()) {
                     loginScreenQueue.handle();
                 }
 
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND) {
-                gameWindow.window.draw(elfenlandImage, 0, 0);
-            } else if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
-                gameWindow.window.draw(elfengoldImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+                gui.window.draw(elfenlandImage, 0, 0);
+            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
+                gui.window.draw(elfengoldImage, 0, 0);
             }
 
-            if (gameWindow.currentlyShowing == GameWindow.Screen.ELFENLAND
-                    || gameWindow.currentlyShowing == GameWindow.Screen.ELFENGOLD) {
+            if (gui.currentBackground == GUI.Screen.ELFENLAND
+                    || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
-                for (Player player : players) {
-                    gameWindow.window.draw(player.getIcon(), player.getxPos(),
+                /*for (Player player : players) {
+                    gui.window.draw(player.getIcon(), player.getxPos(),
                             player.getyPos());
-                }
-                players.get(0).isTurn = true; // only player 1 can move
+                }*/
+                //players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
                     moveBootQueue.handle();
                 }

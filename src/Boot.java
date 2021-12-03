@@ -6,10 +6,21 @@ import java.io.File;
 import java.util.*;
 
 public class Boot {
-    private int x;
-    private int y;
-    private MinuetoImage aImage;
 
+    private Image image;
+
+
+    /**
+     * CONSTRUCTOR : Creates a boot object
+     * @param color color associated with the boot
+     */
+    public Boot(Color color) {
+        MinuetoImage bootImage = Boot.getBootImage(color);
+        // TODO: fix these values
+        this.image = new Image(100, 100, 100, 100, bootImage);
+    }
+
+    // TODO: write documentation for this method
     private static final List<MinuetoImage> BOOT_IMAGES = new ArrayList<>();
     {
         File bootDir = new File("images/böppels-and-boots/");
@@ -30,13 +41,12 @@ public class Boot {
         }
     }
 
-    public Boot(Color pColor) {
-        x = 0;
-        y = 0;
-        aImage = getBootImage(pColor);
-    }
-
-    private static MinuetoImage getBootImage(Color pColor) {
+    /**
+     * GETTER : Returns the MinuetoImage associated with this pColor
+     * @param pColor color of the boot
+     * @return MinuetoImage associated with pColor
+     */
+    public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
 
