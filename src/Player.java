@@ -1,3 +1,4 @@
+
 /* This class contains all info relevant to a single Player */
 import java.util.*;
 
@@ -6,7 +7,7 @@ public class Player {
 
     private Client aClient;
     private Boot aBoot;
-    
+
     int gold;
     GUI guiDisplayed; // TODO: initialize this
     Boot boot;
