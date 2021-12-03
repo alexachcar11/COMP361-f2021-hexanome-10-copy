@@ -9,9 +9,9 @@ public class Boot {
 
     private Image image;
 
-
     /**
      * CONSTRUCTOR : Creates a boot object
+     * 
      * @param color color associated with the boot
      */
     public Boot(Color color) {
@@ -43,11 +43,11 @@ public class Boot {
 
     /**
      * GETTER : Returns the MinuetoImage associated with this pColor
+     * 
      * @param pColor color of the boot
      * @return MinuetoImage associated with pColor
      */
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
-
 }
