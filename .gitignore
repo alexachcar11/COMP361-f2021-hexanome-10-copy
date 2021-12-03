@@ -13,3 +13,4 @@ crash.log
 
 .vscode/settings.json
 LobbyService-master/target
+.DS_Store
