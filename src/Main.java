@@ -247,6 +247,7 @@ public class Main {
             int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
+                System.out.println("This is x: " + x + ". This is y: " + y);
                 // for left click : move boot
                 /*if (button == 1) {
                     players.get(ind).moveBoot(x, y);

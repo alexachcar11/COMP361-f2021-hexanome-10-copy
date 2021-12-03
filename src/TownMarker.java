@@ -1,6 +1,6 @@
 public class TownMarker {
 
-    public boolean conquered;
+    public Player aPlayer;
     public String townName;
 
     /**
@@ -8,8 +8,8 @@ public class TownMarker {
      * @param townName town in which the townmarker is placed
      * @param conquered boolean: true if the marker has been conquered by the player, false otherwise (i.e. still on the board)
      */
-    public TownMarker(String townName, boolean conquered){
-        this.conquered = false;
+    public TownMarker(String townName, Player pPlayer){
+        this.aPlayer = pPlayer;
         this.townName = townName;
     }
 }
