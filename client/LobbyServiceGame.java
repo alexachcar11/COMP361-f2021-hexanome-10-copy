@@ -4,7 +4,9 @@ To construct this class, use the info given by the gameservices/{gameservice} js
  */
 
 import org.minueto.MinuetoColor;
+import org.minueto.image.MinuetoFont;
 import org.minueto.image.MinuetoRectangle;
+import org.minueto.image.MinuetoText;
 
 public class LobbyServiceGame {
 
@@ -53,8 +55,11 @@ public class LobbyServiceGame {
      * Display information about the game
      */
     public void buildDisplay() {
+        // TODO: fix the sizing and layout
         MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
-        
+        MinuetoFont fontArial14 = new MinuetoFont("Arial",14,false, false);
+        MinuetoText name = new MinuetoText(displayName,fontArial14,MinuetoColor.BLACK);
+
     }
 
 }
