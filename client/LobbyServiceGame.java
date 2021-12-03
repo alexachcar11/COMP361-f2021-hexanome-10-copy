@@ -3,6 +3,9 @@ Instances of LobbyServiceGame represent one available game on the lobby service.
 To construct this class, use the info given by the gameservices/{gameservice} json.
  */
 
+import org.minueto.MinuetoColor;
+import org.minueto.image.MinuetoRectangle;
+
 public class LobbyServiceGame {
 
     // attributes
@@ -45,4 +48,13 @@ public class LobbyServiceGame {
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
+
+    /**
+     * Display information about the game
+     */
+    public void buildDisplay() {
+        MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
+        
+    }
+
 }
