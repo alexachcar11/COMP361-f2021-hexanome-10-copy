@@ -50,4 +50,8 @@ public class Boot {
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
+
+    public int[] getCoords()
+    {
+    }
 }

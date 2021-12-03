@@ -9,11 +9,11 @@ public class Player {
     private Client aClient;
     private Boot aBoot;
 
-    int gold;
-    GUI guiDisplayed; // TODO: initialize this
-    Boot boot;
-    List<Card> cardsInHand;
-    List<Token> tokensInHand;
+    private int gold;
+    private GUI guiDisplayed; // TODO: initialize this
+    private Boot boot;
+    private List<Card> cardsInHand;
+    private List<Token> tokensInHand;
 
     private String aName;
 
@@ -29,5 +29,9 @@ public class Player {
 
     public void setTurn(boolean bool) {
         isTurn = bool;
+    }
+
+    public int[] getCoords() {
+        return boot.getCoords();
     }
 }
