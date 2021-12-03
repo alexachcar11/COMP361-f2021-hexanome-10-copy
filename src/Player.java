@@ -1,7 +1,5 @@
 /* This class contains all info relevant to a single Player */
 import java.util.*;
-// import org.minueto.*;
-import org.minueto.image.*;
 
 public class Player {
 
