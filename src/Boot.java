@@ -49,4 +49,22 @@ public class Boot {
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
+
+    public void move(int pX, int pY) {
+        x = pX;
+        y = pY;
+        // TODO: add code to update UI
+    }
+
+    public MinuetoImage getImage() {
+        return aImage;
+    }
+
+    public int[] getCoords() 
+    {
+        int[] coords = new int[2];
+        coords[0] = x;
+        coords[1] = y;
+        return coords; 
+    }
 }
