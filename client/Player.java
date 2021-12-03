@@ -9,7 +9,6 @@ public class Player {
     private Boot aBoot;
 
     int gold;
-    GUI guiDisplayed; // TODO: initialize this
     Boot boot;
     List<Card> cardsInHand;
     List<Token> tokensInHand;
@@ -22,7 +21,6 @@ public class Player {
         // TODO: fix these coordinates to match start town
         aBoot = new Boot(pColor, 577, 666, 291, 370);
         this.gold = 0;
-        // TODO: guiDisplayed
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
     }
