@@ -9,6 +9,8 @@ public class TestMinueto {
         MinuetoWindow window;
         MinuetoImage demoImage;
 
+        MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
+
         window = new MinuetoFrame(640, 480, true);
         window.setMaxFrameRate(60);
 
@@ -22,7 +24,7 @@ public class TestMinueto {
         window.setVisible(true);
 
         while (true) {
-            window.draw(demoImage, 0, 0);
+            window.draw(rectangle, 10, 10);
             window.render();
             Thread.yield();
         }
