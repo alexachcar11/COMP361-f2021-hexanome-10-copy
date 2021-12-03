@@ -14,7 +14,6 @@ public class BootAction extends Action {
 
     @Override
     public void execute() {
-        //
     }
 
 }

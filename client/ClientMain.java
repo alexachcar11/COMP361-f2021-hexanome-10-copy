@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.Stack;
 
 
-public class Main {
+public class ClientMain {
 
     public static void main(String[] args) {
 
@@ -50,13 +50,13 @@ public class Main {
 
         // Play Music
         playSound("music/flute.mid");
-
+        
         // create players
         List<Player> players = new ArrayList<>();
-        Player p1 = new Player(null, Color.YELLOW);
-        Player p2 = new Player(null, Color.BLACK);
-        players.add(p1);
-        players.add(p2);
+        // Player p1 = new Player(null, Color.YELLOW);
+        // Player p2 = new Player(null, Color.BLACK);
+        // players.add(p1);
+        // players.add(p2);
 
         // create window that will contain our game
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
@@ -247,6 +247,7 @@ public class Main {
             int ind = 0;    // index of players
             @Override
             public void handleMousePress(int x, int y, int button) {
+                System.out.println("This is x: " + x + ". This is y: " + y);
                 // for left click : move boot
                 /*if (button == 1) {
                     players.get(ind).moveBoot(x, y);

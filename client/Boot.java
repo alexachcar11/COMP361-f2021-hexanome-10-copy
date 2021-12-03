@@ -5,19 +5,19 @@ import org.minueto.image.MinuetoImageFile;
 import java.io.File;
 import java.util.*;
 
-public class Boot {
+public class Boot extends Image {
 
-    private Image image;
+    Color color;
 
     /**
      * CONSTRUCTOR : Creates a boot object
      * 
      * @param color color associated with the boot
      */
-    public Boot(Color color) {
-        MinuetoImage bootImage = Boot.getBootImage(color);
+    public Boot(Color color, int minX, int maxX, int minY, int maxY) {
+        super(minX, maxX, minY, maxY, Boot.getBootImage(color));
+        this.color = color;
         // TODO: fix these values
-        this.image = new Image(100, 100, 100, 100, bootImage);
     }
 
     // TODO: write documentation for this method
@@ -51,7 +51,8 @@ public class Boot {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
 
-    public int[] getCoords()
-    {
+    public int[] getCoords() {
+        int[] toReturn = { this.getMinX(), this.getMaxX(), this.getMinY(), this.getMaxY() };
+        return toReturn;
     }
 }

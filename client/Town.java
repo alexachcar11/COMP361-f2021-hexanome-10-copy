@@ -1,3 +1,5 @@
+import java.util.ArrayList;;
+
 public class Town {
 
     //fields
@@ -6,6 +8,7 @@ public class Town {
     int maxX;
     int minY;
     int maxY;
+    ArrayList<TownMarker> townMarkers = new ArrayList<>();
 
     /**
      * CONSTRUCTOR : Creates a Town object
@@ -21,6 +24,9 @@ public class Town {
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
+        // if(Game.getNumberOfPlayers()) { 
+
+        // }
     }
 
     /**
