@@ -50,6 +50,12 @@ public class Server implements NetworkNode {
     }
 
     private void listenToClient(Socket pClientSocket) {
-
+        try {
+            ObjectInputStream input = new ObjectInputStream(pClientSocket.getInputStream());
+        } catch (IOException e) {
+            String host = pClientSocket.getInetAddress().getHostName();
+            System.err.println("Couldn't get I/O for the connection to: " + host);
+        }
+        // TODO: finish
     }
 }

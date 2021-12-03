@@ -1,4 +1,4 @@
-public class BootAction extends Action {
+public class MakeGame extends Action {
 
     @Override
     public boolean isValid() {
