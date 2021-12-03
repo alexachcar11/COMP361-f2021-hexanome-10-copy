@@ -18,7 +18,8 @@ public class Player {
     public Player(Client pClient, Color pColor) {
         aClient = pClient;
         aName = aClient.getHost();
-        aBoot = new Boot(pColor);
+        // TODO: fix these coordinates to match start town
+        aBoot = new Boot(pColor, 577, 666, 291, 370);
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
