@@ -5,7 +5,7 @@
         "minueto.jar"
     ],
     "java.project.sourcePaths": [
-        "ls",
-        "src"
+        "src",
+        "network"
     ]
 }

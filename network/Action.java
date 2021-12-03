@@ -1,4 +1,4 @@
-import java.io.Serializable;
+import java.io.*;
 
 public abstract class Action implements Serializable {
         // TODO: add interface methods

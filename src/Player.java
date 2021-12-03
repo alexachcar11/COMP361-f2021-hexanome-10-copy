@@ -9,9 +9,11 @@ public class Player {
     private Boot aBoot;
 
     int gold;
-    GUI guiDisplayed;
+    GUI guiDisplayed; // TODO: initialize this
+    Boot boot;
     List<Card> cardsInHand;
     List<Token> tokensInHand;
+
     private String aName;
 
     public Player(Client pClient, Color pColor) {
