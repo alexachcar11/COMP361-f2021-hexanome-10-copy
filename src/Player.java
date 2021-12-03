@@ -1,12 +1,17 @@
-import org.minueto.image.MinuetoImage;
-
 /* This class contains all info relevant to a single Player */
+import java.util.*;
 
 public class Player {
 
     boolean isTurn = false;
     private Client aClient;
     private Boot aBoot;
+    
+    int gold;
+    GUI guiDisplayed; // TODO: initialize this
+    Boot boot;
+    List<Card> cardsInHand;
+    List<Token> tokensInHand;
 
     private String aName;
 
@@ -14,6 +19,10 @@ public class Player {
         aClient = pClient;
         aName = aClient.getHost();
         aBoot = new Boot(pColor);
+        this.gold = 0;
+        // TODO: guiDisplayed
+        this.cardsInHand = new ArrayList<>();
+        this.tokensInHand = new ArrayList<>();
     }
 
     public void moveBoot(int x, int y) {
@@ -35,11 +44,6 @@ public class Player {
     public int getyPos() {
         return this.getCoords()[1];
     }
-
-    public boolean isTurn() {
-        return isTurn;
-    }
-
     public void setTurn(boolean bool) {
         isTurn = bool;
     }
