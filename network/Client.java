@@ -6,6 +6,7 @@ public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
+    private Player aPlayer;
 
     public Client(String pHost, int pPort) {
         try {
@@ -23,12 +24,24 @@ public class Client implements NetworkNode {
 
     @Override
     public void start() {
-        // TODO: listen to input from server, send output to server (maybe different
-        // method)
+        try {
+            aObjectOut.writeObject(aPlayer.getBootAction());
+            Action actionIn = (Action) aObjectIn.readObject();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public String getHost() {
         return aSocket.getInetAddress().getHostName();
     }
 
+    public void setPlayer(Player pPlayer) {
+        aPlayer = pPlayer;
+    }
 }
