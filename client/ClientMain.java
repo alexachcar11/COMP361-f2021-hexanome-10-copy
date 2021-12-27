@@ -35,6 +35,7 @@ public class ClientMain {
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
+        MinuetoRectangle lobbyBackground;
 
         configImages(bootImages);
         try {
@@ -43,6 +44,7 @@ public class ClientMain {
             playScreenImage = new MinuetoImageFile("images/play.png");
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
+            lobbyBackground = new MinuetoRectangle(1024, 768, MinuetoColor.BLUE, true);
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
@@ -305,6 +307,8 @@ public class ClientMain {
                     loginScreenQueue.handle();
                 }
 
+            } else if (gui.currentBackground == GUI.Screen.LOBBY) {
+                gui.window.draw(lobbyBackground, 0, 0);
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
