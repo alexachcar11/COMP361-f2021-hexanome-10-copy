@@ -5,3 +5,9 @@
 
 
 mvn -f LobbyService-master/pom.xml package
+
+docker start ls-db
+
+mvn clean package spring-boot:run
+
+http://127.0.0.1:4242/api/online
