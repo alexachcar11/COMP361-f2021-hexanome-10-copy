@@ -15,6 +15,7 @@ public class LobbyServiceGame {
     private String displayName;
     private String location;
     private final int maxNumberOfPlayers;
+    private LobbyServiceGameSession activeSession;
 
     /**
      * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.
@@ -56,7 +57,7 @@ public class LobbyServiceGame {
      * Display information about the game
      */
     public void buildDisplay() {
-        // backgorund
+        // background
         MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
 
         // display name
@@ -68,21 +69,6 @@ public class LobbyServiceGame {
 
     }
 
-    // represents one active game session
-    public class LobbyServiceGameSession {
 
-        // fields
-        boolean launched;
-        ArrayList<Player> players;
-        String saveGameID;
-
-
-        LobbyServiceGameSession(boolean launched, ArrayList<Player> players, String saveGameID) {
-            this.launched = launched;
-            this.players = players;
-            this.saveGameID = saveGameID;
-        }
-
-    }
 
 }
