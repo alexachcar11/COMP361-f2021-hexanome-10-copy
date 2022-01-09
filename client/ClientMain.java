@@ -1,24 +1,38 @@
 // minueto
-import org.minueto.*;
-import org.minueto.handlers.*;
+import org.minueto.MinuetoColor;
+import org.minueto.MinuetoEventQueue;
+import org.minueto.MinuetoFileException;
+import org.minueto.handlers.MinuetoKeyboard;
+import org.minueto.handlers.MinuetoKeyboardHandler;
+import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
-import org.minueto.window.*;
+import org.minueto.window.MinuetoFrame;
+import org.minueto.window.MinuetoWindow;
 
-// music
+// other
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
-// other
+import java.io.BufferedReader;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 import java.util.Stack;
+
+// json
+import java.net.URL;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 
 
 public class ClientMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
         List<String> bootFileNames = new ArrayList<>();
@@ -114,7 +128,14 @@ public class ClientMain {
             public void handleKeyPress(int i) {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
-                    gui.currentBackground = GUI.Screen.ELFENGOLD;
+                    try {
+                        getAvailableGames();
+                    } catch (IOException | ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    gui.currentBackground = GUI.Screen.LOBBY;
+
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
@@ -308,7 +329,12 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
+                // draw a blue background
                 gui.window.draw(lobbyBackground, 0, 0);
+
+                // display each LobbyServiceGame
+
+
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
@@ -378,7 +404,95 @@ public class ClientMain {
         } catch(Exception e) {
             // TODO: was this catch block intended to be empty?
         }
-
     }
 
+    /**
+     * Returns the list of available games on the Lobby Service
+     * @return arrayList of LobbyServiceGame objects
+     * @throws IOException
+     * @throws ParseException
+     */
+    public static ArrayList<LobbyServiceGame> getAvailableGames() throws IOException, ParseException {
+        URL url = new URL("http://127.0.0.1:4242/api/gameservices");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+        JSONArray jsonArray = (JSONArray) obj;
+
+        // make a list of available games
+        ArrayList<LobbyServiceGame> availableGames = new ArrayList<>(jsonArray.size());
+
+        // add unloaded games (i.e. LobbyServiceGame)
+        for (Object lsGameJson : jsonArray) {
+            JSONObject lsGame = (JSONObject) lsGameJson;
+            
+            // get game name
+            String name = (String) lsGame.get("name");
+
+            // get game-service json
+            JSONObject gameJson = getLSGameInfo(name);
+
+            // get game-service info from the json
+            String displayName = (String) gameJson.get("displayName");
+            String location = (String) gameJson.get("location");
+            int numberOfPlayers = (int) gameJson.get("numberOfPlayers");
+
+            // create LobbyServiceGame and add it to availableGames list
+            availableGames.add(new LobbyServiceGame(displayName, location, numberOfPlayers));
+        }
+
+
+        return availableGames;
+    }
+
+    /**
+     * Returns details on a previously registered Game-Service
+     * @return JSONObject representing the game-service
+     * @throws IOException
+     */
+    public static JSONObject getLSGameInfo(String name) throws IOException, ParseException {
+        URL url = new URL("curl -X GET http://127.0.0.1:4242/api/gameservices/" + name);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+        JSONObject jsonObject = (JSONObject) obj;
+
+        return jsonObject;
+    }
 }
