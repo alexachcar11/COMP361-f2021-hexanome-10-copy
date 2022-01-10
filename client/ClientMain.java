@@ -1,3 +1,4 @@
+
 // minueto
 import org.minueto.*;
 import org.minueto.handlers.*;
@@ -15,8 +16,26 @@ import java.util.List;
 import java.io.File;
 import java.util.Stack;
 
-
 public class ClientMain {
+
+    private static boolean userNameSel = false;
+    private static boolean passWordSel = false;
+
+    private abstract interface UserNameSelector {
+        abstract void negateUser();
+
+        default boolean user() {
+            return userNameSel;
+        }
+    }
+
+    private abstract interface PassWordSelector {
+        abstract void negatePass();
+
+        default boolean pass() {
+            return passWordSel;
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -52,7 +71,7 @@ public class ClientMain {
 
         // Play Music
         playSound("music/flute.mid");
-        
+
         // create players
         List<Player> players = new ArrayList<>();
         // Player p1 = new Player(null, Color.YELLOW);
@@ -82,8 +101,6 @@ public class ClientMain {
                     // TODO: Add create lobby instance
                     // create lobby instance if it's not there already
 
-                    
-
                     gui.currentBackground = GUI.Screen.LOGIN;
                 }
 
@@ -108,21 +125,57 @@ public class ClientMain {
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
         gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+            private String userString = "";
+            private String passString = "";
             private boolean shift = false;
+            private MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
 
             @Override
             public void handleKeyPress(int i) {
+                String currentString = "";
+                if (userNameSel) {
+                    currentString = userString;
+                } else if (passWordSel) {
+                    currentString = passString;
+                }
+
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
                     gui.currentBackground = GUI.Screen.ELFENGOLD;
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
-                    writtenWord.pop();
+                    if (currentString.length() != 0) {
+                        currentString = currentString.substring(0, currentString.length() - 1);
+                    } else {
+                        return;
+                    }
                 } else if (shift) {
                     writtenWord.push("" + (char) i); // uppercase
                 } else {
                     writtenWord.push("" + (char) (i + 32)); // lowercase
+                }
+                if (userNameSel) {
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160, 350);
+
+                    // type inside the textbox for username
+                    while (!writtenWord.empty()) {
+                        userString = userString + writtenWord.pop();
+                    }
+
+                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(username, 200, 360);
+                } else if (passWordSel) {
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160, 440);
+
+                    // type inside the textbox for password
+                    while (!writtenWord.empty()) {
+                        passString = passString + writtenWord.pop();
+                    }
+                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(password, 200, 450);
                 }
             }
 
@@ -144,9 +197,6 @@ public class ClientMain {
             private Boolean usernameFilled = false;
             private Boolean passwordFilled = false;
 
-            private String finalPassword;
-            private String finalUsername;
-
             @Override
             public void handleMousePress(int x, int y, int button) {
 
@@ -154,6 +204,8 @@ public class ClientMain {
 
                 // CLICK INSIDE THE USERNAME BOX
                 if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
+                    passWordSel = false;
+                    userNameSel = true;
 
                     // cover the last entry
                     loginScreenImage.draw(whiteBoxImage, 160, 350);
@@ -164,15 +216,15 @@ public class ClientMain {
                         userString = writtenWord.pop() + userString;
                     }
 
-                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
+                    MinuetoImage username = new MinuetoText(userString, fontArial20,
+                            MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
-                    finalUsername = userString;
-                    usernameFilled = true;
                     writtenWord.clear();
                 }
-
                 // CLICK INSIDE THE PASSWORD BOX
-                if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
+                else if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
+                    userNameSel = false;
+                    passWordSel = true;
 
                     // cover the last entry
                     loginScreenImage.draw(whiteBoxImage, 160, 440);
@@ -184,9 +236,10 @@ public class ClientMain {
                     }
                     MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
-                    finalPassword = passString;
-                    passwordFilled = true;
                     writtenWord.clear();
+                } else {
+                    userNameSel = false;
+                    passWordSel = false;
                 }
 
                 // CLICK ON THE LOGIN BOX AREA
@@ -194,31 +247,29 @@ public class ClientMain {
 
                     // switch the game to playing ElfenGold - can be changed to either
                     // if(usernameFilled && passwordFilled) {
-                    //     gui.currentBackground = GUI.Screen.ELFENGOLD;
+                    // gui.currentBackground = GUI.Screen.ELFENGOLD;
                     // }
-                    
-                    // TODO: Check if the username exists in the list of usernames 
+
+                    // TODO: Check if the username exists in the list of usernames
                     // if it exists -> check if password matches -
-                    //      if password matches --> send to availableGamesScreen
-                    //      else --> send red text to reflect outcome
+                    // if password matches --> send to availableGamesScreen
+                    // else --> send red text to reflect outcome
                     // if it doesn't exist -> send red text to reflect outcome
 
                     // this should be else if
-                    if(usernameFilled  && !passwordFilled) {
+                    if (usernameFilled && !passwordFilled) {
                         // no password
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(passwordFailed, 200, 450);
 
-                    }
-                    else if(!usernameFilled && passwordFilled) {
+                    } else if (!usernameFilled && passwordFilled) {
                         // no username
                         String usernameFail = "Please enter a username";
                         MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(usernameFailed, 200, 360);
 
-                    }
-                    else {
+                    } else {
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(passwordFailed, 200, 450);
@@ -246,42 +297,48 @@ public class ClientMain {
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
-            int ind = 0;    // index of players
+            int ind = 0; // index of players
+
             @Override
             public void handleMousePress(int x, int y, int button) {
                 System.out.println("This is x: " + x + ". This is y: " + y);
                 // for left click : move boot
-                /*if (button == 1) {
-                    players.get(ind).moveBoot(x, y);
-                }
-                // for right click : change next player
-                else if (button == 3) {
-                    ind++;
-                    if (ind == players.size()) { ind = 0; } // reset index if we reached last player
-                }*/
+                /*
+                 * if (button == 1) {
+                 * players.get(ind).moveBoot(x, y);
+                 * }
+                 * // for right click : change next player
+                 * else if (button == 3) {
+                 * ind++;
+                 * if (ind == players.size()) { ind = 0; } // reset index if we reached last
+                 * player
+                 * }
+                 */
 
-                /*for (int i = 0; i < players.size(); i++) {
-                    // check for player's turn and if button is left click
-                    if (players.get(i).isTurn && button == 1) {
-                        players.get(i).moveBoot(x, y);
-                        break;
-                    }
-                    // if press right mouse button, change to next player
-                    if (button == 3) {
-                        // set isTurn to false for current player
-                        players.get(i).setTurn(false);
-
-                        // if we reached last player, go back to first player
-                        if (i == players.size()-1) {
-                            players.get(0).setTurn(true);
-                        }
-                        else {
-                            // change isTurn to true for next player
-                            players.get(i + 1).setTurn(true);
-                        }
-                        break;
-                    }
-                }*/
+                /*
+                 * for (int i = 0; i < players.size(); i++) {
+                 * // check for player's turn and if button is left click
+                 * if (players.get(i).isTurn && button == 1) {
+                 * players.get(i).moveBoot(x, y);
+                 * break;
+                 * }
+                 * // if press right mouse button, change to next player
+                 * if (button == 3) {
+                 * // set isTurn to false for current player
+                 * players.get(i).setTurn(false);
+                 * 
+                 * // if we reached last player, go back to first player
+                 * if (i == players.size()-1) {
+                 * players.get(0).setTurn(true);
+                 * }
+                 * else {
+                 * // change isTurn to true for next player
+                 * players.get(i + 1).setTurn(true);
+                 * }
+                 * break;
+                 * }
+                 * }
+                 */
             }
 
             @Override
@@ -318,11 +375,13 @@ public class ClientMain {
             if (gui.currentBackground == GUI.Screen.ELFENLAND
                     || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
-                /*for (Player player : players) {
-                    gui.window.draw(player.getIcon(), player.getxPos(),
-                            player.getyPos());
-                }*/
-                //players.get(0).isTurn = true; // only player 1 can move
+                /*
+                 * for (Player player : players) {
+                 * gui.window.draw(player.getIcon(), player.getxPos(),
+                 * player.getyPos());
+                 * }
+                 */
+                // players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
                     moveBootQueue.handle();
                 }
@@ -366,6 +425,7 @@ public class ClientMain {
 
     /**
      * Play Music
+     * 
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
@@ -375,9 +435,17 @@ public class ClientMain {
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.start();
-        } catch(Exception e) {
+        } catch (Exception e) {
             // TODO: was this catch block intended to be empty?
         }
+
+    }
+
+    private static void setUserField(boolean clicked) {
+        userNameSel = clicked;
+    }
+
+    private static void setPassField(boolean clicked) {
 
     }
 
