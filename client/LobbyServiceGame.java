@@ -7,8 +7,6 @@ import org.minueto.image.MinuetoFont;
 import org.minueto.image.MinuetoRectangle;
 import org.minueto.image.MinuetoText;
 
-import java.util.ArrayList;
-
 public class LobbyServiceGame {
 
     // attributes
@@ -54,9 +52,11 @@ public class LobbyServiceGame {
     }
 
     /**
-     * Display information about the game
+     *  Create all minueto objects that are needed to display information about the game
      */
     public void buildDisplay() {
+
+
         // background
         MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
 
@@ -64,7 +64,8 @@ public class LobbyServiceGame {
         MinuetoFont fontArial14 = new MinuetoFont("Arial",14,false, false);
         MinuetoText name = new MinuetoText(displayName,fontArial14,MinuetoColor.BLACK);
 
-        //
+        // I think when a LobbyServiceGame has an active session, then we should use activeSession.buildDisplay() instead.
+        // They are different because Session has a number of current players shown but Game does not
 
 
     }

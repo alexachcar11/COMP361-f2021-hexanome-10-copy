@@ -16,6 +16,7 @@ import javax.sound.sampled.Clip;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -129,11 +130,13 @@ public class ClientMain {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
                     try {
-                        getAvailableGames();
+                        getAvailableGames();   // i don't know what the difference is exactly. only know that session has more info in the API
+                        getAvailableSessions();
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
 
+                    //TODO: place buildDisplay() here
                     gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
@@ -332,8 +335,13 @@ public class ClientMain {
                 // draw a blue background
                 gui.window.draw(lobbyBackground, 0, 0);
 
-                // display each LobbyServiceGame
+                // display each LobbyServiceGame / LobbyServiceGameSession
 
+                // TODO: here we only use the draw() function from minueto. Avoid using buildDisplay() here because it will create objects at every frame.
+
+                // TODO: place buildDisplay() in the loginScreenQueue so it is only done once (line 137)
+
+                // TODO: eventually we might want to refresh the list of available games at intervals of time. Then buildDisplay() would be somwhere else?
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
@@ -404,6 +412,64 @@ public class ClientMain {
         } catch(Exception e) {
             // TODO: was this catch block intended to be empty?
         }
+    }
+
+
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
+        URL url = new URL("http://127.0.0.1:4242/api/sessions");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+        JSONObject jsonObject = (JSONObject) obj;
+
+        ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
+
+        try {
+            // i dont know if this works because I have no way to test it yet (can't create a game)
+            JSONObject sessions =(JSONObject) jsonObject.get("sessions");
+            sessions.keySet().forEach(sessionID ->
+            {
+                JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
+
+                String creator = (String) sessionJSON.get("creator");
+                boolean launched = (boolean) sessionJSON.get("launched");
+                String saveGameID = (String) sessionJSON.get("savegameid");
+
+                //Object gameParameters = sessionJSON.get("gameParameters");
+
+                String playerListInStringForm = (String) sessionJSON.get("players");
+                playerListInStringForm.replace("[", "");
+                playerListInStringForm.replace("]", "");
+                String[] playerListInArrayForm = playerListInStringForm.split(",");
+                ArrayList<String> playerNames = new ArrayList<>();
+                playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);
+
+                availableSessions.add(new LobbyServiceGameSession(launched, playerNames, saveGameID));
+
+            });
+        } catch (NullPointerException e) {
+            // there are no available sessions
+            System.out.println("there are no sessions");
+        }
+        return availableSessions;
     }
 
     /**
