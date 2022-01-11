@@ -20,6 +20,8 @@ public class ClientMain {
 
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
+    private static String userString = "";
+    private static String passString = "";
 
     private abstract interface UserNameSelector {
         abstract void negateUser();
@@ -125,32 +127,25 @@ public class ClientMain {
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
         gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
-            private String userString = "";
-            private String passString = "";
             private boolean shift = false;
             private MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
 
             @Override
             public void handleKeyPress(int i) {
-                String currentString = "";
-                if (userNameSel) {
-                    currentString = userString;
-                } else if (passWordSel) {
-                    currentString = passString;
-                }
-
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
                     gui.currentBackground = GUI.Screen.ELFENGOLD;
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
-                    if (currentString.length() != 0) {
-                        currentString = currentString.substring(0, currentString.length() - 1);
+                    if (userNameSel && userString.length() > 0) {
+                        userString = userString.substring(0, userString.length() - 1);
+                    } else if (passWordSel && passString.length() > 0) {
+                        passString = passString.substring(0, passString.length() - 1);
                     } else {
                         return;
                     }
-                } else if (shift) {
+                } else if (shift || i < 65 || i > 90) {
                     writtenWord.push("" + (char) i); // uppercase
                 } else {
                     writtenWord.push("" + (char) (i + 32)); // lowercase
@@ -166,6 +161,7 @@ public class ClientMain {
 
                     MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(username, 200, 360);
+                    writtenWord.clear();
                 } else if (passWordSel) {
                     // cover the last entry
                     loginScreenImage.draw(whiteBoxImage, 160, 440);
@@ -176,6 +172,7 @@ public class ClientMain {
                     }
                     MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                     loginScreenImage.draw(password, 200, 450);
+                    writtenWord.clear();
                 }
             }
 
@@ -194,9 +191,6 @@ public class ClientMain {
 
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
 
-            private Boolean usernameFilled = false;
-            private Boolean passwordFilled = false;
-
             @Override
             public void handleMousePress(int x, int y, int button) {
 
@@ -206,37 +200,11 @@ public class ClientMain {
                 if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
                     passWordSel = false;
                     userNameSel = true;
-
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 350);
-
-                    // type inside the textbox for username
-                    String userString = "";
-                    while (!writtenWord.empty()) {
-                        userString = writtenWord.pop() + userString;
-                    }
-
-                    MinuetoImage username = new MinuetoText(userString, fontArial20,
-                            MinuetoColor.BLACK);
-                    loginScreenImage.draw(username, 200, 360);
-                    writtenWord.clear();
                 }
                 // CLICK INSIDE THE PASSWORD BOX
                 else if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
                     userNameSel = false;
                     passWordSel = true;
-
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 440);
-
-                    // type inside the textbox for password
-                    String passString = "";
-                    while (!writtenWord.empty()) {
-                        passString = writtenWord.pop() + passString;
-                    }
-                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(password, 200, 450);
-                    writtenWord.clear();
                 } else {
                     userNameSel = false;
                     passWordSel = false;
@@ -256,28 +224,17 @@ public class ClientMain {
                     // else --> send red text to reflect outcome
                     // if it doesn't exist -> send red text to reflect outcome
 
-                    // this should be else if
-                    if (usernameFilled && !passwordFilled) {
+                    if (passString.length() == 0) {
                         // no password
                         String passFail = "Please enter a password";
                         MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(passwordFailed, 200, 450);
-
-                    } else if (!usernameFilled && passwordFilled) {
+                    }
+                    if (userString.length() == 0) {
                         // no username
                         String usernameFail = "Please enter a username";
                         MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
                         loginScreenImage.draw(usernameFailed, 200, 360);
-
-                    } else {
-                        String passFail = "Please enter a password";
-                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(passwordFailed, 200, 450);
-
-                        String usernameFail = "Please enter a username";
-                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(usernameFailed, 200, 360);
-
                     }
                 }
 
