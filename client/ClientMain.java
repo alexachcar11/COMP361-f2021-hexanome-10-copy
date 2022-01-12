@@ -33,7 +33,7 @@ import java.net.HttpURLConnection;
 
 public class ClientMain {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
         List<String> bootFileNames = new ArrayList<>();
@@ -456,11 +456,10 @@ public class ClientMain {
                 //Object gameParameters = sessionJSON.get("gameParameters");
 
                 String playerListInStringForm = (String) sessionJSON.get("players");
-                playerListInStringForm.replace("[", "");
-                playerListInStringForm.replace("]", "");
+                playerListInStringForm = playerListInStringForm.replace("[", "");
+                playerListInStringForm = playerListInStringForm.replace("]", "");
                 String[] playerListInArrayForm = playerListInStringForm.split(",");
-                ArrayList<String> playerNames = new ArrayList<>();
-                playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);
+                ArrayList<String> playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);
 
                 availableSessions.add(new LobbyServiceGameSession(launched, playerNames, saveGameID));
 
@@ -557,8 +556,7 @@ public class ClientMain {
         // convert GET output to JSON
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(String.valueOf(content));
-        JSONObject jsonObject = (JSONObject) obj;
 
-        return jsonObject;
+        return (JSONObject) obj;
     }
 }
