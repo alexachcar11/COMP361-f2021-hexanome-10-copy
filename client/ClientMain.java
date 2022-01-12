@@ -213,28 +213,29 @@ public class ClientMain {
                 // CLICK ON THE LOGIN BOX AREA
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
-                    // switch the game to playing ElfenGold - can be changed to either
-                    // if(usernameFilled && passwordFilled) {
-                    // gui.currentBackground = GUI.Screen.ELFENGOLD;
-                    // }
-
                     // TODO: Check if the username exists in the list of usernames
                     // if it exists -> check if password matches -
                     // if password matches --> send to availableGamesScreen
                     // else --> send red text to reflect outcome
                     // if it doesn't exist -> send red text to reflect outcome
+                    if (passString.length() == 0 || userString.length() == 0) {
 
-                    if (passString.length() == 0) {
-                        // no password
-                        String passFail = "Please enter a password";
-                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(passwordFailed, 200, 450);
+                        if (passString.length() == 0) {
+                            // no password
+                            String passFail = "Please enter a password";
+                            MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                            loginScreenImage.draw(passwordFailed, 200, 450);
+                        }
+                        if (userString.length() == 0) {
+                            // no username
+                            String usernameFail = "Please enter a username";
+                            MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                            loginScreenImage.draw(usernameFailed, 200, 360);
+                        }
                     }
-                    if (userString.length() == 0) {
-                        // no username
-                        String usernameFail = "Please enter a username";
-                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(usernameFailed, 200, 360);
+                    // change screen after login
+                    else {
+                        gui.currentBackground = GUI.Screen.ELFENGOLD;
                     }
                 }
 
