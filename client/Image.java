@@ -3,9 +3,9 @@ Instances of the Image class contain a min/max x and min/max y coordinates to lo
 and an image to display
  */
 
-
 import org.minueto.image.MinuetoImage;
 
+// should extend minuetoimage i think
 public class Image {
 
     private int minX;
@@ -16,10 +16,11 @@ public class Image {
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
-     * @param minX left-most border of the image
-     * @param maxX right-most border of the image
-     * @param minY bottom-most border of the image
-     * @param maxY top-most border of the image
+     * 
+     * @param minX  left-most border of the image
+     * @param maxX  right-most border of the image
+     * @param minY  bottom-most border of the image
+     * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
     public Image(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
@@ -32,6 +33,7 @@ public class Image {
 
     /**
      * GETTER : Returns the left-most border of the image
+     * 
      * @return minX
      */
     public int getMinX() {
@@ -40,6 +42,7 @@ public class Image {
 
     /**
      * SETTER: set the left-most border of the image to minX
+     * 
      * @param minX left-most border of the image
      */
     public void setMinX(int minX) {
@@ -48,6 +51,7 @@ public class Image {
 
     /**
      * GETTER : Returns the right-most border of the image
+     * 
      * @return maxX right-most border of the image
      */
     public int getMaxX() {
@@ -56,6 +60,7 @@ public class Image {
 
     /**
      * SETTER: set the right-most border of the image to maxX
+     * 
      * @param maxX top-most border of the image
      */
     public void setMaxX(int maxX) {
@@ -64,6 +69,7 @@ public class Image {
 
     /**
      * GETTER : Returns the top-most border of the image
+     * 
      * @return minY top-most border of the image
      */
     public int getMinY() {
@@ -72,6 +78,7 @@ public class Image {
 
     /**
      * SETTER: set the top-most border of the image to minY
+     * 
      * @param minY top-most border of the image
      */
     public void setMinY(int minY) {
@@ -80,6 +87,7 @@ public class Image {
 
     /**
      * GETTER : Returns the bottom-most border of the image
+     * 
      * @return maxY bottom-most border of the image
      */
     public int getMaxY() {
@@ -88,9 +96,14 @@ public class Image {
 
     /**
      * SETTER: set the bottom-most border of the image to maxY
+     * 
      * @param maxY bottom-most border of the image
      */
     public void setMaxY(int maxY) {
         this.maxY = maxY;
+    }
+
+    public MinuetoImage getMImage() {
+        return image;
     }
 }

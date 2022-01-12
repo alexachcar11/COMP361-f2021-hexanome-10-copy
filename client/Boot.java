@@ -50,4 +50,9 @@ public class Boot extends Image {
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
     }
+
+    public int[] getCoords() {
+        int[] toReturn = { this.getMinX(), this.getMaxX(), this.getMinY(), this.getMaxY() };
+        return toReturn;
+    }
 }

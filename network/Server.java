@@ -7,7 +7,7 @@ public class Server implements NetworkNode {
     // listening socket
     private ServerSocket aSocket;
     // list of sockets communicating with clients
-    private final List<Socket> aClientSockets = new ArrayList<>();
+    private final List<ClientTuple> aClientSockets = new ArrayList<>();
     // singleton for server
     private static final Server SERVER = new Server(4444);
 
@@ -35,13 +35,13 @@ public class Server implements NetworkNode {
                 System.out.println("Accept failed: 4444");
             }
             if (clientSocket != null) {
-                aClientSockets.add(clientSocket);
-                final Socket socket = clientSocket; // allows use in inner class
+                final ClientTuple tuple = new ClientTuple(clientSocket);
+                aClientSockets.add(tuple); // allows use in inner class
                 Thread clientThread = new Thread(new Runnable() {
 
                     @Override
                     public void run() {
-                        listenToClient(socket);
+                        listenToClient(tuple);
                     }
                 });
                 clientThread.start();
@@ -49,13 +49,45 @@ public class Server implements NetworkNode {
         }
     }
 
-    private void listenToClient(Socket pClientSocket) {
+    private void listenToClient(ClientTuple pTuple) {
         try {
-            ObjectInputStream input = new ObjectInputStream(pClientSocket.getInputStream());
+            Action actionIn = (Action) pTuple.input().readObject();
         } catch (IOException e) {
-            String host = pClientSocket.getInetAddress().getHostName();
+            String host = pTuple.socket().getInetAddress().getHostName();
             System.err.println("Couldn't get I/O for the connection to: " + host);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        // TODO: finish
+
+    }
+}
+
+class ClientTuple {
+    private Socket aSocket;
+    private ObjectInputStream aInputStream;
+    private ObjectOutputStream aOutputStream;
+
+    ClientTuple(Socket pSocket) {
+        aSocket = pSocket;
+        try {
+            aInputStream = new ObjectInputStream(aSocket.getInputStream());
+            aOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    Socket socket() {
+        return aSocket;
+    }
+
+    ObjectInputStream input() {
+        return aInputStream;
+    }
+
+    ObjectOutputStream output() {
+        return aOutputStream;
     }
 }

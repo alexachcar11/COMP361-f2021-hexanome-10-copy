@@ -1,3 +1,4 @@
+
 // minueto
 import org.minueto.MinuetoColor;
 import org.minueto.MinuetoEventQueue;
@@ -30,8 +31,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
-
 public class ClientMain {
+
+    private static boolean userNameSel = false;
+    private static boolean passWordSel = false;
+    private static String userString = "";
+    private static String passString = "";
 
     public static void main(String[] args) {
 
@@ -67,7 +72,7 @@ public class ClientMain {
 
         // Play Music
         playSound("music/flute.mid");
-        
+
         // create players
         List<Player> players = new ArrayList<>();
         // Player p1 = new Player(null, Color.YELLOW);
@@ -97,8 +102,6 @@ public class ClientMain {
                     // TODO: Add create lobby instance
                     // create lobby instance if it's not there already
 
-                    
-
                     gui.currentBackground = GUI.Screen.LOGIN;
                 }
 
@@ -124,29 +127,61 @@ public class ClientMain {
 
         gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
             private boolean shift = false;
+            private MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
 
             @Override
             public void handleKeyPress(int i) {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
                     try {
-                        getAvailableGames();   // i don't know what the difference is exactly. only know that session has more info in the API
+                        getAvailableGames(); // i don't know what the difference is exactly. only know that session has
+                                             // more info in the API
                         getAvailableSessions();
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
 
-                    //TODO: place buildDisplay() here
+                    // TODO: place buildDisplay() here
                     gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
                 } else if (i == MinuetoKeyboard.KEY_DELETE) {
-                    writtenWord.pop();
-                } else if (shift) {
+                    if (userNameSel && userString.length() > 0) {
+                        userString = userString.substring(0, userString.length() - 1);
+                    } else if (passWordSel && passString.length() > 0) {
+                        passString = passString.substring(0, passString.length() - 1);
+                    } else {
+                        return;
+                    }
+                } else if (shift || i < 65 || i > 90) {
                     writtenWord.push("" + (char) i); // uppercase
                 } else {
                     writtenWord.push("" + (char) (i + 32)); // lowercase
+                }
+                if (userNameSel) {
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160, 350);
+
+                    // type inside the textbox for username
+                    while (!writtenWord.empty()) {
+                        userString = userString + writtenWord.pop();
+                    }
+
+                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(username, 200, 360);
+                    writtenWord.clear();
+                } else if (passWordSel) {
+                    // cover the last entry
+                    loginScreenImage.draw(whiteBoxImage, 160, 440);
+
+                    // type inside the textbox for password
+                    while (!writtenWord.empty()) {
+                        passString = passString + writtenWord.pop();
+                    }
+                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
+                    loginScreenImage.draw(password, 200, 450);
+                    writtenWord.clear();
                 }
             }
 
@@ -165,12 +200,6 @@ public class ClientMain {
 
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
 
-            private Boolean usernameFilled = false;
-            private Boolean passwordFilled = false;
-
-            private String finalPassword;
-            private String finalUsername;
-
             @Override
             public void handleMousePress(int x, int y, int button) {
 
@@ -178,79 +207,44 @@ public class ClientMain {
 
                 // CLICK INSIDE THE USERNAME BOX
                 if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
-
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 350);
-
-                    // type inside the textbox for username
-                    String userString = "";
-                    while (!writtenWord.empty()) {
-                        userString = writtenWord.pop() + userString;
-                    }
-
-                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(username, 200, 360);
-                    finalUsername = userString;
-                    usernameFilled = true;
-                    writtenWord.clear();
+                    passWordSel = false;
+                    userNameSel = true;
                 }
-
                 // CLICK INSIDE THE PASSWORD BOX
-                if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
-
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 440);
-
-                    // type inside the textbox for password
-                    String passString = "";
-                    while (!writtenWord.empty()) {
-                        passString = writtenWord.pop() + passString;
-                    }
-                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(password, 200, 450);
-                    finalPassword = passString;
-                    passwordFilled = true;
-                    writtenWord.clear();
+                else if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
+                    userNameSel = false;
+                    passWordSel = true;
+                } else {
+                    userNameSel = false;
+                    passWordSel = false;
                 }
 
                 // CLICK ON THE LOGIN BOX AREA
                 if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
 
-                    // switch the game to playing ElfenGold - can be changed to either
-                    // if(usernameFilled && passwordFilled) {
-                    //     gui.currentBackground = GUI.Screen.ELFENGOLD;
-                    // }
-                    
-                    // TODO: Check if the username exists in the list of usernames 
+                    // TODO: Check if the username exists in the list of usernames
                     // if it exists -> check if password matches -
-                    //      if password matches --> send to availableGamesScreen
-                    //      else --> send red text to reflect outcome
+                    // if password matches --> send to availableGamesScreen
+                    // else --> send red text to reflect outcome
                     // if it doesn't exist -> send red text to reflect outcome
+                    if (passString.length() == 0 || userString.length() == 0) {
 
-                    // this should be else if
-                    if(usernameFilled  && !passwordFilled) {
-                        // no password
-                        String passFail = "Please enter a password";
-                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(passwordFailed, 200, 450);
-
+                        if (passString.length() == 0) {
+                            // no password
+                            String passFail = "Please enter a password";
+                            MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                            loginScreenImage.draw(passwordFailed, 200, 450);
+                        }
+                        if (userString.length() == 0) {
+                            // no username
+                            String usernameFail = "Please enter a username";
+                            MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                            loginScreenImage.draw(usernameFailed, 200, 360);
+                        }
                     }
-                    else if(!usernameFilled && passwordFilled) {
-                        // no username
-                        String usernameFail = "Please enter a username";
-                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(usernameFailed, 200, 360);
-
-                    }
+                    // change screen after login
                     else {
-                        String passFail = "Please enter a password";
-                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(passwordFailed, 200, 450);
-
-                        String usernameFail = "Please enter a username";
-                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(usernameFailed, 200, 360);
-
+                        gui.currentBackground = GUI.Screen.ELFENGOLD;
                     }
                 }
 
@@ -270,42 +264,48 @@ public class ClientMain {
         // create move boot mouse handler
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
-            int ind = 0;    // index of players
+            int ind = 0; // index of players
+
             @Override
             public void handleMousePress(int x, int y, int button) {
                 System.out.println("This is x: " + x + ". This is y: " + y);
                 // for left click : move boot
-                /*if (button == 1) {
-                    players.get(ind).moveBoot(x, y);
-                }
-                // for right click : change next player
-                else if (button == 3) {
-                    ind++;
-                    if (ind == players.size()) { ind = 0; } // reset index if we reached last player
-                }*/
+                /*
+                 * if (button == 1) {
+                 * players.get(ind).moveBoot(x, y);
+                 * }
+                 * // for right click : change next player
+                 * else if (button == 3) {
+                 * ind++;
+                 * if (ind == players.size()) { ind = 0; } // reset index if we reached last
+                 * player
+                 * }
+                 */
 
-                /*for (int i = 0; i < players.size(); i++) {
-                    // check for player's turn and if button is left click
-                    if (players.get(i).isTurn && button == 1) {
-                        players.get(i).moveBoot(x, y);
-                        break;
-                    }
-                    // if press right mouse button, change to next player
-                    if (button == 3) {
-                        // set isTurn to false for current player
-                        players.get(i).setTurn(false);
-
-                        // if we reached last player, go back to first player
-                        if (i == players.size()-1) {
-                            players.get(0).setTurn(true);
-                        }
-                        else {
-                            // change isTurn to true for next player
-                            players.get(i + 1).setTurn(true);
-                        }
-                        break;
-                    }
-                }*/
+                /*
+                 * for (int i = 0; i < players.size(); i++) {
+                 * // check for player's turn and if button is left click
+                 * if (players.get(i).isTurn && button == 1) {
+                 * players.get(i).moveBoot(x, y);
+                 * break;
+                 * }
+                 * // if press right mouse button, change to next player
+                 * if (button == 3) {
+                 * // set isTurn to false for current player
+                 * players.get(i).setTurn(false);
+                 * 
+                 * // if we reached last player, go back to first player
+                 * if (i == players.size()-1) {
+                 * players.get(0).setTurn(true);
+                 * }
+                 * else {
+                 * // change isTurn to true for next player
+                 * players.get(i + 1).setTurn(true);
+                 * }
+                 * break;
+                 * }
+                 * }
+                 */
             }
 
             @Override
@@ -337,11 +337,14 @@ public class ClientMain {
 
                 // display each LobbyServiceGame / LobbyServiceGameSession
 
-                // TODO: here we only use the draw() function from minueto. Avoid using buildDisplay() here because it will create objects at every frame.
+                // TODO: here we only use the draw() function from minueto. Avoid using
+                // buildDisplay() here because it will create objects at every frame.
 
-                // TODO: place buildDisplay() in the loginScreenQueue so it is only done once (line 137)
+                // TODO: place buildDisplay() in the loginScreenQueue so it is only done once
+                // (line 137)
 
-                // TODO: eventually we might want to refresh the list of available games at intervals of time. Then buildDisplay() would be somwhere else?
+                // TODO: eventually we might want to refresh the list of available games at
+                // intervals of time. Then buildDisplay() would be somwhere else?
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
@@ -352,11 +355,13 @@ public class ClientMain {
             if (gui.currentBackground == GUI.Screen.ELFENLAND
                     || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
-                /*for (Player player : players) {
-                    gui.window.draw(player.getIcon(), player.getxPos(),
-                            player.getyPos());
-                }*/
-                //players.get(0).isTurn = true; // only player 1 can move
+                /*
+                 * for (Player player : players) {
+                 * gui.window.draw(player.getIcon(), player.getxPos(),
+                 * player.getyPos());
+                 * }
+                 */
+                // players.get(0).isTurn = true; // only player 1 can move
                 while (moveBootQueue.hasNext()) {
                     moveBootQueue.handle();
                 }
@@ -400,6 +405,7 @@ public class ClientMain {
 
     /**
      * Play Music
+     * 
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
@@ -409,11 +415,10 @@ public class ClientMain {
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.start();
-        } catch(Exception e) {
+        } catch (Exception e) {
             // TODO: was this catch block intended to be empty?
         }
     }
-
 
     public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
         URL url = new URL("http://127.0.0.1:4242/api/sessions");
@@ -424,7 +429,7 @@ public class ClientMain {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer content = new StringBuffer();
-        while((inputLine = in.readLine()) != null) {
+        while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
         in.close();
@@ -443,17 +448,17 @@ public class ClientMain {
         ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
 
         try {
-            // i dont know if this works because I have no way to test it yet (can't create a game)
-            JSONObject sessions =(JSONObject) jsonObject.get("sessions");
-            sessions.keySet().forEach(sessionID ->
-            {
+            // i dont know if this works because I have no way to test it yet (can't create
+            // a game)
+            JSONObject sessions = (JSONObject) jsonObject.get("sessions");
+            sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
 
                 String creator = (String) sessionJSON.get("creator");
                 boolean launched = (boolean) sessionJSON.get("launched");
                 String saveGameID = (String) sessionJSON.get("savegameid");
 
-                //Object gameParameters = sessionJSON.get("gameParameters");
+                // Object gameParameters = sessionJSON.get("gameParameters");
 
                 String playerListInStringForm = (String) sessionJSON.get("players");
                 playerListInStringForm = playerListInStringForm.replace("[", "");
@@ -473,6 +478,7 @@ public class ClientMain {
 
     /**
      * Returns the list of available games on the Lobby Service
+     * 
      * @return arrayList of LobbyServiceGame objects
      * @throws IOException
      * @throws ParseException
@@ -486,7 +492,7 @@ public class ClientMain {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer content = new StringBuffer();
-        while((inputLine = in.readLine()) != null) {
+        while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
         in.close();
@@ -508,7 +514,7 @@ public class ClientMain {
         // add unloaded games (i.e. LobbyServiceGame)
         for (Object lsGameJson : jsonArray) {
             JSONObject lsGame = (JSONObject) lsGameJson;
-            
+
             // get game name
             String name = (String) lsGame.get("name");
 
@@ -524,12 +530,12 @@ public class ClientMain {
             availableGames.add(new LobbyServiceGame(displayName, location, numberOfPlayers));
         }
 
-
         return availableGames;
     }
 
     /**
      * Returns details on a previously registered Game-Service
+     * 
      * @return JSONObject representing the game-service
      * @throws IOException
      */
@@ -542,7 +548,7 @@ public class ClientMain {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer content = new StringBuffer();
-        while((inputLine = in.readLine()) != null) {
+        while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
         in.close();
