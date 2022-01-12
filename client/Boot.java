@@ -5,7 +5,7 @@ import org.minueto.image.MinuetoImageFile;
 import java.io.File;
 import java.util.*;
 
-public class Boot extends Image{
+public class Boot extends Image {
 
     Color color;
 
@@ -49,5 +49,10 @@ public class Boot extends Image{
      */
     public static MinuetoImage getBootImage(Color pColor) {
         return BOOT_IMAGES.get(pColor.ordinal());
+    }
+
+    public int[] getCoords() {
+        int[] toReturn = { this.getMinX(), this.getMaxX(), this.getMinY(), this.getMaxY() };
+        return toReturn;
     }
 }
