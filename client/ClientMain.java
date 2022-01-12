@@ -398,13 +398,4 @@ public class ClientMain {
         }
 
     }
-
-    private static void setUserField(boolean clicked) {
-        userNameSel = clicked;
-    }
-
-    private static void setPassField(boolean clicked) {
-
-    }
-
 }
