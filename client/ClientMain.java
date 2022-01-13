@@ -40,24 +40,29 @@ public class ClientMain {
 
     public static void main(String[] args) {
 
+        /* in the Boot class
         File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
+        
         List<String> bootFileNames = new ArrayList<>();
         // add file names of boot images to the bootFiles list
         for (File file : bootDir.listFiles()) {
             if (file.getName().startsWith("boot-"))
                 bootFileNames.add("images/böppels-and-boots/" + file.getName());
         }
+         */
 
         // make images
         MinuetoImage elfenlandImage;
         MinuetoImage elfengoldImage;
-        List<MinuetoImage> bootImages = getBootImages(bootFileNames);
+        // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
         MinuetoRectangle lobbyBackground;
 
-        configImages(bootImages);
+        // TODO: place this somewhere else configImages(bootImages);
+
+
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
             elfenlandImage = new MinuetoImageFile("images/elfenland.png");
@@ -71,16 +76,16 @@ public class ClientMain {
         }
 
         // Play Music
-        playSound("music/flute.mid");
+        // playSound("music/flute.mid"); TODO: add a mute/unmute button - Dijian and Alex
 
-        // create players
+        // create players TODO: remove this
         List<Player> players = new ArrayList<>();
         // Player p1 = new Player(null, Color.YELLOW);
         // Player p2 = new Player(null, Color.BLACK);
         // players.add(p1);
         // players.add(p2);
 
-        // create window that will contain our game
+        // create window that will contain our game - stays in Main
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         GUI gui = new GUI(window, GUI.Screen.MENU);
         window.setMaxFrameRate(60);
@@ -88,10 +93,10 @@ public class ClientMain {
         // make window visible
         gui.window.setVisible(true);
 
-        // stack for a word
+        // stack for a word TODO: remove this (Owen)
         Stack<String> writtenWord = new Stack<>();
 
-        // create entry screen mouse handler
+        // create entry screen mouse handler TODO: where does this go (Lilia / Owen)
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             @Override
@@ -261,7 +266,7 @@ public class ClientMain {
             }
         }, loginScreenQueue);
 
-        // create move boot mouse handler
+        // create move boot mouse handler TODO: Dijian
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             int ind = 0; // index of players
@@ -344,7 +349,7 @@ public class ClientMain {
                 // (line 137)
 
                 // TODO: eventually we might want to refresh the list of available games at
-                // intervals of time. Then buildDisplay() would be somwhere else?
+                // intervals of time. Then buildDisplay() would be somewhere else?
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
@@ -372,12 +377,12 @@ public class ClientMain {
         }
     }
 
-    /*
+    /* TODO: Owen
      * @pre: pNames is a list of filenames of the boot images
-     * 
+     *
      * @return: List of images corresponding to the filenames
      */
-    private static List<MinuetoImage> getBootImages(List<String> pNames) {
+    /* private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
         for (String name : pNames) {
             try {
@@ -390,20 +395,21 @@ public class ClientMain {
         return toReturn;
     }
 
-    /*
+    /* TODO: does this go in Image - Owen/Dijian?
      * @pre: pImages is a list of MinuetoImages which are boots
      * 
      * @post: contents of pImages are changed to be centered at starting town on
      * game window, and rotated and sized properly
      */
+    /*
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
             pImages.set(i, pImages.get(i).rotate(-90));
             pImages.set(i, pImages.get(i).scale(.125, .125));
         }
-    }
+    } */
 
-    /**
+    /** TODO: alex/dijian put a mute/unmute button
      * Play Music
      * 
      * @param soundFile sound file to play
@@ -420,6 +426,7 @@ public class ClientMain {
         }
     }
 
+    /* TODO: Lilia move these */
     public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
         URL url = new URL("http://127.0.0.1:4242/api/sessions");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

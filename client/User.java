@@ -36,6 +36,17 @@ public class User {
      */
 
     /*
+    TODO: add players to the game here
+
+    LILIA
+
+    // create players
+        List<Player> players = new ArrayList<>();
+        // Player p1 = new Player(null, Color.YELLOW);
+        // Player p2 = new Player(null, Color.BLACK);
+        // players.add(p1);
+        // players.add(p2);
+
     Operation: User::joinGameSession(gameSession: Session)
     Scope: User;  Player; Session;
     Messages: Player::{joinConfirmation, joinFailed_e}
