@@ -31,6 +31,11 @@ public class ClientMain {
     private static String userString = "";
     private static String passString = "";
 
+    private static boolean soundOn = true;
+    private static Clip loadedClip;
+    private static long clipPos;
+    private static boolean soundStarted = false;
+
     public static void main(String[] args) {
 
         /* in the Boot class
@@ -52,6 +57,8 @@ public class ClientMain {
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
         MinuetoRectangle lobbyBackground;
+        MinuetoImage soundOnButton;
+        MinuetoImage soundOffButton;
 
         // TODO: place this somewhere else configImages(bootImages);
 
@@ -63,13 +70,18 @@ public class ClientMain {
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
             lobbyBackground = new MinuetoRectangle(1024, 768, MinuetoColor.BLUE, true);
+            soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
+            soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
         }
 
-        // Play Music
-        // playSound("music/flute.mid"); TODO: add a mute/unmute button - Dijian and Alex
+        // Play Music 
+        if(soundStarted == false) { 
+            playSound("music/flute.mid"); //TODO: add a mute/unmute button - Dijian and Alex
+            soundStarted = true;
+        }
 
         // create players TODO: remove this
         List<Player> players = new ArrayList<>();
@@ -106,6 +118,20 @@ public class ClientMain {
                 // click on Quit
                 if (x <= 665 && x >= 360 && y >= 530 && y <= 640) {
                     System.exit(0);
+                }
+
+                // click on mute/unmute
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
                 }
             }
 
@@ -188,6 +214,7 @@ public class ClientMain {
                     loginScreenImage.draw(password, 200, 450);
                     writtenWord.clear();
                 }
+
             }
 
             @Override
@@ -253,6 +280,20 @@ public class ClientMain {
                     }
                 }
 
+                // click on mute/unmute
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+
             }
 
             @Override
@@ -270,7 +311,7 @@ public class ClientMain {
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             int ind = 0; // index of players
-
+ 
             @Override
             public void handleMousePress(int x, int y, int button) {
                 System.out.println("This is x: " + x + ". This is y: " + y);
@@ -311,6 +352,19 @@ public class ClientMain {
                  * }
                  * }
                  */
+
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
             }
 
             @Override
@@ -372,6 +426,13 @@ public class ClientMain {
                 }
             }
 
+            // Add a button in the bottom right to pause the music
+            if(soundOn == true) {
+                gui.window.draw(soundOffButton, 1000, 745);
+            } else { 
+                gui.window.draw(soundOnButton, 1000, 745);
+            }
+
             window.render();
             Thread.yield();
         }
@@ -419,12 +480,29 @@ public class ClientMain {
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
             Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
+            loadedClip = clip;
+            loadedClip.open(audioIn);
+            loadedClip.start();
         } catch (Exception e) {
-            // TODO: was this catch block intended to be empty?
+            throw new Error("Unable to play sound file");
         }
     }
 
+    /* 
+     * Records the duration of the clip elapsed and pauses the audio file
+     */
+
+    static void pauseSound() { 
+        clipPos = loadedClip.getMicrosecondPosition();
+        loadedClip.stop();
+    }
+
+    /* 
+     * Resumes the sound from a recorded clipPos
+     */
+    static void resumeSound() { 
+        // loadedClip.setMicrosecondPosition(clipPos);
+        loadedClip.start();
+    }
 
 }
