@@ -7,20 +7,38 @@ max 6 players
 
 import java.util.ArrayList;
 
-public class Game {
+public class ServerGame {
 
-   private ArrayList<Player> players;
-   private int numberOfPlayers;
-   public ArrayList<Town> towns; 
-   public ArrayList<Route> routes;
+    public LobbyServiceGameSession gameSession;
+    private ArrayList<Player> players;
+    private int numberOfPlayers;
+    public ArrayList<Town> towns;
+    public ArrayList<Route> routes;
+    public int currentRound;
+    public int gameRoundsLimit;
+    public boolean destinationTownEnabled;
+    public boolean witchEnabled;
+    public Mode mode;
+    public ArrayList<Card> faceDownCardPile;
+    public ArrayList<Card> faceUpCardPile;
+    public ArrayList<GoldCard> goldCardPile;
+    //public Auction auction; not doing this now
+
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public Game(int numberOfPlayers) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
+        this.gameRoundsLimit = gameRoundsLimit;
+        this.destinationTownEnabled = destinationTownEnabled;
+        this.witchEnabled = witchEnabled;
+        this.mode = mode;
+        this.currentRound = 1;
+
+        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);

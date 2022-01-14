@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -14,10 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ServerMain {
-    /*
 
-     */
-    // TODO for owen : check for valid login here
+
 
     /**
      * Operation: Elfen::login(username: String, password: String)
@@ -25,11 +24,12 @@ public class ServerMain {
      * New: newUser: User
      * Messages: User::{availableGames, invalidLogin_e}
      * Post: If the login is successful, sends the user all available games. Otherwise, sends the user a “invalidLogin_e” message to inform them that the login has failed.
-     * @param username
-     * @param password
+     * @param username username input by the User
+     * @param password password input by the User
      * @throws IOException
      * @throws ParseException
      */
+    // TODO for owen : check for valid login here
     public static void login(String username, String password) throws IOException, ParseException {
         // if successful: use the availableGames operation to send games to the User (+ create a new User object?)
         availableGames();
@@ -42,22 +42,61 @@ public class ServerMain {
      * New: newGame: Game;
      * Messages: User:: {gameCreationFailed_e; newGameState}
      * Post: Sends a new game state to the user upon success. in case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
+     * @param displayName name of the game
      * @param numberOfPlayers exact number of players required to play this game. it must be between 2 and 6
      * @param numberOfRounds number of rounds this game will have
      * @param mode elfenland or elfengold
      * @param witchEnabled true if the witch can be used, false otherwise
      * @param destinationTownEnabled true if players will have a destionation town, false otherwise
      */
-    public static void createNewGame(int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) {
-        // TODO: Lilia check with Lingjia if this makes sense
+    public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException {
+        // TODO: Lilia check with Lingjia if the new operation definition makes sense
+
+        // turn displayName into a name by replacing spaces with dashes
+        String name = displayName.replace(" ", "-");
 
         // send a request to LS to create a new game
+        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token=dA/1to5bFiRvqTem0eiUzY2FITw=");
+        // TODO: access token in the above line??
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("PUT");
+        con.setRequestProperty("Content-Type", "application/json");
 
-        // if the game is successfully created in LS:
+        /* Payload support */
+        con.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.writeBytes("{\"name\":\"" + name + "\",\"displayName\":\"" + displayName + "\",\"location\":\"http://127.0.0.1:4243/" + "DummyGameService" + "\",\"" + numberOfPlayers + "\":\"3\",\"" + numberOfPlayers + "\":\"5\", \"webSupport\":\"true\"}");
+        // TODO: what is DummyGameService in the above line
+        // TODO: do we need to change the location in the above line
+        out.flush();
+        out.close();
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+
+        if (status == 200) {
             // create a new Game object
+            ServerGame newGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode);
+
             // send gameCreationConfirmed(Game newGameObject) to the User
-        // else:
+            gameCreationConfirmed(newGame);
+        } else {
             // send gameCreationConfirmed(Game null) to the User
+            gameCreationConfirmed(null);
+        }
     }
 
     /**
@@ -67,11 +106,13 @@ public class ServerMain {
      * Post: Sends a game creation confirmed message to the user upon success. In case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
      * @param game Game object that was created
      */
-    public static void gameCreationConfirmed(Game game) {
-        // if game == null:
-            // send gameCreationFailed_e to the User
-        // else:
-            // send newGameState to the user to the user
+    public static void gameCreationConfirmed(ServerGame game) {
+        if (game == null) {
+            Exception exception = new Exception("game creation failed");
+            // send exception to User (Exception is Serializable)
+        } else {
+            // send newGameState to the User
+        }
     }
 
 
