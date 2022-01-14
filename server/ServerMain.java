@@ -15,45 +15,77 @@ import java.util.Arrays;
 
 public class ServerMain {
     /*
-    Operation: Elfen::login(username: String, password: String)
-    Scope: User;
-    New: newUser: User
-    Messages: User::{availableGames, invalidLogin_e}
-    Post: If the login is successful, sends the user all available games. Otherwise, sends the user a “invalidLogin_e” message to inform them that the login has failed.
-     */
 
-    /*
-    Operation: Elfen::createNewGame(numberOfPlayers: int, numGameRounds: int, mode: Mode, witchEnabled: boolean, destinationTownEnabled: boolean)
-    Scope: Game;
-    New: newGame: Game;
-    Messages: User:: {gameCreationFailed_e; newGameState}
-    Post: Sends a new game state to the user upon success. in case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
      */
+    // TODO for owen : check for valid login here
 
-    /*
-    Operation: Elfen::gameCreationConfirmed(game: Game)
-    Scope: Game; User;
-    New: newGame: Game;
-    Messages: User:: {gameCreationFailed_e; gameCreationConfirmed}
-    Post: Sends a game creation confirmed message to the user upon success. In case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
+    /**
+     * Operation: Elfen::login(username: String, password: String)
+     * Scope: User;
+     * New: newUser: User
+     * Messages: User::{availableGames, invalidLogin_e}
+     * Post: If the login is successful, sends the user all available games. Otherwise, sends the user a “invalidLogin_e” message to inform them that the login has failed.
+     * @param username
+     * @param password
+     * @throws IOException
+     * @throws ParseException
      */
+    public static void login(String username, String password) throws IOException, ParseException {
+        // if successful: use the availableGames operation to send games to the User (+ create a new User object?)
+        availableGames();
+        // if unsuccessful: send invalidLogin_e to the User
+    }
+
+    /**
+     * Operation: Elfen::createNewGame(numberOfPlayers: int, numGameRounds: int, mode: Mode, witchEnabled: boolean, destinationTownEnabled: boolean)
+     * Scope: Game;
+     * New: newGame: Game;
+     * Messages: User:: {gameCreationFailed_e; newGameState}
+     * Post: Sends a new game state to the user upon success. in case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
+     * @param numberOfPlayers exact number of players required to play this game. it must be between 2 and 6
+     * @param numberOfRounds number of rounds this game will have
+     * @param mode elfenland or elfengold
+     * @param witchEnabled true if the witch can be used, false otherwise
+     * @param destinationTownEnabled true if players will have a destionation town, false otherwise
+     */
+    public static void createNewGame(int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) {
+        // TODO: Lilia check with Lingjia if this makes sense
+
+        // send a request to LS to create a new game
+
+        // if the game is successfully created in LS:
+            // create a new Game object
+            // send gameCreationConfirmed(Game newGameObject) to the User
+        // else:
+            // send gameCreationConfirmed(Game null) to the User
+    }
+
+    /**
+     * Operation: Elfen::gameCreationConfirmed(game: Game)
+     * Scope: Game; User;
+     * Messages: User:: {gameCreationFailed_e; newGameState}
+     * Post: Sends a game creation confirmed message to the user upon success. In case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
+     * @param game Game object that was created
+     */
+    public static void gameCreationConfirmed(Game game) {
+        // if game == null:
+            // send gameCreationFailed_e to the User
+        // else:
+            // send newGameState to the user to the user
+    }
 
 
     /**
+     * Note: Lilia changed this operation because it didn't make sense
      * Operation: Elfen::availableGames(availableGames: ArrayList{Game})
      * Scope: User; Game;
      * Messages: User::{availableGames, invalidLogin_e}
-     * Post: If the login is successful, sends the user all available games. Otherwise, sends the user a “invalidLogin_e” message to inform them that the login has failed.
-     * @param availableGames ArrayList of LobbyServiceGameSession objects to send to the User
+     * Post: Sends the user all available games
      */
-    public static void availableGames(ArrayList<LobbyServiceGameSession> availableGames) throws IOException, ParseException {
-        // TODO for owen : If the login is successful, sends the user all available games. Otherwise, sends the user a “invalidLogin_e” message to inform them that the login has failed.
-        // if login unsuccessful: send invalidLogin_e to User
-        // elif login successful: send availableGames to the User
-        ArrayList<LobbyServiceGameSession> availableSessionsList = getAvailableSessions();
-        ArrayList<LobbyServiceGame> availableGamesList = getAvailableGames();
-
-        // TODO: send these lists to the user (Arraylist is serializable)
+    public static void availableGames() throws IOException, ParseException {
+        ArrayList<LobbyServiceGame> availableGames = getAvailableGames();
+        ArrayList<LobbyServiceGameSession> availableSessions = getAvailableSessions();
+        // TODO: send availableGames to the user (Arraylist is serializable)
     }
 
     /**
