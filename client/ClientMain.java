@@ -16,6 +16,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,9 +89,6 @@ public class ClientMain {
         // make window visible
         gui.window.setVisible(true);
 
-        // stack for a word
-        Stack<String> writtenWord = new Stack<>();
-
         // create entry screen mouse handler
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
@@ -146,7 +144,9 @@ public class ClientMain {
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
-                } else if (i == MinuetoKeyboard.KEY_DELETE) {
+                }
+                // delete a char
+                else if (i == MinuetoKeyboard.KEY_DELETE) {
                     if (userNameSel && userString.length() > 0) {
                         userString = userString.substring(0, userString.length() - 1);
                     } else if (passWordSel && passString.length() > 0) {
@@ -154,35 +154,33 @@ public class ClientMain {
                     } else {
                         return;
                     }
-                } else if (shift || i < 65 || i > 90) {
-                    writtenWord.push("" + (char) i); // uppercase
-                } else {
-                    writtenWord.push("" + (char) (i + 32)); // lowercase
                 }
-                if (userNameSel) {
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 350);
-
-                    // type inside the textbox for username
-                    while (!writtenWord.empty()) {
-                        userString = userString + writtenWord.pop();
+                // uppercase or not a letter
+                else if (shift || i < 65 || i > 90) {
+                    if (userNameSel) {
+                        userString = userString + (char) i;
+                    } else if (passWordSel) {
+                        passString = passString + (char) i;
                     }
-
-                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(username, 200, 360);
-                    writtenWord.clear();
-                } else if (passWordSel) {
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 440);
-
-                    // type inside the textbox for password
-                    while (!writtenWord.empty()) {
-                        passString = passString + writtenWord.pop();
-                    }
-                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(password, 200, 450);
-                    writtenWord.clear();
                 }
+                // lowercase letters
+                else {
+                    if (userNameSel) {
+                        userString = userString + (char) (i + 32);
+                    } else if (passWordSel) {
+                        passString = passString + (char) (i + 32);
+                    }
+                }
+                // cover the last entry, draw username
+                loginScreenImage.draw(whiteBoxImage, 160, 350);
+                MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
+                loginScreenImage.draw(username, 200, 360);
+
+                // cover the last entry, draw password
+                loginScreenImage.draw(whiteBoxImage, 160, 440);
+                MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
+                loginScreenImage.draw(password, 200, 450);
+
             }
 
             @Override
@@ -245,6 +243,75 @@ public class ClientMain {
                     // change screen after login
                     else {
                         gui.currentBackground = GUI.Screen.ELFENGOLD;
+                        try {
+                            /*
+                             * create OAuth2 token for login
+                             */
+                            URL url = new URL(
+                                    "http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
+                            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                            con.setRequestMethod("POST");
+
+                            /* Payload support */
+                            con.setDoOutput(true);
+                            DataOutputStream out = new DataOutputStream(con.getOutputStream());
+                            out.writeBytes(
+                                    "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
+                            out.flush();
+                            out.close();
+
+                            int status = con.getResponseCode();
+                            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                            String inputLine;
+                            StringBuffer content = new StringBuffer();
+                            while ((inputLine = in.readLine()) != null) {
+                                content.append(inputLine);
+                            }
+                            in.close();
+                            con.disconnect();
+                            System.out.println("Response status: " + status);
+                            System.out.println(content.toString());
+
+                            /*
+                             * add a new user to the API
+                             */
+                            // URL userUrl = new URL(
+                            // "http://127.0.0.1:4242/api/users/foobar?access_token=" + content.toString());
+                            // HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
+                            // userCon.setRequestMethod("PUT");
+                            // userCon.setRequestProperty("Content-Type", "application/json");
+
+                            // /* Payload support */
+                            // userCon.setDoOutput(true);
+                            // DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
+                            // userOut.writeBytes("{\n");
+                            // // make the actual username
+                            // userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
+                            // userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
+                            // userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n"); // need to update
+                            // when we know
+                            // // color
+                            // userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
+                            // userOut.writeBytes("}");
+                            // userOut.flush();
+                            // userOut.close();
+
+                            // int userStatus = userCon.getResponseCode();
+                            // BufferedReader userIn = new BufferedReader(new
+                            // InputStreamReader(userCon.getInputStream()));
+                            // String userInputLine;
+                            // StringBuffer userContent = new StringBuffer();
+                            // while ((userInputLine = userIn.readLine()) != null) {
+                            // userContent.append(userInputLine);
+                            // }
+                            // userIn.close();
+                            // con.disconnect();
+                            // System.out.println("Response status: " + userStatus);
+                            // System.out.println(userContent.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("Error: failed to login a user.");
+                        }
                     }
                 }
 
