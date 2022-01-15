@@ -53,4 +53,8 @@ public class User {
     Post: Upon success, sends the player a message to confirm they have joined a game session successfully and moves the player to the game lobby. Otherwise, sends a “joinFailed_e” message.
      */
 
+    public void joinGameSession(LobbyServiceGameSession session) {
+        // send a message to Server that this User wants to join the session
+    }
+
 }
