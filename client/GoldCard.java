@@ -11,6 +11,6 @@ public class GoldCard extends Card{
      * @param image MinuetoImage to display
      */
     public GoldCard(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
-        super(minX, maxX, minY, maxY, image);
+        super(minX, maxX, minY, maxY, image, "GoldCard");
     }
 }
