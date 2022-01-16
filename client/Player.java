@@ -151,6 +151,7 @@ public class Player {
     Messages: Player::{gameState}
     Post: Upon success, sends a new game state to the player.
 
+    Note from Alex: needs to call town.addPlayer to the new town and town.removePlayer from the old told
      */
 
     /*
@@ -212,7 +213,21 @@ public class Player {
     Scope: Player; Game; Token;
     Messages: Player::{displayUnmarkedRoutes()}
     Post: Sends a new game state to the player.
+
+    Note from Alex: Look at the methods in Route
      */
+
+     /**
+      * Added a method to 
+      * @param token
+      */
+    public void consumeToken(Token token) { 
+        assert tokensInHand.contains(token);
+
+        tokensInHand.remove(token);
+
+        // do we add it back to the pool of total tokens? 
+    }
 
     /*
     Operation: Player::selectCounterLocation(transportationCounter: TransportationCounter, travelRoute: Route)
