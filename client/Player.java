@@ -23,7 +23,8 @@ public class Player {
         aName = aClient.getHost();
         // TODO: fix these coordinates to match start town
         aBoot = new Boot(pColor, 577, 666, 291, 370);
-        inTown = elvenhold;         // fix this
+
+        // inTown = elvenhold;         // fix this
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
@@ -245,6 +246,17 @@ public class Player {
     Messages: Player::{displayUnmarkedRoutes()}
     Post: Sends a new game state to the player.
      */
+
+    public void consumeToken(Token token) { 
+        assert token != null;
+
+        if(tokensInHand.contains(token)) { 
+            tokensInHand.remove(token);
+            // do we need to put the token back into the pool of tokens? 
+        } else { 
+            throw new IllegalArgumentException();
+        }
+    }
 
     /*
     Operation: Player::selectCounterLocation(transportationCounter: TransportationCounter, travelRoute: Route)
