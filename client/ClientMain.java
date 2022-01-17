@@ -85,8 +85,8 @@ public class ClientMain {
 
         // create players TODO: remove this
         List<Player> players = new ArrayList<>();
-        // Player p1 = new Player(null, Color.YELLOW);
-        // Player p2 = new Player(null, Color.BLACK);
+        Player p1 = new Player(null, Color.YELLOW);
+        Player p2 = new Player(null, Color.BLACK);
         // players.add(p1);
         // players.add(p2);
 
@@ -365,6 +365,34 @@ public class ClientMain {
                         gui.window.draw(soundOnButton, 1000, 745);
                     }
                 }
+
+                // if we click on a town, move boot for the player (player.moveBoot(x,y)) and cycle to the next player
+
+                for(int i = 0; i < players.size(); i++ ) { 
+
+                    while(ServerGame.notClickingOnATown(x,y)) { 
+                        for(Town t : ServerGame.getTowns()) { 
+
+                            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
+
+                                // set a variable to keep track of the town at that location
+                                Town townAtLoc = t;
+                                // move the boot to that town 
+                                Player p = players.get(i);
+
+                                p.moveBoot(t);
+
+                                // draw the boot at a location 
+                                // depending on the number of players in the lobby, designate an arrangement for possible boot 
+                                // slots around each city, will be populated by the specific boot each time
+
+                                // gui.window.draw( BOOT, LOCATION1, LOCATION2);
+                            }
+                        }
+                    }
+                }
+
+
             }
 
             @Override

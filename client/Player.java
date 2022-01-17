@@ -186,6 +186,23 @@ public class Player {
     //     return -1;
     // }
 
+    public void moveBoot(Town t) { 
+        // remove the player from the old town 
+        inTown.playersHere.remove(this);
+
+        // set the town of the player to the new town 
+        this.inTown = t;
+
+        // add the player to the list of players located at the new town 
+        t.addPlayer(this);
+
+        // TODO: check if the player has traveled to the new town in the past already, 
+        //     -> if yes, do nothing 
+        //     -> if no, collect the town marker and remove the town marker from the town
+
+        // note: actually GUI movement is all done inside of client main
+    }
+
     /*
     Operation: Player::playCaravan()
     Scope: Game; Player; Road; Card;

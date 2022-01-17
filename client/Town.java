@@ -90,4 +90,26 @@ public class Town {
     public void removePlayer(Player player) { 
         playersHere.remove(player);
     }
+
+    /**
+     * Returns the location of the town reflected as a list of the format [min x, min y, max x, max y]
+     * @return
+     */
+    public int[] getLocation() { 
+
+        int[] location = new int[4];
+
+        location[0] = getMinX();
+        location[1] = getMinY();
+        location[2] = getMaxX();
+        location[3] = getMaxY();
+
+        return location;
+    }
+
+    // public boolean notClickingOnATown(int x, int y) { 
+    //     for(Town t : ServerGame.getTowns()) { 
+
+    //     }
+    // }
 }
