@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 
 public class ClientMain {
 
@@ -38,6 +39,7 @@ public class ClientMain {
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
+    private static JSONObject token;
 
     public static void main(String[] args) {
 
@@ -47,6 +49,16 @@ public class ClientMain {
         for (File file : bootDir.listFiles()) {
             if (file.getName().startsWith("boot-"))
                 bootFileNames.add("images/böppels-and-boots/" + file.getName());
+        }
+
+        /*
+         * create OAuth2 token
+         * after this only need to refresh token
+         */
+        try {
+            token = createAccessToken();
+        } catch (IOException | ParseException e) {
+            System.err.println("Error: could not create access token.");
         }
 
         // make images
@@ -72,7 +84,8 @@ public class ClientMain {
         }
 
         // Play Music
-        playSound("music/flute.mid");
+        // TODO: uncomment
+        // playSound("music/flute.mid");
 
         // create players
         List<Player> players = new ArrayList<>();
@@ -244,70 +257,42 @@ public class ClientMain {
                     else {
                         gui.currentBackground = GUI.Screen.ELFENGOLD;
                         try {
-                            /*
-                             * create OAuth2 token for login
-                             */
-                            URL url = new URL(
-                                    "http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
-                            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                            con.setRequestMethod("POST");
-
-                            /* Payload support */
-                            con.setDoOutput(true);
-                            DataOutputStream out = new DataOutputStream(con.getOutputStream());
-                            out.writeBytes(
-                                    "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
-                            out.flush();
-                            out.close();
-
-                            int status = con.getResponseCode();
-                            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                            String inputLine;
-                            StringBuffer content = new StringBuffer();
-                            while ((inputLine = in.readLine()) != null) {
-                                content.append(inputLine);
-                            }
-                            in.close();
-                            con.disconnect();
-                            System.out.println("Response status: " + status);
-                            System.out.println(content.toString());
 
                             /*
                              * add a new user to the API
                              */
-                            // URL userUrl = new URL(
-                            // "http://127.0.0.1:4242/api/users/foobar?access_token=" + content.toString());
-                            // HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
-                            // userCon.setRequestMethod("PUT");
-                            // userCon.setRequestProperty("Content-Type", "application/json");
+                            URL userUrl = new URL(
+                                    "http://127.0.0.1:4242/api/users/foobar?access_token=oJXTrhQZsw78SxJMvUHwJGxFiPE");
+                            HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
+                            userCon.setRequestMethod("PUT");
+                            userCon.setRequestProperty("Content-Type", "application/json");
 
                             // /* Payload support */
-                            // userCon.setDoOutput(true);
-                            // DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
-                            // userOut.writeBytes("{\n");
-                            // // make the actual username
-                            // userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
-                            // userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
-                            // userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n"); // need to update
-                            // when we know
-                            // // color
-                            // userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
-                            // userOut.writeBytes("}");
-                            // userOut.flush();
-                            // userOut.close();
+                            userCon.setDoOutput(true);
+                            DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
+                            userOut.writeBytes("{\n");
+                            // make the actual username
+                            userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
+                            userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
+                            // need to update color when we know it
+                            userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
 
-                            // int userStatus = userCon.getResponseCode();
-                            // BufferedReader userIn = new BufferedReader(new
-                            // InputStreamReader(userCon.getInputStream()));
-                            // String userInputLine;
-                            // StringBuffer userContent = new StringBuffer();
-                            // while ((userInputLine = userIn.readLine()) != null) {
-                            // userContent.append(userInputLine);
-                            // }
-                            // userIn.close();
-                            // con.disconnect();
-                            // System.out.println("Response status: " + userStatus);
-                            // System.out.println(userContent.toString());
+                            userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
+                            userOut.writeBytes("}");
+                            userOut.flush();
+                            userOut.close();
+
+                            int userStatus = userCon.getResponseCode();
+                            BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
+                            String userInputLine;
+                            StringBuffer userContent = new StringBuffer();
+                            while ((userInputLine = userIn.readLine()) != null) {
+                                userContent.append(userInputLine);
+                            }
+                            userIn.close();
+                            userCon.disconnect();
+                            System.out.println("Response status: " + userStatus);
+                            System.out.println(userContent.toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                             System.out.println("Error: failed to login a user.");
@@ -631,5 +616,66 @@ public class ClientMain {
         Object obj = parser.parse(String.valueOf(content));
 
         return (JSONObject) obj;
+    }
+
+    private static JSONObject createAccessToken() throws IOException, ParseException {
+        URL url = new URL(
+                "http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+
+        /* Payload support */
+        con.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.writeBytes("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
+        out.flush();
+        out.close();
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(content.toString());
+    }
+
+    // refreshes the access token
+    private static JSONObject refreshAccessToken() throws IOException, ParseException {
+        URL url = new URL(
+                "http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
+                        + token.get("refresh_token"));
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+
+        /* Payload support */
+        con.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.writeBytes(
+                "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
+        out.flush();
+        out.close();
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(content.toString());
     }
 }
