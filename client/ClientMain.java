@@ -14,7 +14,6 @@ import org.minueto.window.MinuetoWindow;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
@@ -38,21 +37,37 @@ import java.net.MalformedURLException;
 
 public class ClientMain {
 
+    // for login screen queue
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
     private static JSONObject token;
 
+    // for mute button
+    private static boolean soundOn = true;
+    private static Clip loadedClip;
+    private static long clipPos;
+    private static boolean soundStarted = false;
+
+    // for create game queue
+    private static boolean nameSel = false;
+    private static boolean numberPlayerSel = false;
+    private static String nameString = "";
+    private static String numberPlayerString = "";
+
     public static void main(String[] args) {
 
+        /* in the Boot class
         File bootDir = new File("images/böppels-and-boots/"); // dir containing boot image files
+        
         List<String> bootFileNames = new ArrayList<>();
         // add file names of boot images to the bootFiles list
         for (File file : bootDir.listFiles()) {
             if (file.getName().startsWith("boot-"))
                 bootFileNames.add("images/böppels-and-boots/" + file.getName());
         }
+         */
 
         /*
          * create OAuth2 token
@@ -68,37 +83,57 @@ public class ClientMain {
         // make images
         MinuetoImage elfenlandImage;
         MinuetoImage elfengoldImage;
-        List<MinuetoImage> bootImages = getBootImages(bootFileNames);
+        // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
-        MinuetoRectangle lobbyBackground;
+        MinuetoImage lobbyBackground;
+        MinuetoImage lobbyPrevBackground;
+        MinuetoImage lobbyNextBackground;
+        MinuetoImage lobbyPrevNextBackground;
+        MinuetoImage createGameBackground;
+        MinuetoRectangle nameTextField;
+        MinuetoRectangle numberOfPlayersTextField;
+        MinuetoImage soundOnButton;
+        MinuetoImage soundOffButton;
 
-        configImages(bootImages);
+        // TODO: place this somewhere else configImages(bootImages);
+
+
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
             elfenlandImage = new MinuetoImageFile("images/elfenland.png");
             playScreenImage = new MinuetoImageFile("images/play.png");
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
-            lobbyBackground = new MinuetoRectangle(1024, 768, MinuetoColor.BLUE, true);
+            lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
+            lobbyPrevBackground = new MinuetoImageFile("images/open-lobbies-prev.png");
+            lobbyNextBackground = new MinuetoImageFile("images/open-lobbies-next.png");
+            lobbyPrevNextBackground = new MinuetoImageFile("images/open-lobbies-prev-next.png");
+            createGameBackground = new MinuetoImageFile("images/create-game.png");
+            nameTextField = new MinuetoRectangle(520,60,MinuetoColor.WHITE,true);
+            numberOfPlayersTextField = new MinuetoRectangle(90,50, MinuetoColor.WHITE, true);
+            soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
+            soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
         }
 
-        // Play Music
-        // TODO: uncomment
-        // playSound("music/flute.mid");
+        // Play Music 
+        if(soundStarted == false) { 
+            playSound("music/flute.mid"); //TODO: add a mute/unmute button - Dijian and Alex
+            soundStarted = true;
+        }
 
-        // create players
+        // create players TODO: remove this
         List<Player> players = new ArrayList<>();
-        // Player p1 = new Player(null, Color.YELLOW);
-        // Player p2 = new Player(null, Color.BLACK);
+        Player p1 = new Player(null, Color.YELLOW);
+        Player p2 = new Player(null, Color.BLACK);
         // players.add(p1);
         // players.add(p2);
 
-        // create window that will contain our game
+        // create window that will contain our game - stays in Main
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
         GUI gui = new GUI(window, GUI.Screen.MENU);
         window.setMaxFrameRate(60);
@@ -106,7 +141,7 @@ public class ClientMain {
         // make window visible
         gui.window.setVisible(true);
 
-        // create entry screen mouse handler
+        // create entry screen mouse handler TODO: where does this go (Lilia / Owen)
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             @Override
@@ -124,6 +159,20 @@ public class ClientMain {
                 if (x <= 665 && x >= 360 && y >= 530 && y <= 640) {
                     System.exit(0);
                 }
+
+                // click on mute/unmute
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
             }
 
             @Override
@@ -137,7 +186,10 @@ public class ClientMain {
             }
         }, entryScreenQueue);
 
-        // create login screen keyboard and mouse handler
+
+        // stack for a word
+        Stack<String> writtenWord = new Stack<>();
+        // create login screen keyboard handler
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
         gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
@@ -149,14 +201,15 @@ public class ClientMain {
                 // press on enter key takes you to the next screen
                 if (i == MinuetoKeyboard.KEY_ENTER) {
                     try {
-                        getAvailableGames(); // i don't know what the difference is exactly. only know that session has
-                                             // more info in the API
-                        getAvailableSessions();
+                        ServerMain.getAvailableGames(); // retrieves all game services in the API
+                        ServerMain.getAvailableSessions(); // retrieves all game sessions in the API
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
+                        // if we in this catch block then there are no available game services or sessions
+                        // TODO: for additional functionality, we can put a message that says "there are no game lobbies, please create one or use the refresh button"
                     }
 
-                    // TODO: place buildDisplay() here
+                    writtenWord.clear();
                     gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
@@ -197,6 +250,7 @@ public class ClientMain {
                 loginScreenImage.draw(whiteBoxImage, 160, 440);
                 MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
                 loginScreenImage.draw(password, 200, 450);
+
 
             }
 
@@ -259,11 +313,11 @@ public class ClientMain {
                     }
                     // change screen after login
                     else {
-                        gui.currentBackground = GUI.Screen.ELFENGOLD;
                         try {
 
                             /*
                              * add a new user to the API
+                             * need to fix still
                              */
                             URL userUrl = new URL(
                                     "http://127.0.0.1:4242/api/users/foobar?access_token=oJXTrhQZsw78SxJMvUHwJGxFiPE");
@@ -301,6 +355,22 @@ public class ClientMain {
                             e.printStackTrace();
                             System.out.println("Error: failed to login a user.");
                         }
+                        gui.currentBackground = GUI.Screen.LOBBY;
+                    }
+                }
+
+                // click on mute/unmute
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+
                     }
                 }
 
@@ -317,11 +387,11 @@ public class ClientMain {
             }
         }, loginScreenQueue);
 
-        // create move boot mouse handler
+        // create move boot mouse handler TODO: Dijian
         MinuetoEventQueue moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
             int ind = 0; // index of players
-
+ 
             @Override
             public void handleMousePress(int x, int y, int button) {
                 System.out.println("This is x: " + x + ". This is y: " + y);
@@ -362,6 +432,47 @@ public class ClientMain {
                  * }
                  * }
                  */
+
+                if( x > 1000 && y > 740) { 
+                    if(soundOn == true) { 
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else { 
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+
+                // if we click on a town, move boot for the player (player.moveBoot(x,y)) and cycle to the next player
+
+                for(int i = 0; i < players.size(); i++ ) { 
+
+                    while(ServerGame.notClickingOnATown(x,y)) { 
+                        for(Town t : ServerGame.getTowns()) { 
+
+                            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
+
+                                // set a variable to keep track of the town at that location
+                                Town townAtLoc = t;
+                                // move the boot to that town 
+                                Player p = players.get(i);
+
+                                p.moveBoot(t);
+
+                                // draw the boot at a location 
+                                // depending on the number of players in the lobby, designate an arrangement for possible boot 
+                                // slots around each city, will be populated by the specific boot each time
+
+                                // gui.window.draw( BOOT, LOCATION1, LOCATION2);
+                            }
+                        }
+                    }
+                }
+
+
             }
 
             @Override
@@ -373,6 +484,158 @@ public class ClientMain {
 
             }
         }, moveBootQueue);
+
+
+        // lobby screen mouse handler
+        MinuetoEventQueue lobbyScreenQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
+            public void handleMousePress(int x, int y, int button) {
+                if (x >= 30 && x <=440 && y>= 680 && y <= 750) {
+                    // click on Create New Game button
+                    gui.currentBackground = GUI.Screen.CREATELOBBY;
+                } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
+                    // click on the Refresh button
+
+                } else if( x > 1000 && y > 740) {
+                    // click on mute/unmute button
+                    if(soundOn == true) {
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else {
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+            }
+
+            @Override
+            public void handleMouseRelease(int x, int y, int button) {
+                // do nothing
+            }
+
+            @Override
+            public void handleMouseMove(int x, int y) {
+                // do nothing
+            }
+        }, lobbyScreenQueue);
+
+        // create game screen keyboard handler
+        Stack<String> createGameStack = new Stack<>();
+        MinuetoEventQueue createGameQueue = new MinuetoEventQueue();
+        gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+            private boolean shift = false;
+            private MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
+
+            @Override
+            public void handleKeyPress(int i) {
+                if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = true;
+                } else if (i == MinuetoKeyboard.KEY_DELETE) {
+                    if (nameSel && nameString.length() > 0) {
+                        nameString = nameString.substring(0, nameString.length() - 1);
+                    } else if (numberPlayerSel && numberPlayerString.length() > 0) {
+                        numberPlayerString = numberPlayerString.substring(0, numberPlayerString.length() - 1);
+                    } else {
+                        return;
+                    }
+                } else if (shift || i < 65 || i > 90) {
+                    createGameStack.push("" + (char) i); // uppercase
+                } else {
+                    createGameStack.push("" + (char) (i + 32)); // lowercase
+                }
+
+                if (nameSel) {
+                    // type inside the textbox for name of the lobby
+                    while (!createGameStack.empty()) {
+                        nameString = nameString + createGameStack.pop();
+                    }
+
+                    MinuetoImage name = new MinuetoText(nameString, fontArial20, MinuetoColor.BLACK);
+                    createGameBackground.draw(name, 205, 250);
+                    createGameStack.clear();
+                } else if (numberPlayerSel) {
+                    // type inside the textbox for number of players
+                    while (!createGameStack.empty()) {
+                        numberPlayerString = numberPlayerString + createGameStack.pop();
+                    }
+                    MinuetoImage numberPlayers = new MinuetoText(numberPlayerString, fontArial20, MinuetoColor.BLACK);
+                    createGameBackground.draw(numberPlayers, 484, 462);
+                    createGameStack.clear();
+                }
+            }
+
+            @Override
+            public void handleKeyRelease(int i) {
+                if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = false;
+                }
+            }
+
+            @Override
+            public void handleKeyType(char c) {
+                // do nothing
+            }
+        }, createGameQueue);
+
+        // create game screen mouse handler
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
+            public void handleMousePress(int x, int y, int button) {
+                if (x >= 305 && x <= 715 && y <= 640 && y >= 570) {
+                    // click on the Create New Game button
+                    // TODO: check if name/size are empty and put an error message
+                    // TODO: send a createGame message to the LS
+                    gui.currentBackground = GUI.Screen.ELFENLAND; // TODO: change this line to show the game launch screen
+                } else if (x >= 330 && x <= 695 && y <= 725 && y >= 665) {
+                    // click on the Return to Open Lobbies button
+                    gui.currentBackground = GUI.Screen.LOBBY;
+                } else if (x >= 195 && x <= 715 && y >= 235 && y <= 295) {
+                    // click on the Name text field
+                    nameSel = true;
+                    numberPlayerSel = false;
+                    // cover the last entry
+                    createGameBackground.draw(nameTextField, 195, 235);
+                } else if (x >= 475 && x <= 565 && y >= 445 && y <= 495) {
+                    // click on the Size text field
+                    nameSel = false;
+                    numberPlayerSel = true;
+                } else {
+                     nameSel = false;
+                     numberPlayerSel = false;
+                    // cover the last entry
+                    createGameBackground.draw(numberOfPlayersTextField, 475, 445);
+                }
+
+                if( x > 1000 && y > 740) {
+                    // click on mute/unmute button
+                    if(soundOn == true) {
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else {
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+            }
+
+            @Override
+            public void handleMouseRelease(int x, int y, int button) {
+                // do nothing
+            }
+
+            @Override
+            public void handleMouseMove(int x, int y) {
+                // do nothing
+            }
+        }, createGameQueue);
+
 
         // draw on the window
         while (true) {
@@ -388,28 +651,34 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                // draw a blue background
                 gui.window.draw(lobbyBackground, 0, 0);
+                while (lobbyScreenQueue.hasNext()) {
+                    lobbyScreenQueue.handle();
+                }
 
-                // display each LobbyServiceGame / LobbyServiceGameSession
+            } else if (gui.currentBackground == GUI.Screen.LOBBYPREV) {
+                gui.window.draw(lobbyPrevBackground, 0, 0);
 
-                // TODO: here we only use the draw() function from minueto. Avoid using
-                // buildDisplay() here because it will create objects at every frame.
+            } else if (gui.currentBackground == GUI.Screen.LOBBYNEXT) {
+                gui.window.draw(lobbyNextBackground, 0, 0);
 
-                // TODO: place buildDisplay() in the loginScreenQueue so it is only done once
-                // (line 137)
+            } else if (gui.currentBackground == GUI.Screen.LOBBYPREVNEXT) {
+                gui.window.draw(lobbyPrevNextBackground, 0, 0);
 
-                // TODO: eventually we might want to refresh the list of available games at
-                // intervals of time. Then buildDisplay() would be somwhere else?
+            } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
+                gui.window.draw(createGameBackground, 0, 0);
+                while (createGameQueue.hasNext()) {
+                    createGameQueue.handle();
+                }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
+
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
             }
 
-            if (gui.currentBackground == GUI.Screen.ELFENLAND
-                    || gui.currentBackground == GUI.Screen.ELFENGOLD) {
+            if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
                 /*
                  * for (Player player : players) {
@@ -423,17 +692,27 @@ public class ClientMain {
                 }
             }
 
+            // Add a button in the bottom right to pause the music
+            if(soundOn == true) {
+                gui.window.draw(soundOffButton, 1000, 745);
+            } else { 
+                gui.window.draw(soundOnButton, 1000, 745);
+            }
+
             window.render();
             Thread.yield();
         }
+
+        // swing gui
+
     }
 
-    /*
+    /* TODO: Owen
      * @pre: pNames is a list of filenames of the boot images
-     * 
+     *
      * @return: List of images corresponding to the filenames
      */
-    private static List<MinuetoImage> getBootImages(List<String> pNames) {
+    /* private static List<MinuetoImage> getBootImages(List<String> pNames) {
         List<MinuetoImage> toReturn = new ArrayList<>();
         for (String name : pNames) {
             try {
@@ -446,20 +725,21 @@ public class ClientMain {
         return toReturn;
     }
 
-    /*
+    /* TODO: does this go in Image - Owen/Dijian?
      * @pre: pImages is a list of MinuetoImages which are boots
      * 
      * @post: contents of pImages are changed to be centered at starting town on
      * game window, and rotated and sized properly
      */
+    /*
     private static void configImages(List<MinuetoImage> pImages) {
         for (int i = 0; i < pImages.size(); i++) {
             pImages.set(i, pImages.get(i).rotate(-90));
             pImages.set(i, pImages.get(i).scale(.125, .125));
         }
-    }
+    } */
 
-    /**
+    /** TODO: alex/dijian put a mute/unmute button
      * Play Music
      * 
      * @param soundFile sound file to play
@@ -469,157 +749,29 @@ public class ClientMain {
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
             Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
+            loadedClip = clip;
+            loadedClip.open(audioIn);
+            loadedClip.start();
         } catch (Exception e) {
-            // TODO: was this catch block intended to be empty?
+            throw new Error("Unable to play sound file");
         }
     }
 
-    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/sessions");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-
-        // TESTING CODE START
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-        // TESTING CODE END
-
-        // convert GET output to JSON
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(String.valueOf(content));
-        JSONObject jsonObject = (JSONObject) obj;
-
-        ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
-
-        try {
-            // i dont know if this works because I have no way to test it yet (can't create
-            // a game)
-            JSONObject sessions = (JSONObject) jsonObject.get("sessions");
-            sessions.keySet().forEach(sessionID -> {
-                JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
-
-                String creator = (String) sessionJSON.get("creator");
-                boolean launched = (boolean) sessionJSON.get("launched");
-                String saveGameID = (String) sessionJSON.get("savegameid");
-
-                // Object gameParameters = sessionJSON.get("gameParameters");
-
-                String playerListInStringForm = (String) sessionJSON.get("players");
-                playerListInStringForm = playerListInStringForm.replace("[", "");
-                playerListInStringForm = playerListInStringForm.replace("]", "");
-                String[] playerListInArrayForm = playerListInStringForm.split(",");
-                ArrayList<String> playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);
-
-                availableSessions.add(new LobbyServiceGameSession(launched, playerNames, saveGameID));
-
-            });
-        } catch (NullPointerException e) {
-            // there are no available sessions
-            System.out.println("there are no sessions");
-        }
-        return availableSessions;
-    }
-
-    /**
-     * Returns the list of available games on the Lobby Service
-     * 
-     * @return arrayList of LobbyServiceGame objects
-     * @throws IOException
-     * @throws ParseException
+    /* 
+     * Records the duration of the clip elapsed and pauses the audio file
      */
-    public static ArrayList<LobbyServiceGame> getAvailableGames() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/gameservices");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-
-        // TESTING CODE START
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-        // TESTING CODE END
-
-        // convert GET output to JSON
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(String.valueOf(content));
-        JSONArray jsonArray = (JSONArray) obj;
-
-        // make a list of available games
-        ArrayList<LobbyServiceGame> availableGames = new ArrayList<>(jsonArray.size());
-
-        // add unloaded games (i.e. LobbyServiceGame)
-        for (Object lsGameJson : jsonArray) {
-            JSONObject lsGame = (JSONObject) lsGameJson;
-
-            // get game name
-            String name = (String) lsGame.get("name");
-
-            // get game-service json
-            JSONObject gameJson = getLSGameInfo(name);
-
-            // get game-service info from the json
-            String displayName = (String) gameJson.get("displayName");
-            String location = (String) gameJson.get("location");
-            int numberOfPlayers = (int) gameJson.get("numberOfPlayers");
-
-            // create LobbyServiceGame and add it to availableGames list
-            availableGames.add(new LobbyServiceGame(displayName, location, numberOfPlayers));
-        }
-
-        return availableGames;
+    static void pauseSound() { 
+        clipPos = loadedClip.getMicrosecondPosition();
+        loadedClip.stop();
     }
 
-    /**
-     * Returns details on a previously registered Game-Service
-     * 
-     * @return JSONObject representing the game-service
-     * @throws IOException
+    /* 
+     * Resumes the sound from a recorded clipPos
      */
-    public static JSONObject getLSGameInfo(String name) throws IOException, ParseException {
-        URL url = new URL("curl -X GET http://127.0.0.1:4242/api/gameservices/" + name);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-
-        // TESTING CODE START
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-        // TESTING CODE END
-
-        // convert GET output to JSON
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(String.valueOf(content));
-
-        return (JSONObject) obj;
+    static void resumeSound() { 
+        // loadedClip.setMicrosecondPosition(clipPos);
+        loadedClip.start();
     }
 
     private static JSONObject createAccessToken() throws IOException, ParseException {

@@ -15,7 +15,7 @@ public class Image {
     private MinuetoImage image;
 
     /**
-     * CONSTRUCTOR : Creates a Hitbox object.
+     * CONSTRUCTOR : Creates an Image object.
      * 
      * @param minX  left-most border of the image
      * @param maxX  right-most border of the image

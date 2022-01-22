@@ -57,12 +57,27 @@ public class LobbyServiceGameSession {
     Scope: User; Player; Session;
     Messages: Player::{playerJoined}
     Post: Upon success, sends the player a message to confirm another player has joined a game session successfully.
+     */
+    public void playerJoined(LobbyServiceGameSession sessionJoined, Player playerThatJoined) {
 
+    }
+
+    /*
     Operation: Session::joinConfirmation(gameSession: Session)
     Scope: User; Player; Session;
     Messages: Player::{joinConfirmation, joinFailed_e}
     Post: Upon success, sends the player a message to confirm they have joined a game session successfully and moves the player to the game lobby. Otherwise, sends a “joinFailed_e” message.
+    */
+    public void joinConfirmation(LobbyServiceGameSession session) {
+        // send a message to the User that the session was joined succesfully or not
 
+    }
+
+    public void joinGame(LobbyServiceGameSession session) {
+        // helper function that will create a Player and make them join a session
+    }
+
+    /*
     Operation: Session::gameStartConfirmation(gameSession: Session, gameBoard: Board)
     Scope: Player; Session;
     Messages: Player::{gameStartConfirmation; gameStartFailed_e}

@@ -4,7 +4,6 @@
 output/
 out/
 .idea/
-.DS_Store
 
 # Temporary file directory
 tmp/nanoc/
