@@ -26,15 +26,23 @@ import java.io.IOException;
 
 public class ClientMain {
 
+    // for login screen queue
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
 
+    // for mute button
     private static boolean soundOn = true;
     private static Clip loadedClip;
     private static long clipPos;
     private static boolean soundStarted = false;
+
+    // for create game queue
+    private static boolean nameSel = false;
+    private static boolean numberPlayerSel = false;
+    private static String nameString = "";
+    private static String numberPlayerString = "";
 
     public static void main(String[] args) {
 
@@ -56,7 +64,13 @@ public class ClientMain {
         MinuetoImage playScreenImage;
         MinuetoImage loginScreenImage;
         MinuetoImage whiteBoxImage;
-        MinuetoRectangle lobbyBackground;
+        MinuetoImage lobbyBackground;
+        MinuetoImage lobbyPrevBackground;
+        MinuetoImage lobbyNextBackground;
+        MinuetoImage lobbyPrevNextBackground;
+        MinuetoImage createGameBackground;
+        MinuetoRectangle nameTextField;
+        MinuetoRectangle numberOfPlayersTextField;
         MinuetoImage soundOnButton;
         MinuetoImage soundOffButton;
 
@@ -69,7 +83,13 @@ public class ClientMain {
             playScreenImage = new MinuetoImageFile("images/play.png");
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
-            lobbyBackground = new MinuetoRectangle(1024, 768, MinuetoColor.BLUE, true);
+            lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
+            lobbyPrevBackground = new MinuetoImageFile("images/open-lobbies-prev.png");
+            lobbyNextBackground = new MinuetoImageFile("images/open-lobbies-next.png");
+            lobbyPrevNextBackground = new MinuetoImageFile("images/open-lobbies-prev-next.png");
+            createGameBackground = new MinuetoImageFile("images/create-game.png");
+            nameTextField = new MinuetoRectangle(520,60,MinuetoColor.WHITE,true);
+            numberOfPlayersTextField = new MinuetoRectangle(90,50, MinuetoColor.WHITE, true);
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
         } catch (MinuetoFileException e) {
@@ -97,9 +117,6 @@ public class ClientMain {
 
         // make window visible
         gui.window.setVisible(true);
-
-        // stack for a word TODO: remove this (Owen)
-        Stack<String> writtenWord = new Stack<>();
 
         // create entry screen mouse handler TODO: where does this go (Lilia / Owen)
         MinuetoEventQueue entryScreenQueue = new MinuetoEventQueue();
@@ -146,7 +163,10 @@ public class ClientMain {
             }
         }, entryScreenQueue);
 
-        // create login screen keyboard and mouse handler
+
+        // stack for a word
+        Stack<String> writtenWord = new Stack<>();
+        // create login screen keyboard handler
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
         gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
@@ -160,19 +180,13 @@ public class ClientMain {
                     try {
                         ServerMain.getAvailableGames(); // retrieves all game services in the API
                         ServerMain.getAvailableSessions(); // retrieves all game sessions in the API
-                        // TODO: ask the TA if our understanding of game service vs. session is ok
-                        // Game service: a saved game that is not loaded up yet (i.e. none of its players are online)
-                        // Game session: a game that is loaded and at least one player is ready to play
-
-                        // TODO: place buildDisplay() here
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
-
                         // if we in this catch block then there are no available game services or sessions
                         // TODO: for additional functionality, we can put a message that says "there are no game lobbies, please create one or use the refresh button"
                     }
 
-
+                    writtenWord.clear();
                     gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
@@ -276,7 +290,8 @@ public class ClientMain {
                     }
                     // change screen after login
                     else {
-                        gui.currentBackground = GUI.Screen.ELFENGOLD;
+                        writtenWord.clear();
+                        gui.currentBackground = GUI.Screen.LOBBY;
                     }
                 }
 
@@ -405,6 +420,158 @@ public class ClientMain {
             }
         }, moveBootQueue);
 
+
+        // lobby screen mouse handler
+        MinuetoEventQueue lobbyScreenQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
+            public void handleMousePress(int x, int y, int button) {
+                if (x >= 30 && x <=440 && y>= 680 && y <= 750) {
+                    // click on Create New Game button
+                    gui.currentBackground = GUI.Screen.CREATELOBBY;
+                } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
+                    // click on the Refresh button
+
+                } else if( x > 1000 && y > 740) {
+                    // click on mute/unmute button
+                    if(soundOn == true) {
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else {
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+            }
+
+            @Override
+            public void handleMouseRelease(int x, int y, int button) {
+                // do nothing
+            }
+
+            @Override
+            public void handleMouseMove(int x, int y) {
+                // do nothing
+            }
+        }, lobbyScreenQueue);
+
+        // create game screen keyboard handler
+        Stack<String> createGameStack = new Stack<>();
+        MinuetoEventQueue createGameQueue = new MinuetoEventQueue();
+        gui.window.registerKeyboardHandler(new MinuetoKeyboardHandler() {
+            private boolean shift = false;
+            private MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
+
+            @Override
+            public void handleKeyPress(int i) {
+                if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = true;
+                } else if (i == MinuetoKeyboard.KEY_DELETE) {
+                    if (nameSel && nameString.length() > 0) {
+                        nameString = nameString.substring(0, nameString.length() - 1);
+                    } else if (numberPlayerSel && numberPlayerString.length() > 0) {
+                        numberPlayerString = numberPlayerString.substring(0, numberPlayerString.length() - 1);
+                    } else {
+                        return;
+                    }
+                } else if (shift || i < 65 || i > 90) {
+                    createGameStack.push("" + (char) i); // uppercase
+                } else {
+                    createGameStack.push("" + (char) (i + 32)); // lowercase
+                }
+
+                if (nameSel) {
+                    // type inside the textbox for name of the lobby
+                    while (!createGameStack.empty()) {
+                        nameString = nameString + createGameStack.pop();
+                    }
+
+                    MinuetoImage name = new MinuetoText(nameString, fontArial20, MinuetoColor.BLACK);
+                    createGameBackground.draw(name, 205, 250);
+                    createGameStack.clear();
+                } else if (numberPlayerSel) {
+                    // type inside the textbox for number of players
+                    while (!createGameStack.empty()) {
+                        numberPlayerString = numberPlayerString + createGameStack.pop();
+                    }
+                    MinuetoImage numberPlayers = new MinuetoText(numberPlayerString, fontArial20, MinuetoColor.BLACK);
+                    createGameBackground.draw(numberPlayers, 484, 462);
+                    createGameStack.clear();
+                }
+            }
+
+            @Override
+            public void handleKeyRelease(int i) {
+                if (i == MinuetoKeyboard.KEY_SHIFT) {
+                    shift = false;
+                }
+            }
+
+            @Override
+            public void handleKeyType(char c) {
+                // do nothing
+            }
+        }, createGameQueue);
+
+        // create game screen mouse handler
+        gui.window.registerMouseHandler(new MinuetoMouseHandler() {
+            @Override
+            public void handleMousePress(int x, int y, int button) {
+                if (x >= 305 && x <= 715 && y <= 640 && y >= 570) {
+                    // click on the Create New Game button
+                    // TODO: check if name/size are empty and put an error message
+                    // TODO: send a createGame message to the LS
+                    gui.currentBackground = GUI.Screen.ELFENLAND; // TODO: change this line to show the game launch screen
+                } else if (x >= 330 && x <= 695 && y <= 725 && y >= 665) {
+                    // click on the Return to Open Lobbies button
+                    gui.currentBackground = GUI.Screen.LOBBY;
+                } else if (x >= 195 && x <= 715 && y >= 235 && y <= 295) {
+                    // click on the Name text field
+                    nameSel = true;
+                    numberPlayerSel = false;
+                    // cover the last entry
+                    createGameBackground.draw(nameTextField, 195, 235);
+                } else if (x >= 475 && x <= 565 && y >= 445 && y <= 495) {
+                    // click on the Size text field
+                    nameSel = false;
+                    numberPlayerSel = true;
+                } else {
+                     nameSel = false;
+                     numberPlayerSel = false;
+                    // cover the last entry
+                    createGameBackground.draw(numberOfPlayersTextField, 475, 445);
+                }
+
+                if( x > 1000 && y > 740) {
+                    // click on mute/unmute button
+                    if(soundOn == true) {
+                        soundOn = false;
+                        pauseSound();
+                        gui.window.draw(soundOffButton, 1000, 745);
+
+                    } else {
+                        soundOn = true;
+                        resumeSound();
+                        gui.window.draw(soundOnButton, 1000, 745);
+                    }
+                }
+            }
+
+            @Override
+            public void handleMouseRelease(int x, int y, int button) {
+                // do nothing
+            }
+
+            @Override
+            public void handleMouseMove(int x, int y) {
+                // do nothing
+            }
+        }, createGameQueue);
+
+
         // draw on the window
         while (true) {
             if (gui.currentBackground == GUI.Screen.MENU) {
@@ -419,28 +586,34 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                // draw a blue background
                 gui.window.draw(lobbyBackground, 0, 0);
+                while (lobbyScreenQueue.hasNext()) {
+                    lobbyScreenQueue.handle();
+                }
 
-                // display each LobbyServiceGame / LobbyServiceGameSession
+            } else if (gui.currentBackground == GUI.Screen.LOBBYPREV) {
+                gui.window.draw(lobbyPrevBackground, 0, 0);
 
-                // TODO: here we only use the draw() function from minueto. Avoid using
-                // buildDisplay() here because it will create objects at every frame.
+            } else if (gui.currentBackground == GUI.Screen.LOBBYNEXT) {
+                gui.window.draw(lobbyNextBackground, 0, 0);
 
-                // TODO: place buildDisplay() in the loginScreenQueue so it is only done once
-                // (line 137)
+            } else if (gui.currentBackground == GUI.Screen.LOBBYPREVNEXT) {
+                gui.window.draw(lobbyPrevNextBackground, 0, 0);
 
-                // TODO: eventually we might want to refresh the list of available games at
-                // intervals of time. Then buildDisplay() would be somewhere else?
+            } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
+                gui.window.draw(createGameBackground, 0, 0);
+                while (createGameQueue.hasNext()) {
+                    createGameQueue.handle();
+                }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
+
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
             }
 
-            if (gui.currentBackground == GUI.Screen.ELFENLAND
-                    || gui.currentBackground == GUI.Screen.ELFENGOLD) {
+            if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 // draw boots
                 /*
                  * for (Player player : players) {
@@ -464,6 +637,9 @@ public class ClientMain {
             window.render();
             Thread.yield();
         }
+
+        // swing gui
+
     }
 
     /* TODO: Owen
