@@ -19,11 +19,14 @@ import java.io.File;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Stack;
 
 // json
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -58,6 +61,7 @@ public class ClientMain {
         try {
             token = createAccessToken();
         } catch (IOException | ParseException e) {
+            e.printStackTrace();
             System.err.println("Error: could not create access token.");
         }
 
@@ -619,17 +623,16 @@ public class ClientMain {
     }
 
     private static JSONObject createAccessToken() throws IOException, ParseException {
-        URL url = new URL(
-                "http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
+        URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
 
+        // Encode the token scope
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+        con.setRequestProperty("Authorization", "Basic " + encoded);
         /* Payload support */
         con.setDoOutput(true);
-        DataOutputStream out = new DataOutputStream(con.getOutputStream());
-        out.writeBytes("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
-        out.flush();
-        out.close();
 
         int status = con.getResponseCode();
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -655,13 +658,13 @@ public class ClientMain {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
 
+        // Encode the token scope
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+        con.setRequestProperty("Authorization", "Basic " + encoded);
+
         /* Payload support */
         con.setDoOutput(true);
-        DataOutputStream out = new DataOutputStream(con.getOutputStream());
-        out.writeBytes(
-                "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
-        out.flush();
-        out.close();
 
         int status = con.getResponseCode();
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
