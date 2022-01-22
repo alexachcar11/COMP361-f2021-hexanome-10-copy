@@ -15,14 +15,25 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Stack;
 
 // json
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 
 public class ClientMain {
 
@@ -31,6 +42,7 @@ public class ClientMain {
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
+    private static JSONObject token;
 
     // for mute button
     private static boolean soundOn = true;
@@ -56,6 +68,17 @@ public class ClientMain {
                 bootFileNames.add("images/böppels-and-boots/" + file.getName());
         }
          */
+
+        /*
+         * create OAuth2 token
+         * after this only need to refresh token
+         */
+        try {
+            token = createAccessToken();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            System.err.println("Error: could not create access token.");
+        }
 
         // make images
         MinuetoImage elfenlandImage;
@@ -191,7 +214,9 @@ public class ClientMain {
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
                     shift = true;
-                } else if (i == MinuetoKeyboard.KEY_DELETE) {
+                }
+                // delete a char
+                else if (i == MinuetoKeyboard.KEY_DELETE) {
                     if (userNameSel && userString.length() > 0) {
                         userString = userString.substring(0, userString.length() - 1);
                     } else if (passWordSel && passString.length() > 0) {
@@ -199,35 +224,33 @@ public class ClientMain {
                     } else {
                         return;
                     }
-                } else if (shift || i < 65 || i > 90) {
-                    writtenWord.push("" + (char) i); // uppercase
-                } else {
-                    writtenWord.push("" + (char) (i + 32)); // lowercase
                 }
-                if (userNameSel) {
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 350);
-
-                    // type inside the textbox for username
-                    while (!writtenWord.empty()) {
-                        userString = userString + writtenWord.pop();
+                // uppercase or not a letter
+                else if (shift || i < 65 || i > 90) {
+                    if (userNameSel) {
+                        userString = userString + (char) i;
+                    } else if (passWordSel) {
+                        passString = passString + (char) i;
                     }
-
-                    MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(username, 200, 360);
-                    writtenWord.clear();
-                } else if (passWordSel) {
-                    // cover the last entry
-                    loginScreenImage.draw(whiteBoxImage, 160, 440);
-
-                    // type inside the textbox for password
-                    while (!writtenWord.empty()) {
-                        passString = passString + writtenWord.pop();
-                    }
-                    MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
-                    loginScreenImage.draw(password, 200, 450);
-                    writtenWord.clear();
                 }
+                // lowercase letters
+                else {
+                    if (userNameSel) {
+                        userString = userString + (char) (i + 32);
+                    } else if (passWordSel) {
+                        passString = passString + (char) (i + 32);
+                    }
+                }
+                // cover the last entry, draw username
+                loginScreenImage.draw(whiteBoxImage, 160, 350);
+                MinuetoImage username = new MinuetoText(userString, fontArial20, MinuetoColor.BLACK);
+                loginScreenImage.draw(username, 200, 360);
+
+                // cover the last entry, draw password
+                loginScreenImage.draw(whiteBoxImage, 160, 440);
+                MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
+                loginScreenImage.draw(password, 200, 450);
+
 
             }
 
@@ -290,7 +313,48 @@ public class ClientMain {
                     }
                     // change screen after login
                     else {
-                        writtenWord.clear();
+                        try {
+
+                            /*
+                             * add a new user to the API
+                             * need to fix still
+                             */
+                            URL userUrl = new URL(
+                                    "http://127.0.0.1:4242/api/users/foobar?access_token=oJXTrhQZsw78SxJMvUHwJGxFiPE");
+                            HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
+                            userCon.setRequestMethod("PUT");
+                            userCon.setRequestProperty("Content-Type", "application/json");
+
+                            // /* Payload support */
+                            userCon.setDoOutput(true);
+                            DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
+                            userOut.writeBytes("{\n");
+                            // make the actual username
+                            userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
+                            userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
+                            // need to update color when we know it
+                            userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
+
+                            userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
+                            userOut.writeBytes("}");
+                            userOut.flush();
+                            userOut.close();
+
+                            int userStatus = userCon.getResponseCode();
+                            BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
+                            String userInputLine;
+                            StringBuffer userContent = new StringBuffer();
+                            while ((userInputLine = userIn.readLine()) != null) {
+                                userContent.append(userInputLine);
+                            }
+                            userIn.close();
+                            userCon.disconnect();
+                            System.out.println("Response status: " + userStatus);
+                            System.out.println(userContent.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("Error: failed to login a user.");
+                        }
                         gui.currentBackground = GUI.Screen.LOBBY;
                     }
                 }
@@ -306,6 +370,7 @@ public class ClientMain {
                         soundOn = true;
                         resumeSound();
                         gui.window.draw(soundOnButton, 1000, 745);
+
                     }
                 }
 
@@ -709,4 +774,63 @@ public class ClientMain {
         loadedClip.start();
     }
 
+    private static JSONObject createAccessToken() throws IOException, ParseException {
+        URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+
+        // Encode the token scope
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+        con.setRequestProperty("Authorization", "Basic " + encoded);
+        /* Payload support */
+        con.setDoOutput(true);
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(content.toString());
+    }
+
+    // refreshes the access token
+    private static JSONObject refreshAccessToken() throws IOException, ParseException {
+        URL url = new URL(
+                "http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
+                        + token.get("refresh_token"));
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+
+        // Encode the token scope
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+        con.setRequestProperty("Authorization", "Basic " + encoded);
+
+        /* Payload support */
+        con.setDoOutput(true);
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(content.toString());
+    }
 }
