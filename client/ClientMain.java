@@ -14,10 +14,8 @@ import org.minueto.window.MinuetoWindow;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import java.io.File;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Stack;
@@ -27,13 +25,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 
 public class ClientMain {
 
@@ -121,7 +116,7 @@ public class ClientMain {
         }
 
         // Play Music 
-        if(soundStarted == false) { 
+        if(!soundStarted) {
             playSound("music/flute.mid"); //TODO: add a mute/unmute button - Dijian and Alex
             soundStarted = true;
         }
@@ -162,7 +157,7 @@ public class ClientMain {
 
                 // click on mute/unmute
                 if( x > 1000 && y > 740) { 
-                    if(soundOn == true) { 
+                    if(soundOn) {
                         soundOn = false;
                         pauseSound();
                         gui.window.draw(soundOffButton, 1000, 745);
@@ -361,7 +356,7 @@ public class ClientMain {
 
                 // click on mute/unmute
                 if( x > 1000 && y > 740) { 
-                    if(soundOn == true) { 
+                    if(soundOn) {
                         soundOn = false;
                         pauseSound();
                         gui.window.draw(soundOffButton, 1000, 745);
@@ -434,7 +429,7 @@ public class ClientMain {
                  */
 
                 if( x > 1000 && y > 740) { 
-                    if(soundOn == true) { 
+                    if(soundOn) {
                         soundOn = false;
                         pauseSound();
                         gui.window.draw(soundOffButton, 1000, 745);
@@ -499,7 +494,7 @@ public class ClientMain {
 
                 } else if( x > 1000 && y > 740) {
                     // click on mute/unmute button
-                    if(soundOn == true) {
+                    if(soundOn) {
                         soundOn = false;
                         pauseSound();
                         gui.window.draw(soundOffButton, 1000, 745);
@@ -612,7 +607,7 @@ public class ClientMain {
 
                 if( x > 1000 && y > 740) {
                     // click on mute/unmute button
-                    if(soundOn == true) {
+                    if(soundOn) {
                         soundOn = false;
                         pauseSound();
                         gui.window.draw(soundOffButton, 1000, 745);
@@ -693,7 +688,7 @@ public class ClientMain {
             }
 
             // Add a button in the bottom right to pause the music
-            if(soundOn == true) {
+            if(soundOn) {
                 gui.window.draw(soundOffButton, 1000, 745);
             } else { 
                 gui.window.draw(soundOnButton, 1000, 745);
