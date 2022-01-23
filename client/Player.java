@@ -13,6 +13,7 @@ public class Player {
     private Boot boot;
     private List<Card> cardsInHand;
     private List<Token> tokensInHand;
+    private Town inTown;
 
     private String aName;
     private Action aBootAction;
@@ -22,6 +23,8 @@ public class Player {
         aName = aClient.getHost();
         // TODO: fix these coordinates to match start town
         aBoot = new Boot(pColor, 577, 666, 291, 370);
+
+        // inTown = elvenhold;         // fix this
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
@@ -153,6 +156,53 @@ public class Player {
 
      */
 
+    // // TODO: transportationCards input missing ? or change it to not include it...
+    // // moveBoot that returns 1 if moveBoot was successful, else return -1 for unsuccessful
+    // public int moveBoot(Town toTown, int x, int y){
+    //     // Player clicks on town he wishes to travel to
+    //     // Check if it's valid input (player can only travel to adjacent towns)
+    //     // if not then request player to choose again
+    //     // if it's valid, move player's boot to new town
+        
+    //     if (inTown.hasAdjascent(toTown)){
+    //         // check if player has the required cards to move to this town
+    //         Route route = inTown.getRoute(toTown);
+    //         // if player has cards, take away those cards from player's hand and move boot
+    //         if (route.checkCards(this.cardsInHand)){    // note each Token should have field "aRequiredCards"// in Route class implement getRequiredCards(){ token.get}
+    //             for (Card cardToDelete: route.getRequiredCards()){  // IMPORTANT OVERRIDE EQUAL IN Card CLASS
+    //                 this.cardsInHand.remove(this.cardsInHand.indexOf(cardToDelete));
+    //             }
+    //             // update inTown to the new Town
+    //             inTown = toTown;
+
+    //             // TODO: move boot on the gui using aBoot field from Player class
+                
+    //             return 1;
+    //         }
+    //         // otherwise moveBoot ends in failure and returns -1
+            
+    //     }
+    //     // ??? end player's turn ???
+    //     return -1;
+    // }
+
+    public void moveBoot(Town t) { 
+        // remove the player from the old town 
+        inTown.playersHere.remove(this);
+
+        // set the town of the player to the new town 
+        this.inTown = t;
+
+        // add the player to the list of players located at the new town 
+        t.addPlayer(this);
+
+        // TODO: check if the player has traveled to the new town in the past already, 
+        //     -> if yes, do nothing 
+        //     -> if no, collect the town marker and remove the town marker from the town
+
+        // note: actually GUI movement is all done inside of client main
+    }
+
     /*
     Operation: Player::playCaravan()
     Scope: Game; Player; Road; Card;
@@ -213,6 +263,17 @@ public class Player {
     Messages: Player::{displayUnmarkedRoutes()}
     Post: Sends a new game state to the player.
      */
+
+    public void consumeToken(Token token) { 
+        assert token != null;
+
+        if(tokensInHand.contains(token)) { 
+            tokensInHand.remove(token);
+            // do we need to put the token back into the pool of tokens? 
+        } else { 
+            throw new IllegalArgumentException();
+        }
+    }
 
     /*
     Operation: Player::selectCounterLocation(transportationCounter: TransportationCounter, travelRoute: Route)

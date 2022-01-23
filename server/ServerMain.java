@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 // other
@@ -17,6 +18,9 @@ import java.util.Arrays;
 public class ServerMain {
 
 
+    public static void main(String[] args) {
+
+    }
 
     /**
      * Operation: Elfen::login(username: String, password: String)
@@ -87,13 +91,13 @@ public class ServerMain {
         // TESTING CODE END
 
 
-        if (status == 200) {
+        if (status == 200) { // success
             // create a new Game object
             ServerGame newGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode);
 
             // send gameCreationConfirmed(Game newGameObject) to the User
             gameCreationConfirmed(newGame);
-        } else {
+        } else { // fail
             // send gameCreationConfirmed(Game null) to the User
             gameCreationConfirmed(null);
         }

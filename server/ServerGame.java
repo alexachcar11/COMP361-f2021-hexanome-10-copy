@@ -12,7 +12,7 @@ public class ServerGame {
     public LobbyServiceGameSession gameSession;
     private ArrayList<Player> players;
     private int numberOfPlayers;
-    public ArrayList<Town> towns;
+    public static ArrayList<Town> towns;
     public ArrayList<Route> routes;
     public int currentRound;
     public int gameRoundsLimit;
@@ -169,6 +169,20 @@ public class ServerGame {
         return this.numberOfPlayers;
     }
 
+    public static ArrayList<Town> getTowns() { 
+        return towns;
+    }
+
+    public static boolean notClickingOnATown(int x, int y) { 
+        for(Town t: towns) { 
+            
+            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
+                return false;
+            }
+        }
+
+        return false;
+    }
 
     /*
     Operation: Game::loadGame(savedGame: Game)

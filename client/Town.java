@@ -10,6 +10,9 @@ public class Town {
     int maxY;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
 
+    // keeps track of the player boots that are on the town
+    ArrayList<Player> playersHere = new ArrayList<>();
+
     /**
      * CONSTRUCTOR : Creates a Town object
      * @param townName town's name
@@ -68,4 +71,45 @@ public class Town {
     public int getMaxY() {
         return maxY;
     }
+
+    /**
+     * Adds a new player to the town
+     * Function called each time a player moves -> call this function on the town 
+     * @param player
+     */
+    public void addPlayer(Player player) { 
+        playersHere.add(player);
+
+    }
+
+    /**
+     * Removes a player from the town 
+     * Function called on the specific town when a player moves their boot away from the town.
+     * @param player
+     */
+    public void removePlayer(Player player) { 
+        playersHere.remove(player);
+    }
+
+    /**
+     * Returns the location of the town reflected as a list of the format [min x, min y, max x, max y]
+     * @return
+     */
+    public int[] getLocation() { 
+
+        int[] location = new int[4];
+
+        location[0] = getMinX();
+        location[1] = getMinY();
+        location[2] = getMaxX();
+        location[3] = getMaxY();
+
+        return location;
+    }
+
+    // public boolean notClickingOnATown(int x, int y) { 
+    //     for(Town t : ServerGame.getTowns()) { 
+
+    //     }
+    // }
 }

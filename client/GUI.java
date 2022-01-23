@@ -8,6 +8,12 @@ public class GUI {
         MENU,
         LOGIN,
         LOBBY,
+        LOBBYPREV,
+        LOBBYNEXT,
+        LOBBYPREVNEXT,
+        CREATELOBBY,
+        LOBBYELFENLAND,
+        LOBBYELFENGOLD,
         ELFENLAND,
         ELFENGOLD
     }

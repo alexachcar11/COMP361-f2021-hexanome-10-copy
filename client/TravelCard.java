@@ -10,7 +10,7 @@ public class TravelCard extends Card{
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public TravelCard(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
-        super(minX, maxX, minY, maxY, image);
+    public TravelCard(int minX, int maxX, int minY, int maxY, MinuetoImage image, String name) {
+        super(minX, maxX, minY, maxY, image, name);
     }
 }
