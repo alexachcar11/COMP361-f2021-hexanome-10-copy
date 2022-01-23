@@ -12,6 +12,8 @@ public class GUI {
         LOBBYNEXT,
         LOBBYPREVNEXT,
         CREATELOBBY,
+        LOBBYELFENLAND,
+        LOBBYELFENGOLD,
         ELFENLAND,
         ELFENGOLD
     }
