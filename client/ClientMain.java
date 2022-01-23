@@ -129,9 +129,9 @@ public class ClientMain {
         }
 
         // create players TODO: remove this
-        List<Player> players = new ArrayList<>();
-        Player p1 = new Player(null, Color.YELLOW);
-        Player p2 = new Player(null, Color.BLACK);
+        // List<Player> players = new ArrayList<>();
+        // Player p1 = new Player(null, Color.YELLOW);
+        // Player p2 = new Player(null, Color.BLACK);
         // players.add(p1);
         // players.add(p2);
 
@@ -188,8 +188,6 @@ public class ClientMain {
             }
         }, entryScreenQueue);
 
-        // stack for a word
-        Stack<String> writtenWord = new Stack<>();
         // create login screen keyboard handler
         MinuetoEventQueue loginScreenQueue = new MinuetoEventQueue();
 
@@ -212,7 +210,6 @@ public class ClientMain {
                         // no game lobbies, please create one or use the refresh button"
                     }
 
-                    writtenWord.clear();
                     gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (i == MinuetoKeyboard.KEY_SHIFT) {
@@ -227,6 +224,11 @@ public class ClientMain {
                     } else {
                         return;
                     }
+                }
+                // TAB used to switch boxes
+                else if (i == 9 && userNameSel) {
+                    userNameSel = false;
+                    passWordSel = true;
                 }
                 // uppercase or not a letter
                 else if (shift || i < 65 || i > 90) {
@@ -316,46 +318,15 @@ public class ClientMain {
                     // change screen after login
                     else {
                         try {
-
-                            /*
-                             * add a new user to the API
-                             * need to fix still
-                             */
-                            URL userUrl = new URL(
-                                    "http://127.0.0.1:4242/api/users/foobar?access_token=oJXTrhQZsw78SxJMvUHwJGxFiPE");
-                            HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
-                            userCon.setRequestMethod("PUT");
-                            userCon.setRequestProperty("Content-Type", "application/json");
-
-                            // /* Payload support */
-                            userCon.setDoOutput(true);
-                            DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
-                            userOut.writeBytes("{\n");
-                            // make the actual username
-                            userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
-                            userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
-                            // need to update color when we know it
-                            userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
-
-                            userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
-                            userOut.writeBytes("}");
-                            userOut.flush();
-                            userOut.close();
-
-                            int userStatus = userCon.getResponseCode();
-                            BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
-                            String userInputLine;
-                            StringBuffer userContent = new StringBuffer();
-                            while ((userInputLine = userIn.readLine()) != null) {
-                                userContent.append(userInputLine);
+                            if (getUser(userString) != null) {
+                                // login existing user
+                            } else {
+                                createNewUser(userString, passString);
                             }
-                            userIn.close();
-                            userCon.disconnect();
-                            System.out.println("Response status: " + userStatus);
-                            System.out.println(userContent.toString());
-                        } catch (Exception e) {
+
+                        } catch (IOException | ParseException e) {
                             e.printStackTrace();
-                            System.out.println("Error: failed to login a user.");
+                            System.err.println("Error: could not register/login user");
                         }
                         gui.currentBackground = GUI.Screen.LOBBY;
                     }
@@ -451,30 +422,31 @@ public class ClientMain {
                 // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
                 // cycle to the next player
 
-                for (int i = 0; i < players.size(); i++) {
+                // for (int i = 0; i < players.size(); i++) {
 
-                    while (ServerGame.notClickingOnATown(x, y)) {
-                        for (Town t : ServerGame.getTowns()) {
+                // while (ServerGame.notClickingOnATown(x, y)) {
+                // for (Town t : ServerGame.getTowns()) {
 
-                            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
+                // if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
 
-                                // set a variable to keep track of the town at that location
-                                Town townAtLoc = t;
-                                // move the boot to that town
-                                Player p = players.get(i);
+                // // set a variable to keep track of the town at that location
+                // Town townAtLoc = t;
+                // // move the boot to that town
+                // Player p = players.get(i);
 
-                                p.moveBoot(t);
+                // p.moveBoot(t);
 
-                                // draw the boot at a location
-                                // depending on the number of players in the lobby, designate an arrangement for
-                                // possible boot
-                                // slots around each city, will be populated by the specific boot each time
+                // // draw the boot at a location
+                // // depending on the number of players in the lobby, designate an arrangement
+                // for
+                // // possible boot
+                // // slots around each city, will be populated by the specific boot each time
 
-                                // gui.window.draw( BOOT, LOCATION1, LOCATION2);
-                            }
-                        }
-                    }
-                }
+                // // gui.window.draw( BOOT, LOCATION1, LOCATION2);
+                // }
+                // }
+                // }
+                // }
 
             }
 
@@ -840,5 +812,81 @@ public class ClientMain {
 
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(content.toString());
+    }
+
+    private static JSONObject createNewUser(String userName, String passWord) throws IOException, ParseException {
+        /*
+         * add a new user to the API
+         */
+        URL userUrl = new URL(
+                "http://127.0.0.1:4242/api/users/foobar?access_token=" + token.get("access_token"));
+        HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
+        userCon.setRequestMethod("PUT");
+        userCon.setRequestProperty("Content-Type", "application/json");
+
+        // /* Payload support */
+        userCon.setDoOutput(true);
+        DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
+        userOut.writeBytes("{\n");
+        // make the actual username
+        userOut.writeBytes(" \"name\": \"" + userName + "\",\n");
+        userOut.writeBytes(" \"password\": \"" + passWord + "\",\n");
+        // need to update color when we know it
+        userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
+
+        userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
+        userOut.writeBytes("}");
+        userOut.flush();
+        userOut.close();
+
+        int userStatus = userCon.getResponseCode();
+        BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
+        String userInputLine;
+        StringBuffer userContent = new StringBuffer();
+        while ((userInputLine = userIn.readLine()) != null) {
+            userContent.append(userInputLine);
+        }
+        userIn.close();
+        userCon.disconnect();
+        System.out.println("Response status: " + userStatus);
+        System.out.println(userContent.toString());
+
+        JSONParser parser = new JSONParser();
+        JSONObject user = (JSONObject) parser.parse(userContent.toString());
+        return user;
+    }
+
+    // get user from API by username
+    private static JSONObject getUser(String userName) throws IOException, ParseException {
+        URL url = new URL("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"));
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        /* Payload support */
+        con.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.writeBytes("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true");
+        out.flush();
+        out.close();
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+
+        // user does not exist
+        if (status == 400) {
+            return null;
+        }
+        JSONParser parser = new JSONParser();
+        JSONObject user = (JSONObject) parser.parse(content.toString());
+        return user;
     }
 }
