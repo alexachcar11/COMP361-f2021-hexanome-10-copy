@@ -4,10 +4,13 @@
 
 
 
-mvn -f LobbyService-master/pom.xml package
+To setup LobbyService the first time: mvn -f LobbyService-master/pom.xml package
 
-docker start ls-db
+Start docker: docker start ls-db
 
-mvn clean package spring-boot:run
+Start the lobby service: mvn clean package spring-boot:run
 
-http://127.0.0.1:4242/api/online
+Test the lobby service connection: http://127.0.0.1:4242/api/online
+
+
+Potential chat GUI?: https://www.guru99.com/java-swing-gui.html
