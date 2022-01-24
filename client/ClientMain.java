@@ -53,6 +53,13 @@ public class ClientMain {
     private static boolean elfenlandSel = false;
     private static boolean elfenGoldSel = false;
 
+    // for game lobby
+    private static boolean modeDropdownActive = false;
+    private static boolean destinationDropdownActive = false;
+    private static boolean roundsDropdownActive = false;
+    private static boolean witchDropdownActive = false;
+
+
     public static void main(String[] args) {
 
         /* in the Boot class
@@ -97,6 +104,18 @@ public class ClientMain {
         MinuetoImage readyWhite;
         MinuetoImage startButton;
         MinuetoFont fontArial22Bold;
+        MinuetoRectangle modeDropdownRectangle;
+        MinuetoRectangle destinationTownDropdownRectangle;
+        MinuetoRectangle roundsDropdownRectangle;
+        MinuetoText modeElfenlandText;
+        MinuetoText modeElfengoldText;
+        MinuetoText destinationTownNoText;
+        MinuetoText destinationTownYesText;
+        MinuetoText destinationTownYesRandText;
+        MinuetoText rounds3Text;
+        MinuetoText rounds4Text;
+        MinuetoText witchNoText;
+        MinuetoText witchYesText;
         MinuetoRectangle nameTextField;
         MinuetoRectangle numberOfPlayersTextField;
         MinuetoImage soundOnButton;
@@ -126,6 +145,16 @@ public class ClientMain {
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
             startButton = new MinuetoImageFile("images/start-button.png");
             fontArial22Bold = new MinuetoFont("Arial", 22, true, false);
+            modeDropdownRectangle = new MinuetoRectangle(229, 42, MinuetoColor.WHITE, true);
+            destinationTownDropdownRectangle = new MinuetoRectangle(300, 41, MinuetoColor.WHITE, true);
+            roundsDropdownRectangle = new MinuetoRectangle(186, 39, MinuetoColor.WHITE, true);
+            modeElfenlandText = new MinuetoText("Elfenland", fontArial22Bold, MinuetoColor.BLACK);
+            modeElfengoldText = new MinuetoText("Elfengold", fontArial22Bold, MinuetoColor.BLACK);
+            destinationTownNoText = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
+            destinationTownYesText = new MinuetoText("Yes: not random", fontArial22Bold, MinuetoColor.BLACK);
+            destinationTownYesRandText = new MinuetoText("Yes: random", fontArial22Bold, MinuetoColor.BLACK);
+            rounds3Text =  new MinuetoText("3", fontArial22Bold, MinuetoColor.BLACK);
+            rounds4Text =  new MinuetoText("4", fontArial22Bold, MinuetoColor.BLACK);
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
         } catch (MinuetoFileException e) {
@@ -678,7 +707,6 @@ public class ClientMain {
         // mouse handler for elfenland lobby
         MinuetoEventQueue elfenlandLobbyQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(new MinuetoMouseHandler() {
-            private MinuetoFont fontArial20 = new MinuetoFont("Arial", 22, true, false);
             private boolean ready = false;
             @Override
             public void handleMousePress(int x, int y, int button) {
@@ -693,21 +721,42 @@ public class ClientMain {
                     // click on Ready? button
                     ready = !ready;
                     if (ready) {
-                        lobbyElfenlandBackground.draw(readyGreen, 822, 583);
+                        lobbyElfenlandBackground.draw(readyGreen, 823, 581);
+                        // TODO: display Ready next to the player's name
+                        // TODO: notify all players that this player is ready
+                        // TODO: change to startButton when all players are ready and this player is the game creator
                     } else {
-                        lobbyElfenlandBackground.draw(readyWhite, 822, 583);
+                        lobbyElfenlandBackground.draw(readyWhite, 823, 581);
+                        // TODO: display Not Ready next to player's name
+                        // TODO: notify all players that this player is not ready
+                        // TODO: stop displaying the Start button to the host
                     }
-                    // TODO: display Ready next to the player's name
-                    // TODO: notify all players that this player is ready
-                    // TODO: change to startButton when all players are ready and this player is the game creator
-                } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) {
+                } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
                     // click on Mode button
-                } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) {
+                    modeDropdownActive = !modeDropdownActive;
+                    destinationDropdownActive = false;
+                    roundsDropdownActive = false;
+                } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x: 684-986 y: 358-399
                     // click on Destination Town button
-                }  else if (x >= 932 && x <= 985 && y >= 410 && y <=450) {
+                    destinationDropdownActive = !destinationDropdownActive;
+                    modeDropdownActive = false;
+                    roundsDropdownActive = false;
+                }  else if (x >= 932 && x <= 985 && y >= 410 && y <=450) { // x: 797-985 y: 411-450
                     // click on Rounds button
+                    roundsDropdownActive = !roundsDropdownActive;
+                    modeDropdownActive = false;
+                    destinationDropdownActive = false;
                 } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
                     // click on Send Message button
+                }
+
+                // clicking an option from the dropdowns
+                if (modeDropdownActive) {
+
+                } else if (destinationDropdownActive) {
+
+                } else if (roundsDropdownActive) {
+
                 }
 
                 if( x > 1000 && y > 740) {
@@ -772,16 +821,37 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                MinuetoText mode = new MinuetoText("mode", fontArial22Bold, MinuetoColor.BLACK);
-                lobbyElfenlandBackground.draw(mode, 775, 185);
-                MinuetoText size = new MinuetoText("6", fontArial22Bold, MinuetoColor.BLACK);
-                lobbyElfenlandBackground.draw(size, 767, 255);
-                MinuetoText destinationTown = new MinuetoText("none", fontArial22Bold, MinuetoColor.BLACK);
-                lobbyElfenlandBackground.draw(destinationTown, 699, 365);
-                MinuetoText round = new MinuetoText("3", fontArial22Bold, MinuetoColor.BLACK);
-                lobbyElfenlandBackground.draw(round, 820, 420);
+
+                /*MinuetoText elfenlandText = new MinuetoText("Elfenland", fontArial22Bold, MinuetoColor.BLACK);
+                lobbyElfenlandBackground.draw(elfenlandText, 775, 185);
+                String size = "3"; // TODO: change this to the actual variable
+                MinuetoText sizeText = new MinuetoText(size, fontArial22Bold, MinuetoColor.BLACK);
+                lobbyElfenlandBackground.draw(sizeText, 767, 255);
+                boolean destinationTown = false;    // TODO change this to actual value ( enum with 3 options )
+                MinuetoText destinationTownText;
+                if (destinationTown) {
+                    destinationTownText = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
+                } else {
+                    destinationTownText = new MinuetoText("Yes", fontArial22Bold, MinuetoColor.BLACK);
+                }
+                lobbyElfenlandBackground.draw(destinationTownText, 699, 365);
+                String rounds = "3";
+                MinuetoText round = new MinuetoText(rounds, fontArial22Bold, MinuetoColor.BLACK);
+                lobbyElfenlandBackground.draw(round, 820, 420);*/
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
+                }
+
+                // display dropdowns
+                if (modeDropdownActive) {
+                    gui.window.draw(modeDropdownRectangle, 762, 217);
+                    //lobbyElfenlandBackground.draw(modeDropdownRectangle, 762, 217);
+                } else if (destinationDropdownActive) {
+                    gui.window.draw(destinationTownDropdownRectangle, 684, 397);
+                    //lobbyElfenlandBackground.draw(destinationTownDropdownRectangle, 684, 397);
+                } else if (roundsDropdownActive) {
+                    gui.window.draw(roundsDropdownRectangle, 797, 450);
+                    //lobbyElfenlandBackground.draw(roundsDropdownRectangle, 797, 450);
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
