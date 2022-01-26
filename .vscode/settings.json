@@ -2,10 +2,13 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "~/Documents/'Course Material'/'U2 F21'/COMP361/f2021-hexanome-10",
-        "minueto.jar"
+        "minueto.jar",
+        "json-simple-1.1.1.jar"
     ],
     "java.project.sourcePaths": [
         "src",
-        "network"
+        "network",
+        "server",
+        "client"
     ]
 }
