@@ -32,6 +32,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.HttpRequest;
+import kong.unirest.HttpResponse;
+
 import java.net.HttpURLConnection;
 
 public class ClientMain {
@@ -180,43 +185,21 @@ public class ClientMain {
 
                 else {
                     try {
-
-                        /*
-                         * add a new user to the API
-                         * need to fix still
-                         */
-                        URL userUrl = new URL(
-                                "http://127.0.0.1:4242/api/users/foobar?access_token=oJXTrhQZsw78SxJMvUHwJGxFiPE");
-                        HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
-                        userCon.setRequestMethod("PUT");
-                        userCon.setRequestProperty("Content-Type", "application/json");
-
-                        // /* Payload support */
-                        userCon.setDoOutput(true);
-                        DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
-                        userOut.writeBytes("{\n");
-                        // make the actual username
-                        userOut.writeBytes(" \"name\": \"" + userString + "\",\n");
-                        userOut.writeBytes(" \"password\": \"" + passString + "\",\n");
-                        // need to update color when we know it
-                        userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
-
-                        userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
-                        userOut.writeBytes("}");
-                        userOut.flush();
-                        userOut.close();
-
-                        int userStatus = userCon.getResponseCode();
-                        BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
-                        String userInputLine;
-                        StringBuffer userContent = new StringBuffer();
-                        while ((userInputLine = userIn.readLine()) != null) {
-                            userContent.append(userInputLine);
+                        boolean userFound = false;
+                        for (Object user : getAllUsers()) {
+                            if (((JSONObject) user).get("name").equals(userString)) {
+                                userFound = true;
+                            }
                         }
-                        userIn.close();
-                        userCon.disconnect();
-                        System.out.println("Response status: " + userStatus);
-                        System.out.println(userContent.toString());
+                        if (userFound) {
+                            // user exists, login
+                            System.out.println("User exists");
+                        } else {
+                            createNewUser(userString, passString);
+                            System.out.println("Got User: " + getUser("hyacinth").get("name"));
+                            System.out.println("New User");
+                            // System.out.println(getUser(userString).toString());
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
@@ -240,7 +223,6 @@ public class ClientMain {
 
                 }
             }
-
         }
 
         @Override
@@ -476,13 +458,18 @@ public class ClientMain {
                 } else {
                     return;
                 }
-            } else if (shift || i < 65 || i > 90) { // uppercase or not a letter
+            } else if (shift || i < 65 || i > 90) { // uppercase
+                                                    // or
+                                                    // not
+                                                    // a
+                                                    // letter
                 if (nameSel) {
                     nameString = nameString + (char) i;
                 } else if (numberPlayerSel) {
                     numberPlayerString = numberPlayerString + (char) i;
                 }
-            } else { // lowercase letters
+            } else { // lowercase
+                     // letters
                 if (nameSel) {
                     nameString = nameString + (char) (i + 32);
                 } else if (numberPlayerSel) {
@@ -628,12 +615,18 @@ public class ClientMain {
                 modeDropdownActive = !modeDropdownActive;
                 destinationDropdownActive = false;
                 roundsDropdownActive = false;
-            } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x: 684-986 y: 358-399
+            } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x:
+                                                                       // 684-986
+                                                                       // y:
+                                                                       // 358-399
                 // click on Destination Town button
                 destinationDropdownActive = !destinationDropdownActive;
                 modeDropdownActive = false;
                 roundsDropdownActive = false;
-            } else if (x >= 932 && x <= 985 && y >= 410 && y <= 450) { // x: 797-985 y: 411-450
+            } else if (x >= 932 && x <= 985 && y >= 410 && y <= 450) { // x:
+                                                                       // 797-985
+                                                                       // y:
+                                                                       // 411-450
                 // click on Rounds button
                 roundsDropdownActive = !roundsDropdownActive;
                 modeDropdownActive = false;
@@ -1054,81 +1047,45 @@ public class ClientMain {
         return (JSONObject) parser.parse(content.toString());
     }
 
-    private static JSONObject createNewUser(String userName, String passWord) throws IOException, ParseException {
+    private static void createNewUser(String userName, String passWord) {
         /*
          * add a new user to the API
          */
-        URL userUrl = new URL(
-                "http://127.0.0.1:4242/api/users/foobar?access_token=" + token.get("access_token"));
-        HttpURLConnection userCon = (HttpURLConnection) userUrl.openConnection();
-        userCon.setRequestMethod("PUT");
-        userCon.setRequestProperty("Content-Type", "application/json");
+        String user = "{\n\"name\": " + userString +
+                ",\n\"password\": " + passString + ",\n\"preferredColour\": "
+                + "01FFFF,\n\"role\": \"ROLE_PLAYER\"\n}";
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
-        // /* Payload support */
-        userCon.setDoOutput(true);
-        DataOutputStream userOut = new DataOutputStream(userCon.getOutputStream());
-        userOut.writeBytes("{\n");
-        // make the actual username
-        userOut.writeBytes(" \"name\": \"" + userName + "\",\n");
-        userOut.writeBytes(" \"password\": \"" + passWord + "\",\n");
-        // need to update color when we know it
-        userOut.writeBytes(" \"preferredColour\": \"01FFFF\",\n");
+        JsonNode userJson = new JsonNode(user);
 
-        userOut.writeBytes(" \"role\": \"ROLE_PLAYER\"\n");
-        userOut.writeBytes("}");
-        userOut.flush();
-        userOut.close();
-
-        int userStatus = userCon.getResponseCode();
-        BufferedReader userIn = new BufferedReader(new InputStreamReader(userCon.getInputStream()));
-        String userInputLine;
-        StringBuffer userContent = new StringBuffer();
-        while ((userInputLine = userIn.readLine()) != null) {
-            userContent.append(userInputLine);
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
+                .header("Authorization", "Basic " + encoded)
+                .header("Content-Type", "application/json").body(user).asString();
+        try {
+            assert (jsonResponse.getStatus() == 200);
+        } catch (AssertionError e) {
+            e.printStackTrace();
         }
-        userIn.close();
-        userCon.disconnect();
-        System.out.println("Response status: " + userStatus);
-        System.out.println(userContent.toString());
-
-        JSONParser parser = new JSONParser();
-        JSONObject user = (JSONObject) parser.parse(userContent.toString());
-        return user;
     }
 
     // get user from API by username
-    private static JSONObject getUser(String userName) throws IOException, ParseException {
-        URL url = new URL(
-                "http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
+    private static JSONObject getUser(String userName) throws ParseException {
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
 
-        /* Payload support */
-        con.setDoOutput(true);
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
+        HttpResponse<JsonNode> jsonResponse = Unirest
+                .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
+                .header("Authorization", "Basic " + encoded)
+                .asJson();
 
         JSONParser parser = new JSONParser();
-        JSONObject user = (JSONObject) parser.parse(content.toString());
-        return user;
+        return (JSONObject) parser.parse(jsonResponse.getBody().toString());
     }
 
     private static JSONArray getAllUsers() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/users?access_token=aDgtBk8O-xn48i9Zg-lXZ4sTbEo");
+        URL url = new URL("http://127.0.0.1:4242/api/users?access_token=" + token.get("access_token"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
@@ -1149,7 +1106,6 @@ public class ClientMain {
         in.close();
         con.disconnect();
         System.out.println("Response status: " + status);
-        System.out.println(content.toString());
 
         JSONParser parser = new JSONParser();
         JSONArray jsonArray = (JSONArray) parser.parse(content.toString());
