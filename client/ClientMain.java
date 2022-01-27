@@ -20,7 +20,9 @@ import java.io.DataOutputStream;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 // json
@@ -34,6 +36,8 @@ import org.json.simple.parser.ParseException;
 
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import unirest.shaded.com.google.gson.Gson;
+import unirest.shaded.org.apache.http.auth.UsernamePasswordCredentials;
 import kong.unirest.HttpRequest;
 import kong.unirest.HttpResponse;
 
@@ -198,7 +202,6 @@ public class ClientMain {
                             createNewUser(userString, passString);
                             System.out.println("Got User: " + getUser("hyacinth").get("name"));
                             System.out.println("New User");
-                            // System.out.println(getUser(userString).toString());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1051,22 +1054,23 @@ public class ClientMain {
         /*
          * add a new user to the API
          */
-        String user = "{\n\"name\": " + userString +
-                ",\n\"password\": " + passString + ",\n\"preferredColour\": "
-                + "01FFFF,\n\"role\": \"ROLE_PLAYER\"\n}";
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("name", userName);
+        fields.put("password", passWord);
+        fields.put("preferredColour", "01FFFF");
+        fields.put("role", "ROLE_PLAYER");
+
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
-        JsonNode userJson = new JsonNode(user);
-
         HttpResponse<String> jsonResponse = Unirest
                 .put("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
+                .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
-                .header("Content-Type", "application/json").body(user).asString();
-        try {
-            assert (jsonResponse.getStatus() == 200);
-        } catch (AssertionError e) {
-            e.printStackTrace();
+                .body(new Gson().toJson(fields)).asString();
+        if (jsonResponse.getStatus() != 200) {
+            System.out.println(jsonResponse.getStatus());
+            throw new IllegalArgumentException("Cannot create user: " + userName);
         }
     }
 
@@ -1079,6 +1083,9 @@ public class ClientMain {
                 .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
                 .header("Authorization", "Basic " + encoded)
                 .asJson();
+        if (jsonResponse.getStatus() != 200) {
+            throw new IllegalArgumentException("Unable to retrieve user: " + userName);
+        }
 
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(jsonResponse.getBody().toString());
