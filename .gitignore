@@ -15,3 +15,4 @@ crash.log
 .vscode/launch.json
 LobbyService-master/target
 .DS_Store
+LobbyService-master/.DS_Store
