@@ -8,7 +8,8 @@
             "type": "java",
             "name": "Launch ClientMain",
             "request": "launch",
-            "mainClass": "ClientMain"
+            "mainClass": "ClientMain",
+            "projectName": "f2021-hexanome-10_e85b17d4"
         },
         {
             "type": "java",

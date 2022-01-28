@@ -12,6 +12,7 @@ tmp/nanoc/
 crash.log
 
 .vscode/settings.json
+.vscode/launch.json
 LobbyService-master/target
 .DS_Store
 LobbyService-master/.DS_Store
