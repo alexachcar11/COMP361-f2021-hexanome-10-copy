@@ -673,6 +673,85 @@ public class ClientMain {
         }
     };
 
+    MinuetoMouseHandler elfenGoldLobbyMouseHandler = new MinuetoMouseHandler() {
+        private boolean ready = false;
+        @Override
+        public void handleMousePress(int x, int y, int button) {
+            System.out.println("x: " + x + "y: " + y);
+
+            if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
+                // click on Leave button
+                // TODO: remove the user from the lobby and send this message to all players
+                // TODO: return the user to the open lobbies page
+                gui.currentBackground = GUI.Screen.LOBBY;
+            } else if (x>= 822 & x<= 998 && y <= 655 && y >= 585) {
+                // click on Ready? button
+                ready = !ready;
+                if (ready) {
+                    lobbyElfengoldBackground.draw(readyGreen, 823, 581);
+                    // TODO: display Ready next to the player's name
+                    // TODO: notify all players that this player is ready
+                    // TODO: change to startButton when all players are ready and this player is the game creator
+                } else {
+                    lobbyElfengoldBackground.draw(readyWhite, 823, 581);
+                    // TODO: display Not Ready next to player's name
+                    // TODO: notify all players that this player is not ready
+                    // TODO: stop displaying the Start button to the host
+                }
+            } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
+                // click on Mode button
+                modeDropdownActive = !modeDropdownActive;
+                destinationDropdownActive = false;
+                roundsDropdownActive = false;
+            } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x: 684-986 y: 358-399
+                // click on Destination Town button
+                destinationDropdownActive = !destinationDropdownActive;
+                modeDropdownActive = false;
+                roundsDropdownActive = false;
+            }  else if (x >= 932 && x <= 985 && y >= 410 && y <=450) { // x: 797-985 y: 411-450
+                // click on Rounds button
+                roundsDropdownActive = !roundsDropdownActive;
+                modeDropdownActive = false;
+                destinationDropdownActive = false;
+            } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
+                // click on Send Message button
+            }
+
+            // clicking an option from the dropdowns
+            if (modeDropdownActive) {
+
+            } else if (destinationDropdownActive) {
+
+            } else if (roundsDropdownActive) {
+
+            }
+
+            if( x > 1000 && y > 740) {
+                // click on mute/unmute button
+                if(soundOn) {
+                    soundOn = false;
+                    pauseSound();
+                    gui.window.draw(soundOffButton, 1000, 745);
+
+                } else {
+                    soundOn = true;
+                    resumeSound();
+                    gui.window.draw(soundOnButton, 1000, 745);
+                }
+            }
+        }
+
+        @Override
+        public void handleMouseRelease(int x, int y, int button) {
+            // do nothing
+        }
+
+        @Override
+        public void handleMouseMove(int x, int y) {
+            // do nothing
+        }
+    };
+
     // for login screen queue
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
@@ -1017,6 +1096,7 @@ public class ClientMain {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(content.toString());
     }
+// ******************************************MAIN CODE STARTS HERE********************************************
 
     // refreshes the access token
     private static JSONObject refreshAccessToken() throws IOException, ParseException {
