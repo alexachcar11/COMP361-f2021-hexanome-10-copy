@@ -2,6 +2,8 @@
 Represents one user from the moment the game is launched (they may not be a player yet)
  */
 
+import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
 
 public class User {
@@ -34,7 +36,7 @@ public class User {
     Messages: User:: {gameCreationFailed_e; gameCreationConfirmed}
     Post: Sends a game creation confirmed message to the user upon success. In case the game is not successfully created, the operation outputs an “gameCreationFailed_e” message to the user.
      */
-    public void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException {
+    public void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException, ParseException {
         // TODO: change this into a message once the network is working
         ServerMain.createNewGame(displayName, numberOfPlayers, numberOfRounds, mode, witchEnabled, destinationTownEnabled);
     }

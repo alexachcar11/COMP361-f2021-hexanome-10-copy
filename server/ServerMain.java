@@ -6,6 +6,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import unirest.shaded.com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -65,7 +67,7 @@ public class ServerMain {
      * @param witchEnabled true if the witch can be used, false otherwise
      * @param destinationTownEnabled true if players will have a destination town, false otherwise
      */
-    public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException {
+    public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException, ParseException {
 
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
@@ -76,16 +78,28 @@ public class ServerMain {
         fields.put("location", "http://127.0.0.1:4243" + name);
         fields.put("maxSessionPlayers", numberOfPlayers);
         fields.put("minSessionPlayers", numberOfPlayers);
-        fields.put("name", displayName);
+        fields.put("name", name);
+        fields.put("webSupport", "false");
 
+        System.out.println(ClientMain.token.get("access_token"));
+
+        // lobby service location url
+        String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token=" + ClientMain.token.get("access_token");
+        System.out.println(lobbyServiceURL);
+
+        // build request
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
-                        + ClientMain.token.get("access_token"))
+                .put(lobbyServiceURL)
+                .header("Authorization", "Bearer " + encoded) // when bearer: invalid access token. when basic: access is denied
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Basic " + encoded)
-                .fields(fields).asString();
+                .body(new Gson().toJson(fields)).asString();
+
+        // verify response
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error: could not register game service");
+            System.err.println("Error" + jsonResponse.getStatus() +": could not register game service");
+            JSONParser parser = new JSONParser();
+            JSONObject jsonArray = (JSONObject) parser.parse(jsonResponse.getBody());
+            System.out.println(jsonArray.toString());
             // send gameCreationConfirmed(Game null) to the User
             gameCreationConfirmed(null);
         } else {

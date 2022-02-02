@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.*;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -45,38 +44,7 @@ import kong.unirest.HttpResponse;
 
 import java.net.HttpURLConnection;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class ClientMain {
-
-    /*
-     * create new oauth token approx. every 30 minutes
-     *
-     * refresh access token every 590 seconds
-     */
-    Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-
-        @Override
-        public void run() {
-            try {
-                token = createAccessToken();
-            } catch (IOException | ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }, 0, 1790 * 1000);
-        timer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            try {
-                token = refreshAccessToken();
-            } catch (IOException | ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }, 590 * 1000, 590 * 1000);
 
     // fields
     GUI gui;
@@ -242,7 +210,7 @@ public class ClientMain {
                     // change screen after login
                     try {
                         ServerMain.createNewGame("test-game", 6, 3, Mode.ELFENLAND, false, false);
-                    } catch (IOException e) {
+                    } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
                     displayAvailableGames();
@@ -759,15 +727,32 @@ public class ClientMain {
          */
 
         /*
-         * create OAuth2 token
-         * after this only need to refresh token
+         * create new oauth token approx. every 30 minutes
+         *
+         * refresh access token every 590 seconds
          */
-        try {
-            token = createAccessToken();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            System.err.println("Error: could not create access token.");
-        }
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                try {
+                    token = createAccessToken();
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 1790 * 1000);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    token = refreshAccessToken();
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 590 * 1000, 590 * 1000);
 
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
