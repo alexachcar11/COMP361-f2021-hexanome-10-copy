@@ -16,9 +16,7 @@ import java.net.URL;
 
 // other
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
+import java.util.*;
 
 public class ServerMain {
 
@@ -33,8 +31,6 @@ public class ServerMain {
             e.printStackTrace();
             System.err.println("Error: could not create access token.");
         }
-
-        getAvailableSessions();
 
     }
 
@@ -71,50 +67,35 @@ public class ServerMain {
      */
     public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException {
 
-        // turn displayName into a name by replacing spaces with dashes
-        String name = displayName.replace(" ", "-");
+        String encoded = Base64.getEncoder()
+                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
-        // send a request to LS to create a new game
-        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token=" + token.get("access_token"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("PUT");
-        con.setRequestProperty("Content-Type", "application/json");
+        String name = displayName.replace(" ", "");
 
-        /* Payload support */
-        con.setDoOutput(true);
-        DataOutputStream out = new DataOutputStream(con.getOutputStream());
-        out.writeBytes("{\"name\":\"" + name + "\",\"displayName\":\"" + displayName + "\",\"location\":\"http://127.0.0.1:4243/" + "DummyGameService" + "\",\"" + numberOfPlayers + "\":\"3\",\"" + numberOfPlayers + "\":\"5\", \"webSupport\":\"true\"}");
-        // TODO: what is DummyGameService in the above line
-        // TODO: do we need to change the location in the above line
-        out.flush();
-        out.close();
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("location", "http://127.0.0.1:4243" + name);
+        fields.put("maxSessionPlayers", numberOfPlayers);
+        fields.put("minSessionPlayers", numberOfPlayers);
+        fields.put("name", displayName);
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-
-        // TESTING CODE START
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-        // TESTING CODE END
-
-
-        if (status == 200) { // success
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
+                        + token.get("access_token"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Basic " + encoded)
+                .fields(fields).asString();
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error: could not register game service");
+            // send gameCreationConfirmed(Game null) to the User
+            gameCreationConfirmed(null);
+        } else {
             // create a new Game object
             ServerGame newGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode);
 
             // send gameCreationConfirmed(Game newGameObject) to the User
             gameCreationConfirmed(newGame);
-        } else { // fail
-            // send gameCreationConfirmed(Game null) to the User
-            gameCreationConfirmed(null);
         }
+
     }
 
     /**

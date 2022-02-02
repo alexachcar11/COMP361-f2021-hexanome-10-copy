@@ -206,6 +206,11 @@ public class ClientMain {
                         System.out.println("Error: failed to login a user.");
                     }
                     // change screen after login
+                    try {
+                        ServerMain.createNewGame("test-game", 6, 3, Mode.ELFENLAND, false, false);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }
