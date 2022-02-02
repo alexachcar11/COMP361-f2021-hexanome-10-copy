@@ -18,12 +18,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 // json
 import java.net.URL;
@@ -43,7 +38,39 @@ import kong.unirest.HttpResponse;
 
 import java.net.HttpURLConnection;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class ClientMain {
+
+    /*
+     * create new oauth token approx. every 30 minutes
+     *
+     * refresh access token every 590 seconds
+     */
+    Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+        @Override
+        public void run() {
+            try {
+                token = createAccessToken();
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }, 0, 1790 * 1000);
+        timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            try {
+                token = refreshAccessToken();
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }, 590 * 1000, 590 * 1000);
+
     // fields
     GUI gui;
     MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
@@ -682,7 +709,7 @@ public class ClientMain {
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
-    private static JSONObject token;
+    public static JSONObject token;
 
     // for mute button
     private static boolean soundOn = true;
