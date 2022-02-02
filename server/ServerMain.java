@@ -1,4 +1,7 @@
 // API requests and parsing
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,13 +15,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 // other
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class ServerMain {
 
+    private static JSONObject token;
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException, ParseException {
+
+        try {
+            token = ClientMain.createAccessToken();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            System.err.println("Error: could not create access token.");
+        }
+
+        getAvailableSessions();
 
     }
 
@@ -51,17 +67,15 @@ public class ServerMain {
      * @param numberOfRounds number of rounds this game will have
      * @param mode elfenland or elfengold
      * @param witchEnabled true if the witch can be used, false otherwise
-     * @param destinationTownEnabled true if players will have a destionation town, false otherwise
+     * @param destinationTownEnabled true if players will have a destination town, false otherwise
      */
     public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode, boolean witchEnabled, boolean destinationTownEnabled) throws IOException {
-        // TODO: Lilia check with Lingjia if the new operation definition makes sense
 
         // turn displayName into a name by replacing spaces with dashes
         String name = displayName.replace(" ", "-");
 
         // send a request to LS to create a new game
-        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token=dA/1to5bFiRvqTem0eiUzY2FITw=");
-        // TODO: access token in the above line??
+        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token=" + token.get("access_token"));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("PUT");
         con.setRequestProperty("Content-Type", "application/json");
@@ -178,21 +192,20 @@ public class ServerMain {
                 String saveGameID = (String) sessionJSON.get("savegameid");
 
                 // Object gameParameters = sessionJSON.get("gameParameters");
-
+                /*
                 String playerListInStringForm = (String) sessionJSON.get("players");
                 playerListInStringForm = playerListInStringForm.replace("[", "");
                 playerListInStringForm = playerListInStringForm.replace("]", "");
                 String[] playerListInArrayForm = playerListInStringForm.split(",");
-                ArrayList<String> playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);
+                ArrayList<String> playerNames = (ArrayList<String>) Arrays.asList(playerListInArrayForm);*/
 
-                availableSessions.add(new LobbyServiceGameSession(launched, playerNames, saveGameID));
+                //availableSessions.add(new LobbyServiceGameSession(launched, saveGameID, creator, ));
 
             });
         } catch (NullPointerException e) {
             // there are no available sessions
-            System.out.println("there are no sessions");
         }
-        return availableSessions;
+        return availableSessions; // todo: this returns null right now
     }
 
     /**

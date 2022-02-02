@@ -7,10 +7,16 @@ import java.io.IOException;
 public class User {
 
     // FIELDS
-
+    String name;
 
     // CONSTRUCTOR
+    public User(String name) {
+        this.name = name;
+    }
 
+    public String getName() {
+        return name;
+    }
 
     // OPERATIONS
     /*

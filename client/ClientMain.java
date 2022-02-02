@@ -44,7 +44,6 @@ import kong.unirest.HttpResponse;
 import java.net.HttpURLConnection;
 
 public class ClientMain {
-
     // fields
     GUI gui;
     MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
@@ -58,7 +57,7 @@ public class ClientMain {
     MinuetoImage playScreenImage;
     MinuetoImage loginScreenImage;
     MinuetoImage whiteBoxImage;
-    MinuetoImage lobbyBackground;
+    private static MinuetoImage lobbyBackground;
     MinuetoImage lobbyPrevBackground;
     MinuetoImage lobbyNextBackground;
     MinuetoImage lobbyPrevNextBackground;
@@ -110,7 +109,6 @@ public class ClientMain {
 
                 // TODO: Add create lobby instance
                 // create lobby instance if it's not there already
-
                 gui.currentBackground = GUI.Screen.LOGIN;
             }
 
@@ -208,6 +206,7 @@ public class ClientMain {
                         System.out.println("Error: failed to login a user.");
                     }
                     // change screen after login
+                    displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }
             }
@@ -245,16 +244,11 @@ public class ClientMain {
         public void handleKeyPress(int i) {
             // press on enter key takes you to the next screen
             if (i == MinuetoKeyboard.KEY_ENTER) {
-                try {
-                    ServerMain.getAvailableGames(); // retrieves all game services in the API
-                    ServerMain.getAvailableSessions(); // retrieves all game sessions in the API
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                    // if we in this catch block then there are no available game services or
-                    // sessions
-                    // TODO: for additional functionality, we can put a message that says "there are
-                    // no game lobbies, please create one or use the refresh button"
-                }
+                // TODO: owen add login verification here
+
+                // switch to lobby screen if login ok
+                displayAvailableGames();
+                gui.currentBackground = GUI.Screen.LOBBY;
             }
             // TAB used to switch boxes
             else if (i == 9 && userNameSel) {
@@ -413,12 +407,15 @@ public class ClientMain {
         @Override
         public void handleMousePress(int x, int y, int button) {
 
+            System.out.println("x:" + x + " y:" + y);
+
             if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
                 // click on Create New Game button
                 gui.currentBackground = GUI.Screen.CREATELOBBY;
             } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
                 // click on the Refresh button
-
+                // TODO: test this when there is a difference in between refreshes
+                displayAvailableGames();
             }
 
             if (x > 1000 && y > 740) {
@@ -532,6 +529,7 @@ public class ClientMain {
                     }
                 } else if (x >= 330 && x <= 695 && y <= 725 && y >= 665) {
                     // click on the Return to Open Lobbies button
+                    displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 } else if (x >= 290 && x <= 535 && y <= 400 && y >= 340) { // 245x60
                     // click on Elfenland
@@ -597,6 +595,7 @@ public class ClientMain {
                 // click on Leave button
                 // TODO: remove the user from the lobby and send this message to all players
                 // TODO: return the user to the open lobbies page
+                displayAvailableGames();
                 gui.currentBackground = GUI.Screen.LOBBY;
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
                 // click on Ready? button
@@ -990,7 +989,7 @@ public class ClientMain {
         }
     }
 
-    private static JSONObject createAccessToken() throws IOException, ParseException {
+    static JSONObject createAccessToken() throws IOException, ParseException {
         URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -1134,5 +1133,66 @@ public class ClientMain {
     static void resumeSound() {
         // loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
+    }
+
+    public static void displayAvailableGames() {
+        // TODO: can I handle the try/catch elsewhere? (lilia)
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        try {
+            ArrayList<LobbyServiceGame> availableGamesList = ServerMain.getAvailableGames();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = ServerMain.getAvailableSessions();
+
+            if (availableSessionsList.size() == 0 && availableGamesList.size() == 0) {
+                MinuetoText noneAvailableText = new MinuetoText("There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
+                lobbyBackground.draw(noneAvailableText, 200, 340);
+            }
+
+            int counter = 0; // count how many games services + sessions have been displayed so far
+
+            // display available game services (i.e. games with no creator)
+            for (LobbyServiceGame g : availableGamesList) {
+                String gDisplayName = g.getDisplayName();
+                String gMaxPlayers = String.valueOf(g.getMaxNumberOfPlayers());
+
+                MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
+                MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
+                MinuetoText size = new MinuetoText("0/"+gMaxPlayers, font, MinuetoColor.BLACK);
+                MinuetoRectangle joinButton = new MinuetoRectangle(100, 50, MinuetoColor.WHITE, true);
+                MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
+
+                lobbyBackground.draw(displayName, 65, 215+(counter*50));
+                lobbyBackground.draw(creator, 305, 215+(counter*50));
+                lobbyBackground.draw(size, 640, 215+(counter*50));
+                lobbyBackground.draw(joinButton, 805, 215+(counter*50));
+                lobbyBackground.draw(joinText, 815, 215+(counter*50));
+            }
+
+            // display available game sessions (i.e. games with a creator)
+            for (LobbyServiceGameSession gs : availableSessionsList){
+                if (!gs.isLaunched()) { // only show unlaunched sessions
+                    String gsName = gs.getGameService().getDisplayName();
+                    String gsCreator = gs.getCreator();
+                    String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfPlayersCurrently());
+                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getMaxNumberOfPlayers());
+
+                    MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
+                    MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
+                    MinuetoText size = new MinuetoText(gsCurrentPlayerNumber+"/"+gsMaxPlayerNumber, font, MinuetoColor.BLACK);
+                    MinuetoRectangle joinButton = new MinuetoRectangle(100, 50, MinuetoColor.WHITE, true);
+                    MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
+
+                    lobbyBackground.draw(displayName, 65, 215+(counter*50));
+                    lobbyBackground.draw(creator, 305, 215+(counter*50));
+                    lobbyBackground.draw(size, 640, 215+(counter*50));
+                    lobbyBackground.draw(joinButton, 805, 215+(counter*50));
+                    lobbyBackground.draw(joinText, 815, 215+(counter*50));
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
