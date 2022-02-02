@@ -19,7 +19,14 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.*;
 import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 // json
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -1122,31 +1129,19 @@ public class ClientMain {
         return (JSONObject) parser.parse(jsonResponse.getBody().toString());
     }
 
-    private static JSONArray getAllUsers() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/users?access_token=" + token.get("access_token"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
+    private static JSONArray getAllUsers() throws ParseException {
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
+        HttpResponse<String> jsonResponse = Unirest
+                .get("http://127.0.0.1:4242/api/users?access_token=" + token.get("access_token"))
+                .header("Authorization", "Basic " + encoded).asString();
 
-        /* Payload support */
-        con.setDoOutput(true);
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error: unable to retrieve users.");
         }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
 
         JSONParser parser = new JSONParser();
-        JSONArray jsonArray = (JSONArray) parser.parse(content.toString());
+        JSONArray jsonArray = (JSONArray) parser.parse(jsonResponse.getBody());
 
         return jsonArray;
     }

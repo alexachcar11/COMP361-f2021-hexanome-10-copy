@@ -80,7 +80,7 @@ public class ServerMain {
 
         HttpResponse<String> jsonResponse = Unirest
                 .put("http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
-                        + token.get("access_token"))
+                        + ClientMain.token.get("access_token"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .fields(fields).asString();
@@ -95,7 +95,6 @@ public class ServerMain {
             // send gameCreationConfirmed(Game newGameObject) to the User
             gameCreationConfirmed(newGame);
         }
-
     }
 
     /**
@@ -113,7 +112,6 @@ public class ServerMain {
             // send newGameState to the User
         }
     }
-
 
     /**
      * Note: Lilia changed this operation because it didn't make sense
