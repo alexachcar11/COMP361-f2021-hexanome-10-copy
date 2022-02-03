@@ -87,6 +87,7 @@ public class ClientMain {
     MinuetoRectangle numberOfPlayersTextField;
     MinuetoImage soundOnButton;
     MinuetoImage soundOffButton;
+    boolean destinationTown = false;
 
     // TODO: place this somewhere else configImages(bootImages);
     /*
@@ -570,7 +571,7 @@ public class ClientMain {
                         resumeSound();
                         gui.window.draw(soundOnButton, 1000, 745);
                     }
-                }
+                } 
             }
 
         }
@@ -618,6 +619,7 @@ public class ClientMain {
                 modeDropdownActive = !modeDropdownActive;
                 destinationDropdownActive = false;
                 roundsDropdownActive = false;
+                
             } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x:
                                                                        // 684-986
                                                                        // y:
@@ -636,8 +638,18 @@ public class ClientMain {
                 destinationDropdownActive = false;
             } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
                 // click on Send Message button
+            } else if (destinationDropdownActive){ // DROPDOWN MENU OPEN AND CLICKING ON YES OR NO 
+                if(x>=690 && x <= 976 && y>=405 && y<=433) { 
+                    // yes
+                    destinationTown = true;
+                    destinationDropdownActive = !destinationDropdownActive;
+                }
+                else if(x>=690 && x <= 976 && y>=437 && y<=472) { 
+                    // no
+                    destinationTown = false;
+                    destinationDropdownActive = !destinationDropdownActive;
+                }
             }
-
             // clicking an option from the dropdowns
             if (modeDropdownActive) {
 
@@ -715,6 +727,14 @@ public class ClientMain {
                 destinationDropdownActive = false;
             } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
                 // click on Send Message button
+
+                // track the message from the textbox  
+
+                // print it to a given location 
+
+                // if there is text already, write the old text lower and the new one higher
+
+                // 
             }
 
             // clicking an option from the dropdowns
@@ -832,7 +852,7 @@ public class ClientMain {
             startButton = new MinuetoImageFile("images/start-button.png");
             fontArial22Bold = new MinuetoFont("Arial", 22, true, false);
             modeDropdownRectangle = new MinuetoRectangle(229, 42, MinuetoColor.WHITE, true);
-            destinationTownDropdownRectangle = new MinuetoRectangle(300, 41, MinuetoColor.WHITE, true);
+            destinationTownDropdownRectangle = new MinuetoRectangle(300, 80, MinuetoColor.WHITE, true);
             roundsDropdownRectangle = new MinuetoRectangle(186, 39, MinuetoColor.WHITE, true);
             modeElfenlandText = new MinuetoText("Elfenland", fontArial22Bold, MinuetoColor.BLACK);
             modeElfengoldText = new MinuetoText("Elfengold", fontArial22Bold, MinuetoColor.BLACK);
@@ -962,13 +982,28 @@ public class ClientMain {
                     elfenlandLobbyQueue.handle();
                 }
 
-                // display dropdowns
-                if (modeDropdownActive) {
+                
+                MinuetoText destinationTownTextNo = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
+                MinuetoText destinationTownTextYes = new MinuetoText("Yes", fontArial22Bold, MinuetoColor.BLACK);
+
+                if(destinationTown == false) { 
+                    // write no on the starting whitespace 
+                    gui.window.draw(destinationTownTextNo, 695, 365);
+                } else { 
+                    // write yes on the starting whitespace
+                    gui.window.draw(destinationTownTextYes, 695, 365);
+                }
+
+                // display dropdowns 
+                if (modeDropdownActive) { // this one isn't necessary -> allows us to change the mode 
+                    // decide if we want to put the node or not
                     gui.window.draw(modeDropdownRectangle, 762, 217);
                     // lobbyElfenlandBackground.draw(modeDropdownRectangle, 762, 217);
                 } else if (destinationDropdownActive) {
                     gui.window.draw(destinationTownDropdownRectangle, 684, 397);
-                    // lobbyElfenlandBackground.draw(destinationTownDropdownRectangle, 684, 397);
+                    gui.window.draw(destinationTownTextNo, 695, 445);
+                    gui.window.draw(destinationTownTextYes, 695, 405);
+
                 } else if (roundsDropdownActive) {
                     gui.window.draw(roundsDropdownRectangle, 797, 450);
                     // lobbyElfenlandBackground.draw(roundsDropdownRectangle, 797, 450);
