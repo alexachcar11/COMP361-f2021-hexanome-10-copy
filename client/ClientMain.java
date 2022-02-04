@@ -1014,31 +1014,29 @@ public class ClientMain {
     }
 
     static JSONObject createAccessToken() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-
         // Encode the token scope
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
-        /* Payload support */
-        con.setDoOutput(true);
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("token_type", "service");
+
+        String body = new Gson().toJson(fields);
+
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
+                .header("Authorization", "Basic " + encoded)
+                .body(body)
+                .asString();
+
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not create access token.");
         }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
 
         JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(content.toString());
+        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+
+        return token;
     }
 
     // refreshes the access token
@@ -1155,7 +1153,8 @@ public class ClientMain {
             ArrayList<LobbyServiceGameSession> availableSessionsList = ServerMain.getAvailableSessions();
 
             if (availableSessionsList.size() == 0 && availableGamesList.size() == 0) {
-                MinuetoText noneAvailableText = new MinuetoText("There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
+                MinuetoText noneAvailableText = new MinuetoText(
+                        "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
                 lobbyBackground.draw(noneAvailableText, 200, 340);
             }
 
@@ -1168,19 +1167,19 @@ public class ClientMain {
 
                 MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
                 MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
-                MinuetoText size = new MinuetoText("0/"+gMaxPlayers, font, MinuetoColor.BLACK);
+                MinuetoText size = new MinuetoText("0/" + gMaxPlayers, font, MinuetoColor.BLACK);
                 MinuetoRectangle joinButton = new MinuetoRectangle(100, 50, MinuetoColor.WHITE, true);
                 MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                lobbyBackground.draw(displayName, 65, 215+(counter*50));
-                lobbyBackground.draw(creator, 305, 215+(counter*50));
-                lobbyBackground.draw(size, 640, 215+(counter*50));
-                lobbyBackground.draw(joinButton, 805, 215+(counter*50));
-                lobbyBackground.draw(joinText, 815, 215+(counter*50));
+                lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
+                lobbyBackground.draw(creator, 305, 215 + (counter * 50));
+                lobbyBackground.draw(size, 640, 215 + (counter * 50));
+                lobbyBackground.draw(joinButton, 805, 215 + (counter * 50));
+                lobbyBackground.draw(joinText, 815, 215 + (counter * 50));
             }
 
             // display available game sessions (i.e. games with a creator)
-            for (LobbyServiceGameSession gs : availableSessionsList){
+            for (LobbyServiceGameSession gs : availableSessionsList) {
                 if (!gs.isLaunched()) { // only show unlaunched sessions
                     String gsName = gs.getGameService().getDisplayName();
                     String gsCreator = gs.getCreator();
@@ -1189,15 +1188,16 @@ public class ClientMain {
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
                     MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
-                    MinuetoText size = new MinuetoText(gsCurrentPlayerNumber+"/"+gsMaxPlayerNumber, font, MinuetoColor.BLACK);
+                    MinuetoText size = new MinuetoText(gsCurrentPlayerNumber + "/" + gsMaxPlayerNumber, font,
+                            MinuetoColor.BLACK);
                     MinuetoRectangle joinButton = new MinuetoRectangle(100, 50, MinuetoColor.WHITE, true);
                     MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                    lobbyBackground.draw(displayName, 65, 215+(counter*50));
-                    lobbyBackground.draw(creator, 305, 215+(counter*50));
-                    lobbyBackground.draw(size, 640, 215+(counter*50));
-                    lobbyBackground.draw(joinButton, 805, 215+(counter*50));
-                    lobbyBackground.draw(joinText, 815, 215+(counter*50));
+                    lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
+                    lobbyBackground.draw(creator, 305, 215 + (counter * 50));
+                    lobbyBackground.draw(size, 640, 215 + (counter * 50));
+                    lobbyBackground.draw(joinButton, 805, 215 + (counter * 50));
+                    lobbyBackground.draw(joinText, 815, 215 + (counter * 50));
                 }
             }
 

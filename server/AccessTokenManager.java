@@ -11,98 +11,125 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import unirest.shaded.com.google.gson.Gson;
+
 /**
- * Singleton object: the token manager handles the creation/deletion/update of tokens
+ * Singleton object: the token manager handles the creation/deletion/update of
+ * tokens
  */
 
 public class AccessTokenManager {
 
     // fields
     private static JSONObject currentTokenJSON;
-    private static AccessTokenManager tokenManagerInstance = new AccessTokenManager();
+    private final static AccessTokenManager tokenManagerInstance = new AccessTokenManager();
 
     // constructor - is private to ensure singleton
     private AccessTokenManager() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
 
+            @Override
+            public void run() {
+                try {
+                    currentTokenJSON = createNewAccessToken();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, 0, 1790 * 1000);
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                try {
+                    currentTokenJSON = refreshAccessToken();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, 590 * 1000, 590 * 1000);
     }
 
     /**
      * GETTER: retrieves the singleton instance of tokenManager
+     * 
      * @return tokenManagerInstance
      */
-    public static AccessTokenManager getAccessTokenManagerInstance() {
+    public static AccessTokenManager instance() {
         return tokenManagerInstance;
+    }
+
+    public static JSONObject getAccessToken() {
+        return currentTokenJSON;
     }
 
     /**
      * Creates a new access token for an admin.
+     * 
      * @throws IOException
      * @throws ParseException
      */
-    public static void createNewAccessToken() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-
+    public static JSONObject createNewAccessToken() throws ParseException {
         // Encode the token scope
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
-        /* Payload support */
-        con.setDoOutput(true);
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("token_type", "service");
+
+        String body = new Gson().toJson(fields);
+
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
+                .header("Authorization", "Basic " + encoded)
+                .body(body)
+                .asString();
+
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not create access token.");
         }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
 
         JSONParser parser = new JSONParser();
-        JSONObject newToken = (JSONObject) parser.parse(content.toString());
-        currentTokenJSON = newToken;
+        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+
+        System.out.println(token.toString());
+
+        return token;
     }
 
     /**
      * Refreshes the access token and set currentAccessToken to this new token
+     * 
      * @throws IOException
      * @throws ParseException
      */
-    public static void refreshAccessToken() throws IOException, ParseException {
-        URL url = new URL(
-                "http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
-                        + currentTokenJSON.get("refresh_token"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-
-        // Encode the token scope
+    public static JSONObject refreshAccessToken() throws ParseException {
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
 
-        /* Payload support */
-        con.setDoOutput(true);
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
+                        + currentTokenJSON.get("refresh_token"))
+                .header("Authorization", "Basic " + encoded)
+                .asString();
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": cannot refresh token.");
         }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-
         JSONParser parser = new JSONParser();
-        JSONObject newToken =  (JSONObject) parser.parse(content.toString());
-        currentTokenJSON = newToken;
+        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+        return token;
     }
 
     /**
@@ -114,6 +141,7 @@ public class AccessTokenManager {
 
     /**
      * Takes currentTokenJSON and returns its string value
+     * 
      * @return current token in String format
      */
     public static String getCurrentAccessTokenString() {
