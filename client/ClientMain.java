@@ -733,7 +733,7 @@ public class ClientMain {
             public void run() {
                 try {
                     token = createAccessToken();
-                } catch (IOException | ParseException e) {
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -1008,32 +1008,31 @@ public class ClientMain {
         }
     }
 
-    private static JSONObject createAccessToken() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
+    private static JSONObject createAccessToken() throws ParseException {
 
         // Encode the token scope
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
-        /* Payload support */
-        con.setDoOutput(true);
 
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("token_type", "service");
+
+        String body = new Gson().toJson(fields);
+
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
+                .header("Authorization", "Basic " + encoded)
+                .body(body)
+                .asString();
+
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not create access token.");
         }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
 
         JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(content.toString());
+        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+
+        return token;
     }
 
     // refreshes the access token
