@@ -15,9 +15,15 @@ Start the lobby service: mvn clean package spring-boot:run
 Test the lobby service connection: http://127.0.0.1:4242/api/online
 
 
-## OUR SERVER:
+## OUR SERVER
 
 IP address: 144.217.155.147
+
+Connect:
+
+```
+ssh elfen@elfenland.simui.com
+```
 
 Installed:
 -git
