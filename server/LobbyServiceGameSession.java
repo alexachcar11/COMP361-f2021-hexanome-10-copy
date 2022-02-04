@@ -9,17 +9,44 @@ import java.util.ArrayList;
 public class LobbyServiceGameSession {
 
     // fields
-    boolean launched;
-    ArrayList<String> players; //TODO: this will be ArrayList<Player> later
-    int numberOfPlayersCurrently;
-    String saveGameID;
+    private boolean launched;
+    private ArrayList<String> players; //TODO: this will be ArrayList<Player> later
+    private int numberOfPlayersCurrently;
+    private String saveGameID;
+    private String creator;
+    private LobbyServiceGame gameService;
 
 
-    LobbyServiceGameSession(boolean launched, ArrayList<String> players, String saveGameID) {
+    LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService) {
         this.launched = launched;
-        this.players = players;
         this.saveGameID = saveGameID;
         this.numberOfPlayersCurrently = players.size();
+        this.creator = creator;
+        this.gameService = gameService;
+    }
+
+    public boolean isLaunched() {
+        return launched;
+    }
+
+    public ArrayList<String> getPlayers() {
+        return players;
+    }
+
+    public int getNumberOfPlayersCurrently() {
+        return numberOfPlayersCurrently;
+    }
+
+    public String getSaveGameID() {
+        return saveGameID;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public LobbyServiceGame getGameService() {
+        return gameService;
     }
 
     /**

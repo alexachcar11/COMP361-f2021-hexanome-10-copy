@@ -1,11 +1,13 @@
 /*
-Instances of LobbyServiceGame represent one available game on the lobby service.
+Instances of LobbyServiceGame represent one available game service on the lobby service.
  */
 
 import org.minueto.MinuetoColor;
 import org.minueto.image.MinuetoFont;
 import org.minueto.image.MinuetoRectangle;
 import org.minueto.image.MinuetoText;
+
+import java.util.ArrayList;
 
 public class LobbyServiceGame {
 
@@ -51,23 +53,18 @@ public class LobbyServiceGame {
         return maxNumberOfPlayers;
     }
 
+
     /**
-     *  Create all minueto objects that are needed to display information about the game
+     * Create a new session for this game service.
+     * @param user user that initiates this operation
+     * @param saveGameID id of the previously saved game. If there is none, put "".
+     * @return the newly created LobbyServiceGameSession
+     * @post The user that initiates this operation becomes the creator of the session and is one of the players.
      */
-    public void buildDisplay() {
-
-
-        // background
-        MinuetoRectangle rectangle = new MinuetoRectangle(50, 1000, MinuetoColor.WHITE, true);
-
-        // display name
-        MinuetoFont fontArial14 = new MinuetoFont("Arial",14,false, false);
-        MinuetoText name = new MinuetoText(displayName,fontArial14,MinuetoColor.BLACK);
-
-        // I think when a LobbyServiceGame has an active session, then we should use activeSession.buildDisplay() instead.
-        // They are different because Session has a number of current players shown but Game does not
-
-
+    public LobbyServiceGameSession createSessionFromGameService(User user, String saveGameID) {
+        LobbyServiceGameSession newSession = new LobbyServiceGameSession(false, "", user.getName(), this);
+        this.activeSession = newSession;
+        return newSession;
     }
 
 
