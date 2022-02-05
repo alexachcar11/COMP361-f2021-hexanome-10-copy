@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class CardStack implements Iterable<TravelCard>
+public class CardStack implements Iterable<Card>
 {
-    private final List<TravelCard> aCards;
+    private final List<Card> aCards;
     
     //Creates an empty CardStack.
     public CardStack()
@@ -80,6 +80,6 @@ public class CardStack implements Iterable<TravelCard>
     }
 
     @Override
-    public Iterator<TravelCard> iterator() {return aCards.iterator();}
+    public Iterator<Card> iterator() {return aCards.iterator();}
     
 }
