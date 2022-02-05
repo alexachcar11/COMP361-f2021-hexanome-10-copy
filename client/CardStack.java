@@ -16,11 +16,11 @@ public class CardStack implements Iterable<Card>
     /**
      * Creates a CardStack that contains all the cards in pCard.
      * 
-     * @param pList The travel cards to initialize the stack with.
+     * @param pList The cards to initialize the stack with.
      */
-    public CardStack(List<TravelCard> pList){
+    public CardStack(List<Card> pList){
         this();
-        for(TravelCard card:pList){
+        for(Card card:pList){
             aCards.add(card);
         }
     }

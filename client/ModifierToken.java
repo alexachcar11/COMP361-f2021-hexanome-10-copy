@@ -1,10 +1,11 @@
 import org.minueto.image.MinuetoImage;
 
-public class TransportationCounter extends Token {
+// modifier includes the spells and so on for elfenGold and obstacles
+public class ModifierToken extends Token {
 
     // field
-    CardType aType;
-    
+    ModifierType aType;
+
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
      *
@@ -14,12 +15,14 @@ public class TransportationCounter extends Token {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-
-    public TransportationCounter(int minX, int maxX, int minY, int maxY, MinuetoImage image, CardType pType) {
+    public ModifierToken(int minX, int maxX, int minY, int maxY, MinuetoImage image, ModifierType pType) {
         super(minX, maxX, minY, maxY, image);
         aType = pType;
     }
-    public CardType getType(){
+
+    // get type of modifier
+    public ModifierType getModifier(){
         return aType;
     }
+    
 }

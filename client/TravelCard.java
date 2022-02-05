@@ -6,7 +6,7 @@ import org.minueto.image.MinuetoImage;
 public class TravelCard extends Card{
 
      // field
-     TransportationType aType;
+     CardType aType;
      // requirements for different regions (same as on the game's transportation chart)
      // for index: 0 = plain, 1 = wood, 2 = desert, 3 = mountain, 4 = river (river has 1 requirement, but if it's updraft will need to add 1 more)
      // values indicate requirement depending on type of travel card, and 0 means can't travel on that region
@@ -21,7 +21,7 @@ public class TravelCard extends Card{
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public TravelCard(int minX, int maxX, int minY, int maxY, MinuetoImage image, String name, TransportationType pType) {
+    public TravelCard(int minX, int maxX, int minY, int maxY, MinuetoImage image, String name, CardType pType) {
         super(minX, maxX, minY, maxY, image, name);
         aType = pType;
         // set up requirements depending on type
