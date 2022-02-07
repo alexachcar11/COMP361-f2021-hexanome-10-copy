@@ -1,7 +1,6 @@
 
 // API requests and parsing
 import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,24 +9,17 @@ import org.json.simple.parser.ParseException;
 import unirest.shaded.com.google.gson.Gson;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 // other
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ServerMain {
 
-    private static JSONObject token;
-
-    public static void main(String[] args) throws IOException, ParseException {
-
-        token = AccessTokenManager.getAccessToken();
+    public static void main(String[] args) {
 
     }
 
@@ -51,73 +43,6 @@ public class ServerMain {
         // create a new User object?)
         availableGames();
         // if unsuccessful: send invalidLogin_e to the User
-    }
-
-    /**
-     * Operation: Elfen::createNewGame(numberOfPlayers: int, numGameRounds: int,
-     * mode: Mode, witchEnabled: boolean, destinationTownEnabled: boolean)
-     * Scope: Game;
-     * New: newGame: Game;
-     * Messages: User:: {gameCreationFailed_e; newGameState}
-     * Post: Sends a new game state to the user upon success. in case the game is
-     * not successfully created, the operation outputs an “gameCreationFailed_e”
-     * message to the user.
-     * 
-     * @param displayName            name of the game
-     * @param numberOfPlayers        exact number of players required to play this
-     *                               game. it must be between 2 and 6
-     * @param numberOfRounds         number of rounds this game will have
-     * @param mode                   elfenland or elfengold
-     * @param witchEnabled           true if the witch can be used, false otherwise
-     * @param destinationTownEnabled true if players will have a destination town,
-     *                               false otherwise
-     */
-    public static void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-            boolean witchEnabled, boolean destinationTownEnabled) throws IOException, ParseException {
-
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-
-        String name = displayName.replace(" ", "");
-
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("location", "http://127.0.0.1:4243" + name);
-        fields.put("maxSessionPlayers", numberOfPlayers);
-        fields.put("minSessionPlayers", numberOfPlayers);
-        fields.put("name", name);
-        fields.put("webSupport", "false");
-
-        System.out.println(ClientMain.token.get("access_token"));
-
-        // lobby service location url
-        String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
-                + ClientMain.token.get("access_token");
-        System.out.println(lobbyServiceURL);
-
-        // build request
-        HttpResponse<String> jsonResponse = Unirest
-                .put(lobbyServiceURL)
-                .header("Authorization", "Bearer " + encoded) // when bearer: invalid access token. when basic: access
-                                                              // is denied
-                .header("Content-Type", "application/json")
-                .body(new Gson().toJson(fields)).asString();
-
-        // verify response
-        if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": could not register game service");
-            JSONParser parser = new JSONParser();
-            JSONObject jsonArray = (JSONObject) parser.parse(jsonResponse.getBody());
-            System.out.println(jsonArray.toString());
-            // send gameCreationConfirmed(Game null) to the User
-            gameCreationConfirmed(null);
-        } else {
-            // create a new Game object
-            ServerGame newGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
-                    mode);
-
-            // send gameCreationConfirmed(Game newGameObject) to the User
-            gameCreationConfirmed(newGame);
-        }
     }
 
     /**

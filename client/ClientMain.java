@@ -89,6 +89,8 @@ public class ClientMain {
     MinuetoImage soundOnButton;
     MinuetoImage soundOffButton;
 
+    public static final Registrator REGISTRATOR = Registrator.instance();
+
     // TODO: place this somewhere else configImages(bootImages);
     /*
      * in the Boot class
@@ -190,7 +192,7 @@ public class ClientMain {
                 else {
                     try {
                         boolean userFound = false;
-                        for (Object user : getAllUsers()) {
+                        for (Object user : REGISTRATOR.getAllUsers()) {
                             if (((JSONObject) user).get("name").equals(userString)) {
                                 userFound = true;
                             }
@@ -199,8 +201,8 @@ public class ClientMain {
                             // user exists, login
                             System.out.println("User exists");
                         } else {
-                            createNewUser(userString, passString);
-                            System.out.println("Got User: " + getUser("hyacinth").get("name"));
+                            REGISTRATOR.createNewUser(userString, passString);
+                            System.out.println("Got User: " + REGISTRATOR.getUser("hyacinth").get("name"));
                             System.out.println("New User");
                         }
                     } catch (Exception e) {
@@ -209,8 +211,8 @@ public class ClientMain {
                     }
                     // change screen after login
                     try {
-                        ServerMain.createNewGame("test-game", 6, 3, Mode.ELFENLAND, false, false);
-                    } catch (IOException | ParseException e) {
+                        REGISTRATOR.createNewGame("test-game", 6, 3, Mode.ELFENLAND, false, false);
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     displayAvailableGames();
@@ -684,7 +686,6 @@ public class ClientMain {
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
-    public static JSONObject token;
 
     // for mute button
     private static boolean soundOn = true;
@@ -725,34 +726,6 @@ public class ClientMain {
          * bootFileNames.add("images/böppels-and-boots/" + file.getName());
          * }
          */
-
-        /*
-         * create new oauth token approx. every 30 minutes
-         *
-         * refresh access token every 590 seconds
-         */
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                try {
-                    token = createAccessToken();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, 1790 * 1000);
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    token = refreshAccessToken();
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 590 * 1000, 590 * 1000);
 
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
@@ -1011,123 +984,6 @@ public class ClientMain {
         } catch (Exception e) {
             throw new Error("Unable to play sound file");
         }
-    }
-
-    private static JSONObject createAccessToken() throws ParseException {
-
-        // Encode the token scope
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("token_type", "service");
-
-        String body = new Gson().toJson(fields);
-
-        HttpResponse<String> jsonResponse = Unirest
-                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
-                .header("Authorization", "Basic " + encoded)
-                .body(body)
-                .asString();
-
-        if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": could not create access token.");
-        }
-
-        JSONParser parser = new JSONParser();
-        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
-
-        return token;
-    }
-
-    // refreshes the access token
-    private static JSONObject refreshAccessToken() throws IOException, ParseException {
-        URL url = new URL(
-                "http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
-                        + token.get("refresh_token"));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-
-        // Encode the token scope
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        con.setRequestProperty("Authorization", "Basic " + encoded);
-
-        /* Payload support */
-        con.setDoOutput(true);
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-        con.disconnect();
-        System.out.println("Response status: " + status);
-        System.out.println(content.toString());
-
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(content.toString());
-    }
-
-    private static void createNewUser(String userName, String passWord) {
-        /*
-         * add a new user to the API
-         */
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("name", userName);
-        fields.put("password", passWord);
-        fields.put("preferredColour", "01FFFF");
-        fields.put("role", "ROLE_PLAYER");
-
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-
-        HttpResponse<String> jsonResponse = Unirest
-                .put("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Basic " + encoded)
-                .body(new Gson().toJson(fields)).asString();
-        if (jsonResponse.getStatus() != 200) {
-            System.out.println(jsonResponse.getStatus());
-            throw new IllegalArgumentException("Cannot create user: " + userName);
-        }
-    }
-
-    // get user from API by username
-    private static JSONObject getUser(String userName) throws ParseException {
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-
-        HttpResponse<JsonNode> jsonResponse = Unirest
-                .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token=" + token.get("access_token"))
-                .header("Authorization", "Basic " + encoded)
-                .asJson();
-        if (jsonResponse.getStatus() != 200) {
-            throw new IllegalArgumentException("Unable to retrieve user: " + userName);
-        }
-
-        JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(jsonResponse.getBody().toString());
-    }
-
-    private static JSONArray getAllUsers() throws ParseException {
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-        HttpResponse<String> jsonResponse = Unirest
-                .get("http://127.0.0.1:4242/api/users?access_token=" + token.get("access_token"))
-                .header("Authorization", "Basic " + encoded).asString();
-
-        if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error: unable to retrieve users.");
-        }
-
-        JSONParser parser = new JSONParser();
-        JSONArray jsonArray = (JSONArray) parser.parse(jsonResponse.getBody());
-
-        return jsonArray;
     }
 
     /*
