@@ -1,6 +1,7 @@
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.simple.JSONArray;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -12,7 +13,6 @@ import java.util.TimerTask;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-import kong.unirest.json.JSONArray;
 import unirest.shaded.com.google.gson.Gson;
 
 /*
@@ -23,6 +23,9 @@ public class Registrator {
 
     private JSONObject currentTokenJSON;
     private static final Registrator INSTANCE = new Registrator();
+    private static final String encoded = Base64.getEncoder()
+            .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+    private static final JSONParser parser = new JSONParser();
 
     private Registrator() {
         Timer timer = new Timer();
@@ -62,26 +65,16 @@ public class Registrator {
      * @throws ParseException
      */
     private JSONObject createToken() throws ParseException {
-        // Encode the token scope
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
-
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("token_type", "service");
-
-        String body = new Gson().toJson(fields);
 
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
                 .header("Authorization", "Basic " + encoded)
-                .body(body)
                 .asString();
 
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not create access token.");
         }
 
-        JSONParser parser = new JSONParser();
         JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
 
         System.out.println(token.toString());
@@ -97,8 +90,6 @@ public class Registrator {
      *         token
      */
     public JSONObject refreshToken() throws ParseException {
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
@@ -109,7 +100,6 @@ public class Registrator {
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": cannot refresh token.");
         }
-        JSONParser parser = new JSONParser();
         JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
         return token;
     }
@@ -157,8 +147,6 @@ public class Registrator {
 
     // get user from API by username
     public JSONObject getUser(String userName) throws ParseException {
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token="
@@ -169,7 +157,6 @@ public class Registrator {
             throw new IllegalArgumentException("Unable to retrieve user: " + userName);
         }
 
-        JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(jsonResponse.getBody().toString());
     }
 
@@ -177,8 +164,7 @@ public class Registrator {
      * This is the unirest JSONArray, may need to change to org.simple.json
      */
     public JSONArray getAllUsers() throws ParseException {
-        String encoded = Base64.getEncoder()
-                .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
+
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://127.0.0.1:4242/api/users?access_token=" + this.getToken())
                 .header("Authorization", "Basic " + encoded).asString();
@@ -187,7 +173,6 @@ public class Registrator {
             System.err.println("Error: unable to retrieve users.");
         }
 
-        JSONParser parser = new JSONParser();
         JSONArray jsonArray = (JSONArray) parser.parse(jsonResponse.getBody());
 
         return jsonArray;
@@ -215,6 +200,13 @@ public class Registrator {
     public void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
             boolean witchEnabled, boolean destinationTownEnabled) throws ParseException {
 
+        HttpResponse<String> jsonToken = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
+                .header("Authorization", "Basic " + encoded)
+                .asString();
+
+        JSONObject token = (JSONObject) parser.parse(jsonToken.getBody());
+
         String name = displayName.replace(" ", "");
 
         Map<String, Object> fields = new HashMap<>();
@@ -222,22 +214,23 @@ public class Registrator {
         fields.put("maxSessionPlayers", numberOfPlayers);
         fields.put("minSessionPlayers", numberOfPlayers);
         fields.put("name", name);
+        fields.put("displayName", displayName);
         fields.put("webSupport", "false");
 
         System.out.println(INSTANCE.getToken());
 
         // lobby service location url
         String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
-                + this.getToken();
+                + token.get("access_token");
         System.out.println(lobbyServiceURL);
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
                 .put(lobbyServiceURL)
-                .header("Authorization", "Bearer " + INSTANCE.getToken()) // when bearer:
-                                                                          // invalid access
-                                                                          // token. when
-                                                                          // basic: access
+                .header("Authorization", "Basic " + encoded) // when bearer:
+                                                             // invalid access
+                                                             // token. when
+                                                             // basic: access
                 // is denied
                 .header("Content-Type", "application/json")
                 .body(new Gson().toJson(fields)).asString();
@@ -245,9 +238,6 @@ public class Registrator {
         // verify response
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not register game service");
-            JSONParser parser = new JSONParser();
-            JSONObject jsonArray = (JSONObject) parser.parse(jsonResponse.getBody());
-            System.out.println(jsonArray.toString());
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
         } else {
@@ -259,4 +249,18 @@ public class Registrator {
             // gameCreationConfirmed(newGame);
         }
     }
+
+    // public JSONObject getOauthRole() throws ParseException {
+    // HttpResponse<String> jsonResponse = Unirest
+    // .get("http://127.0.0.1:4242/oauth/username?access_token=" + this.getToken())
+    // .asString();
+    // if (jsonResponse.getStatus() != 200) {
+    // System.err.println("Error" + jsonResponse.getStatus() + ": could not get
+    // token role.");
+    // throw new RuntimeException();
+    // }
+    // JSONParser parser = new JSONParser();
+    // JSONObject role = (JSONObject) parser.parse(jsonResponse.getBody());
+    // return role;
+    // }
 }

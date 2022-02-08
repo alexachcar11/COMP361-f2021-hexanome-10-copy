@@ -200,9 +200,9 @@ public class ClientMain {
                         if (userFound) {
                             // user exists, login
                             System.out.println("User exists");
+                            // System.out.println(REGISTRATOR.getOauthRole());
                         } else {
                             REGISTRATOR.createNewUser(userString, passString);
-                            System.out.println("Got User: " + REGISTRATOR.getUser("hyacinth").get("name"));
                             System.out.println("New User");
                         }
                     } catch (Exception e) {
