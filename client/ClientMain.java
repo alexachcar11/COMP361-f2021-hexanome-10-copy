@@ -211,7 +211,7 @@ public class ClientMain {
                     }
                     // change screen after login
                     try {
-                        REGISTRATOR.createNewGame("test-game", 6, 3, Mode.ELFENLAND, false, false);
+                        REGISTRATOR.createNewGame("testgame", 6, 3, Mode.ELFENLAND, false, false);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

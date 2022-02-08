@@ -210,7 +210,7 @@ public class Registrator {
         String name = displayName.replace(" ", "");
 
         Map<String, Object> fields = new HashMap<>();
-        fields.put("location", "http://127.0.0.1:4243" + name);
+        fields.put("location", "http://127.0.0.1:4243/" + name);
         fields.put("maxSessionPlayers", numberOfPlayers);
         fields.put("minSessionPlayers", numberOfPlayers);
         fields.put("name", name);

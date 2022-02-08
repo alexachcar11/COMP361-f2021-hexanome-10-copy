@@ -193,8 +193,7 @@ public class ServerMain {
             // get game-service info from the json
             String displayName = (String) gameJson.get("displayName");
             String location = (String) gameJson.get("location");
-            int numberOfPlayers = (int) gameJson.get("numberOfPlayers");
-
+            int numberOfPlayers = (int) (long) gameJson.get("maxSessionPlayers");
             // create LobbyServiceGame and add it to availableGames list
             availableGames.add(new LobbyServiceGame(displayName, location, numberOfPlayers));
         }
@@ -210,7 +209,7 @@ public class ServerMain {
      * @throws IOException
      */
     public static JSONObject getLSGameInfo(String name) throws IOException, ParseException {
-        URL url = new URL("curl -X GET http://127.0.0.1:4242/api/gameservices/" + name);
+        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 

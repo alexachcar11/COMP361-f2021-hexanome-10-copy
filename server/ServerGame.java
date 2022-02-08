@@ -38,6 +38,9 @@ public class ServerGame {
         this.mode = mode;
         this.currentRound = 1;
 
+        this.towns = new ArrayList<>();
+        this.routes = new ArrayList<>();
+
         // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
