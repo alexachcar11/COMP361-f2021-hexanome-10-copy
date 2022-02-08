@@ -1031,8 +1031,8 @@ public class ClientMain {
                 lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
                 lobbyBackground.draw(creator, 305, 215 + (counter * 50));
                 lobbyBackground.draw(size, 640, 215 + (counter * 50));
-                lobbyBackground.draw(joinButton, 805, 215 + (counter * 50));
-                lobbyBackground.draw(joinText, 815, 215 + (counter * 50));
+                lobbyBackground.draw(joinButton, 805, 200 + (counter * 50));
+                lobbyBackground.draw(joinText, 825, 215 + (counter * 50));
             }
 
             // display available game sessions (i.e. games with a creator)
@@ -1053,8 +1053,8 @@ public class ClientMain {
                     lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
                     lobbyBackground.draw(creator, 305, 215 + (counter * 50));
                     lobbyBackground.draw(size, 640, 215 + (counter * 50));
-                    lobbyBackground.draw(joinButton, 805, 215 + (counter * 50));
-                    lobbyBackground.draw(joinText, 815, 215 + (counter * 50));
+                    lobbyBackground.draw(joinButton, 805, 200 + (counter * 50));
+                    lobbyBackground.draw(joinText, 825, 215 + (counter * 50));
                 }
             }
 
