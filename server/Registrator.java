@@ -67,7 +67,7 @@ public class Registrator {
     private JSONObject createToken() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
+                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -92,7 +92,7 @@ public class Registrator {
     public JSONObject refreshToken() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
+                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=refresh_token&refresh_token="
                         + this.currentTokenJSON.get("refresh_token"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
@@ -134,7 +134,7 @@ public class Registrator {
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://127.0.0.1:4242/api/users/" + userName + "?access_token="
+                .put("http://elfenland.simui.com:4242/api/users/" + userName + "?access_token="
                         + this.getToken())
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
@@ -149,7 +149,7 @@ public class Registrator {
     public JSONObject getUser(String userName) throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token="
+                .get("http://elfenland.simui.com:4242/api/users/" + userName + "?access_token="
                         + this.getToken())
                 .header("Authorization", "Basic " + encoded)
                 .asString();
@@ -166,7 +166,7 @@ public class Registrator {
     public JSONArray getAllUsers() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .get("http://127.0.0.1:4242/api/users?access_token=" + this.getToken())
+                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
@@ -201,7 +201,7 @@ public class Registrator {
             boolean witchEnabled, boolean destinationTownEnabled) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
-                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
+                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -210,7 +210,7 @@ public class Registrator {
         String name = displayName.replace(" ", "");
 
         Map<String, Object> fields = new HashMap<>();
-        fields.put("location", "http://127.0.0.1:4243/" + name);
+        fields.put("location", "http://elfenland.simui.com:4243/" + name);
         fields.put("maxSessionPlayers", numberOfPlayers);
         fields.put("minSessionPlayers", numberOfPlayers);
         fields.put("name", name);
@@ -220,7 +220,7 @@ public class Registrator {
         System.out.println(INSTANCE.getToken());
 
         // lobby service location url
-        String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
+        String lobbyServiceURL = "http://elfenland.simui.com:4242/api/gameservices/" + name + "?access_token="
                 + token.get("access_token");
         System.out.println(lobbyServiceURL);
 
@@ -252,7 +252,7 @@ public class Registrator {
 
     // public JSONObject getOauthRole() throws ParseException {
     // HttpResponse<String> jsonResponse = Unirest
-    // .get("http://127.0.0.1:4242/oauth/username?access_token=" + this.getToken())
+    // .get("http://elfenland.simui.com:4242/oauth/username?access_token=" + this.getToken())
     // .asString();
     // if (jsonResponse.getStatus() != 200) {
     // System.err.println("Error" + jsonResponse.getStatus() + ": could not get

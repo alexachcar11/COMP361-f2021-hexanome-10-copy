@@ -87,7 +87,7 @@ public class ServerMain {
      * @throws ParseException
      */
     public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/sessions");
+        URL url = new URL("http://elfenland.simui.com:4242/api/sessions");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
@@ -153,7 +153,7 @@ public class ServerMain {
      * @throws ParseException
      */
     public static ArrayList<LobbyServiceGame> getAvailableGames() throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/gameservices");
+        URL url = new URL("http://elfenland.simui.com:4242/api/gameservices");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
@@ -209,7 +209,7 @@ public class ServerMain {
      * @throws IOException
      */
     public static JSONObject getLSGameInfo(String name) throws IOException, ParseException {
-        URL url = new URL("http://127.0.0.1:4242/api/gameservices/" + name);
+        URL url = new URL("http://elfenland.simui.com:4242/api/gameservices/" + name);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
