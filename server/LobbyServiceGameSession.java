@@ -6,7 +6,7 @@ import org.minueto.image.MinuetoText;
 import java.util.ArrayList;
 
 // represents one active game session
-public class LobbyServiceGameSession {
+public class LobbyServiceGameSession implements Joinable{
 
     // fields
     private boolean launched;
@@ -102,6 +102,11 @@ public class LobbyServiceGameSession {
 
     public void joinGame(LobbyServiceGameSession session) {
         // helper function that will create a Player and make them join a session
+    }
+
+    @Override
+    public void join() {
+
     }
 
     /*

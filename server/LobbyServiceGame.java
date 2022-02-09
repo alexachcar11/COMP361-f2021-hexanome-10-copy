@@ -9,7 +9,7 @@ import org.minueto.image.MinuetoText;
 
 import java.util.ArrayList;
 
-public class LobbyServiceGame {
+public class LobbyServiceGame implements Joinable{
 
     // attributes
     private String displayName;
@@ -68,5 +68,8 @@ public class LobbyServiceGame {
     }
 
 
+    @Override
+    public void join() {
 
+    }
 }
