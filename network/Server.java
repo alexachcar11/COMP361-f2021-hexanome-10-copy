@@ -25,14 +25,16 @@ public class Server implements NetworkNode {
         return SERVER;
     }
 
-    // create a thread to do this
+    // create a thread to do this, in ServerMain
+    @Override
     public void start() {
         while (true) {
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.out.println("Accept failed: 4444");
+                System.err.println("Accept failed: 4444");
+                e.printStackTrace();
             }
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
@@ -56,7 +58,6 @@ public class Server implements NetworkNode {
             String host = pTuple.socket().getInetAddress().getHostName();
             System.err.println("Couldn't get I/O for the connection to: " + host);
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

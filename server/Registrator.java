@@ -26,6 +26,7 @@ public class Registrator {
     private static final String encoded = Base64.getEncoder()
             .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
     private static final JSONParser parser = new JSONParser();
+    private static final Gson GSON = new Gson();
 
     private Registrator() {
         Timer timer = new Timer();
@@ -138,7 +139,7 @@ public class Registrator {
                         + this.getToken())
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
-                .body(new Gson().toJson(fields)).asString();
+                .body(GSON.toJson(fields)).asString();
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus());
             throw new IllegalArgumentException("Cannot create user: " + userName);
@@ -227,13 +228,9 @@ public class Registrator {
         // build request
         HttpResponse<String> jsonResponse = Unirest
                 .put(lobbyServiceURL)
-                .header("Authorization", "Basic " + encoded) // when bearer:
-                                                             // invalid access
-                                                             // token. when
-                                                             // basic: access
-                // is denied
+                .header("Authorization", "Basic " + encoded)
                 .header("Content-Type", "application/json")
-                .body(new Gson().toJson(fields)).asString();
+                .body(GSON.toJson(fields)).asString();
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
@@ -250,17 +247,39 @@ public class Registrator {
         }
     }
 
-    // public JSONObject getOauthRole() throws ParseException {
-    // HttpResponse<String> jsonResponse = Unirest
-    // .get("http://elfenland.simui.com:4242/oauth/username?access_token=" + this.getToken())
-    // .asString();
-    // if (jsonResponse.getStatus() != 200) {
-    // System.err.println("Error" + jsonResponse.getStatus() + ": could not get
-    // token role.");
-    // throw new RuntimeException();
-    // }
-    // JSONParser parser = new JSONParser();
-    // JSONObject role = (JSONObject) parser.parse(jsonResponse.getBody());
-    // return role;
-    // }
+    /**
+     * @returns the active sessions as a JSONObject
+     */
+    public JSONObject getAllSessions() throws ParseException {
+        HttpResponse<String> jsonResponse = Unirest
+                .get("http://elfenland.simui.com:4242/api/sessions")
+                .asString();
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not get active sessions.");
+        }
+        return (JSONObject) parser.parse(jsonResponse.getBody());
+    }
+
+    /**
+     * 
+     * @param creator
+     * @param game
+     * @param saveGame
+     */
+    public void createNewSession(String creator, String game, String saveGame) {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("creator", creator);
+        fields.put("game", game);
+        fields.put("savegame", saveGame);
+        String body = GSON.toJson(fields);
+
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://elfenland.simui.com:4242/api/sessions" + this.getToken())
+                .body(body)
+                .asString();
+
+        if (jsonResponse.getStatus() != 200) {
+            throw new RuntimeException("Error" + jsonResponse.getStatus() + ": could not create a new session.");
+        }
+    }
 }
