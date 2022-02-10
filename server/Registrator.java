@@ -319,10 +319,6 @@ public class Registrator {
         String token = userJoining.getToken();
         System.out.println(token);
 
-        HttpResponse<String> hi = Unirest
-                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
-                .header("Authorization", "Basic " + encoded).asString();
-
         // build request
         HttpResponse<String> jsonResponse = Unirest
                 .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/" + userJoining.getName() + "?access_token="
@@ -344,23 +340,60 @@ public class Registrator {
         String token = userLeaving.getToken();
         System.out.println(token);
 
-        HttpResponse<String> hi = Unirest
-                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
-                .header("Authorization", "Basic " + encoded).asString();
-
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://elfenland.simui.com:4242/api/sessions/" + sessionToLeave.getSessionID() + "/players/" + userLeaving.getName() + "?access_token="
+                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToLeave.getSessionID() + "/players/" + userLeaving.getName() + "?access_token="
                         + token).asString();
 
         System.out.println(jsonResponse.getBody());
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not leave game");
         } else {
             sessionToLeave.removeUser(userLeaving);
             // TODO: notify all users that a player has left
+        }
+    }
+
+    public void deleteSession(LobbyServiceGameSession sessionToDelete, User userAskingToDelete) {
+        // user token
+        String token = userAskingToDelete.getToken();
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToDelete.getSessionID() +"?access_token="
+                        + token).asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not delete game session");
+        } else {
+            System.out.println("deleted successfully");
+        }
+    }
+
+    public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
+        // user token
+        String token = userAskingToLaunch.getToken();
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://elfenland.simui.com:4242/api/sessions/" + sessionToLaunch.getSessionID() +"?access_token="
+                        + token).asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not launch game session");
+        } else {
+            System.out.println("launched successfully");
+            sessionToLaunch.launch();
         }
     }
 

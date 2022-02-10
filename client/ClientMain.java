@@ -611,7 +611,7 @@ public class ClientMain {
                 displayAvailableGames();
                 gui.currentBackground = GUI.Screen.LOBBY;
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                // click on Ready? button
+                // click on Ready button
                 ready = !ready;
                 if (ready) {
                     lobbyElfenlandBackground.draw(readyGreen, 823, 581);
