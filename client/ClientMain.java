@@ -411,6 +411,7 @@ public class ClientMain {
                 // TODO: test this when there is a difference in between refreshes
                 displayAvailableGames();
             } else {
+                // click on a Join button
                 for (AbstractMap.SimpleEntry<ImmutableList, Joinable> coords : joinButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
@@ -419,8 +420,12 @@ public class ClientMain {
 
                     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
                         Joinable gameToJoin = coords.getValue();
-                        gameToJoin.join();
-                        System.out.println("JOINING" + gameToJoin);
+                        try {
+                            gameToJoin.join();
+                            currentSession = gameToJoin.getActiveSession();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND; // TODO: fix this
                     }
                 }

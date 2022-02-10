@@ -63,19 +63,17 @@ public class LobbyServiceGame implements Joinable{
         return maxNumberOfPlayers;
     }
 
+    public LobbyServiceGameSession getActiveSession() {
+        return  activeSession;
+    }
+
     /**
      * The Registrator will make this user join this game service by creating a session.
      */
     @Override
-    public void join() {
-        try {
-            LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
-            this.activeSession = newSessionCreated;
-            //Registrator.instance().joinGame(newSessionCreated, ClientMain.currentUser);
-        } catch (Exception e){
-            System.err.println("Unable to join game");
-        }
-
-
+    public void join() throws Exception {
+        LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
+        this.activeSession = newSessionCreated;
+        //Registrator.instance().joinGame(newSessionCreated, ClientMain.currentUser)
     }
 }

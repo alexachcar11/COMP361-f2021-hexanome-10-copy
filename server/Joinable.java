@@ -2,6 +2,7 @@ public interface Joinable {
 
 
 
-    public void join();
+    public void join() throws Exception;
 
+    LobbyServiceGameSession getActiveSession();
 }

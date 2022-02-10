@@ -103,6 +103,11 @@ public class LobbyServiceGameSession implements Joinable{
         Registrator.instance().joinGame(this, ClientMain.currentUser);
     }
 
+    @Override
+    public LobbyServiceGameSession getActiveSession() {
+        return this;
+    }
+
     /*
     Operation: Session::playerJoined(gameSession: Session, player: Player)
     Scope: User; Player; Session;
