@@ -1007,8 +1007,8 @@ public class ClientMain {
         // TODO: can I handle the try/catch elsewhere? (lilia)
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
-            ArrayList<LobbyServiceGame> availableGamesList = ServerMain.getAvailableGames();
-            ArrayList<LobbyServiceGameSession> availableSessionsList = ServerMain.getAvailableSessions();
+            ArrayList<LobbyServiceGame> availableGamesList = REGISTRATOR.getAvailableGames();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = REGISTRATOR.getAvailableSessions();
 
             if (availableSessionsList.size() == 0 && availableGamesList.size() == 0) {
                 MinuetoText noneAvailableText = new MinuetoText(

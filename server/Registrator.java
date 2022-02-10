@@ -3,13 +3,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -305,15 +305,196 @@ public class Registrator {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not create new game session");
             throw new Exception("Error");
         } else {
+            // get the session ID
+            String id = jsonResponse.getBody();
             // create the new LobbyServiceGame instance
             LobbyServiceGameSession newGameSession = new LobbyServiceGameSession(false, "", creator.getName(),
-                    gameService);
+                    gameService, id);
             return newGameSession;
         }
     }
 
-    public void joinGame(LobbyServiceGameSession gameSessionToJoin) {
+    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User playerJoining) {
+        // user token
+        String token = playerJoining.getToken();
+        System.out.println(token);
 
+        HttpResponse<String> hi = Unirest
+                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
+                .header("Authorization", "Basic " + encoded).asString();
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/" + playerJoining.getName() + "?access_token="
+                        + token).asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
+        } else {
+            gameSessionToJoin.addUser(playerJoining);
+            // TODO: notify all users that a player has joined
+        }
+    }
+
+    /**
+     * Helper function for availableGames(). Returns an arraylist of
+     * LobbyServiceGame objects available on the LobbyService
+     *
+     * @return arrayList of LobbyServiceGame objects
+     * @throws IOException
+     * @throws ParseException
+     */
+    public static ArrayList<LobbyServiceGame> getAvailableGames() throws IOException, ParseException {
+        URL url = new URL("http://elfenland.simui.com:4242/api/gameservices");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+        JSONArray jsonArray = (JSONArray) obj;
+
+        // make a list of available games
+        ArrayList<LobbyServiceGame> availableGames = new ArrayList<>(jsonArray.size());
+
+        // add unloaded games (i.e. LobbyServiceGame)
+        for (Object lsGameJson : jsonArray) {
+            JSONObject lsGame = (JSONObject) lsGameJson;
+
+            // get game name
+            String name = (String) lsGame.get("name");
+
+            // get game-service json
+            JSONObject gameJson = getLSGameInfo(name);
+
+            // get game-service info from the json
+            String displayName = (String) gameJson.get("displayName");
+            String location = (String) gameJson.get("location");
+            int numberOfPlayers = (int) (long) gameJson.get("maxSessionPlayers");
+            // create LobbyServiceGame and add it to availableGames list
+            availableGames.add(new LobbyServiceGame(name, displayName, location, numberOfPlayers));
+        }
+
+        return availableGames;
+    }
+
+    /**
+     * Helper function for getAvailableGames(). Returns details on a previously
+     * registered Game-Service.
+     *
+     * @return JSONObject representing the game-service
+     * @throws IOException
+     */
+    public static JSONObject getLSGameInfo(String name) throws IOException, ParseException {
+        URL url = new URL("http://elfenland.simui.com:4242/api/gameservices/" + name);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+
+        return (JSONObject) obj;
+    }
+
+    /**
+     * Helper function for availableGames(). It gets and returns all available game
+     * session on the Lobby Service
+     *
+     * @return ArrayList<LobbyServiceGameSession> representing all available
+     *         sessions on the Lobby Service
+     * @throws IOException
+     * @throws ParseException
+     */
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
+        URL url = new URL("http://elfenland.simui.com:4242/api/sessions");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        con.disconnect();
+
+        // TESTING CODE START
+        System.out.println("Response status: " + status);
+        System.out.println(content.toString());
+        // TESTING CODE END
+
+        // convert GET output to JSON
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(String.valueOf(content));
+        JSONObject jsonObject = (JSONObject) obj;
+
+        ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
+
+        try {
+            // i dont know if this works because I have no way to test it yet (can't create
+            // a game)
+            JSONObject sessions = (JSONObject) jsonObject.get("sessions");
+            sessions.keySet().forEach(sessionID -> {
+                JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
+
+                String creator = (String) sessionJSON.get("creator");
+                boolean launched = (boolean) sessionJSON.get("launched");
+                String saveGameID = (String) sessionJSON.get("savegameid");
+
+                // Object gameParameters = sessionJSON.get("gameParameters");
+                /*
+                 * String playerListInStringForm = (String) sessionJSON.get("players");
+                 * playerListInStringForm = playerListInStringForm.replace("[", "");
+                 * playerListInStringForm = playerListInStringForm.replace("]", "");
+                 * String[] playerListInArrayForm = playerListInStringForm.split(",");
+                 * ArrayList<String> playerNames = (ArrayList<String>)
+                 * Arrays.asList(playerListInArrayForm);
+                 */
+
+                // availableSessions.add(new LobbyServiceGameSession(launched, saveGameID,
+                // creator, ));
+
+            });
+        } catch (NullPointerException e) {
+            // there are no available sessions
+        }
+        return availableSessions; // todo: this returns null right now
     }
 
     // public JSONObject getOauthRole() throws ParseException {

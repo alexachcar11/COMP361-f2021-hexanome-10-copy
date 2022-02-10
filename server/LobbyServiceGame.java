@@ -64,14 +64,14 @@ public class LobbyServiceGame implements Joinable{
     }
 
     /**
-     * The Registrator will make this user join this game service
+     * The Registrator will make this user join this game service by creating a session.
      */
     @Override
     public void join() {
         try {
             LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
             this.activeSession = newSessionCreated;
-            Registrator.instance().joinGame(newSessionCreated);
+            //Registrator.instance().joinGame(newSessionCreated, ClientMain.currentUser);
         } catch (Exception e){
             System.err.println("Unable to join game");
         }

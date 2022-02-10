@@ -3,6 +3,7 @@ import org.minueto.image.MinuetoFont;
 import org.minueto.image.MinuetoRectangle;
 import org.minueto.image.MinuetoText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 // represents one active game session
@@ -10,27 +11,30 @@ public class LobbyServiceGameSession implements Joinable{
 
     // fields
     private boolean launched;
-    private ArrayList<String> players = new ArrayList<>(); //TODO: this will be ArrayList<Player> later
+    private ArrayList<User> users = new ArrayList<>();
     private int numberOfPlayersCurrently;
     private String saveGameID;
     private String creator;
     private LobbyServiceGame gameService;
+    private String sessionID;
+    private ArrayList<Player> players = new ArrayList<>();
 
 
-    LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService) {
+    LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService, String sessionID) {
         this.launched = launched;
         this.saveGameID = saveGameID;
         this.numberOfPlayersCurrently = 1;
         this.creator = creator;
         this.gameService = gameService;
+        this.sessionID = sessionID;
     }
 
     public boolean isLaunched() {
         return launched;
     }
 
-    public ArrayList<String> getPlayers() {
-        return players;
+    public ArrayList<User> getUsers() {
+        return users;
     }
 
     public int getNumberOfPlayersCurrently() {
@@ -47,6 +51,14 @@ public class LobbyServiceGameSession implements Joinable{
 
     public LobbyServiceGame getGameService() {
         return gameService;
+    }
+
+    public String getSessionID() {
+        return sessionID;
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
     }
 
     /**
@@ -84,7 +96,7 @@ public class LobbyServiceGameSession implements Joinable{
      */
     @Override
     public void join() {
-        Registrator.instance().joinGame(this);
+        Registrator.instance().joinGame(this, ClientMain.currentUser);
     }
 
     /*
