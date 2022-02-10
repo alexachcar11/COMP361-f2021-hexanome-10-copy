@@ -61,6 +61,10 @@ public class LobbyServiceGameSession implements Joinable{
         this.users.add(user);
     }
 
+    public void removeUser(User user) {
+        this.users.remove(user);
+    }
+
     /**
      * Create all minueto objects that are needed to display information about the game session
      */

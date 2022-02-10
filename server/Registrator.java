@@ -314,9 +314,9 @@ public class Registrator {
         }
     }
 
-    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User playerJoining) {
+    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User userJoining) {
         // user token
-        String token = playerJoining.getToken();
+        String token = userJoining.getToken();
         System.out.println(token);
 
         HttpResponse<String> hi = Unirest
@@ -325,7 +325,7 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/" + playerJoining.getName() + "?access_token="
+                .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/" + userJoining.getName() + "?access_token="
                         + token).asString();
 
         System.out.println(jsonResponse.getBody());
@@ -334,8 +334,33 @@ public class Registrator {
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
-            gameSessionToJoin.addUser(playerJoining);
+            gameSessionToJoin.addUser(userJoining);
             // TODO: notify all users that a player has joined
+        }
+    }
+
+    public void leaveGame(LobbyServiceGameSession sessionToLeave, User userLeaving) {
+        // user token
+        String token = userLeaving.getToken();
+        System.out.println(token);
+
+        HttpResponse<String> hi = Unirest
+                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
+                .header("Authorization", "Basic " + encoded).asString();
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://elfenland.simui.com:4242/api/sessions/" + sessionToLeave.getSessionID() + "/players/" + userLeaving.getName() + "?access_token="
+                        + token).asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
+        } else {
+            sessionToLeave.removeUser(userLeaving);
+            // TODO: notify all users that a player has left
         }
     }
 

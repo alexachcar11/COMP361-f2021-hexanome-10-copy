@@ -27,6 +27,7 @@ public class ClientMain {
 
     // fields
     public static User currentUser;
+    public static LobbyServiceGameSession currentSession;
 
     GUI gui;
     MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
@@ -600,8 +601,8 @@ public class ClientMain {
 
             if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
                 // click on Leave button
-                // TODO: remove the user from the lobby and send this message to all players
-                // TODO: return the user to the open lobbies page
+                REGISTRATOR.leaveGame(currentSession, currentUser);
+                //return to lobby screen
                 displayAvailableGames();
                 gui.currentBackground = GUI.Screen.LOBBY;
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
