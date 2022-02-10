@@ -233,7 +233,9 @@ public class Registrator {
                 .body(GSON.toJson(fields)).asString();
 
         // verify response
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getStatus() == 400) {
+            System.out.println("Game " + displayName + " already exists.");
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not register game service");
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
