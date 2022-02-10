@@ -40,7 +40,7 @@ public class Registrator {
                 }
             }
 
-        }, 1790 * 1000, 1790 * 1000);
+        }, 0, 1790 * 1000);
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
@@ -273,7 +273,7 @@ public class Registrator {
      * Creates a game session on the Lobby Service and creates a new
      * LobbyServiceGameSession instance.
      * 
-     * @param gameSer    ice game service associated with the new game session
+     * @param gameService    ice game service associated with the new game session
      * @param creator    us r that wants to create the session
      * @param saveGameID save game id - empty if not wanted
      * @return LobbyServiceGameSession instance that was created
@@ -293,7 +293,7 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://elfenland.simui.com:4242/api/sessions/?access_token="
+                .post("http://elfenland.simui.com:4242/api/sessions/?access_token="
                         + token)
                 .header("Content-Type", "application/json")
                 .body(new Gson().toJson(fields)).asString();
@@ -306,7 +306,6 @@ public class Registrator {
             throw new Exception("Error");
         } else {
             // create the new LobbyServiceGame instance
-
             LobbyServiceGameSession newGameSession = new LobbyServiceGameSession(false, "", creator.getName(),
                     gameService);
             return newGameSession;

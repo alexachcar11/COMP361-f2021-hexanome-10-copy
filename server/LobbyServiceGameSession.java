@@ -10,7 +10,7 @@ public class LobbyServiceGameSession implements Joinable{
 
     // fields
     private boolean launched;
-    private ArrayList<String> players; //TODO: this will be ArrayList<Player> later
+    private ArrayList<String> players = new ArrayList<>(); //TODO: this will be ArrayList<Player> later
     private int numberOfPlayersCurrently;
     private String saveGameID;
     private String creator;
@@ -20,7 +20,7 @@ public class LobbyServiceGameSession implements Joinable{
     LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService) {
         this.launched = launched;
         this.saveGameID = saveGameID;
-        this.numberOfPlayersCurrently = players.size();
+        this.numberOfPlayersCurrently = 1;
         this.creator = creator;
         this.gameService = gameService;
     }

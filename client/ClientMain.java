@@ -181,11 +181,10 @@ public class ClientMain {
                         if (userFound) {
                             // user exists, login
                             System.out.println("User exists");
-                            // System.out.println(REGISTRATOR.getOauthRole());
-                            // TODO: set currentUser here too
-                            // currentUser = new User(userString, // TODO: curl -X GET
+                            currentUser = new User(userString, passString);
                             // http://127.0.0.1:4242/oauth/username?access_token=37S8hhdMCdXupIatPm82xJpXXas=);
                         } else {
+                            // user doesn't exist. create and login
                             User newUser = REGISTRATOR.createNewUser(userString, passString);
                             System.out.println("New User");
                             currentUser = newUser;
