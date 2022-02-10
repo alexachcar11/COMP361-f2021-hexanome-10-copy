@@ -11,13 +11,19 @@ public class User {
 
     // FIELDS
     private String name;
+    private String password;
     private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
 
     // CONSTRUCTOR
-    public User(String name, JSONObject token) {
+    public User(String name, String password) {
         this.name = name;
-        this.currentTokenJSON = token;
+        this.password = password;
+        try {
+            this.currentTokenJSON = REGISTRATOR.createToken(name, password);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error: could not create user.");
+        }
     }
 
     public String getName() {
@@ -29,7 +35,6 @@ public class User {
     }
 
     // OPERATIONS
-
 
     /*
      * Operation: User::createNewGame(numberOfPlayers: int, numGameRounds: int,

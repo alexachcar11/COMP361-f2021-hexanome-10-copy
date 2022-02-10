@@ -183,7 +183,8 @@ public class ClientMain {
                             System.out.println("User exists");
                             // System.out.println(REGISTRATOR.getOauthRole());
                             // TODO: set currentUser here too
-                            //currentUser = new User(userString, // TODO: curl -X GET http://127.0.0.1:4242/oauth/username?access_token=37S8hhdMCdXupIatPm82xJpXXas=);
+                            // currentUser = new User(userString, // TODO: curl -X GET
+                            // http://127.0.0.1:4242/oauth/username?access_token=37S8hhdMCdXupIatPm82xJpXXas=);
                         } else {
                             User newUser = REGISTRATOR.createNewUser(userString, passString);
                             System.out.println("New User");
@@ -410,7 +411,7 @@ public class ClientMain {
                 // TODO: test this when there is a difference in between refreshes
                 displayAvailableGames();
             } else {
-                for (AbstractMap.SimpleEntry<ImmutableList,Joinable> coords: joinButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList, Joinable> coords : joinButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
@@ -706,7 +707,7 @@ public class ClientMain {
     private static boolean witchDropdownActive = false;
 
     // for lobbyMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList,Joinable>> joinButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Joinable>> joinButtonCoordinates = new ArrayList<>();
 
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
@@ -1016,7 +1017,7 @@ public class ClientMain {
                 lobbyBackground.draw(noneAvailableText, 200, 340);
             }
 
-            int counter = 0;    // how many games are displayed so far
+            int counter = 0; // how many games are displayed so far
 
             // display available game services (i.e. games with no creator)
             for (LobbyServiceGame g : availableGamesList) {
@@ -1041,10 +1042,11 @@ public class ClientMain {
                 Integer maxY = 245 + (counter * 50);
                 Integer minY = 210 + (counter * 50);
                 ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(listOfCoordinates, g);
+                AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
+                        listOfCoordinates, g);
                 joinButtonCoordinates.add(entry);
 
-                counter ++;
+                counter++;
             }
 
             // display available game sessions (i.e. games with a creator)
@@ -1074,10 +1076,11 @@ public class ClientMain {
                     Integer maxY = 245 + (counter * 50);
                     Integer minY = 210 + (counter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(listOfCoordinates, gs);
+                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
+                            listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 
-                    counter ++;
+                    counter++;
                 }
             }
 

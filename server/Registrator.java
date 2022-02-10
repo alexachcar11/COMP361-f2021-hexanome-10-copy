@@ -34,19 +34,19 @@ public class Registrator {
             @Override
             public void run() {
                 try {
-                    currentTokenJSON = createToken();
+                    currentTokenJSON = createToken("maex", "abc123_ABC123");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
 
-        }, 0, 1790 * 1000);
+        }, 1790 * 1000, 1790 * 1000);
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
                 try {
-                    currentTokenJSON = refreshToken();
+                    currentTokenJSON = refreshToken(currentTokenJSON);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -64,10 +64,11 @@ public class Registrator {
      * 
      * @throws ParseException
      */
-    private JSONObject createToken() throws ParseException {
+    public JSONObject createToken(String username, String password) throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=maex&password=abc123_ABC123")
+                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=" + username +
+                        "&password=" + password)
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -89,11 +90,11 @@ public class Registrator {
      * @return JSONObject containing the body of a post request creating an access
      *         token
      */
-    public JSONObject refreshToken() throws ParseException {
+    public JSONObject refreshToken(JSONObject existingToken) throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://elfenland.simui.com:4242/oauth/token?grant_type=refresh_token&refresh_token="
-                        + this.currentTokenJSON.get("refresh_token"))
+                        + existingToken.get("refresh_token"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -121,7 +122,9 @@ public class Registrator {
     }
 
     /**
+     * 
      * Create a new user on the LS and create a new User instance.
+     * 
      * @param userName username of the user
      * @param passWord password of the user
      * @return User instance that is created upon API request success
@@ -145,6 +148,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .body(new Gson().toJson(fields)).asString();
+
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus());
             throw new IllegalArgumentException("Cannot create user: " + userName);
@@ -152,8 +156,8 @@ public class Registrator {
             // retrieve token
             JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
             System.out.println("BODY" + jsonResponse.getBody());
-            //System.out.println(token);
-            User newUser = new User(userName,token);
+            // System.out.println(token);
+            User newUser = new User(userName, passWord);
             return newUser;
         }
     }
@@ -264,13 +268,19 @@ public class Registrator {
     }
 
     /**
-     * Creates a game session on the Lobby Service and creates a new LobbyServiceGameSession instance.
-     * @param gameService game service associated with the new game session
-     * @param creator user that wants to create the session
+     * 
+     * 
+     * Creates a game session on the Lobby Service and creates a new
+     * LobbyServiceGameSession instance.
+     * 
+     * @param gameSer    ice game service associated with the new game session
+     * @param creator    us r that wants to create the session
      * @param saveGameID save game id - empty if not wanted
      * @return LobbyServiceGameSession instance that was created
      */
-    public LobbyServiceGameSession createGameSession(LobbyServiceGame gameService, User creator, String saveGameID) throws Exception {
+
+    public LobbyServiceGameSession createGameSession(LobbyServiceGame gameService, User creator, String saveGameID)
+            throws Exception {
         // API request
         Map<String, Object> fields = new HashMap<>();
         fields.put("creator", creator.getName());
@@ -296,7 +306,9 @@ public class Registrator {
             throw new Exception("Error");
         } else {
             // create the new LobbyServiceGame instance
-            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession(false, "", creator.getName(), gameService);
+
+            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession(false, "", creator.getName(),
+                    gameService);
             return newGameSession;
         }
     }
@@ -307,7 +319,9 @@ public class Registrator {
 
     // public JSONObject getOauthRole() throws ParseException {
     // HttpResponse<String> jsonResponse = Unirest
-    // .get("http://elfenland.simui.com:4242/oauth/username?access_token=" + this.getToken())
+    //
+    // .get("http://elfenland.simui.com:4242/oauth/username?access_token=" +
+    // this.getToken())
     // .asString();
     // if (jsonResponse.getStatus() != 200) {
     // System.err.println("Error" + jsonResponse.getStatus() + ": could not get
