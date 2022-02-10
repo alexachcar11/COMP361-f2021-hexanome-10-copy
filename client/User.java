@@ -14,6 +14,7 @@ public class User {
     private String password;
     private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
+    private boolean ready;
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -34,24 +35,15 @@ public class User {
         return (String) this.currentTokenJSON.get("access_token");
     }
 
-    // OPERATIONS
-
-    /*
-     * Operation: User::createNewGame(numberOfPlayers: int, numGameRounds: int,
-     * mode: Mode, witchEnabled: boolean, destinationTownEnabled: boolean)
-     * Scope: Game; User;
-     * New: newGame: Game;
-     * Messages: User:: {gameCreationFailed_e; gameCreationConfirmed}
-     * Post: Sends a game creation confirmed message to the user upon success. In
-     * case the game is not successfully created, the operation outputs an
-     * “gameCreationFailed_e” message to the user.
-     */
-    public void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-            boolean witchEnabled, boolean destinationTownEnabled) throws IOException, ParseException {
-        // TODO: change this into a message once the network is working
-        REGISTRATOR.createNewGame(displayName, numberOfPlayers, numberOfRounds, mode, witchEnabled,
-                destinationTownEnabled);
+    public void toggleReady() {
+        this.ready = !this.ready;
     }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    // OPERATIONS
 
     /*
      * Operation: User::loadGame(savedGame: Game)

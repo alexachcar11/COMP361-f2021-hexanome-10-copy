@@ -63,10 +63,22 @@ public class LobbyServiceGameSession implements Joinable{
 
     public void removeUser(User user) {
         this.users.remove(user);
+        user.toggleReady();
     }
 
     public void launch() {
         this.launched = true;
+    }
+
+    public boolean isLaunchable() {
+        boolean isLaunchable = true;
+        for (User u : this.users) {
+            if (!u.isReady()) {
+                isLaunchable = !isLaunchable;
+                break;
+            }
+        }
+        return isLaunchable;
     }
 
     /**

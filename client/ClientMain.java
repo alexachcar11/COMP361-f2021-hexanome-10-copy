@@ -606,24 +606,32 @@ public class ClientMain {
 
             if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
                 // click on Leave button
-                REGISTRATOR.leaveGame(currentSession, currentUser);
-                //return to lobby screen
-                displayAvailableGames();
-                gui.currentBackground = GUI.Screen.LOBBY;
+                if (currentUser.getName() != currentSession.getCreator()) {
+                    REGISTRATOR.leaveGame(currentSession, currentUser);
+                    //return to lobby screen
+                    displayAvailableGames();
+                    gui.currentBackground = GUI.Screen.LOBBY;
+                } else {
+                    // the creator may not leave TODO: show error message
+                }
+
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                // click on Ready button
-                ready = !ready;
-                if (ready) {
+                // click on Start button
+                // click on Ready button: only works if you are not ready, else nothing happens (when you are ready already)
+                if (!currentUser.isReady()) {
+                    // set user to ready
+                    currentUser.toggleReady();
+                    // draw the green ready image
                     lobbyElfenlandBackground.draw(readyGreen, 823, 581);
                     // TODO: display Ready next to the player's name
                     // TODO: notify all players that this player is ready
-                    // TODO: change to startButton when all players are ready and this player is the
-                    // game creator
-                } else {
-                    lobbyElfenlandBackground.draw(readyWhite, 823, 581);
-                    // TODO: display Not Ready next to player's name
-                    // TODO: notify all players that this player is not ready
-                    // TODO: stop displaying the Start button to the host
+                    // if the user is the creator and all users are ready, then show the start button
+                    if (currentSession.isLaunchable() && (currentUser.getName() == currentSession.getCreator())) {
+                        lobbyElfenlandBackground.draw(startButton, 823, 581);
+                    }
+                } else if (currentSession.isLaunchable() && (currentUser.getName() == currentSession.getCreator())){
+                    // launch the session
+                    REGISTRATOR.launchSession(currentSession, currentUser);
                 }
             } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
                 // click on Mode button
