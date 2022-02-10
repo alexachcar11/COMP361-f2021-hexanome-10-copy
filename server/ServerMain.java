@@ -195,7 +195,7 @@ public class ServerMain {
             String location = (String) gameJson.get("location");
             int numberOfPlayers = (int) (long) gameJson.get("maxSessionPlayers");
             // create LobbyServiceGame and add it to availableGames list
-            availableGames.add(new LobbyServiceGame(displayName, location, numberOfPlayers));
+            availableGames.add(new LobbyServiceGame(name, displayName, location, numberOfPlayers));
         }
 
         return availableGames;

@@ -26,6 +26,8 @@ import com.google.common.collect.ImmutableList;
 public class ClientMain {
 
     // fields
+    public static User currentUser;
+
     GUI gui;
     MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue;
@@ -180,9 +182,12 @@ public class ClientMain {
                             // user exists, login
                             System.out.println("User exists");
                             // System.out.println(REGISTRATOR.getOauthRole());
+                            // TODO: set currentUser here too
+                            //currentUser = new User(userString, // TODO: curl -X GET http://127.0.0.1:4242/oauth/username?access_token=37S8hhdMCdXupIatPm82xJpXXas=);
                         } else {
-                            REGISTRATOR.createNewUser(userString, passString);
+                            User newUser = REGISTRATOR.createNewUser(userString, passString);
                             System.out.println("New User");
+                            currentUser = newUser;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

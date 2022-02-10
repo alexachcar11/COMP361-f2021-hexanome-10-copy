@@ -79,6 +79,14 @@ public class LobbyServiceGameSession implements Joinable{
     Post: Sends a message to the player to notify the player that the session is saved.
      */
 
+    /**
+     * The Registrator will make this user join this game session
+     */
+    @Override
+    public void join() {
+        Registrator.instance().joinGame(this);
+    }
+
     /*
     Operation: Session::playerJoined(gameSession: Session, player: Player)
     Scope: User; Player; Session;
@@ -97,15 +105,6 @@ public class LobbyServiceGameSession implements Joinable{
     */
     public void joinConfirmation(LobbyServiceGameSession session) {
         // send a message to the User that the session was joined succesfully or not
-
-    }
-
-    public void joinGame(LobbyServiceGameSession session) {
-        // helper function that will create a Player and make them join a session
-    }
-
-    @Override
-    public void join() {
 
     }
 

@@ -120,7 +120,13 @@ public class Registrator {
         return (String) this.currentTokenJSON.get("access_token");
     }
 
-    public void createNewUser(String userName, String passWord) {
+    /**
+     * Create a new user on the LS and create a new User instance.
+     * @param userName username of the user
+     * @param passWord password of the user
+     * @return User instance that is created upon API request success
+     */
+    public User createNewUser(String userName, String passWord) throws ParseException {
         /*
          * add a new user to the API
          */
@@ -142,6 +148,13 @@ public class Registrator {
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus());
             throw new IllegalArgumentException("Cannot create user: " + userName);
+        } else {
+            // retrieve token
+            JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+            System.out.println("BODY" + jsonResponse.getBody());
+            //System.out.println(token);
+            User newUser = new User(userName,token);
+            return newUser;
         }
     }
 
@@ -248,6 +261,48 @@ public class Registrator {
             // send gameCreationConfirmed(Game newGameObject) to the User
             // gameCreationConfirmed(newGame);
         }
+    }
+
+    /**
+     * Creates a game session on the Lobby Service and creates a new LobbyServiceGameSession instance.
+     * @param gameService game service associated with the new game session
+     * @param creator user that wants to create the session
+     * @param saveGameID save game id - empty if not wanted
+     * @return LobbyServiceGameSession instance that was created
+     */
+    public LobbyServiceGameSession createGameSession(LobbyServiceGame gameService, User creator, String saveGameID) throws Exception {
+        // API request
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("creator", creator.getName());
+        fields.put("game", gameService.getName());
+        fields.put("savegame", saveGameID);
+
+        // user token
+        String token = creator.getToken();
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://elfenland.simui.com:4242/api/sessions/?access_token="
+                        + token)
+                .header("Content-Type", "application/json")
+                .body(new Gson().toJson(fields)).asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not create new game session");
+            throw new Exception("Error");
+        } else {
+            // create the new LobbyServiceGame instance
+            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession(false, "", creator.getName(), gameService);
+            return newGameSession;
+        }
+    }
+
+    public void joinGame(LobbyServiceGameSession gameSessionToJoin) {
+
     }
 
     // public JSONObject getOauthRole() throws ParseException {

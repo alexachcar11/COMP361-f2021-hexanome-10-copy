@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class LobbyServiceGame implements Joinable{
 
     // attributes
+    private String name;
     private String displayName;
     private String location;
     private final int maxNumberOfPlayers;
@@ -23,10 +24,19 @@ public class LobbyServiceGame implements Joinable{
      * @param location location provided by gameservices/{gameservice} json
      * @param maxNumberOfPlayers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String displayName, String location, int maxNumberOfPlayers) {
+    public LobbyServiceGame(String name, String displayName, String location, int maxNumberOfPlayers) {
+        this.name = name;
         this.displayName = displayName;
         this.location = location;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
+    }
+
+    /**
+     * GETTER: Get the name
+     * @return name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -53,23 +63,19 @@ public class LobbyServiceGame implements Joinable{
         return maxNumberOfPlayers;
     }
 
-
     /**
-     * Create a new session for this game service.
-     * @param user user that initiates this operation
-     * @param saveGameID id of the previously saved game. If there is none, put "".
-     * @return the newly created LobbyServiceGameSession
-     * @post The user that initiates this operation becomes the creator of the session and is one of the players.
+     * The Registrator will make this user join this game service
      */
-    public LobbyServiceGameSession createSessionFromGameService(User user, String saveGameID) {
-        LobbyServiceGameSession newSession = new LobbyServiceGameSession(false, "", user.getName(), this);
-        this.activeSession = newSession;
-        return newSession;
-    }
-
-
     @Override
     public void join() {
+        try {
+            LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
+            this.activeSession = newSessionCreated;
+            Registrator.instance().joinGame(newSessionCreated);
+        } catch (Exception e){
+            System.err.println("Unable to join game");
+        }
+
 
     }
 }

@@ -2,6 +2,7 @@
 Represents one user from the moment the game is launched (they may not be a player yet)
  */
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -9,28 +10,26 @@ import java.io.IOException;
 public class User {
 
     // FIELDS
-    String name;
+    private String name;
+    private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
 
     // CONSTRUCTOR
-    public User(String name) {
+    public User(String name, JSONObject token) {
         this.name = name;
+        this.currentTokenJSON = token;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getToken() {
+        return (String) this.currentTokenJSON.get("access_token");
+    }
+
     // OPERATIONS
-    /*
-     * Operation: User::login(username: String, password: String)
-     * Scope: User; Game;
-     * New: newUser: User
-     * Messages: User::{availableGames, invalidLogin_e}
-     * Post: If the login is successful, sends the user all available games.
-     * Otherwise, sends the user a “invalidLogin_e” message to inform them that the
-     * login has failed.
-     */
+
 
     /*
      * Operation: User::createNewGame(numberOfPlayers: int, numGameRounds: int,
