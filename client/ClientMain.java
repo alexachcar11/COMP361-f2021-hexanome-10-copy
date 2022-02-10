@@ -613,17 +613,13 @@ public class ClientMain {
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
                 // click on Ready button
                 ready = !ready;
-                if (ready) {
+                if (!ready) {
+                    ready = !ready;
                     lobbyElfenlandBackground.draw(readyGreen, 823, 581);
                     // TODO: display Ready next to the player's name
                     // TODO: notify all players that this player is ready
                     // TODO: change to startButton when all players are ready and this player is the
                     // game creator
-                } else {
-                    lobbyElfenlandBackground.draw(readyWhite, 823, 581);
-                    // TODO: display Not Ready next to player's name
-                    // TODO: notify all players that this player is not ready
-                    // TODO: stop displaying the Start button to the host
                 }
             } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
                 // click on Mode button
