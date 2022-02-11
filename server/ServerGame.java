@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 public class ServerGame {
 
-    public LobbyServiceGameSession gameSession;
     private ArrayList<Player> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
     public ArrayList<Route> routes;
     public int currentRound;
+    private int currentPhase;
     public int gameRoundsLimit;
     public boolean destinationTownEnabled;
     public boolean witchEnabled;

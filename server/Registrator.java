@@ -309,7 +309,7 @@ public class Registrator {
             // get the session ID
             String id = jsonResponse.getBody();
             // create the new LobbyServiceGame instance
-            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession("", creator.getName(),
+            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession("", creator,
                     gameService, id);
             return newGameSession;
         }

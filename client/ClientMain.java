@@ -47,8 +47,8 @@ public class ClientMain {
     MinuetoImage createGameBackground;
     MinuetoImage elfenlandSelected;
     MinuetoImage elfenGoldSelected;
-    MinuetoImage lobbyElfenlandBackground;
-    MinuetoImage lobbyElfengoldBackground;
+    private static MinuetoImage lobbyElfenlandBackground;
+    private static MinuetoImage lobbyElfengoldBackground;
     MinuetoImage readyGreen;
     MinuetoImage readyWhite;
     MinuetoImage startButton;
@@ -422,6 +422,7 @@ public class ClientMain {
                         try {
                             gameToJoin.join();
                             currentSession = gameToJoin.getActiveSession();
+                            displayUsers();
                             gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -532,6 +533,11 @@ public class ClientMain {
                     // TODO: check if name/size are empty and put an error message
                     // TODO: send a createGame message to the LS
                     if (elfenlandSel) {
+                        try {
+                            displayUsers();
+                        } catch (MinuetoFileException e) {
+                            e.printStackTrace();
+                        }
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                     } else if (elfenGoldSel) {
                         gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
@@ -603,7 +609,7 @@ public class ClientMain {
 
             if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
                 // click on Leave button
-                if (currentUser.getName().equals(currentSession.getCreator())) {
+                if (!currentUser.getName().equals(currentSession.getCreator())) {
                     REGISTRATOR.leaveGame(currentSession, currentUser);
                     //return to lobby screen
                     displayAvailableGames();
@@ -974,6 +980,71 @@ public class ClientMain {
     static void resumeSound() {
         // loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
+    }
+
+    public static void displayUsers() throws MinuetoFileException {
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        ArrayList<User> users = currentSession.getUsers();
+
+        int counter = 0;    // how many users are displayed so far
+
+        for (User u : users) {
+            String name = u.getName();
+            if (name.equals(currentUser.getName())) {
+                name = name + " (you)";
+            }
+            // truncate names that are too long
+            if (name.length() > 15) {
+                if (name.equals(currentUser.getName())) {
+                    name = name.substring(0, 15) + "..." + " (you)";
+                } else {
+                    name = name.substring(0, 15) + "...";
+                }
+
+            }
+
+            Color color = u.getColor();
+            boolean ready = u.isReady();
+
+            MinuetoText uName = new MinuetoText(name, font, MinuetoColor.BLACK);
+
+            MinuetoImage uColor = null;
+            MinuetoText uColorText = null;
+            if (color == null) {
+                 uColorText= new MinuetoText("?", font, MinuetoColor.BLACK);;
+            } else {
+                if (color.equals(Color.BLACK)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-black.png");
+                } else if (color.equals(Color.RED)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-red.png");
+                } else if (color.equals(Color.BLUE)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-blue.png");
+                } else if (color.equals(Color.GREEN)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-green.png");
+                } else if (color.equals(Color.YELLOW)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-yellow.png");
+                } else if (color.equals(Color.PURPLE)) {
+                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-purple.png");
+                }
+            }
+
+            MinuetoText uReady;
+            if (ready) {
+                uReady = new MinuetoText("Ready", font, MinuetoColor.GREEN);
+            } else {
+                uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
+            }
+
+            lobbyElfenlandBackground.draw(uName, 45, 240 + counter*50);
+            if (uColor == null) {
+                lobbyElfenlandBackground.draw(uColorText, 240, 240 + counter*50);
+            } else {
+                lobbyElfenlandBackground.draw(uColor, 240, 240 + counter*50);
+            }
+            lobbyElfenlandBackground.draw(uReady, 475, 240 + counter*50);
+
+            counter++;
+        }
     }
 
     public static void displayAvailableGames() {

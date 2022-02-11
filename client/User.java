@@ -15,6 +15,7 @@ public class User {
     private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
     private boolean ready;
+    private Color color;
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -58,4 +59,11 @@ public class User {
         return ready;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

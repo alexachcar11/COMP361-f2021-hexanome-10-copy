@@ -14,16 +14,17 @@ public class LobbyServiceGameSession implements Joinable{
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
      * @param saveGameID savegameID to load. If there is none, put ""
-     * @param creator username of the creator of the game
+     * @param creator User of the creator of the game
      * @param gameService gameservice for which this session belongs to
      * @param sessionID sessionID on the LS
      */
-    public LobbyServiceGameSession(String saveGameID, String creator, LobbyServiceGame gameService, String sessionID) {
+    public LobbyServiceGameSession(String saveGameID, User creator, LobbyServiceGame gameService, String sessionID) {
         this.launched = false;
         this.saveGameID = saveGameID;
-        this.creator = creator;
+        this.creator = creator.getName();
         this.gameService = gameService;
         this.sessionID = sessionID;
+        this.users.add(creator);
     }
 
     /**
