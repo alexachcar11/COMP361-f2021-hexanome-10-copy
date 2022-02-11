@@ -597,15 +597,13 @@ public class ClientMain {
     };
 
     MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
-        private boolean ready = false;
-
         @Override
         public void handleMousePress(int x, int y, int button) {
             System.out.println("x: " + x + "y: " + y);
 
             if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
                 // click on Leave button
-                if (currentUser.getName() != currentSession.getCreator()) {
+                if (currentUser.getName().equals(currentSession.getCreator())) {
                     REGISTRATOR.leaveGame(currentSession, currentUser);
                     //return to lobby screen
                     displayAvailableGames();
@@ -625,10 +623,10 @@ public class ClientMain {
                     // TODO: display Ready next to the player's name
                     // TODO: notify all players that this player is ready
                     // if the user is the creator and all users are ready, then show the start button
-                    if (currentSession.isLaunchable() && (currentUser.getName() == currentSession.getCreator())) {
+                    if (currentSession.isLaunchable() && (currentUser.getName().equals(currentSession.getCreator()))) {
                         lobbyElfenlandBackground.draw(startButton, 823, 581);
                     }
-                } else if (currentSession.isLaunchable() && (currentUser.getName() == currentSession.getCreator())){
+                } else if (currentSession.isLaunchable() && (currentUser.getName().equals(currentSession.getCreator()))) {
                     // click on Start button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
                 }
@@ -966,8 +964,7 @@ public class ClientMain {
         File f = new File("./" + soundFile);
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            Clip clip = AudioSystem.getClip();
-            loadedClip = clip;
+            loadedClip = AudioSystem.getClip();
             loadedClip.open(audioIn);
             loadedClip.start();
         } catch (Exception e) {
@@ -995,8 +992,8 @@ public class ClientMain {
         // TODO: can I handle the try/catch elsewhere? (lilia)
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
-            ArrayList<LobbyServiceGame> availableGamesList = REGISTRATOR.getAvailableGames();
-            ArrayList<LobbyServiceGameSession> availableSessionsList = REGISTRATOR.getAvailableSessions();
+            ArrayList<LobbyServiceGame> availableGamesList = Registrator.getAvailableGames();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = Registrator.getAvailableSessions();
 
             if (availableSessionsList.size() == 0 && availableGamesList.size() == 0) {
                 MinuetoText noneAvailableText = new MinuetoText(
@@ -1009,7 +1006,7 @@ public class ClientMain {
             // display available game services (i.e. games with no creator)
             for (LobbyServiceGame g : availableGamesList) {
                 String gDisplayName = g.getDisplayName();
-                String gMaxPlayers = String.valueOf(g.getNumberOfPlayers());
+                String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
 
                 MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
                 MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
@@ -1042,7 +1039,7 @@ public class ClientMain {
                     String gsName = gs.getGameService().getDisplayName();
                     String gsCreator = gs.getCreator();
                     String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
-                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfPlayers());
+                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfUsers());
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
                     MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
