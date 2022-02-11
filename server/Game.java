@@ -27,7 +27,6 @@ public class Game {
         this.players = new ArrayList<>();
     }
 
-
     // METHODS
 
 }

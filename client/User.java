@@ -27,57 +27,35 @@ public class User {
         }
     }
 
+    /**
+     * GETTER: returns the user's name as seen on LS
+     * @return User.name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * GETTER: returns the user's current token from the LS
+     * @return token in String format
+     */
     public String getToken() {
         return (String) this.currentTokenJSON.get("access_token");
     }
 
+    /**
+     * Toggles the User's ready state between true and false.
+     */
     public void toggleReady() {
         this.ready = !this.ready;
     }
 
+    /**
+     * GETTER: returns user.ready
+     * @return true if the user is ready to play, false otherwise.
+     */
     public boolean isReady() {
         return ready;
-    }
-
-    // OPERATIONS
-
-    /*
-     * Operation: User::loadGame(savedGame: Game)
-     * Scope: User; Player;
-     * New: newSession: Session;
-     * Messages: Player::{gameSessionCreationConfirmation;
-     * gameSessionCreationFailed_e}
-     * Post: Upon success, sends a confirmation message to the player that their
-     * gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e”
-     * message.
-     */
-
-    /*
-     * TODO: add players to the game here
-     * 
-     * LILIA
-     * 
-     * // create players
-     * List<Player> players = new ArrayList<>();
-     * // Player p1 = new Player(null, Color.YELLOW);
-     * // Player p2 = new Player(null, Color.BLACK);
-     * // players.add(p1);
-     * // players.add(p2);
-     * 
-     * Operation: User::joinGameSession(gameSession: Session)
-     * Scope: User; Player; Session;
-     * Messages: Player::{joinConfirmation, joinFailed_e}
-     * Post: Upon success, sends the player a message to confirm they have joined a
-     * game session successfully and moves the player to the game lobby. Otherwise,
-     * sends a “joinFailed_e” message.
-     */
-
-    public void joinGameSession(LobbyServiceGameSession session) {
-        // send a message to Server that this User wants to join the session
     }
 
 }

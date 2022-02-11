@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -865,31 +864,6 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
-
-                /*
-                 * MinuetoText elfenlandText = new MinuetoText("Elfenland", fontArial22Bold,
-                 * MinuetoColor.BLACK);
-                 * lobbyElfenlandBackground.draw(elfenlandText, 775, 185);
-                 * String size = "3"; // TODO: change this to the actual variable
-                 * MinuetoText sizeText = new MinuetoText(size, fontArial22Bold,
-                 * MinuetoColor.BLACK);
-                 * lobbyElfenlandBackground.draw(sizeText, 767, 255);
-                 * boolean destinationTown = false; // TODO change this to actual value ( enum
-                 * with 3 options )
-                 * MinuetoText destinationTownText;
-                 * if (destinationTown) {
-                 * destinationTownText = new MinuetoText("No", fontArial22Bold,
-                 * MinuetoColor.BLACK);
-                 * } else {
-                 * destinationTownText = new MinuetoText("Yes", fontArial22Bold,
-                 * MinuetoColor.BLACK);
-                 * }
-                 * lobbyElfenlandBackground.draw(destinationTownText, 699, 365);
-                 * String rounds = "3";
-                 * MinuetoText round = new MinuetoText(rounds, fontArial22Bold,
-                 * MinuetoColor.BLACK);
-                 * lobbyElfenlandBackground.draw(round, 820, 420);
-                 */
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
@@ -1067,7 +1041,7 @@ public class ClientMain {
                 if (!gs.isLaunched()) { // only show unlaunched sessions
                     String gsName = gs.getGameService().getDisplayName();
                     String gsCreator = gs.getCreator();
-                    String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfPlayersCurrently());
+                    String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
                     String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfPlayers());
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);

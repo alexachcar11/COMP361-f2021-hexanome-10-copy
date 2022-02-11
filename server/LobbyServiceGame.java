@@ -2,33 +2,26 @@
 Instances of LobbyServiceGame represent one available game service on the lobby service.
  */
 
-import org.minueto.MinuetoColor;
-import org.minueto.image.MinuetoFont;
-import org.minueto.image.MinuetoRectangle;
-import org.minueto.image.MinuetoText;
-
-import java.util.ArrayList;
-
 public class LobbyServiceGame implements Joinable{
 
-    // attributes
+    // FIELDS
     private String name;
     private String displayName;
     private String location;
-    private final int numberOfPlayers;
+    private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
 
     /**
      * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.
      * @param displayName displayName provided by gameservices/{gameservice}json
      * @param location location provided by gameservices/{gameservice} json
-     * @param numberOfPlayers maxSessionPlayers provided by gameservices/{gameservice} json
+     * @param numberOfUsers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String name, String displayName, String location, int numberOfPlayers) {
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
-        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfUsers = numberOfUsers;
     }
 
     /**
@@ -56,11 +49,11 @@ public class LobbyServiceGame implements Joinable{
     }
 
     /**
-     * GETTER : Get the number of players that can play this game.
-     * @return numberOfPlayers
+     * GETTER : Get the number of users that can play this game.
+     * @return numberOfUsers
      */
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
+    public int getNumberOfUsers() {
+        return numberOfUsers;
     }
 
     public LobbyServiceGameSession getActiveSession() {
@@ -74,6 +67,5 @@ public class LobbyServiceGame implements Joinable{
     public void join() throws Exception {
         LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
         this.activeSession = newSessionCreated;
-        //Registrator.instance().joinGame(newSessionCreated, ClientMain.currentUser)
     }
 }
