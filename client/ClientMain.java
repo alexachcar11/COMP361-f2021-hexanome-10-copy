@@ -422,10 +422,10 @@ public class ClientMain {
                         try {
                             gameToJoin.join();
                             currentSession = gameToJoin.getActiveSession();
+                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND; // TODO: fix this
                     }
                 }
             }
