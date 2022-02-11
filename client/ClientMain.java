@@ -1008,6 +1008,10 @@ public class ClientMain {
                     lobbyBackground.draw(greyRectangle, 60, 100);
                 }*/
                 String gDisplayName = g.getDisplayName();
+                if (gDisplayName.length() > 20) {
+                    // display with ... instead of the entire name
+                    gDisplayName = gDisplayName.substring(0, 19) + "...";
+                }
                 String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
 
                 MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
