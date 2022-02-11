@@ -15,20 +15,20 @@ public class LobbyServiceGame implements Joinable{
     private String name;
     private String displayName;
     private String location;
-    private final int maxNumberOfPlayers;
+    private final int numberOfPlayers;
     private LobbyServiceGameSession activeSession;
 
     /**
      * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.
      * @param displayName displayName provided by gameservices/{gameservice}json
      * @param location location provided by gameservices/{gameservice} json
-     * @param maxNumberOfPlayers maxSessionPlayers provided by gameservices/{gameservice} json
+     * @param numberOfPlayers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String name, String displayName, String location, int maxNumberOfPlayers) {
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfPlayers) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
-        this.maxNumberOfPlayers = maxNumberOfPlayers;
+        this.numberOfPlayers = numberOfPlayers;
     }
 
     /**
@@ -56,11 +56,11 @@ public class LobbyServiceGame implements Joinable{
     }
 
     /**
-     * GETTER : Get the max number of players that can play this game.
-     * @return maxNumberOfPlayers
+     * GETTER : Get the number of players that can play this game.
+     * @return numberOfPlayers
      */
-    public int getMaxNumberOfPlayers() {
-        return maxNumberOfPlayers;
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 
     public LobbyServiceGameSession getActiveSession() {

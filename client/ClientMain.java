@@ -616,7 +616,7 @@ public class ClientMain {
                 }
 
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                // click on Start button
+
                 // click on Ready button: only works if you are not ready, else nothing happens (when you are ready already)
                 if (!currentUser.isReady()) {
                     // set user to ready
@@ -630,7 +630,7 @@ public class ClientMain {
                         lobbyElfenlandBackground.draw(startButton, 823, 581);
                     }
                 } else if (currentSession.isLaunchable() && (currentUser.getName() == currentSession.getCreator())){
-                    // launch the session
+                    // click on Start button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
                 }
             } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
@@ -1035,7 +1035,7 @@ public class ClientMain {
             // display available game services (i.e. games with no creator)
             for (LobbyServiceGame g : availableGamesList) {
                 String gDisplayName = g.getDisplayName();
-                String gMaxPlayers = String.valueOf(g.getMaxNumberOfPlayers());
+                String gMaxPlayers = String.valueOf(g.getNumberOfPlayers());
 
                 MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
                 MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
@@ -1068,7 +1068,7 @@ public class ClientMain {
                     String gsName = gs.getGameService().getDisplayName();
                     String gsCreator = gs.getCreator();
                     String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfPlayersCurrently());
-                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getMaxNumberOfPlayers());
+                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfPlayers());
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
                     MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);

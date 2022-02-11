@@ -12,7 +12,6 @@ public class LobbyServiceGameSession implements Joinable{
     // fields
     private boolean launched;
     private ArrayList<User> users = new ArrayList<>();
-    private int numberOfPlayersCurrently;
     private String saveGameID;
     private String creator;
     private LobbyServiceGame gameService;
@@ -23,7 +22,6 @@ public class LobbyServiceGameSession implements Joinable{
     LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService, String sessionID) {
         this.launched = launched;
         this.saveGameID = saveGameID;
-        this.numberOfPlayersCurrently = 1;
         this.creator = creator;
         this.gameService = gameService;
         this.sessionID = sessionID;
@@ -38,7 +36,7 @@ public class LobbyServiceGameSession implements Joinable{
     }
 
     public int getNumberOfPlayersCurrently() {
-        return numberOfPlayersCurrently;
+        return users.size();
     }
 
     public String getSaveGameID() {
@@ -71,14 +69,20 @@ public class LobbyServiceGameSession implements Joinable{
     }
 
     public boolean isLaunchable() {
-        boolean isLaunchable = true;
+        // check there are enough players
+        if (users.size() != gameService.getNumberOfPlayers()) {
+            return false;
+        }
+
+        // check all players are ready
+        boolean allReady = true;
         for (User u : this.users) {
             if (!u.isReady()) {
-                isLaunchable = !isLaunchable;
+                allReady = !allReady;
                 break;
             }
         }
-        return isLaunchable;
+        return allReady;
     }
 
     /**
