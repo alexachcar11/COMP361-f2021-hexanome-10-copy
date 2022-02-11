@@ -223,6 +223,7 @@ public class Registrator {
                 .asString();
 
         JSONObject token = (JSONObject) parser.parse(jsonToken.getBody());
+        System.out.println("service" + token);
 
         String name = displayName.replace(" ", "");
 

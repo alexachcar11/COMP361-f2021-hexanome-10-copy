@@ -746,9 +746,6 @@ public class ClientMain {
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
             lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
-            lobbyPrevBackground = new MinuetoImageFile("images/open-lobbies-prev.png");
-            lobbyNextBackground = new MinuetoImageFile("images/open-lobbies-next.png");
-            lobbyPrevNextBackground = new MinuetoImageFile("images/open-lobbies-prev-next.png");
             createGameBackground = new MinuetoImageFile("images/create-game.png");
             nameTextField = new MinuetoRectangle(520, 60, MinuetoColor.WHITE, true);
             numberOfPlayersTextField = new MinuetoRectangle(90, 50, MinuetoColor.WHITE, true);
@@ -844,15 +841,6 @@ public class ClientMain {
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
                 }
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBYPREV) {
-                gui.window.draw(lobbyPrevBackground, 0, 0);
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBYNEXT) {
-                gui.window.draw(lobbyNextBackground, 0, 0);
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBYPREVNEXT) {
-                gui.window.draw(lobbyPrevNextBackground, 0, 0);
 
             } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
                 gui.window.draw(createGameBackground, 0, 0);
@@ -989,22 +977,36 @@ public class ClientMain {
     }
 
     public static void displayAvailableGames() {
-        // TODO: can I handle the try/catch elsewhere? (lilia)
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
             ArrayList<LobbyServiceGame> availableGamesList = Registrator.getAvailableGames();
             ArrayList<LobbyServiceGameSession> availableSessionsList = Registrator.getAvailableSessions();
 
-            if (availableSessionsList.size() == 0 && availableGamesList.size() == 0) {
+            int nbAvailableGameServices = availableGamesList.size();
+            int nbAvailableGameSessions = availableSessionsList.size();
+
+            if (nbAvailableGameSessions == 0 && nbAvailableGameServices == 0) {
                 MinuetoText noneAvailableText = new MinuetoText(
                         "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
                 lobbyBackground.draw(noneAvailableText, 200, 340);
             }
 
-            int counter = 0; // how many games are displayed so far
+            // display next button
+            if (nbAvailableGameServices + nbAvailableGameSessions > 9) {
+                MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
+                lobbyBackground.draw(nextButton, 700, 676);
+            }
 
+            int totalCounter = 0; // how many games are displayed so far
+            int pageCounter = 0; // how many games are displayed on one page so far
             // display available game services (i.e. games with no creator)
             for (LobbyServiceGame g : availableGamesList) {
+                /*
+                if (totalCounter % 10 == 0) {
+                    // display a new page
+                    MinuetoImage greyRectangle = new MinuetoImageFile("images/greyRectangle.png");
+                    lobbyBackground.draw(greyRectangle, 60, 100);
+                }*/
                 String gDisplayName = g.getDisplayName();
                 String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
 
@@ -1014,23 +1016,24 @@ public class ClientMain {
                 MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
                 MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
-                lobbyBackground.draw(creator, 350, 215 + (counter * 50));
-                lobbyBackground.draw(size, 655, 215 + (counter * 50));
-                lobbyBackground.draw(joinButton, 835, 210 + (counter * 50));
-                lobbyBackground.draw(joinText, 855, 215 + (counter * 50));
+                lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
+                lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
+                lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
+                lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
+                lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
 
                 // keep track of the button location
                 Integer maxX = 935;
                 Integer minX = 835;
-                Integer maxY = 245 + (counter * 50);
-                Integer minY = 210 + (counter * 50);
+                Integer maxY = 245 + (pageCounter * 50);
+                Integer minY = 210 + (pageCounter * 50);
                 ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
                 AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
                         listOfCoordinates, g);
                 joinButtonCoordinates.add(entry);
 
-                counter++;
+                pageCounter++;
+                totalCounter++;
             }
 
             // display available game sessions (i.e. games with a creator)
@@ -1048,23 +1051,24 @@ public class ClientMain {
                     MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
                     MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                    lobbyBackground.draw(displayName, 65, 215 + (counter * 50));
-                    lobbyBackground.draw(creator, 350, 215 + (counter * 50));
-                    lobbyBackground.draw(size, 655, 215 + (counter * 50));
-                    lobbyBackground.draw(joinButton, 835, 210 + (counter * 50));
-                    lobbyBackground.draw(joinText, 855, 215 + (counter * 50));
+                    lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
+                    lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
 
                     // keep track of the button location
                     Integer maxX = 935;
                     Integer minX = 835;
-                    Integer maxY = 245 + (counter * 50);
-                    Integer minY = 210 + (counter * 50);
+                    Integer maxY = 245 + (pageCounter * 50);
+                    Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
                     AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 
-                    counter++;
+                    pageCounter++;
+                    totalCounter++;
                 }
             }
 
