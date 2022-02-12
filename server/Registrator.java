@@ -296,7 +296,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(new Gson().toJson(fields)).asString();
 
-        System.out.println(jsonResponse.getBody());
+        System.out.println("PRINTING CREATEGAMESESSION" + jsonResponse.getBody());
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
@@ -305,6 +305,7 @@ public class Registrator {
         } else {
             // get the session ID
             String id = jsonResponse.getBody();
+            System.out.println("SUCCESS! " + id);
             // create the new LobbyServiceGame instance
             LobbyServiceGameSession newGameSession = new LobbyServiceGameSession("", creator,
                     gameService, id);
