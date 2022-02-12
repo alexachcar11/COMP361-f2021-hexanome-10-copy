@@ -25,14 +25,16 @@ public class Server implements NetworkNode {
         return SERVER;
     }
 
-    // create a thread to do this
+    // create a thread to do this, in ServerMain
+    @Override
     public void start() {
         while (true) {
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.out.println("Accept failed: 4444");
+                System.err.println("Accept failed: 4444");
+                e.printStackTrace();
             }
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
@@ -52,17 +54,24 @@ public class Server implements NetworkNode {
     private void listenToClient(ClientTuple pTuple) {
         try {
             Action actionIn = (Action) pTuple.input().readObject();
+            if (actionIn.isValid()) {
+                actionIn.execute();
+            }
         } catch (IOException e) {
             String host = pTuple.socket().getInetAddress().getHostName();
             System.err.println("Couldn't get I/O for the connection to: " + host);
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
 }
 
+/**
+ * contains server side information on communication with clients
+ * the socket on the server that talks with the client
+ * the input and output streams for communication with the client
+ */
 class ClientTuple {
     private Socket aSocket;
     private ObjectInputStream aInputStream;
@@ -74,7 +83,6 @@ class ClientTuple {
             aInputStream = new ObjectInputStream(aSocket.getInputStream());
             aOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.lang.*;
 
 public class Client implements NetworkNode {
     private Socket aSocket;
@@ -26,12 +25,8 @@ public class Client implements NetworkNode {
     public void start() {
         try {
             aObjectOut.writeObject(aPlayer.getBootAction());
-            Action actionIn = (Action) aObjectIn.readObject();
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
