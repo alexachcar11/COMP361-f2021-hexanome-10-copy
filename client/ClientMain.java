@@ -110,142 +110,75 @@ public class ClientMain {
      * }
      */
 
-    MinuetoMouseHandler entryScreenMouseHandler = new MinuetoMouseHandler() {
-        @Override
-        public void handleMousePress(int x, int y, int button) {
-            // click on Play
-            if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
+    MinuetoMouseHandler entryScreenMouseHandler=new MinuetoMouseHandler(){@Override public void handleMousePress(int x,int y,int button){
+    // click on Play
+    if(x<=665&&x>=360&&y>=345&&y<=445){
 
-                // TODO: Add create lobby instance
-                // create lobby instance if it's not there already
+    // TODO: Add create lobby instance
+    // create lobby instance if it's not there already
 
-                gui.currentBackground = GUI.Screen.LOGIN;
-            }
+    gui.currentBackground=GUI.Screen.LOGIN;}
 
-            // click on Quit
-            if (x <= 665 && x >= 360 && y >= 530 && y <= 640) {
-                System.exit(0);
-            }
+    // click on Quit
+    if(x<=665&&x>=360&&y>=530&&y<=640){System.exit(0);}
 
-            // click on mute/unmute
-            if (x > 1000 && y > 740) {
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    // click on mute/unmute
+    if(x>1000&&y>740){if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
-        }
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}}
 
-        @Override
-        public void handleMouseRelease(int i, int i1, int i2) {
-            // Do nothing
-        }
+    @Override public void handleMouseRelease(int i,int i1,int i2){
+    // Do nothing
+    }
 
-        @Override
-        public void handleMouseMove(int i, int i1) {
-            // Do nothing
-        }
-    };
-    MinuetoMouseHandler loginScreenMouseHandler = new MinuetoMouseHandler() {
+    @Override public void handleMouseMove(int i,int i1){
+    // Do nothing
+    }};
+    MinuetoMouseHandler loginScreenMouseHandler=new MinuetoMouseHandler(){
 
-        @Override
-        public void handleMousePress(int x, int y, int button) {
+    @Override public void handleMousePress(int x,int y,int button){
 
-            // CLICK INSIDE THE USERNAME BOX
-            if (x <= 630 && x >= 160 && y >= 350 && y <= 400) {
-                passWordSel = false;
-                userNameSel = true;
-            }
-            // CLICK INSIDE THE PASSWORD BOX
-            else if (x <= 630 && x >= 160 && y >= 440 && y <= 495) {
-                userNameSel = false;
-                passWordSel = true;
-            } else {
-                userNameSel = false;
-                passWordSel = false;
-            }
+    // CLICK INSIDE THE USERNAME BOX
+    if(x<=630&&x>=160&&y>=350&&y<=400){passWordSel=false;userNameSel=true;}
+    // CLICK INSIDE THE PASSWORD BOX
+    else if(x<=630&&x>=160&&y>=440&&y<=495){userNameSel=false;passWordSel=true;}else{userNameSel=false;passWordSel=false;}
 
-            // CLICK ON THE LOGIN BOX AREA
-            if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
+    // CLICK ON THE LOGIN BOX AREA
+    if(x<=235&&x>=165&&y>=525&&y<=550){
 
-                // TODO: Check if the username exists in the list of usernames
-                // if it exists -> check if password matches -
-                // if password matches --> send to availableGamesScreen
-                // else --> send red text to reflect outcome
-                // if it doesn't exist -> send red text to reflect outcome
-                if (passString.length() == 0 || userString.length() == 0) {
+    // TODO: Check if the username exists in the list of usernames
+    // if it exists -> check if password matches -
+    // if password matches --> send to availableGamesScreen
+    // else --> send red text to reflect outcome
+    // if it doesn't exist -> send red text to reflect outcome
+    if(passString.length()==0||userString.length()==0){
 
-                    if (passString.length() == 0) {
-                        // no password
-                        String passFail = "Please enter a password";
-                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(passwordFailed, 200, 450);
-                    }
-                    if (userString.length() == 0) {
-                        // no username
-                        String usernameFail = "Please enter a username";
-                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
-                        loginScreenImage.draw(usernameFailed, 200, 360);
-                    }
-                }
+    if(passString.length()==0){
+    // no password
+    String passFail="Please enter a password";MinuetoImage passwordFailed=new MinuetoText(passFail,fontArial20,MinuetoColor.RED);loginScreenImage.draw(passwordFailed,200,450);}if(userString.length()==0){
+    // no username
+    String usernameFail="Please enter a username";MinuetoImage usernameFailed=new MinuetoText(usernameFail,fontArial20,MinuetoColor.RED);loginScreenImage.draw(usernameFailed,200,360);}}
 
-                else {
-                    try {
-                        boolean userFound = false;
-                        for (Object user : getAllUsers()) {
-                            if (((JSONObject) user).get("name").equals(userString)) {
-                                userFound = true;
-                            }
-                        }
-                        if (userFound) {
-                            // user exists, login
-                            System.out.println("User exists");
-                        } else {
-                            createNewUser(userString, passString);
-                            System.out.println("Got User: " + getUser("hyacinth").get("name"));
-                            System.out.println("New User");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println("Error: failed to login a user.");
-                    }
-                    // change screen after login
-                    gui.currentBackground = GUI.Screen.LOBBY;
-                }
-            }
+    else{try{boolean userFound=false;for(Object user:getAllUsers()){if(((JSONObject)user).get("name").equals(userString)){userFound=true;}}if(userFound){
+    // user exists, login
+    System.out.println("User exists");}else{createNewUser(userString,passString);System.out.println("Got User: "+getUser("hyacinth").get("name"));System.out.println("New User");}}catch(Exception e){e.printStackTrace();System.out.println("Error: failed to login a user.");}
+    // change screen after login
+    gui.currentBackground=GUI.Screen.LOBBY;}}
 
-            // click on mute/unmute
-            if (x > 1000 && y > 740) {
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    // click on mute/unmute
+    if(x>1000&&y>740){if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);
 
-                }
-            }
-        }
+    }}}
 
-        @Override
-        public void handleMouseRelease(int i, int i1, int i2) {
-            // Do nothing
-        }
+    @Override public void handleMouseRelease(int i,int i1,int i2){
+    // Do nothing
+    }
 
-        @Override
-        public void handleMouseMove(int i, int i1) {
-            // Do nothing
-        }
-    };
+    @Override public void handleMouseMove(int i,int i1){
+    // Do nothing
+    }};
     MinuetoKeyboardHandler loginScreenKeyboardHandler = new MinuetoKeyboardHandler() {
         private boolean shift = false;
 
@@ -254,7 +187,7 @@ public class ClientMain {
             // press on enter key takes you to the next screen
             if (i == MinuetoKeyboard.KEY_ENTER) {
                 try {
-                    ServerMain.getAvailableGames(); // retrieves all game services in the API
+                    .getAvailableGames(); // retrieves all game services in the API
                     ServerMain.getAvailableSessions(); // retrieves all game sessions in the API
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
@@ -321,474 +254,304 @@ public class ClientMain {
         }
     };
 
-    MinuetoMouseHandler moveBootMouseHandler = new MinuetoMouseHandler() {
-        int ind = 0; // index of players
+    MinuetoMouseHandler moveBootMouseHandler=new MinuetoMouseHandler(){int ind=0; // index of players
 
-        @Override
-        public void handleMousePress(int x, int y, int button) {
-            System.out.println("This is x: " + x + ". This is y: " + y);
-            // for left click : move boot
-            /*
-             * if (button == 1) {
-             * players.get(ind).moveBoot(x, y);
-             * }
-             * // for right click : change next player
-             * else if (button == 3) {
-             * ind++;
-             * if (ind == players.size()) { ind = 0; } // reset index if we reached last
-             * player
-             * }
-             */
+    @Override public void handleMousePress(int x,int y,int button){System.out.println("This is x: "+x+". This is y: "+y);
+    // for left click : move boot
+    /*
+     * if (button == 1) {
+     * players.get(ind).moveBoot(x, y);
+     * }
+     * // for right click : change next player
+     * else if (button == 3) {
+     * ind++;
+     * if (ind == players.size()) { ind = 0; } // reset index if we reached last
+     * player
+     * }
+     */
 
-            /*
-             * for (int i = 0; i < players.size(); i++) {
-             * // check for player's turn and if button is left click
-             * if (players.get(i).isTurn && button == 1) {
-             * players.get(i).moveBoot(x, y);
-             * break;
-             * }
-             * // if press right mouse button, change to next player
-             * if (button == 3) {
-             * // set isTurn to false for current player
-             * players.get(i).setTurn(false);
-             * 
-             * // if we reached last player, go back to first player
-             * if (i == players.size()-1) {
-             * players.get(0).setTurn(true);
-             * }
-             * else {
-             * // change isTurn to true for next player
-             * players.get(i + 1).setTurn(true);
-             * }
-             * break;
-             * }
-             * }
-             */
+    /*
+     * for (int i = 0; i < players.size(); i++) {
+     * // check for player's turn and if button is left click
+     * if (players.get(i).isTurn && button == 1) {
+     * players.get(i).moveBoot(x, y);
+     * break;
+     * }
+     * // if press right mouse button, change to next player
+     * if (button == 3) {
+     * // set isTurn to false for current player
+     * players.get(i).setTurn(false);
+     * 
+     * // if we reached last player, go back to first player
+     * if (i == players.size()-1) {
+     * players.get(0).setTurn(true);
+     * }
+     * else {
+     * // change isTurn to true for next player
+     * players.get(i + 1).setTurn(true);
+     * }
+     * break;
+     * }
+     * }
+     */
 
-            if (x > 1000 && y > 740) {
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    if(x>1000&&y>740){if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}
 
-            // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
-            // cycle to the next player
+    // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
+    // cycle to the next player
 
-            for (int i = 0; i < players.size(); i++) {
+    for(int i=0;i<players.size();i++){
 
-                while (ServerGame.notClickingOnATown(x, y)) {
-                    for (Town t : ServerGame.getTowns()) {
+    while(ServerGame.notClickingOnATown(x,y)){for(Town t:ServerGame.getTowns()){
 
-                        if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
+    if(t.minX<x&&t.minY<y&&t.maxX>x&&t.maxY>y){
 
-                            // set a variable to keep track of the town at that location
-                            Town townAtLoc = t;
-                            // move the boot to that town
-                            Player p = players.get(i);
+    // set a variable to keep track of the town at that location
+    Town townAtLoc=t;
+    // move the boot to that town
+    Player p=players.get(i);
 
-                            p.moveBoot(t);
+    p.moveBoot(t);
 
-                            // draw the boot at a location
-                            // depending on the number of players in the lobby, designate an arrangement for
-                            // possible boot
-                            // slots around each city, will be populated by the specific boot each time
+    // draw the boot at a location
+    // depending on the number of players in the lobby, designate an arrangement for
+    // possible boot
+    // slots around each city, will be populated by the specific boot each time
 
-                            // gui.window.draw( BOOT, LOCATION1, LOCATION2);
-                        }
-                    }
-                }
-            }
+    // gui.window.draw( BOOT, LOCATION1, LOCATION2);
+    }}}}
 
-        }
+    }
 
-        @Override
-        public void handleMouseRelease(int x, int y, int button) {
-        }
+    @Override public void handleMouseRelease(int x,int y,int button){}
 
-        @Override
-        public void handleMouseMove(int x, int y) {
+    @Override public void handleMouseMove(int x,int y){
 
-        }
-    };
-    MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
-        @Override
-        public void handleMousePress(int x, int y, int button) {
+    }};
+    MinuetoMouseHandler lobbyMouseHandler=new MinuetoMouseHandler(){@Override public void handleMousePress(int x,int y,int button){
 
-            if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
-                // click on Create New Game button
-                gui.currentBackground = GUI.Screen.CREATELOBBY;
-            } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
-                // click on the Refresh button
+    if(x>=30&&x<=440&&y>=680&&y<=750){
+    // click on Create New Game button
+    gui.currentBackground=GUI.Screen.CREATELOBBY;}else if(x>=920&&x<=990&&y>=675&&y<=745){
+    // click on the Refresh button
 
-            }
+    }
 
-            if (x > 1000 && y > 740) {
-                // click on mute/unmute button
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    if(x>1000&&y>740){
+    // click on mute/unmute button
+    if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
-        }
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}}
 
-        @Override
-        public void handleMouseRelease(int x, int y, int button) {
-            // do nothing
-        }
+    @Override public void handleMouseRelease(int x,int y,int button){
+    // do nothing
+    }
 
-        @Override
-        public void handleMouseMove(int x, int y) {
-            // do nothing
-        }
-    };
-    MinuetoKeyboardHandler gameScreenKeyboardHandler = new MinuetoKeyboardHandler() {
-        private boolean shift = false;
+    @Override public void handleMouseMove(int x,int y){
+    // do nothing
+    }};
+    MinuetoKeyboardHandler gameScreenKeyboardHandler=new MinuetoKeyboardHandler(){private boolean shift=false;
 
-        @Override
-        public void handleKeyPress(int i) {
-            if (i == MinuetoKeyboard.KEY_SHIFT) {
-                shift = true;
-            } else if (i == MinuetoKeyboard.KEY_DELETE) {
-                if (nameSel && nameString.length() > 0) {
-                    nameString = nameString.substring(0, nameString.length() - 1);
-                } else if (numberPlayerSel && numberPlayerString.length() > 0) {
-                    numberPlayerString = numberPlayerString.substring(0, numberPlayerString.length() - 1);
-                } else {
-                    return;
-                }
-            } else if (shift || i < 65 || i > 90) { // uppercase
-                                                    // or
-                                                    // not
-                                                    // a
-                                                    // letter
-                if (nameSel) {
-                    nameString = nameString + (char) i;
-                } else if (numberPlayerSel) {
-                    numberPlayerString = numberPlayerString + (char) i;
-                }
-            } else { // lowercase
-                     // letters
-                if (nameSel) {
-                    nameString = nameString + (char) (i + 32);
-                } else if (numberPlayerSel) {
-                    numberPlayerString = numberPlayerString + (char) (i + 32);
-                }
-            }
+    @Override public void handleKeyPress(int i){if(i==MinuetoKeyboard.KEY_SHIFT){shift=true;}else if(i==MinuetoKeyboard.KEY_DELETE){if(nameSel&&nameString.length()>0){nameString=nameString.substring(0,nameString.length()-1);}else if(numberPlayerSel&&numberPlayerString.length()>0){numberPlayerString=numberPlayerString.substring(0,numberPlayerString.length()-1);}else{return;}}else if(shift||i<65||i>90){ // uppercase
+                                                                                                                                                                                                                                                                                                                                                                                                                     // or
+                                                                                                                                                                                                                                                                                                                                                                                                                     // not
+                                                                                                                                                                                                                                                                                                                                                                                                                     // a
+                                                                                                                                                                                                                                                                                                                                                                                                                     // letter
+    if(nameSel){nameString=nameString+(char)i;}else if(numberPlayerSel){numberPlayerString=numberPlayerString+(char)i;}}else{ // lowercase
+                                                                                                                              // letters
+    if(nameSel){nameString=nameString+(char)(i+32);}else if(numberPlayerSel){numberPlayerString=numberPlayerString+(char)(i+32);}}
 
-            // cover the last entry, draw name
-            createGameBackground.draw(nameTextField, 195, 235);
-            MinuetoImage name = new MinuetoText(nameString, fontArial20, MinuetoColor.BLACK);
-            createGameBackground.draw(name, 205, 250);
+    // cover the last entry, draw name
+    createGameBackground.draw(nameTextField,195,235);MinuetoImage name=new MinuetoText(nameString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(name,205,250);
 
-            // cover the last entry, draw number of players
-            createGameBackground.draw(numberOfPlayersTextField, 475, 445);
-            MinuetoImage numberPlayers = new MinuetoText(numberPlayerString, fontArial20, MinuetoColor.BLACK);
-            createGameBackground.draw(numberPlayers, 485, 460);
-        }
+    // cover the last entry, draw number of players
+    createGameBackground.draw(numberOfPlayersTextField,475,445);MinuetoImage numberPlayers=new MinuetoText(numberPlayerString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(numberPlayers,485,460);}
 
-        @Override
-        public void handleKeyRelease(int i) {
-            if (i == MinuetoKeyboard.KEY_SHIFT) {
-                shift = false;
-            }
-        }
+    @Override public void handleKeyRelease(int i){if(i==MinuetoKeyboard.KEY_SHIFT){shift=false;}}
 
-        @Override
-        public void handleKeyType(char c) {
-            // do nothing
-        }
-    };
-    MinuetoMouseHandler gameScreenMouseHandler = new MinuetoMouseHandler() {
-        @Override
-        public void handleMousePress(int x, int y, int button) {
-            System.out.println("This is x:" + x + "This is y:" + y);
-            if (x >= 195 && x <= 715 && y >= 235 && y <= 295) {
-                // click on the Name text field
-                nameSel = true;
-                numberPlayerSel = false;
-            } else if (x >= 475 && x <= 565 && y >= 445 && y <= 495) {
-                // click on the Size text field
-                nameSel = false;
-                numberPlayerSel = true;
-            } else {
-                nameSel = false;
-                numberPlayerSel = false;
-                if (x >= 305 && x <= 715 && y <= 640 && y >= 570) {
-                    // click on the Create New Game button
-                    // TODO: check if name/size are empty and put an error message
-                    // TODO: send a createGame message to the LS
-                    if (elfenlandSel) {
-                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                    } else if (elfenGoldSel) {
-                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                    } else {
-                        // TODO: show error message ("Please select a game mode.")
-                        System.out.println("none selected");
-                    }
-                } else if (x >= 330 && x <= 695 && y <= 725 && y >= 665) {
-                    // click on the Return to Open Lobbies button
-                    gui.currentBackground = GUI.Screen.LOBBY;
-                } else if (x >= 290 && x <= 535 && y <= 400 && y >= 340) { // 245x60
-                    // click on Elfenland
-                    createGameBackground.draw(elfenlandSelected, 0, 0);
-                    elfenlandSel = true;
-                    elfenGoldSel = false;
-                    // cover the last entry, draw name - temporary bug fix
-                    createGameBackground.draw(nameTextField, 195, 235);
-                    MinuetoImage name = new MinuetoText(nameString, fontArial20, MinuetoColor.BLACK);
-                    createGameBackground.draw(name, 205, 250);
-                    // cover the last entry, draw number of players - temporary bug fix
-                    createGameBackground.draw(numberOfPlayersTextField, 475, 445);
-                    MinuetoImage numberPlayers = new MinuetoText(numberPlayerString, fontArial20, MinuetoColor.BLACK);
-                    createGameBackground.draw(numberPlayers, 485, 460);
-                } else if (x >= 550 && x <= 810 && y <= 400 && y >= 338) { // 260x62
-                    // click on Elfengold
-                    createGameBackground.draw(elfenGoldSelected, 0, 0);
-                    elfenlandSel = false;
-                    elfenGoldSel = true;
-                    // cover the last entry, draw name - temporary bug fix
-                    createGameBackground.draw(nameTextField, 195, 235);
-                    MinuetoImage name = new MinuetoText(nameString, fontArial20, MinuetoColor.BLACK);
-                    createGameBackground.draw(name, 205, 250);
-                    // cover the last entry, draw number of players - temporary bug fix
-                    createGameBackground.draw(numberOfPlayersTextField, 475, 445);
-                    MinuetoImage numberPlayers = new MinuetoText(numberPlayerString, fontArial20, MinuetoColor.BLACK);
-                    createGameBackground.draw(numberPlayers, 485, 460);
-                } else if (x > 1000 && y > 740) {
-                    // click on mute/unmute button
-                    if (soundOn) {
-                        soundOn = false;
-                        pauseSound();
-                        gui.window.draw(soundOffButton, 1000, 745);
-                    } else {
-                        soundOn = true;
-                        resumeSound();
-                        gui.window.draw(soundOnButton, 1000, 745);
-                    }
-                } 
-            }
+    @Override public void handleKeyType(char c){
+    // do nothing
+    }};
+    MinuetoMouseHandler gameScreenMouseHandler=new MinuetoMouseHandler(){@Override public void handleMousePress(int x,int y,int button){System.out.println("This is x:"+x+"This is y:"+y);if(x>=195&&x<=715&&y>=235&&y<=295){
+    // click on the Name text field
+    nameSel=true;numberPlayerSel=false;}else if(x>=475&&x<=565&&y>=445&&y<=495){
+    // click on the Size text field
+    nameSel=false;numberPlayerSel=true;}else{nameSel=false;numberPlayerSel=false;if(x>=305&&x<=715&&y<=640&&y>=570){
+    // click on the Create New Game button
+    // TODO: check if name/size are empty and put an error message
+    // TODO: send a createGame message to the LS
+    if(elfenlandSel){gui.currentBackground=GUI.Screen.LOBBYELFENLAND;}else if(elfenGoldSel){gui.currentBackground=GUI.Screen.LOBBYELFENGOLD;}else{
+    // TODO: show error message ("Please select a game mode.")
+    System.out.println("none selected");}}else if(x>=330&&x<=695&&y<=725&&y>=665){
+    // click on the Return to Open Lobbies button
+    gui.currentBackground=GUI.Screen.LOBBY;}else if(x>=290&&x<=535&&y<=400&&y>=340){ // 245x60
+    // click on Elfenland
+    createGameBackground.draw(elfenlandSelected,0,0);elfenlandSel=true;elfenGoldSel=false;
+    // cover the last entry, draw name - temporary bug fix
+    createGameBackground.draw(nameTextField,195,235);MinuetoImage name=new MinuetoText(nameString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(name,205,250);
+    // cover the last entry, draw number of players - temporary bug fix
+    createGameBackground.draw(numberOfPlayersTextField,475,445);MinuetoImage numberPlayers=new MinuetoText(numberPlayerString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(numberPlayers,485,460);}else if(x>=550&&x<=810&&y<=400&&y>=338){ // 260x62
+    // click on Elfengold
+    createGameBackground.draw(elfenGoldSelected,0,0);elfenlandSel=false;elfenGoldSel=true;
+    // cover the last entry, draw name - temporary bug fix
+    createGameBackground.draw(nameTextField,195,235);MinuetoImage name=new MinuetoText(nameString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(name,205,250);
+    // cover the last entry, draw number of players - temporary bug fix
+    createGameBackground.draw(numberOfPlayersTextField,475,445);MinuetoImage numberPlayers=new MinuetoText(numberPlayerString,fontArial20,MinuetoColor.BLACK);createGameBackground.draw(numberPlayers,485,460);}else if(x>1000&&y>740){
+    // click on mute/unmute button
+    if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);}else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}}
 
-        }
+    }
 
-        @Override
-        public void handleMouseRelease(int x, int y, int button) {
-            // do nothing
-        }
+    @Override public void handleMouseRelease(int x,int y,int button){
+    // do nothing
+    }
 
-        @Override
-        public void handleMouseMove(int x, int y) {
-            // do nothing
-        }
-    };
+    @Override public void handleMouseMove(int x,int y){
+    // do nothing
+    }};
 
-    MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
-        private boolean ready = false;
+    MinuetoMouseHandler elfenLandLobbyMouseHandler=new MinuetoMouseHandler(){private boolean ready=false;
 
-        @Override
-        public void handleMousePress(int x, int y, int button) {
-            System.out.println("x: " + x + ", y: " + y);
+    @Override public void handleMousePress(int x,int y,int button){System.out.println("x: "+x+", y: "+y);
 
-            if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
-                // click on Leave button
-                // TODO: remove the user from the lobby and send this message to all players
-                // TODO: return the user to the open lobbies page
-                gui.currentBackground = GUI.Screen.LOBBY;
-            } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                // click on Ready? button
-                ready = !ready;
-                if (ready) {
-                    lobbyElfenlandBackground.draw(readyGreen, 823, 581);
-                    // TODO: display Ready next to the player's name
-                    // TODO: notify all players that this player is ready
-                    // TODO: change to startButton when all players are ready and this player is the
-                    // game creator
-                } else {
-                    lobbyElfenlandBackground.draw(readyWhite, 823, 581);
-                    // TODO: display Not Ready next to player's name
-                    // TODO: notify all players that this player is not ready
-                    // TODO: stop displaying the Start button to the host
-                }
-            } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
-                // click on Mode button
-                modeDropdownActive = !modeDropdownActive;
-                destinationDropdownActive = false;
-                roundsDropdownActive = false;
-                
-            } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x:
-                                                                       // 684-986
-                                                                       // y:
-                                                                       // 358-399
-                // click on Destination Town button
-                destinationDropdownActive = !destinationDropdownActive;
-                modeDropdownActive = false;
-                roundsDropdownActive = false;
-            } else if (x >= 932 && x <= 985 && y >= 410 && y <= 450) { // x:
-                                                                       // 797-985
-                                                                       // y:
-                                                                       // 411-450
-                // click on Rounds button
-                roundsDropdownActive = !roundsDropdownActive;
-                modeDropdownActive = false;
-                destinationDropdownActive = false;
-            } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
-                // click on Send Message button
-            } else if (destinationDropdownActive){ // DESTINATION DROPDOWN MENU OPEN AND CLICKING ON YES OR NO 
-                if(x>=690 && x <= 976 && y>=405 && y<=433) { 
-                    // yes
-                    destinationTown = true;
-                    destinationDropdownActive = !destinationDropdownActive;
-                }
-                else if(x>=690 && x <= 976 && y>=437 && y<=472) { 
-                    // no
-                    destinationTown = false;
-                    destinationDropdownActive = !destinationDropdownActive;
-                }
-            } else if (roundsDropdownActive){ // ROUNDS DROPDOWN MENU OPEN AND CLICKING ON YES OR NO 
-                if(x>=800 && x <= 975 && y>=455 && y<=480) { 
-                    // 3 rounds
-                    numberOfRounds = 3;
-                    roundsDropdownActive = !roundsDropdownActive;
-                }
-                else if(x>=800 && x <= 975 && y>=490 && y<=525) { 
-                    // 4 rounds
-                    numberOfRounds = 4;
-                    roundsDropdownActive = !roundsDropdownActive;
-                }
-            }
-            // clicking an option from the dropdowns
-            if (modeDropdownActive) {
+    if(x>=825&&x<=1000&&y>=675&&y<=735){
+    // click on Leave button
+    // TODO: remove the user from the lobby and send this message to all players
+    // TODO: return the user to the open lobbies page
+    gui.currentBackground=GUI.Screen.LOBBY;}else if(x>=822&x<=998&&y<=655&&y>=585){
+    // click on Ready? button
+    ready=!ready;if(ready){lobbyElfenlandBackground.draw(readyGreen,823,581);
+    // TODO: display Ready next to the player's name
+    // TODO: notify all players that this player is ready
+    // TODO: change to startButton when all players are ready and this player is the
+    // game creator
+    }else{lobbyElfenlandBackground.draw(readyWhite,823,581);
+    // TODO: display Not Ready next to player's name
+    // TODO: notify all players that this player is not ready
+    // TODO: stop displaying the Start button to the host
+    }}else if(x>=945&&x<=990&&y>=180&&y<=215){ // x: 763-990 y: 178-220
+    // click on Mode button
+    modeDropdownActive=!modeDropdownActive;destinationDropdownActive=false;roundsDropdownActive=false;
 
-            } else if (destinationDropdownActive) {
+    }else if(x>=935&&x<=985&&y>=360&&y<=400){ // x:
+                                              // 684-986
+                                              // y:
+                                              // 358-399
+    // click on Destination Town button
+    destinationDropdownActive=!destinationDropdownActive;modeDropdownActive=false;roundsDropdownActive=false;}else if(x>=932&&x<=985&&y>=410&&y<=450){ // x:
+                                                                                                                                                       // 797-985
+                                                                                                                                                       // y:
+                                                                                                                                                       // 411-450
+    // click on Rounds button
+    roundsDropdownActive=!roundsDropdownActive;modeDropdownActive=false;destinationDropdownActive=false;}else if(x>=710&&x<=800&&y>=700&&y<=735){
+    // click on Send Message button
+    }else if(destinationDropdownActive){ // DESTINATION DROPDOWN MENU OPEN AND CLICKING ON YES OR NO
+    if(x>=690&&x<=976&&y>=405&&y<=433){
+    // yes
+    destinationTown=true;destinationDropdownActive=!destinationDropdownActive;}else if(x>=690&&x<=976&&y>=437&&y<=472){
+    // no
+    destinationTown=false;destinationDropdownActive=!destinationDropdownActive;}}else if(roundsDropdownActive){ // ROUNDS
+                                                                                                                // DROPDOWN
+                                                                                                                // MENU
+                                                                                                                // OPEN
+                                                                                                                // AND
+                                                                                                                // CLICKING
+                                                                                                                // ON
+                                                                                                                // YES
+                                                                                                                // OR NO
+    if(x>=800&&x<=975&&y>=455&&y<=480){
+    // 3 rounds
+    numberOfRounds=3;roundsDropdownActive=!roundsDropdownActive;}else if(x>=800&&x<=975&&y>=490&&y<=525){
+    // 4 rounds
+    numberOfRounds=4;roundsDropdownActive=!roundsDropdownActive;}}
+    // clicking an option from the dropdowns
+    if(modeDropdownActive){
 
-            } else if (roundsDropdownActive) {
+    }else if(destinationDropdownActive){
 
-            }
+    }else if(roundsDropdownActive){
 
-            if (x > 1000 && y > 740) {
-                // click on mute/unmute button
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    }
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
-        }
+    if(x>1000&&y>740){
+    // click on mute/unmute button
+    if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-        @Override
-        public void handleMouseRelease(int x, int y, int button) {
-            // do nothing
-        }
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}}
 
-        @Override
-        public void handleMouseMove(int x, int y) {
-            // do nothing
-        }
-    };
+    @Override public void handleMouseRelease(int x,int y,int button){
+    // do nothing
+    }
 
-    MinuetoMouseHandler elfenGoldLobbyMouseHandler = new MinuetoMouseHandler() {
-        private boolean ready = false;
-        @Override
-        public void handleMousePress(int x, int y, int button) {
-            System.out.println("x: " + x + "y: " + y);
+    @Override public void handleMouseMove(int x,int y){
+    // do nothing
+    }};
 
-            if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
-                // click on Leave button
-                // TODO: remove the user from the lobby and send this message to all players
-                // TODO: return the user to the open lobbies page
-                gui.currentBackground = GUI.Screen.LOBBY;
-            } else if (x>= 822 & x<= 998 && y <= 655 && y >= 585) {
-                // click on Ready? button
-                ready = !ready;
-                if (ready) {
-                    lobbyElfengoldBackground.draw(readyGreen, 823, 581);
-                    // TODO: display Ready next to the player's name
-                    // TODO: notify all players that this player is ready
-                    // TODO: change to startButton when all players are ready and this player is the game creator
-                } else {
-                    lobbyElfengoldBackground.draw(readyWhite, 823, 581);
-                    // TODO: display Not Ready next to player's name
-                    // TODO: notify all players that this player is not ready
-                    // TODO: stop displaying the Start button to the host
-                }
-            } else if (x >= 945 && x <= 990 && y >= 180 && y <= 215) { // x: 763-990 y: 178-220
-                // click on Mode button
-                modeDropdownActive = !modeDropdownActive;
-                destinationDropdownActive = false;
-                roundsDropdownActive = false;
-            } else if (x >= 935 && x <= 985 && y >= 360 && y <= 400) { // x: 684-986 y: 358-399
-                // click on Destination Town button
-                destinationDropdownActive = !destinationDropdownActive;
-                modeDropdownActive = false;
-                roundsDropdownActive = false;
-            }  else if (x >= 932 && x <= 985 && y >= 410 && y <=450) { // x: 797-985 y: 411-450
-                // click on Rounds button
-                roundsDropdownActive = !roundsDropdownActive;
-                modeDropdownActive = false;
-                destinationDropdownActive = false;
-            } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
-                // click on Send Message button
+    MinuetoMouseHandler elfenGoldLobbyMouseHandler=new MinuetoMouseHandler(){private boolean ready=false;@Override public void handleMousePress(int x,int y,int button){System.out.println("x: "+x+"y: "+y);
 
-                // track the message from the textbox  
+    if(x>=825&&x<=1000&&y>=675&&y<=735){
+    // click on Leave button
+    // TODO: remove the user from the lobby and send this message to all players
+    // TODO: return the user to the open lobbies page
+    gui.currentBackground=GUI.Screen.LOBBY;}else if(x>=822&x<=998&&y<=655&&y>=585){
+    // click on Ready? button
+    ready=!ready;if(ready){lobbyElfengoldBackground.draw(readyGreen,823,581);
+    // TODO: display Ready next to the player's name
+    // TODO: notify all players that this player is ready
+    // TODO: change to startButton when all players are ready and this player is the
+    // game creator
+    }else{lobbyElfengoldBackground.draw(readyWhite,823,581);
+    // TODO: display Not Ready next to player's name
+    // TODO: notify all players that this player is not ready
+    // TODO: stop displaying the Start button to the host
+    }}else if(x>=945&&x<=990&&y>=180&&y<=215){ // x: 763-990 y: 178-220
+    // click on Mode button
+    modeDropdownActive=!modeDropdownActive;destinationDropdownActive=false;roundsDropdownActive=false;}else if(x>=935&&x<=985&&y>=360&&y<=400){ // x:
+                                                                                                                                                // 684-986
+                                                                                                                                                // y:
+                                                                                                                                                // 358-399
+    // click on Destination Town button
+    destinationDropdownActive=!destinationDropdownActive;modeDropdownActive=false;roundsDropdownActive=false;}else if(x>=932&&x<=985&&y>=410&&y<=450){ // x:
+                                                                                                                                                       // 797-985
+                                                                                                                                                       // y:
+                                                                                                                                                       // 411-450
+    // click on Rounds button
+    roundsDropdownActive=!roundsDropdownActive;modeDropdownActive=false;destinationDropdownActive=false;}else if(x>=710&&x<=800&&y>=700&&y<=735){
+    // click on Send Message button
 
-                // print it to a given location 
+    // track the message from the textbox
 
-                // if there is text already, write the old text lower and the new one higher
+    // print it to a given location
 
-                // 
-            }
+    // if there is text already, write the old text lower and the new one higher
 
-            // clicking an option from the dropdowns
-            if (modeDropdownActive) {
+    //
+    }
 
-            } else if (destinationDropdownActive) {
+    // clicking an option from the dropdowns
+    if(modeDropdownActive){
 
-            } else if (roundsDropdownActive) {
+    }else if(destinationDropdownActive){
 
-            }
+    }else if(roundsDropdownActive){
 
-            if( x > 1000 && y > 740) {
-                // click on mute/unmute button
-                if(soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
+    }
 
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
-        }
+    if(x>1000&&y>740){
+    // click on mute/unmute button
+    if(soundOn){soundOn=false;pauseSound();gui.window.draw(soundOffButton,1000,745);
 
-        @Override
-        public void handleMouseRelease(int x, int y, int button) {
-            // do nothing
-        }
+    }else{soundOn=true;resumeSound();gui.window.draw(soundOnButton,1000,745);}}}
 
-        @Override
-        public void handleMouseMove(int x, int y) {
-            // do nothing
-        }
-    };
+    @Override public void handleMouseRelease(int x,int y,int button){
+    // do nothing
+    }
+
+    @Override public void handleMouseMove(int x,int y){
+    // do nothing
+    }};
 
     // for login screen queue
     private static boolean userNameSel = false;
@@ -1021,50 +784,47 @@ public class ClientMain {
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
-                
+
                 MinuetoText destinationTownTextNo = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
                 MinuetoText destinationTownTextYes = new MinuetoText("Yes", fontArial22Bold, MinuetoColor.BLACK);
 
                 // change the text for the destinationTown box
-                if(destinationTown == false) { 
-                    // write no on the starting whitespace 
+                if (destinationTown == false) {
+                    // write no on the starting whitespace
                     gui.window.draw(destinationTownTextNo, 695, 365);
-                } else { 
+                } else {
                     // write yes on the starting whitespace
                     gui.window.draw(destinationTownTextYes, 695, 365);
                 }
 
                 // change the text for the numberOfRounds box
-                if(numberOfRounds == 3) { 
-                    gui.window.draw(rounds3Text, 805 , 415 );
-                } else if (numberOfRounds == 4) { 
-                    gui.window.draw(rounds4Text, 805 ,415 );
+                if (numberOfRounds == 3) {
+                    gui.window.draw(rounds3Text, 805, 415);
+                } else if (numberOfRounds == 4) {
+                    gui.window.draw(rounds4Text, 805, 415);
                 }
-                
-                //write text for the mode of the game being played
-                if(elfenlandSel) { 
+
+                // write text for the mode of the game being played
+                if (elfenlandSel) {
                     gui.window.draw(modeElfenlandText, 770, 185);
-                } else if (elfenGoldSel) { 
+                } else if (elfenGoldSel) {
                     gui.window.draw(modeElfengoldText, 770, 185);
                 }
 
-                if(numberPlayerString.equals("2")) {
-                    gui.window.draw(twoPlayers, 760,250);
-                } else if(numberPlayerString.equals("3")) {
-                    gui.window.draw(threePlayers, 760,250);
-                }
-                else if(numberPlayerString.equals("4")) {
-                    gui.window.draw(fourPlayers, 760,250);
-                }
-                else if(numberPlayerString.equals("5")) {
-                    gui.window.draw(fivePlayers, 760,250);
-                }
-                else if(numberPlayerString.equals("6")) {
-                    gui.window.draw(sixPlayers, 760,250);
+                if (numberPlayerString.equals("2")) {
+                    gui.window.draw(twoPlayers, 760, 250);
+                } else if (numberPlayerString.equals("3")) {
+                    gui.window.draw(threePlayers, 760, 250);
+                } else if (numberPlayerString.equals("4")) {
+                    gui.window.draw(fourPlayers, 760, 250);
+                } else if (numberPlayerString.equals("5")) {
+                    gui.window.draw(fivePlayers, 760, 250);
+                } else if (numberPlayerString.equals("6")) {
+                    gui.window.draw(sixPlayers, 760, 250);
                 }
 
-                // display dropdowns 
-                if (modeDropdownActive) { // this one isn't necessary -> allows us to change the mode 
+                // display dropdowns
+                if (modeDropdownActive) { // this one isn't necessary -> allows us to change the mode
                     // decide if we want to put the node or not
                     // gui.window.draw(modeDropdownRectangle, 762, 217);
                     // lobbyElfenlandBackground.draw(modeDropdownRectangle, 762, 217);
@@ -1078,8 +838,6 @@ public class ClientMain {
                     gui.window.draw(rounds3Text, 805, 455);
                     gui.window.draw(rounds4Text, 805, 495);
                 }
-
-                
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
@@ -1203,7 +961,8 @@ public class ClientMain {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(content.toString());
     }
-// ******************************************MAIN CODE STARTS HERE********************************************
+    // ******************************************MAIN CODE STARTS
+    // HERE********************************************
 
     // refreshes the access token
     private static JSONObject refreshAccessToken() throws IOException, ParseException {
