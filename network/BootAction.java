@@ -8,7 +8,9 @@ public class BootAction extends Action {
 
     @Override
     public boolean isValid() {
-        // TODO Auto-generated method stub
+        // route exists
+        // token on road
+        // player has required cards
         return false;
     }
 
