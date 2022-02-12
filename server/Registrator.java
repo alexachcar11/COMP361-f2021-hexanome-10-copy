@@ -504,7 +504,7 @@ public class Registrator {
      * @throws IOException
      * @throws ParseException
      */
-    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws ParseException {
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://elfenland.simui.com:4242/api/sessions")
                 .asString();
