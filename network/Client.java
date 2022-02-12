@@ -24,10 +24,9 @@ public class Client implements NetworkNode {
     @Override
     public void start() {
         try {
-            aObjectOut.writeObject(aPlayer.getBootAction());
+            aObjectOut.writeObject(new TestAction());
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

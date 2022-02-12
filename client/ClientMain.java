@@ -193,12 +193,13 @@ public class ClientMain {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
                     }
-                    // change screen after login
                     try {
                         REGISTRATOR.createNewGame("testgame", 6, 3, Mode.ELFENLAND, false, false);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                    Client testClient = new Client(ServerMain.LOCATION, Server.instance().getPort());
+                    testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }

@@ -65,6 +65,10 @@ public class Server implements NetworkNode {
         }
 
     }
+
+    public int getPort() {
+        return aSocket.getLocalPort();
+    }
 }
 
 /**
