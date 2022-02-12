@@ -1,137 +1,148 @@
-import org.minueto.MinuetoColor;
-import org.minueto.image.MinuetoFont;
-import org.minueto.image.MinuetoRectangle;
-import org.minueto.image.MinuetoText;
-
 import java.util.ArrayList;
 
 // represents one active game session
-public class LobbyServiceGameSession {
+public class LobbyServiceGameSession implements Joinable{
 
     // fields
     private boolean launched;
-    private ArrayList<String> players; //TODO: this will be ArrayList<Player> later
-    private int numberOfPlayersCurrently;
+    private ArrayList<User> users = new ArrayList<>();
     private String saveGameID;
     private String creator;
     private LobbyServiceGame gameService;
+    private String sessionID;
 
-
-    LobbyServiceGameSession(boolean launched, String saveGameID, String creator, LobbyServiceGame gameService) {
-        this.launched = launched;
+    /**
+     * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
+     * @param saveGameID savegameID to load. If there is none, put ""
+     * @param creator User of the creator of the game
+     * @param gameService gameservice for which this session belongs to
+     * @param sessionID sessionID on the LS
+     */
+    public LobbyServiceGameSession(String saveGameID, User creator, LobbyServiceGame gameService, String sessionID) {
+        this.launched = false;
         this.saveGameID = saveGameID;
-        this.numberOfPlayersCurrently = players.size();
-        this.creator = creator;
+        this.creator = creator.getName();
         this.gameService = gameService;
+        this.sessionID = sessionID;
+        this.users.add(creator);
     }
 
+    /**
+     * GETTER: returns the value of launched
+     * @return true if the session has been launched, false otherwise
+     */
     public boolean isLaunched() {
         return launched;
     }
 
-    public ArrayList<String> getPlayers() {
-        return players;
+    /**
+     * GETTER: returns the list of users that have joined the session
+     * @return ArrayList<User>
+     */
+    public ArrayList<User> getUsers() {
+        return users;
     }
 
-    public int getNumberOfPlayersCurrently() {
-        return numberOfPlayersCurrently;
+    /**
+     * GETTER: returns the number of users that have currently joined the game
+     * @return size of ArrayList<User>
+     */
+    public int getNumberOfUsersCurrently() {
+        return users.size();
     }
 
+    /**
+     * GETTER: returns the save game id
+     * @return save game id. "" if the game has no save id yet
+     */
     public String getSaveGameID() {
         return saveGameID;
     }
 
+    /**
+     * GETTER: Retunrs the username of the creator of the game
+     * @return usersname of user that is the creator
+     */
     public String getCreator() {
         return creator;
     }
 
+    /**
+     * GETTER: returns the LobbyServiceGame associated with this session.
+     * @return the LobbyServiceGame from which this session was started
+     */
     public LobbyServiceGame getGameService() {
         return gameService;
     }
 
     /**
-     * Create all minueto objects that are needed to display information about the game session
+     * Returns the session ID that is on the LS
+     * @return session ID
      */
-    public void buildDisplay() {
-
-
-
+    public String getSessionID() {
+        return sessionID;
     }
 
-    /*
-    Operation: Session::startGame(gameSession: Session)
-    Scope: Player; Session;
-    Messages: Player::{gameStartConfirmation; gameStartFailed_e}
-    Post: Upon success, sends the player a message to confirm that the game has started successfully and moves all players to the game screen. Otherwise, sends a “gameStartFailed_e” message.
-    */
-
-    /*
-    Operation: Session::quitGameSession()
-    Scope: Player; Session;
-    Messages: Player::{quitConfirmation; quitFailed_e}
-    Post: Upon success, sends the player a message to confirm they have quit successfully and returns the player back to the lobby. Otherwise, sends a “quitFailed_e” message.
-    */
-
-    /*
-    Operation: Session::saveGameSession()
-    Scope: Player; Session; Game;
-    Messages: Player::{saveConfirmation}
-    Post: Sends a message to the player to notify the player that the session is saved.
+    /**
+     * Add a User to the list of users in this session
+     * @param user user that is being added
      */
-
-    /*
-    Operation: Session::playerJoined(gameSession: Session, player: Player)
-    Scope: User; Player; Session;
-    Messages: Player::{playerJoined}
-    Post: Upon success, sends the player a message to confirm another player has joined a game session successfully.
-     */
-    public void playerJoined(LobbyServiceGameSession sessionJoined, Player playerThatJoined) {
-
+    public void addUser(User user) {
+        this.users.add(user);
     }
 
-    /*
-    Operation: Session::joinConfirmation(gameSession: Session)
-    Scope: User; Player; Session;
-    Messages: Player::{joinConfirmation, joinFailed_e}
-    Post: Upon success, sends the player a message to confirm they have joined a game session successfully and moves the player to the game lobby. Otherwise, sends a “joinFailed_e” message.
-    */
-    public void joinConfirmation(LobbyServiceGameSession session) {
-        // send a message to the User that the session was joined succesfully or not
-
-    }
-
-    public void joinGame(LobbyServiceGameSession session) {
-        // helper function that will create a Player and make them join a session
-    }
-
-    /*
-    Operation: Session::gameStartConfirmation(gameSession: Session, gameBoard: Board)
-    Scope: Player; Session;
-    Messages: Player::{gameStartConfirmation; gameStartFailed_e}
-    Post: Upon success, sends the player a message to confirm that the game has started successfully and moves all players to the game screen. Otherwise, sends a “gameStartFailed_e” message.
-
-    Operation: Session::gameSessionCreationConfirmation(gameSession: Session)
-    Scope: User;  Player;
-    New: newSession: Session;
-    Messages: Player::{gameSessionCreationConfirmation; gameSessionCreationFailed_e}
-    Post: Upon success, sends a confirmation message to the player that their gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e” message.
-
-    Operation: Session::playerQuit(gameSession: Session, player: Player)
-    Scope: Player; Session;
-    Messages: Player::{playerQuit}
-    Post: Upon success, sends the player a message to confirm another player has quit successfully.
-
-    Operation: Session::quitConfirmation(gameSession: Session)
-    Scope: Player; Session;
-    Messages: Player::{quitConfirmation; quitFailed_e}
-    Post: Upon success, sends the player a message to confirm they have quit successfully and returns the player back to the lobby. Otherwise, sends a “quitFailed_e” message.
-
-    Operation: Session::saveConfirmation(gameSession: Session)
-    Scope: Session; Game; Player;
-    Messages: Player::{saveConfirmation}
-    Post: Sends a message to the player to notify the player that the session is saved.
-
+    /**
+     * Remove a User from the list of users in this session
+     * @param user user to remove
      */
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.toggleReady();
+    }
 
+    /**
+     * Set the launch value to true
+     */
+    public void launch() {
+        this.launched = true;
+    }
 
+    /**
+     * Checks whether this session can be launched by the LS (LS won't give an error).
+     * A session is launchable when enough users have joined and all theses users are ready.
+     * @return true if the session is launchable (LS won't give an error), false otherwise
+     */
+    public boolean isLaunchable() {
+        // check there are enough users
+        if (users.size() != gameService.getNumberOfUsers()) {
+            return false;
+        }
+
+        // check all users are ready
+        boolean allReady = true;
+        for (User u : this.users) {
+            if (!u.isReady()) {
+                allReady = !allReady;
+                break;
+            }
+        }
+        return allReady;
+    }
+
+    /**
+     * The Registrator will make this user join this game session
+     */
+    @Override
+    public void join() {
+        Registrator.instance().joinGame(this, ClientMain.currentUser);
+    }
+
+    /**
+     * Returns this session
+     * @return this session
+     */
+    @Override
+    public LobbyServiceGameSession getActiveSession() {
+        return this;
+    }
 }

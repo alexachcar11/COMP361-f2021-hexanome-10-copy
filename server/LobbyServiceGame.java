@@ -2,31 +2,34 @@
 Instances of LobbyServiceGame represent one available game service on the lobby service.
  */
 
-import org.minueto.MinuetoColor;
-import org.minueto.image.MinuetoFont;
-import org.minueto.image.MinuetoRectangle;
-import org.minueto.image.MinuetoText;
+public class LobbyServiceGame implements Joinable{
 
-import java.util.ArrayList;
-
-public class LobbyServiceGame {
-
-    // attributes
+    // FIELDS
+    private String name;
     private String displayName;
     private String location;
-    private final int maxNumberOfPlayers;
+    private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
 
     /**
      * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.
      * @param displayName displayName provided by gameservices/{gameservice}json
      * @param location location provided by gameservices/{gameservice} json
-     * @param maxNumberOfPlayers maxSessionPlayers provided by gameservices/{gameservice} json
+     * @param numberOfUsers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String displayName, String location, int maxNumberOfPlayers) {
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers) {
+        this.name = name;
         this.displayName = displayName;
         this.location = location;
-        this.maxNumberOfPlayers = maxNumberOfPlayers;
+        this.numberOfUsers = numberOfUsers;
+    }
+
+    /**
+     * GETTER: Get the name
+     * @return name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -46,27 +49,23 @@ public class LobbyServiceGame {
     }
 
     /**
-     * GETTER : Get the max number of players that can play this game.
-     * @return maxNumberOfPlayers
+     * GETTER : Get the number of users that can play this game.
+     * @return numberOfUsers
      */
-    public int getMaxNumberOfPlayers() {
-        return maxNumberOfPlayers;
+    public int getNumberOfUsers() {
+        return numberOfUsers;
     }
 
+    public LobbyServiceGameSession getActiveSession() {
+        return  activeSession;
+    }
 
     /**
-     * Create a new session for this game service.
-     * @param user user that initiates this operation
-     * @param saveGameID id of the previously saved game. If there is none, put "".
-     * @return the newly created LobbyServiceGameSession
-     * @post The user that initiates this operation becomes the creator of the session and is one of the players.
+     * The Registrator will make this user join this game service by creating a session.
      */
-    public LobbyServiceGameSession createSessionFromGameService(User user, String saveGameID) {
-        LobbyServiceGameSession newSession = new LobbyServiceGameSession(false, "", user.getName(), this);
-        this.activeSession = newSession;
-        return newSession;
+    @Override
+    public void join() throws Exception {
+        LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
+        this.activeSession = newSessionCreated;
     }
-
-
-
 }
