@@ -28,6 +28,10 @@ public class User {
         }
     }
 
+    public User(String name) {
+        this.name = name;
+    }
+
     /**
      * GETTER: returns the user's name as seen on LS
      * @return User.name

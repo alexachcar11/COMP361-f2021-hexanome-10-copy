@@ -107,6 +107,10 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = true;
     }
 
+    public void setLaunched(boolean launched) {
+        this.launched = launched;
+    }
+
     /**
      * Checks whether this session can be launched by the LS (LS won't give an error).
      * A session is launchable when enough users have joined and all theses users are ready.

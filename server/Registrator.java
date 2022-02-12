@@ -500,29 +500,14 @@ public class Registrator {
      * @throws ParseException
      */
     public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
-        URL url = new URL("http://elfenland.simui.com:4242/api/sessions");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        HttpResponse<String> jsonResponse = Unirest
+                .get("http://elfenland.simui.com:4242/api/sessions")
+                .asString();
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not get active sessions.");
         }
-        in.close();
-        con.disconnect();
 
-        // TESTING CODE START
-        System.out.println("IS THIS THE EMPTY ONE? Response status: " + status);
-        System.out.println(content.toString());
-        // TESTING CODE END
-
-        // convert GET output to JSON
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(String.valueOf(content));
-        JSONObject jsonObject = (JSONObject) obj;
+        JSONObject jsonObject = (JSONObject) parser.parse(jsonResponse.getBody());
 
         ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
 
@@ -533,22 +518,28 @@ public class Registrator {
             sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
 
-                String creator = (String) sessionJSON.get("creator");
+                // create a game service object
+                JSONObject gameParameters = (JSONObject) sessionJSON.get("gameParameters");
+                String gameName = (String) gameParameters.get("name");
+                String gameDisplayName = (String) gameParameters.get("displayName");
+                String gameLocation = (String) gameParameters.get("location");
+                int gameNumberOfPlayers = (int) (long) gameParameters.get("maxSessionPlayers");
+                LobbyServiceGame newGame = new LobbyServiceGame(gameName, gameDisplayName, gameLocation, gameNumberOfPlayers);
+
+                // create a game session object
+                String creatorName = (String) sessionJSON.get("creator");
                 boolean launched = (boolean) sessionJSON.get("launched");
                 String saveGameID = (String) sessionJSON.get("savegameid");
+                ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                User creatorUser = new User(creatorName);
+                LobbyServiceGameSession newSession = new LobbyServiceGameSession(saveGameID, creatorUser, newGame, (String) sessionID);
+                for (String userName : listOfUsers) {
+                    User newUser = new User(userName);
+                    newSession.addUser(newUser);
+                }
+                newSession.setLaunched(launched);
 
-                // Object gameParameters = sessionJSON.get("gameParameters");
-                /*
-                 * String playerListInStringForm = (String) sessionJSON.get("players");
-                 * playerListInStringForm = playerListInStringForm.replace("[", "");
-                 * playerListInStringForm = playerListInStringForm.replace("]", "");
-                 * String[] playerListInArrayForm = playerListInStringForm.split(",");
-                 * ArrayList<String> playerNames = (ArrayList<String>)
-                 * Arrays.asList(playerListInArrayForm);
-                 */
-
-                // availableSessions.add(new LobbyServiceGameSession(launched, saveGameID,
-                // creator, ));
+                availableSessions.add(newSession);
 
             });
         } catch (NullPointerException e) {
