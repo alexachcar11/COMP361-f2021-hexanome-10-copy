@@ -299,7 +299,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(new Gson().toJson(fields)).asString();
 
-        System.out.println(jsonResponse.getBody());
+        System.out.println("PRINTING CREATEGAMESESSION" + jsonResponse.getBody());
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
@@ -308,6 +308,7 @@ public class Registrator {
         } else {
             // get the session ID
             String id = jsonResponse.getBody();
+            System.out.println("SUCCESS! " + id);
             // create the new LobbyServiceGame instance
             LobbyServiceGameSession newGameSession = new LobbyServiceGameSession("", creator,
                     gameService, id);
@@ -514,7 +515,7 @@ public class Registrator {
         con.disconnect();
 
         // TESTING CODE START
-        System.out.println("Response status: " + status);
+        System.out.println("IS THIS THE EMPTY ONE? Response status: " + status);
         System.out.println(content.toString());
         // TESTING CODE END
 
