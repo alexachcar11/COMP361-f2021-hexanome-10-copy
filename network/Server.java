@@ -14,8 +14,10 @@ public class Server implements NetworkNode {
     private Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
+            System.out.println("Server running on port " + pPort);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444");
+            System.err.println("Could not listen on port: " + pPort);
+            e.printStackTrace();
             System.exit(-1);
         }
     }
