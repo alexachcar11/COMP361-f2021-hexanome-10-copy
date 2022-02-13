@@ -198,7 +198,7 @@ public class ClientMain {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Client testClient = new Client(ServerMain.LOCATION, Server.instance().getPort());
+                    Client testClient = new Client("elfenland.simui.com", 4444);
                     testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;

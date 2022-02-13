@@ -9,7 +9,7 @@ public class Server implements NetworkNode {
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
     // singleton for server
-    private static final Server SERVER = new Server(4444);
+    // private static final Server SERVER = new Server(4444);
 
     private Server(int pPort) {
         try {
@@ -21,9 +21,9 @@ public class Server implements NetworkNode {
     }
 
     // returns singleton object
-    public static Server instance() {
-        return SERVER;
-    }
+    // public static Server instance() {
+    // return SERVER;
+    // }
 
     // create a thread to do this, in ServerMain
     @Override

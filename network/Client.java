@@ -14,6 +14,7 @@ public class Client implements NetworkNode {
             InputStream aIn = aSocket.getInputStream();
             aObjectOut = new ObjectOutputStream(aOut);
             aObjectIn = new ObjectInputStream(aIn);
+            System.out.println("Client created at host: " + pHost + ", and port: " + pPort);
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + pHost);
         } catch (IOException e) {

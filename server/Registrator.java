@@ -177,9 +177,6 @@ public class Registrator {
         return (JSONObject) parser.parse(jsonResponse.getBody().toString());
     }
 
-    /*
-     * This is the unirest JSONArray, may need to change to org.simple.json
-     */
     public JSONArray getAllUsers() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
@@ -187,7 +184,7 @@ public class Registrator {
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error: unable to retrieve users.");
+            throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
 
         JSONArray jsonArray = (JSONArray) parser.parse(jsonResponse.getBody());
