@@ -14,6 +14,7 @@ public class Client implements NetworkNode {
             InputStream aIn = aSocket.getInputStream();
             aObjectOut = new ObjectOutputStream(aOut);
             aObjectIn = new ObjectInputStream(aIn);
+            System.out.println("Client created at host: " + pHost + ", and port: " + pPort);
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + pHost);
         } catch (IOException e) {
@@ -24,10 +25,9 @@ public class Client implements NetworkNode {
     @Override
     public void start() {
         try {
-            aObjectOut.writeObject(aPlayer.getBootAction());
+            aObjectOut.writeObject(new TestAction());
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

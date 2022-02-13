@@ -9,21 +9,23 @@ public class Server implements NetworkNode {
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
     // singleton for server
-    private static final Server SERVER = new Server(4444);
+    // private static final Server SERVER = new Server(4444);
 
     private Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
+            System.out.println("Server running on port " + pPort);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444");
+            System.err.println("Could not listen on port: " + pPort);
+            e.printStackTrace();
             System.exit(-1);
         }
     }
 
     // returns singleton object
-    public static Server instance() {
-        return SERVER;
-    }
+    // public static Server instance() {
+    // return SERVER;
+    // }
 
     // create a thread to do this, in ServerMain
     @Override
@@ -64,6 +66,10 @@ public class Server implements NetworkNode {
             e.printStackTrace();
         }
 
+    }
+
+    public int getPort() {
+        return aSocket.getLocalPort();
     }
 }
 

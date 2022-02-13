@@ -1,6 +1,7 @@
 public class ServerMain {
 
     static Server SERVER = Server.instance();
+    public static final String LOCATION = "elfenland.simui.com";
 
     public static void main(String[] args) {
         Thread serverThread = new Thread(new Runnable() {
@@ -12,6 +13,5 @@ public class ServerMain {
 
         });
         serverThread.start();
-
     }
 }
