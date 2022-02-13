@@ -8,10 +8,8 @@ public class Server implements NetworkNode {
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
-    // singleton for server
-    // private static final Server SERVER = new Server(4444);
 
-    private Server(int pPort) {
+    Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
             System.out.println("Server running on port " + pPort);
@@ -21,11 +19,6 @@ public class Server implements NetworkNode {
             System.exit(-1);
         }
     }
-
-    // returns singleton object
-    // public static Server instance() {
-    // return SERVER;
-    // }
 
     // create a thread to do this, in ServerMain
     @Override
