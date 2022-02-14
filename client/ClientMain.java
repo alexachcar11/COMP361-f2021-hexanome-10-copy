@@ -72,6 +72,14 @@ public class ClientMain {
 
     public static final Registrator REGISTRATOR = Registrator.instance();
 
+    static boolean destinationTown = false;
+    static int numberOfRounds = 3;
+    static MinuetoText twoPlayers;
+    static MinuetoText threePlayers;
+    static MinuetoText fourPlayers;
+    static MinuetoText fivePlayers;
+    static MinuetoText sixPlayers;
+
     // TODO: place this somewhere else configImages(bootImages);
     /*
      * in the Boot class
