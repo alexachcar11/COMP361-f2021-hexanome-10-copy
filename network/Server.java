@@ -8,31 +8,28 @@ public class Server implements NetworkNode {
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
-    // singleton for server
-    private static final Server SERVER = new Server(4444);
 
-    private Server(int pPort) {
+    Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
+            System.out.println("Server running on port " + pPort);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444");
+            System.err.println("Could not listen on port: " + pPort);
+            e.printStackTrace();
             System.exit(-1);
         }
     }
 
-    // returns singleton object
-    public static Server instance() {
-        return SERVER;
-    }
-
-    // create a thread to do this
+    // create a thread to do this, in ServerMain
+    @Override
     public void start() {
         while (true) {
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.out.println("Accept failed: 4444");
+                System.err.println("Accept failed: 4444");
+                e.printStackTrace();
             }
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
@@ -52,17 +49,28 @@ public class Server implements NetworkNode {
     private void listenToClient(ClientTuple pTuple) {
         try {
             Action actionIn = (Action) pTuple.input().readObject();
+            if (actionIn.isValid()) {
+                actionIn.execute();
+            }
         } catch (IOException e) {
             String host = pTuple.socket().getInetAddress().getHostName();
             System.err.println("Couldn't get I/O for the connection to: " + host);
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
+
+    public int getPort() {
+        return aSocket.getLocalPort();
+    }
 }
 
+/**
+ * contains server side information on communication with clients
+ * the socket on the server that talks with the client
+ * the input and output streams for communication with the client
+ */
 class ClientTuple {
     private Socket aSocket;
     private ObjectInputStream aInputStream;
@@ -74,7 +82,6 @@ class ClientTuple {
             aInputStream = new ObjectInputStream(aSocket.getInputStream());
             aOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
