@@ -19,6 +19,7 @@ public class Client implements NetworkNode {
             System.err.println("Unknown host: " + pHost);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
+            e.printStackTrace();
         }
     }
 
