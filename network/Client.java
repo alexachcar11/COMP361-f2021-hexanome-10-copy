@@ -24,6 +24,20 @@ public class Client implements NetworkNode {
 
     @Override
     public void start() {
+        /**
+         * while (true)
+         * {
+         * if (! aPlayer.getActionStack().empty()){
+         * try {
+         * Action toSend = aPlayer.getActionStack().pop();
+         * aObjectOut.writeObject();
+         * 
+         * } catch (IOException e) {
+         * e.printStackTrace();
+         * }
+         * }
+         * }
+         */
         try {
             aObjectOut.writeObject(new TestAction());
 
@@ -34,9 +48,5 @@ public class Client implements NetworkNode {
 
     public String getHost() {
         return aSocket.getInetAddress().getHostName();
-    }
-
-    public void setPlayer(Player pPlayer) {
-        aPlayer = pPlayer;
     }
 }
