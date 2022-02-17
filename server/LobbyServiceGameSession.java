@@ -107,6 +107,10 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = true;
     }
 
+    public void setLaunched(boolean launched) {
+        this.launched = launched;
+    }
+
     /**
      * Checks whether this session can be launched by the LS (LS won't give an error).
      * A session is launchable when enough users have joined and all theses users are ready.
@@ -133,7 +137,7 @@ public class LobbyServiceGameSession implements Joinable{
      * The Registrator will make this user join this game session
      */
     @Override
-    public void join() {
+    public void join() throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
     }
 
