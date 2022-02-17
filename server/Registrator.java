@@ -67,9 +67,13 @@ public class Registrator {
      */
     public JSONObject createToken(String username, String password) throws ParseException {
 
+        username = username.replace("+", "%2B");
+        password = password.replace("+", "%2B");
+
         HttpResponse<String> jsonResponse = Unirest
-                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=" + username +
-                        "&password=" + password)
+                .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username="
+                        + username
+                        + "&password=" + password)
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -93,24 +97,26 @@ public class Registrator {
      */
     public JSONObject refreshToken(JSONObject existingToken) throws ParseException {
 
+        String refreshToken = (String) existingToken.get("refresh_token");
+        refreshToken = refreshToken.replace("+", "%2B");
+
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://elfenland.simui.com:4242/oauth/token?grant_type=refresh_token&refresh_token="
-                        + existingToken.get("refresh_token"))
+                        + refreshToken)
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": cannot refresh token.");
         }
-        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
-        return token;
+        return (JSONObject) parser.parse(jsonResponse.getBody());
     }
 
     /**
      * Revoke token
      */
     public static void revokeToken() {
-
+        // TODO
     }
 
     /**
@@ -130,7 +136,7 @@ public class Registrator {
      * @param passWord password of the user
      * @return User instance that is created upon API request success
      */
-    public User createNewUser(String userName, String passWord) throws ParseException {
+    public User createNewUser(String userName, String passWord) {
         /*
          * add a new user to the API
          */
@@ -143,9 +149,12 @@ public class Registrator {
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
+        userName = userName.replace("+", "%2B");
+        passWord = passWord.replace("+", "%2B");
+
         HttpResponse<String> jsonResponse = Unirest
                 .put("http://elfenland.simui.com:4242/api/users/" + userName + "?access_token="
-                        + this.getToken())
+                        + this.getToken().replace("+", "%2B"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .body(GSON.toJson(fields)).asString();
@@ -153,43 +162,40 @@ public class Registrator {
             System.out.println(jsonResponse.getStatus());
             throw new IllegalArgumentException("Cannot create user: " + userName);
         } else {
-            // retrieve token
-            JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
             System.out.println("BODY" + jsonResponse.getBody());
             // System.out.println(token);
-            User newUser = new User(userName, passWord);
-            return newUser;
+            return new User(userName, passWord);
         }
     }
 
     // get user from API by username
     public JSONObject getUser(String userName) throws ParseException {
 
+        userName = userName.replace("+", "%2B");
+
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://elfenland.simui.com:4242/api/users/" + userName + "?access_token="
-                        + this.getToken())
+                        + this.getToken().replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
         if (jsonResponse.getStatus() != 200) {
             throw new IllegalArgumentException("Unable to retrieve user: " + userName);
         }
 
-        return (JSONObject) parser.parse(jsonResponse.getBody().toString());
+        return (JSONObject) parser.parse(jsonResponse.getBody());
     }
 
     public JSONArray getAllUsers() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken())
+                .get("http://elfenland.simui.com:4242/api/users?access_token=" + this.getToken().replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
             throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
 
-        JSONArray jsonArray = (JSONArray) parser.parse(jsonResponse.getBody());
-
-        return jsonArray;
+        return (JSONArray) parser.parse(jsonResponse.getBody());
     }
 
     /**
@@ -232,11 +238,12 @@ public class Registrator {
         fields.put("displayName", displayName);
         fields.put("webSupport", "false");
 
-        System.out.println(INSTANCE.getToken());
+        String tokenString = (String) token.get("access_token");
+        tokenString = tokenString.replace("+", "%2B");
 
         // lobby service location url
         String lobbyServiceURL = "http://elfenland.simui.com:4242/api/gameservices/" + name + "?access_token="
-                + token.get("access_token");
+                + tokenString;
         System.out.println(lobbyServiceURL);
 
         // build request
@@ -283,7 +290,7 @@ public class Registrator {
         fields.put("savegame", saveGameID);
 
         // user token
-        String token = creator.getToken();
+        String token = creator.getToken().replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -304,15 +311,14 @@ public class Registrator {
             String id = jsonResponse.getBody();
             System.out.println("SUCCESS! " + id);
             // create the new LobbyServiceGame instance
-            LobbyServiceGameSession newGameSession = new LobbyServiceGameSession("", creator,
+            return new LobbyServiceGameSession("", creator,
                     gameService, id);
-            return newGameSession;
         }
     }
 
-    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User userJoining) {
+    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User userJoining) throws Exception {
         // user token
-        String token = userJoining.getToken();
+        String token = userJoining.getToken().replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -327,6 +333,7 @@ public class Registrator {
         // verify response
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
+            throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
             gameSessionToJoin.addUser(userJoining);
             // TODO: notify all users that a player has joined
@@ -335,7 +342,7 @@ public class Registrator {
 
     public void leaveGame(LobbyServiceGameSession sessionToLeave, User userLeaving) {
         // user token
-        String token = userLeaving.getToken();
+        String token = userLeaving.getToken().replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -358,7 +365,7 @@ public class Registrator {
 
     public void deleteSession(LobbyServiceGameSession sessionToDelete, User userAskingToDelete) {
         // user token
-        String token = userAskingToDelete.getToken();
+        String token = userAskingToDelete.getToken().replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -380,7 +387,7 @@ public class Registrator {
 
     public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
         // user token
-        String token = userAskingToLaunch.getToken();
+        String token = userAskingToLaunch.getToken().replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -426,7 +433,7 @@ public class Registrator {
 
         // TESTING CODE START
         System.out.println("Response status: " + status);
-        System.out.println(content.toString());
+        System.out.println(content);
         // TESTING CODE END
 
         // convert GET output to JSON
@@ -501,7 +508,7 @@ public class Registrator {
      * @throws IOException
      * @throws ParseException
      */
-    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws ParseException {
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://elfenland.simui.com:4242/api/sessions")
                 .asString();
@@ -514,33 +521,53 @@ public class Registrator {
         ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
 
         try {
-            // i dont know if this works because I have no way to test it yet (can't create
-            // a game)
             JSONObject sessions = (JSONObject) jsonObject.get("sessions");
             sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
 
-                String creator = (String) sessionJSON.get("creator");
+                // create a game service object
+                JSONObject gameParameters = (JSONObject) sessionJSON.get("gameParameters");
+                String gameName = (String) gameParameters.get("name");
+                String gameDisplayName = (String) gameParameters.get("displayName");
+                String gameLocation = (String) gameParameters.get("location");
+                int gameNumberOfPlayers = (int) (long) gameParameters.get("maxSessionPlayers");
+                LobbyServiceGame existingGame = LobbyServiceGame.getLobbyServiceGame(gameName);
+                LobbyServiceGame relatedGame;
+                if (existingGame == null) {
+                    // game does not exist so create a new one
+                    relatedGame = new LobbyServiceGame(gameName, gameDisplayName, gameLocation, gameNumberOfPlayers);
+                } else {
+                    // game already exists
+                    relatedGame = existingGame;
+                }
+
+
+                // create a game session object
+                String creatorName = (String) sessionJSON.get("creator");
                 boolean launched = (boolean) sessionJSON.get("launched");
                 String saveGameID = (String) sessionJSON.get("savegameid");
+                ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                User creatorUser = new User(creatorName);
+                LobbyServiceGameSession newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
+                for (String userName : listOfUsers) {
+                    User newUser = new User(userName);
+                    newSession.addUser(newUser);
+                }
+                newSession.setLaunched(launched);
 
-                // Object gameParameters = sessionJSON.get("gameParameters");
-                /*
-                 * String playerListInStringForm = (String) sessionJSON.get("players");
-                 * playerListInStringForm = playerListInStringForm.replace("[", "");
-                 * playerListInStringForm = playerListInStringForm.replace("]", "");
-                 * String[] playerListInArrayForm = playerListInStringForm.split(",");
-                 * ArrayList<String> playerNames = (ArrayList<String>)
-                 * Arrays.asList(playerListInArrayForm);
-                 */
+                // mark this as the active session in the related game service
+                try {
+                    relatedGame.setActiveSession(newSession);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                // availableSessions.add(new LobbyServiceGameSession(launched, saveGameID,
-                // creator, ));
+                availableSessions.add(newSession);
 
             });
         } catch (NullPointerException e) {
             // there are no available sessions
         }
-        return availableSessions; // todo: this returns null right now
+        return availableSessions;
     }
 }

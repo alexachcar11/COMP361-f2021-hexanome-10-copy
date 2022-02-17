@@ -28,6 +28,10 @@ public class User {
         }
     }
 
+    public User(String name) {
+        this.name = name;
+    }
+
     /**
      * GETTER: returns the user's name as seen on LS
      * @return User.name
@@ -41,7 +45,8 @@ public class User {
      * @return token in String format
      */
     public String getToken() {
-        return (String) this.currentTokenJSON.get("access_token");
+        String stringToken = (String) this.currentTokenJSON.get("access_token");
+        return stringToken.replace("+", "%2B");
     }
 
     /**
