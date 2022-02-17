@@ -26,6 +26,7 @@ public class Registrator {
     private static final String encoded = Base64.getEncoder()
             .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
     private static final JSONParser parser = new JSONParser();
+    private static final Gson GSON = new Gson();
 
     private Registrator() {
         Timer timer = new Timer();
@@ -156,8 +157,7 @@ public class Registrator {
                         + this.getToken().replace("+", "%2B"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
-                .body(new Gson().toJson(fields)).asString();
-
+                .body(GSON.toJson(fields)).asString();
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus());
             throw new IllegalArgumentException("Cannot create user: " + userName);
@@ -185,9 +185,6 @@ public class Registrator {
         return (JSONObject) parser.parse(jsonResponse.getBody());
     }
 
-    /*
-     * This is the unirest JSONArray, may need to change to org.simple.json
-     */
     public JSONArray getAllUsers() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
@@ -195,7 +192,7 @@ public class Registrator {
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error: unable to retrieve users.");
+            throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
 
         return (JSONArray) parser.parse(jsonResponse.getBody());
@@ -254,10 +251,12 @@ public class Registrator {
                 .put(lobbyServiceURL)
                 .header("Authorization", "Basic " + encoded)
                 .header("Content-Type", "application/json")
-                .body(new Gson().toJson(fields)).asString();
+                .body(GSON.toJson(fields)).asString();
 
         // verify response
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getStatus() == 400) {
+            System.out.println("Game " + displayName + " already exists.");
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not register game service");
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
@@ -273,13 +272,12 @@ public class Registrator {
 
     /**
      * 
-     * 
      * Creates a game session on the Lobby Service and creates a new
      * LobbyServiceGameSession instance.
      * 
-     * @param gameService    ice game service associated with the new game session
-     * @param creator    us r that wants to create the session
-     * @param saveGameID save game id - empty if not wanted
+     * @param gameService ice game service associated with the new game session
+     * @param creator     us r that wants to create the session
+     * @param saveGameID  save game id - empty if not wanted
      * @return LobbyServiceGameSession instance that was created
      */
 
@@ -325,8 +323,10 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/" + userJoining.getName() + "?access_token="
-                        + token).asString();
+                .put("http://elfenland.simui.com:4242/api/sessions/" + gameSessionToJoin.getSessionID() + "/players/"
+                        + userJoining.getName() + "?access_token="
+                        + token)
+                .asString();
 
         System.out.println(jsonResponse.getBody());
 
@@ -347,8 +347,10 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToLeave.getSessionID() + "/players/" + userLeaving.getName() + "?access_token="
-                        + token).asString();
+                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToLeave.getSessionID() + "/players/"
+                        + userLeaving.getName() + "?access_token="
+                        + token)
+                .asString();
 
         System.out.println(jsonResponse.getBody());
 
@@ -368,8 +370,10 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToDelete.getSessionID() +"?access_token="
-                        + token).asString();
+                .delete("http://elfenland.simui.com:4242/api/sessions/" + sessionToDelete.getSessionID()
+                        + "?access_token="
+                        + token)
+                .asString();
 
         System.out.println(jsonResponse.getBody());
 
@@ -388,8 +392,10 @@ public class Registrator {
 
         // build request
         HttpResponse<String> jsonResponse = Unirest
-                .post("http://elfenland.simui.com:4242/api/sessions/" + sessionToLaunch.getSessionID() +"?access_token="
-                        + token).asString();
+                .post("http://elfenland.simui.com:4242/api/sessions/" + sessionToLaunch.getSessionID()
+                        + "?access_token="
+                        + token)
+                .asString();
 
         System.out.println(jsonResponse.getBody());
 
@@ -564,20 +570,4 @@ public class Registrator {
         }
         return availableSessions;
     }
-
-    // public JSONObject getOauthRole() throws ParseException {
-    // HttpResponse<String> jsonResponse = Unirest
-    //
-    // .get("http://elfenland.simui.com:4242/oauth/username?access_token=" +
-    // this.getToken())
-    // .asString();
-    // if (jsonResponse.getStatus() != 200) {
-    // System.err.println("Error" + jsonResponse.getStatus() + ": could not get
-    // token role.");
-    // throw new RuntimeException();
-    // }
-    // JSONParser parser = new JSONParser();
-    // JSONObject role = (JSONObject) parser.parse(jsonResponse.getBody());
-    // return role;
-    // }
 }

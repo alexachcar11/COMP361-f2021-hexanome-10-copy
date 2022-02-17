@@ -28,49 +28,57 @@ public class ClientMain {
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
 
-    GUI gui;
-    MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
+    static GUI gui;
+    static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue;
-    MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
-    List<Player> players; // not sure if this should be here
+    static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
+    static List<Player> players; // not sure if this should be here
     // make images
-    MinuetoImage elfenlandImage;
-    MinuetoImage elfengoldImage;
+    static MinuetoImage elfenlandImage;
+    static MinuetoImage elfengoldImage;
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
-    MinuetoImage playScreenImage;
-    MinuetoImage loginScreenImage;
-    MinuetoImage whiteBoxImage;
+    static MinuetoImage playScreenImage;
+    static MinuetoImage loginScreenImage;
+    static MinuetoImage whiteBoxImage;
     private static MinuetoImage lobbyBackground;
-    MinuetoImage lobbyPrevBackground;
-    MinuetoImage lobbyNextBackground;
-    MinuetoImage lobbyPrevNextBackground;
-    MinuetoImage createGameBackground;
-    MinuetoImage elfenlandSelected;
-    MinuetoImage elfenGoldSelected;
+    static MinuetoImage lobbyPrevBackground;
+    static MinuetoImage lobbyNextBackground;
+    static MinuetoImage lobbyPrevNextBackground;
+    static MinuetoImage createGameBackground;
+    static MinuetoImage elfenlandSelected;
+    static MinuetoImage elfenGoldSelected;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
-    MinuetoImage readyGreen;
-    MinuetoImage readyWhite;
-    MinuetoImage startButton;
-    MinuetoFont fontArial22Bold;
-    MinuetoRectangle modeDropdownRectangle;
-    MinuetoRectangle destinationTownDropdownRectangle;
-    MinuetoRectangle roundsDropdownRectangle;
-    MinuetoText modeElfenlandText;
-    MinuetoText modeElfengoldText;
-    MinuetoText destinationTownNoText;
-    MinuetoText destinationTownYesText;
-    MinuetoText destinationTownYesRandText;
-    MinuetoText rounds3Text;
-    MinuetoText rounds4Text;
-    MinuetoText witchNoText;
-    MinuetoText witchYesText;
-    MinuetoRectangle nameTextField;
-    MinuetoRectangle numberOfPlayersTextField;
-    MinuetoImage soundOnButton;
-    MinuetoImage soundOffButton;
+    static MinuetoImage readyGreen;
+    static MinuetoImage readyWhite;
+    static MinuetoImage startButton;
+    static MinuetoFont fontArial22Bold;
+    static MinuetoRectangle modeDropdownRectangle;
+    static MinuetoRectangle destinationTownDropdownRectangle;
+    static MinuetoRectangle roundsDropdownRectangle;
+    static MinuetoText modeElfenlandText;
+    static MinuetoText modeElfengoldText;
+    static MinuetoText destinationTownNoText;
+    static MinuetoText destinationTownYesText;
+    static MinuetoText destinationTownYesRandText;
+    static MinuetoText rounds3Text;
+    static MinuetoText rounds4Text;
+    static MinuetoText witchNoText;
+    static MinuetoText witchYesText;
+    static MinuetoRectangle nameTextField;
+    static MinuetoRectangle numberOfPlayersTextField;
+    static MinuetoImage soundOnButton;
+    static MinuetoImage soundOffButton;
 
     public static final Registrator REGISTRATOR = Registrator.instance();
+
+    static boolean destinationTown = false;
+    static int numberOfRounds = 3;
+    static MinuetoText twoPlayers;
+    static MinuetoText threePlayers;
+    static MinuetoText fourPlayers;
+    static MinuetoText fivePlayers;
+    static MinuetoText sixPlayers;
 
     // TODO: place this somewhere else configImages(bootImages);
     /*
@@ -86,7 +94,7 @@ public class ClientMain {
      * }
      */
 
-    MinuetoMouseHandler entryScreenMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler entryScreenMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
             // click on Play
@@ -127,7 +135,7 @@ public class ClientMain {
             // Do nothing
         }
     };
-    MinuetoMouseHandler loginScreenMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler loginScreenMouseHandler = new MinuetoMouseHandler() {
 
         @Override
         public void handleMousePress(int x, int y, int button) {
@@ -193,12 +201,13 @@ public class ClientMain {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
                     }
-                    // change screen after login
                     try {
                         REGISTRATOR.createNewGame("testgame", 6, 3, Mode.ELFENLAND, false, false);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                    Client testClient = new Client("elfenland.simui.com", 4444);
+                    testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }
@@ -230,7 +239,7 @@ public class ClientMain {
             // Do nothing
         }
     };
-    MinuetoKeyboardHandler loginScreenKeyboardHandler = new MinuetoKeyboardHandler() {
+    static MinuetoKeyboardHandler loginScreenKeyboardHandler = new MinuetoKeyboardHandler() {
         private boolean shift = false;
 
         @Override
@@ -300,7 +309,7 @@ public class ClientMain {
         }
     };
 
-    MinuetoMouseHandler moveBootMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler moveBootMouseHandler = new MinuetoMouseHandler() {
         int ind = 0; // index of players
 
         @Override
@@ -396,7 +405,7 @@ public class ClientMain {
 
         }
     };
-    MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
 
@@ -456,7 +465,7 @@ public class ClientMain {
             // do nothing
         }
     };
-    MinuetoKeyboardHandler gameScreenKeyboardHandler = new MinuetoKeyboardHandler() {
+    static MinuetoKeyboardHandler gameScreenKeyboardHandler = new MinuetoKeyboardHandler() {
         private boolean shift = false;
 
         @Override
@@ -513,7 +522,7 @@ public class ClientMain {
             // do nothing
         }
     };
-    MinuetoMouseHandler gameScreenMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler gameScreenMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x:" + x + "This is y:" + y);
@@ -602,7 +611,7 @@ public class ClientMain {
         }
     };
 
-    MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
+    static MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
             System.out.println("x: " + x + "y: " + y);
@@ -611,7 +620,7 @@ public class ClientMain {
                 // click on Leave button
                 if (!currentUser.getName().equals(currentSession.getCreator())) {
                     REGISTRATOR.leaveGame(currentSession, currentUser);
-                    //return to lobby screen
+                    // return to lobby screen
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 } else {
@@ -620,7 +629,8 @@ public class ClientMain {
 
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
 
-                // click on Ready button: only works if you are not ready, else nothing happens (when you are ready already)
+                // click on Ready button: only works if you are not ready, else nothing happens
+                // (when you are ready already)
                 if (!currentUser.isReady()) {
                     // set user to ready
                     currentUser.toggleReady();
@@ -628,11 +638,13 @@ public class ClientMain {
                     lobbyElfenlandBackground.draw(readyGreen, 823, 581);
                     // TODO: display Ready next to the player's name
                     // TODO: notify all players that this player is ready
-                    // if the user is the creator and all users are ready, then show the start button
+                    // if the user is the creator and all users are ready, then show the start
+                    // button
                     if (currentSession.isLaunchable() && (currentUser.getName().equals(currentSession.getCreator()))) {
                         lobbyElfenlandBackground.draw(startButton, 823, 581);
                     }
-                } else if (currentSession.isLaunchable() && (currentUser.getName().equals(currentSession.getCreator()))) {
+                } else if (currentSession.isLaunchable()
+                        && (currentUser.getName().equals(currentSession.getCreator()))) {
                     // click on Start button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
                 }
@@ -728,10 +740,6 @@ public class ClientMain {
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
     public static void main(String[] args) {
-        new ClientMain();
-    }
-
-    public ClientMain() {
         /*
          * in the Boot class
          * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
@@ -908,7 +916,6 @@ public class ClientMain {
         }
 
         // swing gui
-
     }
 
     /*
@@ -986,7 +993,7 @@ public class ClientMain {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         ArrayList<User> users = currentSession.getUsers();
 
-        int counter = 0;    // how many users are displayed so far
+        int counter = 0; // how many users are displayed so far
 
         for (User u : users) {
             String name = u.getName();
@@ -1011,7 +1018,8 @@ public class ClientMain {
             MinuetoImage uColor = null;
             MinuetoText uColorText = null;
             if (color == null) {
-                 uColorText= new MinuetoText("?", font, MinuetoColor.BLACK);;
+                uColorText = new MinuetoText("?", font, MinuetoColor.BLACK);
+                ;
             } else {
                 if (color.equals(Color.BLACK)) {
                     uColor = new MinuetoImageFile("image/böppels-and-boots/boot-black.png");
@@ -1035,13 +1043,13 @@ public class ClientMain {
                 uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
             }
 
-            lobbyElfenlandBackground.draw(uName, 45, 240 + counter*50);
+            lobbyElfenlandBackground.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
-                lobbyElfenlandBackground.draw(uColorText, 240, 240 + counter*50);
+                lobbyElfenlandBackground.draw(uColorText, 240, 240 + counter * 50);
             } else {
-                lobbyElfenlandBackground.draw(uColor, 240, 240 + counter*50);
+                lobbyElfenlandBackground.draw(uColor, 240, 240 + counter * 50);
             }
-            lobbyElfenlandBackground.draw(uReady, 475, 240 + counter*50);
+            lobbyElfenlandBackground.draw(uReady, 475, 240 + counter * 50);
 
             counter++;
         }
@@ -1111,8 +1119,6 @@ public class ClientMain {
                     pageCounter++;
                     totalCounter++;
                 }
-
-
             }
 
             // display available game sessions (i.e. games with a creator)

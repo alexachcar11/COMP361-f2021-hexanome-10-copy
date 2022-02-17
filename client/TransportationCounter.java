@@ -1,10 +1,10 @@
 import org.minueto.image.MinuetoImage;
 
-public class GoldCard extends Card{
+public class TransportationCounter extends Token {
 
-    //field
-    CardType aType = CardType.GOLD;
-
+    // field
+    CardType aType;
+    
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
      *
@@ -14,12 +14,12 @@ public class GoldCard extends Card{
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public GoldCard(int minX, int maxX, int minY, int maxY, MinuetoImage image) {
-        super(minX, maxX, minY, maxY, image, "GoldCard");
-    }
 
-    // for each Gold Card, they give player 3 gold if they choose the gold card stack
-    public int getGold(){
-        return 3;
+    public TransportationCounter(int minX, int maxX, int minY, int maxY, MinuetoImage image, CardType pType) {
+        super(minX, maxX, minY, maxY, image);
+        aType = pType;
+    }
+    public CardType getType(){
+        return aType;
     }
 }

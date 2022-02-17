@@ -40,6 +40,12 @@ public class Town {
         return townName;
     }
 
+    // 2 towns are the same if they have same name
+    public boolean equal(Town t){
+        return t.getTownName().equalsIgnoreCase(this.townName);
+    }
+
+
     /**
      * GETTER : get the left-most border of the town
      * @return minX
