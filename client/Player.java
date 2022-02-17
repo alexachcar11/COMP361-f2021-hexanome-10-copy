@@ -17,8 +17,8 @@ public class Player {
 
     private String aName;
     private Action aBootAction;
-
-    private Stack<Action> actionStack;
+    // maybe BlockingQueue instead
+    private Queue<Action> actionQueue;
 
     public Player(Client pClient, Color pColor) {
         aClient = pClient;
@@ -54,8 +54,8 @@ public class Player {
         return aBootAction;
     }
 
-    public Stack<Action> getActionStack() {
-        return actionStack;
+    public Queue<Action> getActionQueue() {
+        return actionQueue;
     }
     /*
      * Operation: Player::startGame(gameSession: Session)

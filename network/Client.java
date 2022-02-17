@@ -25,25 +25,17 @@ public class Client implements NetworkNode {
 
     @Override
     public void start() {
-        /**
-         * while (true)
-         * {
-         * if (! aPlayer.getActionStack().empty()){
-         * try {
-         * Action toSend = aPlayer.getActionStack().pop();
-         * aObjectOut.writeObject();
-         * 
-         * } catch (IOException e) {
-         * e.printStackTrace();
-         * }
-         * }
-         * }
-         */
-        try {
-            aObjectOut.writeObject(new TestAction());
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (true) {
+            if (!aPlayer.getActionQueue().isEmpty()) {
+                try {
+                    Action toSend = aPlayer.getActionQueue().poll();
+                    aObjectOut.writeObject(toSend);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
