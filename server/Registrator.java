@@ -318,7 +318,7 @@ public class Registrator {
         }
     }
 
-    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User userJoining) {
+    public void joinGame(LobbyServiceGameSession gameSessionToJoin, User userJoining) throws Exception {
         // user token
         String token = userJoining.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -333,6 +333,7 @@ public class Registrator {
         // verify response
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
+            throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
             gameSessionToJoin.addUser(userJoining);
             // TODO: notify all users that a player has joined
@@ -514,8 +515,6 @@ public class Registrator {
         ArrayList<LobbyServiceGameSession> availableSessions = new ArrayList<>();
 
         try {
-            // i dont know if this works because I have no way to test it yet (can't create
-            // a game)
             JSONObject sessions = (JSONObject) jsonObject.get("sessions");
             sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
@@ -526,7 +525,16 @@ public class Registrator {
                 String gameDisplayName = (String) gameParameters.get("displayName");
                 String gameLocation = (String) gameParameters.get("location");
                 int gameNumberOfPlayers = (int) (long) gameParameters.get("maxSessionPlayers");
-                LobbyServiceGame newGame = new LobbyServiceGame(gameName, gameDisplayName, gameLocation, gameNumberOfPlayers);
+                LobbyServiceGame existingGame = LobbyServiceGame.getLobbyServiceGame(gameName);
+                LobbyServiceGame relatedGame;
+                if (existingGame == null) {
+                    // game does not exist so create a new one
+                    relatedGame = new LobbyServiceGame(gameName, gameDisplayName, gameLocation, gameNumberOfPlayers);
+                } else {
+                    // game already exists
+                    relatedGame = existingGame;
+                }
+
 
                 // create a game session object
                 String creatorName = (String) sessionJSON.get("creator");
@@ -534,12 +542,19 @@ public class Registrator {
                 String saveGameID = (String) sessionJSON.get("savegameid");
                 ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
                 User creatorUser = new User(creatorName);
-                LobbyServiceGameSession newSession = new LobbyServiceGameSession(saveGameID, creatorUser, newGame, (String) sessionID);
+                LobbyServiceGameSession newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
                 for (String userName : listOfUsers) {
                     User newUser = new User(userName);
                     newSession.addUser(newUser);
                 }
                 newSession.setLaunched(launched);
+
+                // mark this as the active session in the related game service
+                try {
+                    relatedGame.setActiveSession(newSession);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 availableSessions.add(newSession);
 

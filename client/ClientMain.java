@@ -1072,43 +1072,47 @@ public class ClientMain {
             int pageCounter = 0; // how many games are displayed on one page so far
             // display available game services (i.e. games with no creator)
             for (LobbyServiceGame g : availableGamesList) {
-                /*
-                if (totalCounter % 10 == 0) {
-                    // display a new page
-                    MinuetoImage greyRectangle = new MinuetoImageFile("images/greyRectangle.png");
-                    lobbyBackground.draw(greyRectangle, 60, 100);
-                }*/
-                String gDisplayName = g.getDisplayName();
-                if (gDisplayName.length() > 20) {
-                    // display with ... instead of the entire name
-                    gDisplayName = gDisplayName.substring(0, 19) + "...";
+                if (g.getActiveSession() == null) { // only show games which don't have an activeSession
+                    /*
+                    if (totalCounter % 10 == 0) {
+                        // display a new page
+                        MinuetoImage greyRectangle = new MinuetoImageFile("images/greyRectangle.png");
+                        lobbyBackground.draw(greyRectangle, 60, 100);
+                    }*/
+                    String gDisplayName = g.getDisplayName();
+                    if (gDisplayName.length() > 20) {
+                        // display with ... instead of the entire name
+                        gDisplayName = gDisplayName.substring(0, 19) + "...";
+                    }
+                    String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
+
+                    MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
+                    MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
+                    MinuetoText size = new MinuetoText("0/" + gMaxPlayers, font, MinuetoColor.BLACK);
+                    MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
+                    MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
+
+                    lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
+                    lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
+                    lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
+
+                    // keep track of the button location
+                    Integer maxX = 935;
+                    Integer minX = 835;
+                    Integer maxY = 245 + (pageCounter * 50);
+                    Integer minY = 210 + (pageCounter * 50);
+                    ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
+                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
+                            listOfCoordinates, g);
+                    joinButtonCoordinates.add(entry);
+
+                    pageCounter++;
+                    totalCounter++;
                 }
-                String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
 
-                MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
-                MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
-                MinuetoText size = new MinuetoText("0/" + gMaxPlayers, font, MinuetoColor.BLACK);
-                MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
-                MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
-                lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
-                lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
-                lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
-                lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
-
-                // keep track of the button location
-                Integer maxX = 935;
-                Integer minX = 835;
-                Integer maxY = 245 + (pageCounter * 50);
-                Integer minY = 210 + (pageCounter * 50);
-                ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
-                        listOfCoordinates, g);
-                joinButtonCoordinates.add(entry);
-
-                pageCounter++;
-                totalCounter++;
             }
 
             // display available game sessions (i.e. games with a creator)
@@ -1147,9 +1151,7 @@ public class ClientMain {
                 }
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

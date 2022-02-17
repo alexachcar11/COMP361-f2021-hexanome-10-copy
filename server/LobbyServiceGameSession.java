@@ -137,7 +137,7 @@ public class LobbyServiceGameSession implements Joinable{
      * The Registrator will make this user join this game session
      */
     @Override
-    public void join() {
+    public void join() throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
     }
 
