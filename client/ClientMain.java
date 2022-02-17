@@ -480,11 +480,7 @@ public class ClientMain {
                 } else {
                     return;
                 }
-            } else if (shift || i < 65 || i > 90) { // uppercase
-                                                    // or
-                                                    // not
-                                                    // a
-                                                    // letter
+            } else if (shift || i < 65 || i > 90) {
                 if (nameSel) {
                     nameString = nameString + (char) i;
                 } else if (numberPlayerSel) {
@@ -538,21 +534,61 @@ public class ClientMain {
                 nameSel = false;
                 numberPlayerSel = false;
                 if (x >= 305 && x <= 715 && y <= 640 && y >= 570) {
+                    boolean canCreate = true;
                     // click on the Create New Game button
-                    // TODO: check if name/size are empty and put an error message
-                    // TODO: send a createGame message to the LS
-                    if (elfenlandSel) {
+
+                    // CHECK INPUTS HERE
+                    if (nameString.equals("")) {
+                        // show error message when the name is empty
+                        MinuetoText nameIsEmpty = new MinuetoText("Please enter a name.", fontArial22Bold, MinuetoColor.RED);
+                        createGameBackground.draw(nameIsEmpty, 205, 250);
+                        canCreate = false;
+                    }
+
+                    if (numberPlayerString.equals("")) {
+                        // show error message when the size is empty
+                        MinuetoText nbPlayersIsEmpty = new MinuetoText("Please enter a number of players.", fontArial22Bold, MinuetoColor.RED);
+                        createGameBackground.draw(nbPlayersIsEmpty, 485, 480);
+                        canCreate = false;
+                    }
+                    // END OF CHECK INPUTS
+
+                    // CREATE NEW GAME HERE
+                    if (canCreate) { // if nameString and numberPlayerString is not empty, create a new game
+
+                        // numberOfPlayers input string to int
+                        int numberOfPlayers = Integer.parseInt(numberPlayerString);
+
                         try {
-                            displayUsers();
-                        } catch (MinuetoFileException e) {
+                            if (elfenlandSel) {
+                                // create an elfenland game
+                                REGISTRATOR.createNewGame(nameString, numberOfPlayers, 3, Mode.ELFENLAND, false, false);
+                                // load the display for users
+                                try {
+                                    displayUsers();
+                                } catch (MinuetoFileException e) {
+                                    e.printStackTrace();
+                                }
+                                // go to lobby screen
+                                gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                            } else if(elfenGoldSel) {
+                                // create an elfengold game
+                                REGISTRATOR.createNewGame(nameString, numberOfPlayers, 3, Mode.ELFENGOLD, false, false);
+                                // load the display for users
+                                try {
+                                    displayUsers();
+                                } catch (MinuetoFileException e) {
+                                    e.printStackTrace();
+                                }
+                                // go to lobby screen
+                                gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                            } else {
+                                // we reach this line if no game mode was selected
+                                // TODO: "error: please select a game mode
+                            }
+                        } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                    } else if (elfenGoldSel) {
-                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                    } else {
-                        // TODO: show error message ("Please select a game mode.")
-                        System.out.println("none selected");
                     }
                 } else if (x >= 330 && x <= 695 && y <= 725 && y >= 665) {
                     // click on the Return to Open Lobbies button
