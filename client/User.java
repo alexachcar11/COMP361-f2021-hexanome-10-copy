@@ -45,7 +45,8 @@ public class User {
      * @return token in String format
      */
     public String getToken() {
-        return (String) this.currentTokenJSON.get("access_token");
+        String stringToken = (String) this.currentTokenJSON.get("access_token");
+        return stringToken.replace("+", "%2B");
     }
 
     /**
