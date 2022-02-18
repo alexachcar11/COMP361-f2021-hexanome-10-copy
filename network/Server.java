@@ -8,6 +8,8 @@ public class Server implements NetworkNode {
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
+    public static final String LOCATION = "elfenland.simui.com";
+    public static final int PORT = 13645;
 
     Server(int pPort) {
         try {

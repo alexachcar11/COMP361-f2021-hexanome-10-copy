@@ -206,7 +206,7 @@ public class ClientMain {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Client testClient = new Client("elfenland.simui.com", 4444);
+                    Client testClient = new Client(Server.LOCATION, Server.PORT);
                     testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
@@ -1082,11 +1082,13 @@ public class ClientMain {
             for (LobbyServiceGame g : availableGamesList) {
                 if (g.getActiveSession() == null) { // only show games which don't have an activeSession
                     /*
-                    if (totalCounter % 10 == 0) {
-                        // display a new page
-                        MinuetoImage greyRectangle = new MinuetoImageFile("images/greyRectangle.png");
-                        lobbyBackground.draw(greyRectangle, 60, 100);
-                    }*/
+                     * if (totalCounter % 10 == 0) {
+                     * // display a new page
+                     * MinuetoImage greyRectangle = new
+                     * MinuetoImageFile("images/greyRectangle.png");
+                     * lobbyBackground.draw(greyRectangle, 60, 100);
+                     * }
+                     */
                     String gDisplayName = g.getDisplayName();
                     if (gDisplayName.length() > 20) {
                         // display with ... instead of the entire name
