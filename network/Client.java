@@ -25,7 +25,6 @@ public class Client implements NetworkNode {
 
     @Override
     public void start() {
-
         while (true) {
             if (!aPlayer.getActionQueue().isEmpty()) {
                 try {
