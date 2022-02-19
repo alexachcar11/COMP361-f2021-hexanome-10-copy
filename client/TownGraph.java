@@ -5,10 +5,15 @@ import java.util.Map;
 
 public class TownGraph {
     // use HashMap to store edges in graph
-    private Map<Town, List<Route> > map = new HashMap<>();
+    private Map<Town, List<Route> > map;
 
     // HashMap to store relations between Towns
-    private Map<Town, List<Town> > townMap = new HashMap<>();
+    private Map<Town, List<Town> > townMap;
+
+    public TownGraph(){
+        this.map = new HashMap<>();
+        this.townMap = new HashMap<>();
+    }
     
     // adds vertex to graph
     public void addVertex(Town t){
