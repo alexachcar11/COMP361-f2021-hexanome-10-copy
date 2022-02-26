@@ -12,7 +12,7 @@ public class LobbyServiceGame implements Joinable{
     private String location;
     private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
-    public static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
+    private static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
 
     /**
      * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.

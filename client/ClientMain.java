@@ -99,9 +99,6 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
-
-                // TODO: Add create lobby instance
-                // create lobby instance if it's not there already
                 gui.currentBackground = GUI.Screen.LOGIN;
             }
 
@@ -206,8 +203,8 @@ public class ClientMain {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Client testClient = new Client("elfenland.simui.com", 4444);
-                    testClient.start();
+                    // Client testClient = new Client("elfenland.simui.com", 4444);
+                    // testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }

@@ -24,7 +24,6 @@ public class LobbyServiceGameSession implements Joinable{
         this.creator = creator.getName();
         this.gameService = gameService;
         this.sessionID = sessionID;
-        this.users.add(creator);
     }
 
     /**

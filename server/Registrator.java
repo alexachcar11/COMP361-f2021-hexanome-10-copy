@@ -458,8 +458,15 @@ public class Registrator {
             String displayName = (String) gameJson.get("displayName");
             String location = (String) gameJson.get("location");
             int numberOfPlayers = (int) (long) gameJson.get("maxSessionPlayers");
-            // create LobbyServiceGame and add it to availableGames list
-            availableGames.add(new LobbyServiceGame(name, displayName, location, numberOfPlayers));
+            LobbyServiceGame existingGame = LobbyServiceGame.getLobbyServiceGame(name);
+            if (existingGame == null) {
+                // there is no such game yet
+                // create LobbyServiceGame and add it to availableGames list
+                availableGames.add(new LobbyServiceGame(name, displayName, location, numberOfPlayers));
+            } else {
+                availableGames.add(existingGame);
+            }
+
         }
 
         return availableGames;
@@ -541,25 +548,30 @@ public class Registrator {
                     relatedGame = existingGame;
                 }
 
-
-                // create a game session object
-                String creatorName = (String) sessionJSON.get("creator");
-                boolean launched = (boolean) sessionJSON.get("launched");
-                String saveGameID = (String) sessionJSON.get("savegameid");
-                ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
-                User creatorUser = new User(creatorName);
-                LobbyServiceGameSession newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
-                for (String userName : listOfUsers) {
-                    User newUser = new User(userName);
-                    newSession.addUser(newUser);
-                }
-                newSession.setLaunched(launched);
-
-                // mark this as the active session in the related game service
-                try {
-                    relatedGame.setActiveSession(newSession);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                // session info
+                LobbyServiceGameSession newSession;
+                if (relatedGame.getActiveSession() == null) {
+                    // create a game session object
+                    String saveGameID = (String) sessionJSON.get("savegameid");
+                    String creatorName = (String) sessionJSON.get("creator");
+                    boolean launched = (boolean) sessionJSON.get("launched");
+                    User creatorUser = new User(creatorName);
+                    newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
+                    ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                    for (String userName : listOfUsers) {
+                        User newUser = new User(userName);
+                        newSession.addUser(newUser);
+                    }
+                    newSession.setLaunched(launched);
+                    // set as the game's active session
+                    try {
+                        relatedGame.setActiveSession(newSession);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // we are here if the game already has a session object.
+                    newSession = relatedGame.getActiveSession();
                 }
 
                 availableSessions.add(newSession);
