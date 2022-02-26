@@ -217,8 +217,8 @@ public class Registrator {
      * @param destinationTownEnabled true if players will have a destination town,
      *                               false otherwise
      */
-    public void createNewGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-            boolean witchEnabled, boolean destinationTownEnabled) throws ParseException {
+    public LobbyServiceGame createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
+                                       boolean witchEnabled, boolean destinationTownEnabled, ClientMain.TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
                 .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
@@ -229,9 +229,10 @@ public class Registrator {
         System.out.println("service" + token);
 
         String name = displayName.replace(" ", "");
+        String location = "http://elfenland.simui.com:4243/" + name;
 
         Map<String, Object> fields = new HashMap<>();
-        fields.put("location", "http://elfenland.simui.com:4243/" + name);
+        fields.put("location", location);
         fields.put("maxSessionPlayers", numberOfPlayers);
         fields.put("minSessionPlayers", numberOfPlayers);
         fields.put("name", name);
@@ -253,6 +254,8 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(GSON.toJson(fields)).asString();
 
+        LobbyServiceGame newLSGame = null;
+
         // verify response
         if (jsonResponse.getStatus() == 400) {
             System.out.println("Game " + displayName + " already exists.");
@@ -261,13 +264,16 @@ public class Registrator {
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
         } else {
-            // create a new Game object
-            ServerGame newGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
-                    mode);
+            // create a new ServerGame object
+            ServerGame newServerGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
+                    mode, townGoldOption);
+            // create a new LobbyServiceGame object
+             newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, mode, destinationTownEnabled, numberOfRounds, witchEnabled, townGoldOption);
 
             // send gameCreationConfirmed(Game newGameObject) to the User
             // gameCreationConfirmed(newGame);
         }
+        return newLSGame;
     }
 
     /**
@@ -559,8 +565,10 @@ public class Registrator {
                     newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
                     ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
                     for (String userName : listOfUsers) {
-                        User newUser = new User(userName);
-                        newSession.addUser(newUser);
+                        if (!userName.equals(creatorName)) {
+                            User newUser = new User(userName);
+                            newSession.addUser(newUser);
+                        }
                     }
                     newSession.setLaunched(launched);
                     // set as the game's active session

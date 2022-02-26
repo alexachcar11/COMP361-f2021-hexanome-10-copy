@@ -22,6 +22,7 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
+        this.users.add(creator);
         this.gameService = gameService;
         this.sessionID = sessionID;
     }
@@ -136,8 +137,9 @@ public class LobbyServiceGameSession implements Joinable{
      * The Registrator will make this user join this game session
      */
     @Override
-    public void join() throws Exception {
+    public LobbyServiceGameSession join() throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
+        return this;
     }
 
     /**

@@ -7,25 +7,46 @@ import java.util.ArrayList;
 public class LobbyServiceGame implements Joinable{
 
     // FIELDS
+    // lobby service relate
     private String name;
     private String displayName;
     private String location;
     private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
     private static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
+    // game logic related
+    private Mode mode;
+    private boolean destinationTownEnabled;
+    private int numRounds;
+    private boolean witchEnabled;
+    private ClientMain.TownGoldOption townGoldOption;
 
     /**
-     * CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service.
+     * FULL CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service that you create.
      * @param displayName displayName provided by gameservices/{gameservice}json
      * @param location location provided by gameservices/{gameservice} json
      * @param numberOfUsers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers) {
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers, Mode mode, boolean destinationTownEnabled, int numRounds, boolean witchEnabled, ClientMain.TownGoldOption townGoldOption) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
         this.numberOfUsers = numberOfUsers;
         this.activeSession = null;
+        allGameServices.add(this);
+        this.mode = mode;
+        this.destinationTownEnabled = destinationTownEnabled;
+        this.numRounds = numRounds;
+        this.witchEnabled = witchEnabled;
+        this.townGoldOption = townGoldOption;
+    }
+
+    // SIMPLE CONSTRUCTOR FOR WHEN YOU RETRIEVE AN EXISTING GAME
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers) {
+        this.name = name;
+        this.displayName = displayName;
+        this.location = location;
+        this.numberOfUsers = numberOfUsers;
         allGameServices.add(this);
     }
 
@@ -98,8 +119,9 @@ public class LobbyServiceGame implements Joinable{
      * The Registrator will make this user join this game service by creating a session.
      */
     @Override
-    public void join() throws Exception {
+    public LobbyServiceGameSession join() throws Exception {
         LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
         this.activeSession = newSessionCreated;
+        return newSessionCreated;
     }
 }
