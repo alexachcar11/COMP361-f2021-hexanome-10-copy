@@ -1,4 +1,4 @@
 public interface NetworkNode {
 
-    public void start();
+    void start();
 }

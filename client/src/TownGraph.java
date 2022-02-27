@@ -17,7 +17,7 @@ public class TownGraph {
     
     // adds vertex to graph
     public void addVertex(Town t){
-        map.put(t, new LinkedList<Route>());
+        map.put(t, new LinkedList<>());
     }
 
     // adds edge (route) between source and destination
@@ -33,10 +33,10 @@ public class TownGraph {
         }
         // add towns if not included in townMap
         if (!townMap.containsKey(source)){
-            townMap.put(source, new LinkedList<Town>());
+            townMap.put(source, new LinkedList<>());
         }
         if (!townMap.containsKey(dest)){
-            townMap.put(dest, new LinkedList<Town>());
+            townMap.put(dest, new LinkedList<>());
         }
         // add Route to list of routes for the towns given
         map.get(source).add(pRoute);

@@ -21,9 +21,7 @@ public class TokenStack implements Iterable<Token> {
      */
     public TokenStack(List<Token> pList){
         this();
-        for(Token token:pList){
-            aTokens.add(token);
-        }
+        aTokens.addAll(pList);
     }
 
     /**

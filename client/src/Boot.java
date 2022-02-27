@@ -52,7 +52,6 @@ public class Boot extends Image {
     }
 
     public int[] getCoords() {
-        int[] toReturn = { this.getMinX(), this.getMaxX(), this.getMinY(), this.getMaxY() };
-        return toReturn;
+        return new int[]{ this.getMinX(), this.getMaxX(), this.getMinY(), this.getMaxY() };
     }
 }

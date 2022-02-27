@@ -20,9 +20,7 @@ public class CardStack implements Iterable<Card>
      */
     public CardStack(List<Card> pList){
         this();
-        for(Card card:pList){
-            aCards.add(card);
-        }
+        aCards.addAll(pList);
     }
 
     /**

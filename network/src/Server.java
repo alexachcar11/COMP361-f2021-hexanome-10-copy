@@ -34,13 +34,7 @@ public class Server implements NetworkNode {
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
                 aClientSockets.add(tuple); // allows use in inner class
-                Thread clientThread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        listenToClient(tuple);
-                    }
-                });
+                Thread clientThread = new Thread(() -> listenToClient(tuple));
                 clientThread.start();
             }
         }

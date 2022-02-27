@@ -25,14 +25,39 @@ public class TravelCard extends Card{
         super(minX, maxX, minY, maxY, image, name);
         aType = pType;
         // set up requirements depending on type
-        switch(aType){
-            case CLOUD: requirements[0] = 2; requirements[1] = 2; requirements[3] = 1; break;
-            case UNICORN: requirements[1] = 1; requirements[2] = 2; requirements[3] = 1; break;
-            case TROLL: requirements[0] = 1; requirements[1] = 2; requirements[2] = 2; requirements[3] = 2; break;
-            case ELFCYCLE: requirements[0] = 1; requirements[1] = 1; requirements[3] = 2; break;
-            case PIG: requirements[0] = 1; requirements[1] = 1; break;
-            case DRAGON: requirements[0] = 1; requirements[1] = 2; requirements[2] = 1; requirements[3] = 1; break;
-            case RAFT: requirements[4] = 1; break;
+        switch (aType) {
+            case CLOUD -> {
+                requirements[0] = 2;
+                requirements[1] = 2;
+                requirements[3] = 1;
+            }
+            case UNICORN -> {
+                requirements[1] = 1;
+                requirements[2] = 2;
+                requirements[3] = 1;
+            }
+            case TROLL -> {
+                requirements[0] = 1;
+                requirements[1] = 2;
+                requirements[2] = 2;
+                requirements[3] = 2;
+            }
+            case ELFCYCLE -> {
+                requirements[0] = 1;
+                requirements[1] = 1;
+                requirements[3] = 2;
+            }
+            case PIG -> {
+                requirements[0] = 1;
+                requirements[1] = 1;
+            }
+            case DRAGON -> {
+                requirements[0] = 1;
+                requirements[1] = 2;
+                requirements[2] = 1;
+                requirements[3] = 1;
+            }
+            case RAFT -> requirements[4] = 1;
         }
     }
 }
