@@ -28,7 +28,7 @@ public class ServerGame {
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
@@ -38,8 +38,8 @@ public class ServerGame {
         this.mode = mode;
         this.currentRound = 1;
 
-        this.towns = new ArrayList<>();
-        this.routes = new ArrayList<>();
+        towns = new ArrayList<>();
+        routes = new ArrayList<>();
 
         // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
 

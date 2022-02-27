@@ -22,9 +22,9 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
+        this.users.add(creator);
         this.gameService = gameService;
         this.sessionID = sessionID;
-        this.users.add(creator);
     }
 
     /**
@@ -41,6 +41,22 @@ public class LobbyServiceGameSession implements Joinable{
      */
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    /**
+     * Indicates if the username is in this game session.
+     * @param userName user to check
+     * @return true if the username is in the session, false otherwise
+     */
+    public boolean hasUserName(String userName) {
+        boolean hasUser = false;
+        for (User u : users) {
+            if (userName.equals(u.getName())) {
+                hasUser = true;
+                break;
+            }
+        }
+        return hasUser;
     }
 
     /**
@@ -126,7 +142,7 @@ public class LobbyServiceGameSession implements Joinable{
         boolean allReady = true;
         for (User u : this.users) {
             if (!u.isReady()) {
-                allReady = !allReady;
+                allReady = false;
                 break;
             }
         }
@@ -137,8 +153,9 @@ public class LobbyServiceGameSession implements Joinable{
      * The Registrator will make this user join this game session
      */
     @Override
-    public void join() throws Exception {
+    public LobbyServiceGameSession join() throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
+        return this;
     }
 
     /**
