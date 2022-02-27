@@ -1,3 +1,4 @@
+package src;
 /*
 Instances of the Image class contain a min/max x and min/max y coordinates to locate the object on the screen
 and an image to display

@@ -2,6 +2,8 @@
 Interface representing a Card.
  */
 
+package src;
+
 import org.minueto.image.MinuetoImage;
 
 public abstract class Card extends Image{

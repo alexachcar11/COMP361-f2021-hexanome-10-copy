@@ -1,3 +1,4 @@
+package src;
 public enum ModifierType {
     OBSTACLE, GOLD_VALUE, DOUBLE, EXCHANGE, GOLD_PIECES, SEA_MONSTER
 }

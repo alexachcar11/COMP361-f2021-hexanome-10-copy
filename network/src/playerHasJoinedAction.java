@@ -1,3 +1,4 @@
+package src;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -24,17 +25,19 @@ public class playerHasJoinedAction extends Action{
 
     @Override
     public boolean isValid() {
-        // game exists?
-        GameLobby gameLobby = GameLobby.getGameLobby(gameServiceName);
-        if (gameLobby == null) {
-            System.err.println("No game called " + gameServiceName);
+        // the game service exists
+        LobbyServiceGame gameService =  LobbyServiceGame.getLobbyServiceGame(gameServiceName);
+        if (gameService == null) {
+            System.err.println("The specified game service does not exist.");
             return false;
         }
-        // user is in gameLobby?
-        if (!gameLobby.hasUser(userName)) {
-            System.err.println(gameServiceName + " does not have user " + userName);
+        // the user has joined the game via Lobby Service
+        LobbyServiceGameSession sessionJoined = gameService.getActiveSession();
+        if (!sessionJoined.hasUserName(userName)) {
+            System.err.println("The user is not in the specified game.");
             return false;
         }
+
         return true;
     }
 
@@ -42,13 +45,16 @@ public class playerHasJoinedAction extends Action{
     public void execute() {
         if (isValid()) {
             // send all users (for this game) a message that the player has joined
-            GameLobby gameLobby = GameLobby.getGameLobby(gameServiceName);
-            ArrayList<Client> clientsToNotify = gameLobby.getClients();
-            for (Client c : clientsToNotify) {
-                // TODO
+            LobbyServiceGame gameService =  LobbyServiceGame.getLobbyServiceGame(gameServiceName);
+            LobbyServiceGameSession sessionJoined = gameService.getActiveSession();
+            ArrayList<User> usersToNotify = sessionJoined.getUsers();
+            for (User u : usersToNotify) {
+
             }
         } else {
             System.err.println("playerHasJoinedAction is not valid.");
         }
+
     }
+
 }

@@ -1,4 +1,4 @@
-
+package src;
 public class Route {
     
     // route needs to have a starting town and an ending town 

@@ -2,6 +2,8 @@
 Instances of LobbyServiceGame represent one available game service on the lobby service.
  */
 
+package src;
+
 import java.util.ArrayList;
 
 public class LobbyServiceGame implements Joinable{

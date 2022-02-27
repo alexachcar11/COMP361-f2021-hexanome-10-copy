@@ -1,3 +1,4 @@
+package src;
 import org.minueto.image.MinuetoImage;
 
 public class TransportationCounter extends Token {

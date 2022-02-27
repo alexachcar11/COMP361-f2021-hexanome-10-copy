@@ -2,6 +2,8 @@
 Interface representing a Card.
  */
 
+package src;
+
 public abstract class Card{
 
     private String aName;

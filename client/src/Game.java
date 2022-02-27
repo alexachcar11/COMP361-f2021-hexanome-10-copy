@@ -1,3 +1,4 @@
+package src;
 /*
 Instance of Game represent a single elfen game.
 

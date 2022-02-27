@@ -1,5 +1,6 @@
 
 /* This class contains all info relevant to a single Player */
+package src;
 import java.util.*;
 
 public class Player {

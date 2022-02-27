@@ -1,3 +1,4 @@
+package src;
 public class ServerMain {
 
     static Server SERVER = new Server(4444);

@@ -1,3 +1,4 @@
+package src;
 public class TestAction extends Action {
 
     private String test = "The network is working!!!";

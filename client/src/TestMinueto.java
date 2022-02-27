@@ -1,3 +1,5 @@
+package src;
+
 import org.minueto.*;
 import org.minueto.image.*;
 import org.minueto.window.*;

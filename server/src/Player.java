@@ -1,4 +1,4 @@
-
+package src;
 /* This class contains all info relevant to a single Player */
 
 import java.util.ArrayList;

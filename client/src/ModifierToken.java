@@ -1,3 +1,4 @@
+package src;
 import org.minueto.image.MinuetoImage;
 
 // modifier includes the spells and so on for elfenGold and obstacles

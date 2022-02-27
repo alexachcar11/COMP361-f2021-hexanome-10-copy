@@ -1,3 +1,4 @@
+package src;
 public class userConnectionAction extends Action{
 
     private Client client;

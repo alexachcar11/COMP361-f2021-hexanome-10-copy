@@ -1,4 +1,4 @@
-
+package src;
 /* This class contains all info relevant to the game window*/
 import org.minueto.window.MinuetoWindow;
 

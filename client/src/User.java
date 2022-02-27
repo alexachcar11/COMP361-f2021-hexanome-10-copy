@@ -2,6 +2,8 @@
 Represents one user from the moment the game is launched (they may not be a player yet)
  */
 
+package src;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 

@@ -1,3 +1,4 @@
+package src;
 public class Auction {
     private int aCurrentBid;
     private Player HighestBidPlayer;

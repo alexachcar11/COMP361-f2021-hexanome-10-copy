@@ -1,3 +1,4 @@
+package src;
 /*
 Represents one user from the moment the game is launched (they may not be a player yet)
  */

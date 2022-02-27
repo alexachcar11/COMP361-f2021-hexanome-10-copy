@@ -1,3 +1,4 @@
+package src;
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;

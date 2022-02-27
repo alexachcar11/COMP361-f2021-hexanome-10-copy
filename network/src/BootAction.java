@@ -1,3 +1,4 @@
+package src;
 public class BootAction extends Action {
 
     private Player aPlayer;
