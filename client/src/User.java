@@ -16,6 +16,7 @@ public class User {
     private static final Registrator REGISTRATOR = Registrator.instance();
     private boolean ready;
     private Color color;
+    private Client client;
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -26,11 +27,17 @@ public class User {
         } catch (ParseException e) {
             throw new RuntimeException("Error: could not create user.");
         }
+        // client-server connection (1 user = 1 client)
+        Client client = new Client("elfenland.simui.com", 4444, name);
+        this.client = client;
+        client.start();
     }
 
     public User(String name) {
         this.name = name;
     }
+
+
 
     /**
      * GETTER: returns the user's name as seen on LS

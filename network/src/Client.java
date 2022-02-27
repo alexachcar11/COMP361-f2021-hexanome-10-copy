@@ -5,9 +5,10 @@ public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
-    private Player aPlayer;
+    private String name;
 
-    public Client(String pHost, int pPort) {
+
+    public Client(String pHost, int pPort, String name) {
         try {
             aSocket = new Socket(pHost, pPort);
             OutputStream aOut = aSocket.getOutputStream();
@@ -20,13 +21,14 @@ public class Client implements NetworkNode {
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
         }
+        this.name = name;
     }
 
     @Override
     public void start() {
         try {
             aObjectOut.writeObject(new TestAction());
-
+            aObjectOut.writeObject(new userConnectionAction(this, name));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,9 +36,5 @@ public class Client implements NetworkNode {
 
     public String getHost() {
         return aSocket.getInetAddress().getHostName();
-    }
-
-    public void setPlayer(Player pPlayer) {
-        aPlayer = pPlayer;
     }
 }
