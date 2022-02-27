@@ -197,8 +197,6 @@ public class ClientMain {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
                     }
-                    // Client testClient = new Client("elfenland.simui.com", 4444);
-                    // testClient.start();
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
                 }

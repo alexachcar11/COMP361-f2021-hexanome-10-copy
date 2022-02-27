@@ -12,7 +12,7 @@ public class Server implements NetworkNode {
     Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
-            System.out.println("Server running on port " + pPort);
+            System.out.println("Server running on port " + pPort + ". Server socket awaiting connections...");
         } catch (IOException e) {
             System.err.println("Could not listen on port: " + pPort);
             e.printStackTrace();
