@@ -359,7 +359,7 @@ public class ClientMain {
 
             // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
             // cycle to the next player
-
+            /*
             for (int i = 0; i < players.size(); i++) {
 
                 while (ServerGame.notClickingOnATown(x, y)) {
@@ -384,7 +384,7 @@ public class ClientMain {
                     }
                 }
             }
-
+            */
         }
 
         @Override
@@ -695,29 +695,49 @@ public class ClientMain {
                             if (modeSel.equals(Mode.ELFENLAND)) {
                                 // create an elfenland game
                                 LobbyServiceGame newLSGame = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel, Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
-                                // join the game
-                                currentSession = newLSGame.join();
-                                // load the display for users
-                                try {
-                                    displayUsers();
-                                } catch (MinuetoFileException e) {
-                                    e.printStackTrace();
+                                if (newLSGame == null) {
+                                    // show error message because the game already exists
+                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+                                    createGameBackground.draw(nameIsTaken, 178, 120);
+                                } else {
+                                    // join the game
+                                    currentSession = newLSGame.join();
+                                    // load the display for users
+                                    try {
+                                        displayUsers();
+                                    } catch (MinuetoFileException e) {
+                                        e.printStackTrace();
+                                    }
+                                    // go to lobby screen
+                                    if (currentUser.getName().equals(currentSession.getCreator())) {
+                                        gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
+                                    } else {
+                                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                                    }
                                 }
-                                // go to lobby screen
-                                gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                             } else if(modeSel.equals(Mode.ELFENGOLD)) {
                                 // create an elfengold game
                                 LobbyServiceGame newLSGame = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
-                                // join the game
-                                currentSession = newLSGame.join();
-                                // load the display for users
-                                try {
-                                    displayUsers();
-                                } catch (MinuetoFileException e) {
-                                    e.printStackTrace();
+                                if (newLSGame == null) {
+                                    // show error message because the game already exists
+                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+                                    createGameBackground.draw(nameIsTaken, 178, 120);
+                                } else {
+                                    // join the game
+                                    currentSession = newLSGame.join();
+                                    // load the display for users
+                                    try {
+                                        displayUsers();
+                                    } catch (MinuetoFileException e) {
+                                        e.printStackTrace();
+                                    }
+                                    // go to lobby screen
+                                    if (currentUser.getName().equals(currentSession.getCreator())) {
+                                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
+                                    } else {
+                                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                                    }
                                 }
-                                // go to lobby screen
-                                gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -830,12 +850,7 @@ public class ClientMain {
     private static long clipPos;
     private static boolean soundStarted = false;
 
-    // for game lobby
-    enum TownGoldOption {
-        NO,
-        YESDEFAULT,
-        YESRANDOM
-    }
+
     private static boolean nameSel = false;
     private static String nameString = "";
     private static int numberPlayers = 6;
@@ -1311,7 +1326,7 @@ public class ClientMain {
                     Integer maxY = 245 + (pageCounter * 50);
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
+                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, g);
                     joinButtonCoordinates.add(entry);
 
@@ -1347,7 +1362,7 @@ public class ClientMain {
                     Integer maxY = 245 + (pageCounter * 50);
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<ImmutableList, Joinable>(
+                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 

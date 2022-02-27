@@ -44,6 +44,22 @@ public class LobbyServiceGameSession implements Joinable{
     }
 
     /**
+     * Indicates if the username is in this game session.
+     * @param userName user to check
+     * @return true if the username is in the session, false otherwise
+     */
+    public boolean hasUserName(String userName) {
+        boolean hasUser = false;
+        for (User u : users) {
+            if (userName.equals(u.getName())) {
+                hasUser = true;
+                break;
+            }
+        }
+        return hasUser;
+    }
+
+    /**
      * GETTER: returns the number of users that have currently joined the game
      * @return size of ArrayList<User>
      */
@@ -126,7 +142,7 @@ public class LobbyServiceGameSession implements Joinable{
         boolean allReady = true;
         for (User u : this.users) {
             if (!u.isReady()) {
-                allReady = !allReady;
+                allReady = false;
                 break;
             }
         }

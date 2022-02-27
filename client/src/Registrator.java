@@ -218,7 +218,7 @@ public class Registrator {
      *                               false otherwise
      */
     public LobbyServiceGame createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-                                       boolean witchEnabled, boolean destinationTownEnabled, ClientMain.TownGoldOption townGoldOption) throws ParseException {
+                                       boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
                 .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
@@ -265,10 +265,10 @@ public class Registrator {
             // gameCreationConfirmed(null);
         } else {
             // create a new ServerGame object
-            ServerGame newServerGame = new ServerGame(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
+            Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
             // create a new LobbyServiceGame object
-             newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, mode, destinationTownEnabled, numberOfRounds, witchEnabled, townGoldOption);
+             newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
 
             // send gameCreationConfirmed(Game newGameObject) to the User
             // gameCreationConfirmed(newGame);
@@ -521,7 +521,7 @@ public class Registrator {
      * @throws IOException
      * @throws ParseException
      */
-    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws IOException, ParseException {
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() throws ParseException {
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://elfenland.simui.com:4242/api/sessions")
                 .asString();

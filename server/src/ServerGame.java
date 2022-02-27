@@ -28,7 +28,7 @@ public class ServerGame {
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, ClientMain.TownGoldOption townGoldOption) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;

@@ -15,11 +15,12 @@ public class LobbyServiceGame implements Joinable{
     private LobbyServiceGameSession activeSession;
     private static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
     // game logic related
+    private Game game;
     private Mode mode;
     private boolean destinationTownEnabled;
     private int numRounds;
     private boolean witchEnabled;
-    private ClientMain.TownGoldOption townGoldOption;
+    private TownGoldOption townGoldOption;
 
     /**
      * FULL CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service that you create.
@@ -27,18 +28,14 @@ public class LobbyServiceGame implements Joinable{
      * @param location location provided by gameservices/{gameservice} json
      * @param numberOfUsers maxSessionPlayers provided by gameservices/{gameservice} json
      */
-    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers, Mode mode, boolean destinationTownEnabled, int numRounds, boolean witchEnabled, ClientMain.TownGoldOption townGoldOption) {
+    public LobbyServiceGame(String name, String displayName, String location, int numberOfUsers, Game game) {
         this.name = name;
         this.displayName = displayName;
         this.location = location;
         this.numberOfUsers = numberOfUsers;
         this.activeSession = null;
         allGameServices.add(this);
-        this.mode = mode;
-        this.destinationTownEnabled = destinationTownEnabled;
-        this.numRounds = numRounds;
-        this.witchEnabled = witchEnabled;
-        this.townGoldOption = townGoldOption;
+        this.game = game;
     }
 
     // SIMPLE CONSTRUCTOR FOR WHEN YOU RETRIEVE AN EXISTING GAME
