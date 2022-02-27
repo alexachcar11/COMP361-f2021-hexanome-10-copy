@@ -11,6 +11,7 @@ public class Client implements NetworkNode {
     public Client(String pHost, int pPort, String name) {
         try {
             aSocket = new Socket(pHost, pPort);
+            System.out.println("client is connected!");
             OutputStream aOut = aSocket.getOutputStream();
             InputStream aIn = aSocket.getInputStream();
             aObjectOut = new ObjectOutputStream(aOut);

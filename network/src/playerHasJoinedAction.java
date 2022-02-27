@@ -50,7 +50,5 @@ public class playerHasJoinedAction extends Action{
         } else {
             System.err.println("playerHasJoinedAction is not valid.");
         }
-
     }
-
 }
