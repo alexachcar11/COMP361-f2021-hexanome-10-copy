@@ -35,6 +35,8 @@ public class TokenStack implements Iterable<Token> {
         Collections.shuffle(aTokens);
     }
 
+    
+
     /**
      * Removes the token on top of the stack and returns it.
      *
