@@ -7,10 +7,12 @@ package clientsrc;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import networksrc.Action;
 import networksrc.Client;
 // import serversrc.Color;
 
 import java.io.IOException;
+import java.util.Queue;
 
 public class User {
 
@@ -22,6 +24,7 @@ public class User {
     private boolean ready;
     private Color color;
     private Client client;
+    private Queue<Action> actionQueue;
 
     // CONSTRUCTOR
     public User(String name, String password) {

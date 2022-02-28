@@ -31,6 +31,7 @@ public class Server implements NetworkNode {
     @Override
     public void start() {
         while (true) {
+            System.out.println("iteration");
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
@@ -43,11 +44,13 @@ public class Server implements NetworkNode {
                 aClientSockets.add(tuple); // allows use in inner class
                 Thread clientThread = new Thread(() -> listenToClient(tuple));
                 clientThread.start();
+                System.out.println("thread created: " +  clientThread);
             }
         }
     }
 
     private void listenToClient(ClientTuple pTuple) {
+        System.out.println("listen to client");
         try {
             ServerAction actionIn = (ServerAction) pTuple.input().readObject();
             if (actionIn.getClass().equals(GiveNameAction.class)) {
@@ -121,5 +124,6 @@ class ClientTuple {
 
     void setName(String name) {
         username = name;
+        System.out.println("setting name " + name);
     }
 }

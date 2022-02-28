@@ -3,13 +3,15 @@ package networksrc;
 import java.io.*;
 import java.net.*;
 
+import clientsrc.User;
+
 //import clientsrc.Player;
 
 public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
-    //private Player aPlayer;
+    private User user;
     private String name;
 
     public Client(String pHost, int pPort, String name) {
