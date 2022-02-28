@@ -12,7 +12,7 @@ public class Server implements NetworkNode {
     // instance of Server
     private static Server INSTANCE = new Server(4444);
 
-    public Server(int pPort) {
+    private Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
             System.out.println("Server running on port " + pPort);
@@ -50,9 +50,14 @@ public class Server implements NetworkNode {
     private void listenToClient(ClientTuple pTuple) {
         try {
             ServerAction actionIn = (ServerAction) pTuple.input().readObject();
-            actionIn.setSender(pTuple.getUsername());
-            if (actionIn.isValid()) {
-                actionIn.execute();
+            if (actionIn.getClass().equals(GiveNameAction.class)) {
+                GiveNameAction giveNameAction = (GiveNameAction) actionIn;
+                pTuple.setName(giveNameAction.getName());
+            } else {
+                actionIn.setSender(pTuple.getUsername());
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
             }
         } catch (IOException e) {
             String host = pTuple.socket().getInetAddress().getHostName();

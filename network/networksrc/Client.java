@@ -32,6 +32,7 @@ public class Client implements NetworkNode {
     @Override
     public void start() {
         try {
+            aObjectOut.writeObject(new GiveNameAction(name));
             aObjectOut.writeObject(new TestAction(name));
             Action actionIn;
             try {

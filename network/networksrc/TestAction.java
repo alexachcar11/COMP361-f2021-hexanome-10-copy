@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import serversrc.ServerUser;
 
-public class TestAction extends Action {
+public class TestAction extends ServerAction {
 
     private String senderName;
 

@@ -10,7 +10,7 @@ public class TestActionACK extends Action{
 
     @Override
     public boolean isValid() {
-        return false;
+        return true;
     }
 
     @Override

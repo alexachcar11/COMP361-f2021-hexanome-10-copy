@@ -1,6 +1,6 @@
 package networksrc;
 
-public class GiveNameAction extends Action{
+public class GiveNameAction extends ServerAction {
 
     private String name;
 
@@ -11,13 +11,17 @@ public class GiveNameAction extends Action{
     @Override
     public boolean isValid() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public void execute() {
-        // server marks the client tuple's name
+        // TODO Auto-generated method stub
         
+    }
+
+    public String getName() {
+        return name;
     }
     
 }
