@@ -1,4 +1,5 @@
 package networksrc;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -9,8 +10,9 @@ public class Server implements NetworkNode {
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
-    // instance of Server
-    private static Server INSTANCE = new Server(4444);
+    public static final String LOCATION = "elfenland.simui.com";
+    public static final int PORT = 13645;
+    private static Server INSTANCE = new Server(PORT);
 
     private Server(int pPort) {
         try {
@@ -31,7 +33,6 @@ public class Server implements NetworkNode {
     @Override
     public void start() {
         while (true) {
-            System.out.println("iteration");
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
@@ -42,15 +43,19 @@ public class Server implements NetworkNode {
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
                 aClientSockets.add(tuple); // allows use in inner class
-                Thread clientThread = new Thread(() -> listenToClient(tuple));
+                Thread clientThread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        listenToClient(tuple);
+                    }
+                });
                 clientThread.start();
-                System.out.println("thread created: " +  clientThread);
             }
         }
     }
 
     private void listenToClient(ClientTuple pTuple) {
-        System.out.println("listen to client");
         try {
             ServerAction actionIn = (ServerAction) pTuple.input().readObject();
             if (actionIn.getClass().equals(GiveNameAction.class)) {
@@ -124,6 +129,5 @@ class ClientTuple {
 
     void setName(String name) {
         username = name;
-        System.out.println("setting name " + name);
     }
 }
