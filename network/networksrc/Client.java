@@ -50,9 +50,9 @@ public class Client implements NetworkNode {
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } */
-            // output messages
-            /* if (!aUser.getActionQueue().isEmpty()) {
+            }  */
+            /* // output messages
+            if (!aUser.getActionQueue().isEmpty()) {
                 try {
                     Action toSend = aUser.getActionQueue().poll();
                     aObjectOut.writeObject(toSend);
