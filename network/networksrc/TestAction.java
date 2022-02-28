@@ -25,9 +25,9 @@ public class TestAction extends ServerAction {
         try {
             // get the senderName's socket
             Server serverInstance = Server.getInstance();
-            Socket socketToNotify = serverInstance.getSocketByUsername(senderName);
+            ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(senderName);
             // get the socket's output stream
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socketToNotify.getOutputStream());
+            ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
             objectOutputStream.writeObject(new TestActionACK(senderName));
         } catch (IOException e) {
             System.err.println("IOException in TestAction.execute().");

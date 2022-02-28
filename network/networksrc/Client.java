@@ -38,7 +38,7 @@ public class Client implements NetworkNode {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        while (true) {
+        /* while (true) {
             // input messages
             Action actionIn;
             try {
@@ -49,8 +49,8 @@ public class Client implements NetworkNode {
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } 
-            // output messages
+            }  */
+            /* // output messages
             if (!aUser.getActionQueue().isEmpty()) {
                 try {
                     Action toSend = aUser.getActionQueue().poll();
@@ -59,8 +59,8 @@ public class Client implements NetworkNode {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        }
+            } */
+        //}
     }
 
     public String getHost() {

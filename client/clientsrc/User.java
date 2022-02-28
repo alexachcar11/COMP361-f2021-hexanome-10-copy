@@ -86,12 +86,4 @@ public class User {
     public void setColor(Color color) {
         this.color = color;
     }
-
-    public Queue<Action> getActionQueue() {
-        return actionQueue;
-    }
-
-    public void sendAction(Action action) {
-        actionQueue.add(action);
-    }
 }

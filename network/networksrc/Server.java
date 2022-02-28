@@ -37,7 +37,7 @@ public class Server implements NetworkNode {
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.err.println("Accept failed: 4444");
+                System.err.println("Accept failed: 13645");
                 e.printStackTrace();
             }
             if (clientSocket != null) {
@@ -56,34 +56,35 @@ public class Server implements NetworkNode {
     }
 
     private void listenToClient(ClientTuple pTuple) {
-        try {
-            ServerAction actionIn = (ServerAction) pTuple.input().readObject();
-            if (actionIn.getClass().equals(GiveNameAction.class)) {
-                GiveNameAction giveNameAction = (GiveNameAction) actionIn;
-                pTuple.setName(giveNameAction.getName());
-            } else {
-                actionIn.setSender(pTuple.getUsername());
-                if (actionIn.isValid()) {
-                    actionIn.execute();
+        while(true) {
+            try {
+                ServerAction actionIn = (ServerAction) pTuple.input().readObject();
+                if (actionIn.getClass().equals(GiveNameAction.class)) {
+                    GiveNameAction giveNameAction = (GiveNameAction) actionIn;
+                    pTuple.setName(giveNameAction.getName());
+                } else {
+                    actionIn.setSender(pTuple.getUsername());
+                    if (actionIn.isValid()) {
+                        actionIn.execute();
+                    }
                 }
+            } catch (IOException e) {
+                String host = pTuple.socket().getInetAddress().getHostName();
+                System.err.println("Couldn't get I/O for the connection to: " + host);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            String host = pTuple.socket().getInetAddress().getHostName();
-            System.err.println("Couldn't get I/O for the connection to: " + host);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
     }
 
     public int getPort() {
         return aSocket.getLocalPort();
     }
 
-    public Socket getSocketByUsername(String username) {
+    public ClientTuple getClientTupleByUsername(String username) {
         for (ClientTuple clientTuple : aClientSockets) {
             if (clientTuple.getUsername().equals(username)) {
-                return clientTuple.socket();
+                return clientTuple;
             }
         }
         return null;
@@ -102,10 +103,10 @@ class ClientTuple {
     private String username;
 
     ClientTuple(Socket pSocket) {
-        aSocket = pSocket;
+        this.aSocket = pSocket;
         try {
-            aInputStream = new ObjectInputStream(aSocket.getInputStream());
             aOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
+            aInputStream = new ObjectInputStream(aSocket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,5 +130,6 @@ class ClientTuple {
 
     void setName(String name) {
         username = name;
+        System.out.println("setting name" + name);
     }
 }
