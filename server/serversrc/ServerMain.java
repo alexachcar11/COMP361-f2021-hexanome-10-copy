@@ -4,7 +4,7 @@ import networksrc.Server;
 
 public class ServerMain {
 
-    static Server SERVER = new Server(4444);
+    static Server SERVER = Server.getInstance();
 
     public static void main(String[] args) {
         Thread serverThread = new Thread(() -> SERVER.start());

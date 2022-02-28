@@ -7,10 +7,12 @@ package clientsrc;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import networksrc.Action;
 import networksrc.Client;
-// import serversrc.Color;
+import networksrc.TestAction;
 
-import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class User {
 
@@ -22,6 +24,7 @@ public class User {
     private boolean ready;
     private Color color;
     private Client client;
+    private Queue<Action> actionQueue = new LinkedList<Action>();
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -33,7 +36,7 @@ public class User {
             throw new RuntimeException("Error: could not create user.");
         }
         // client-server connection (1 user = 1 client)
-        Client client = new Client("elfenland.simui.com", 4444, name);
+        Client client = new Client("elfenland.simui.com", 13645, this);
         this.client = client;
         client.start();
     }
@@ -82,5 +85,13 @@ public class User {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    /**
+     * Return this user's client (for the network stuff)
+     * @return client
+     */
+    public Client getClient() {
+        return client;
     }
 }

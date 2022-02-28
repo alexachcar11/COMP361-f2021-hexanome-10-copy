@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import org.json.simple.JSONObject;
 import org.junit.*;
 
+import clientsrc.Registrator;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;

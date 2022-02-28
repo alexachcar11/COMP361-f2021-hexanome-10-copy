@@ -4,24 +4,17 @@ Represents one user from the moment the game is launched (they may not be a play
  */
 
 // import clientsrc.Color;
-import networksrc.Client;
 
 public class ServerUser {
 
     // FIELDS
     private boolean ready;
     private Color color;
-    private Client client;
     private String name;
 
     // CONSTRUCTOR
-    public ServerUser(Client client, String name) {
-        this.client = client;
+    public ServerUser(String name) {
         this.name = name;
-    }
-
-    public Client getClient() {
-        return client;
     }
 
     public String getName() {

@@ -37,13 +37,13 @@ public class GameLobby {
         return false;
     }
 
-    public ArrayList<Client> getClients() {
+    /* public ArrayList<Client> getClients() {
         ArrayList<Client> clients = new ArrayList<>();
         for (ServerUser u : serverUsers) {
             Client c = u.getClient();
             clients.add(c);
         }
         return clients;
-    }
+    } */
 
 }

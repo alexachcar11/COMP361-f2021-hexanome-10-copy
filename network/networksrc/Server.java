@@ -1,4 +1,5 @@
 package networksrc;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -9,8 +10,11 @@ public class Server implements NetworkNode {
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
+    public static final String LOCATION = "elfenland.simui.com";
+    public static final int PORT = 13645;
+    private static Server INSTANCE = new Server(PORT);
 
-    public Server(int pPort) {
+    private Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
             System.out.println("Server running on port " + pPort);
@@ -21,6 +25,10 @@ public class Server implements NetworkNode {
         }
     }
 
+    public static Server getInstance() {
+        return INSTANCE;
+    }
+
     // create a thread to do this, in ServerMain
     @Override
     public void start() {
@@ -29,35 +37,57 @@ public class Server implements NetworkNode {
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.err.println("Accept failed: 4444");
+                System.err.println("Accept failed: 13645");
                 e.printStackTrace();
             }
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
                 aClientSockets.add(tuple); // allows use in inner class
-                Thread clientThread = new Thread(() -> listenToClient(tuple));
+                Thread clientThread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        listenToClient(tuple);
+                    }
+                });
                 clientThread.start();
             }
         }
     }
 
     private void listenToClient(ClientTuple pTuple) {
-        try {
-            Action actionIn = (Action) pTuple.input().readObject();
-            if (actionIn.isValid()) {
-                actionIn.execute();
+        while(true) {
+            try {
+                ServerAction actionIn = (ServerAction) pTuple.input().readObject();
+                if (actionIn.getClass().equals(GiveNameAction.class)) {
+                    GiveNameAction giveNameAction = (GiveNameAction) actionIn;
+                    pTuple.setName(giveNameAction.getName());
+                } else {
+                    actionIn.setSender(pTuple.getUsername());
+                    if (actionIn.isValid()) {
+                        actionIn.execute();
+                    }
+                }
+            } catch (IOException e) {
+                String host = pTuple.socket().getInetAddress().getHostName();
+                System.err.println("Couldn't get I/O for the connection to: " + host);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            String host = pTuple.socket().getInetAddress().getHostName();
-            System.err.println("Couldn't get I/O for the connection to: " + host);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
     }
 
     public int getPort() {
         return aSocket.getLocalPort();
+    }
+
+    public ClientTuple getClientTupleByUsername(String username) {
+        for (ClientTuple clientTuple : aClientSockets) {
+            if (clientTuple.getUsername().equals(username)) {
+                return clientTuple;
+            }
+        }
+        return null;
     }
 }
 
@@ -70,12 +100,13 @@ class ClientTuple {
     private Socket aSocket;
     private ObjectInputStream aInputStream;
     private ObjectOutputStream aOutputStream;
+    private String username;
 
     ClientTuple(Socket pSocket) {
-        aSocket = pSocket;
+        this.aSocket = pSocket;
         try {
-            aInputStream = new ObjectInputStream(aSocket.getInputStream());
             aOutputStream = new ObjectOutputStream(aSocket.getOutputStream());
+            aInputStream = new ObjectInputStream(aSocket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,5 +122,14 @@ class ClientTuple {
 
     ObjectOutputStream output() {
         return aOutputStream;
+    }
+
+    String getUsername() {
+        return username;
+    }
+
+    void setName(String name) {
+        username = name;
+        System.out.println("setting name" + name);
     }
 }

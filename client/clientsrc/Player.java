@@ -32,7 +32,7 @@ public class Player {
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
 
-        aBootAction = new BootAction(this);
+        //aBootAction = new BootAction(this);
     }
 
     public void setTurn(boolean bool) {

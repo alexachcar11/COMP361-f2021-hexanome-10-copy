@@ -12,6 +12,9 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
+import networksrc.Action;
+import networksrc.TestAction;
+
 // import serversrc.Color;
 // import serversrc.Mode;
 // import serversrc.Player;
@@ -22,6 +25,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,6 +196,23 @@ public class ClientMain {
                             // user exists, login
                             System.out.println("User exists");
                             currentUser = new User(userString, passString);
+                            // send test
+                            ObjectOutputStream out = currentUser.getClient().getObjectOutputStream();
+                            out.writeObject(new TestAction(currentUser.getName()));
+                            System.out.println("sent action from main. waiting for reply...");
+                            // wait for reply
+                            ObjectInputStream in = currentUser.getClient().getObjectInputStream();
+                            boolean noAnswer = true;
+                            while (noAnswer) {
+                                Action actionIn = (Action) in.readObject();
+                                if (actionIn != null) {
+                                    // action received
+                                    if (actionIn.isValid()) {
+                                        actionIn.execute();
+                                    }
+                                    noAnswer = false;
+                                }   
+                            }
                             // http://127.0.0.1:4242/oauth/username?access_token=37S8hhdMCdXupIatPm82xJpXXas=);
                         } else {
                             // user doesn't exist. create and login
