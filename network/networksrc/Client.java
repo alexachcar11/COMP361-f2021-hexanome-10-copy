@@ -3,13 +3,13 @@ package networksrc;
 import java.io.*;
 import java.net.*;
 
-import clientsrc.Player;
+//import clientsrc.Player;
 
 public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
-    private Player aPlayer;
+    //private Player aPlayer;
     private String name;
 
     public Client(String pHost, int pPort, String name) {
@@ -33,8 +33,17 @@ public class Client implements NetworkNode {
     public void start() {
         try {
             aObjectOut.writeObject(new TestAction());
-            aObjectOut.writeObject((new userConnectionAction(this, name)));
-
+            Action actionIn;
+            try {
+                actionIn = (Action) aObjectIn.readObject();
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            //aObjectOut.writeObject((new userConnectionAction(this, name)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +53,7 @@ public class Client implements NetworkNode {
         return aSocket.getInetAddress().getHostName();
     }
 
-    public void setPlayer(Player pPlayer) {
+    /* public void setPlayer(Player pPlayer) {
         aPlayer = pPlayer;
-    }
+    } */
 }
