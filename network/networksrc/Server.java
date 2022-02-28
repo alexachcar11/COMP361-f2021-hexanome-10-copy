@@ -3,7 +3,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.lang.Thread;
-import serversrc.ServerUser;
 
 public class Server implements NetworkNode {
     // listening socket
@@ -13,7 +12,7 @@ public class Server implements NetworkNode {
     // instance of Server
     private static Server INSTANCE = new Server(4444);
 
-    private Server(int pPort) {
+    public Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
             System.out.println("Server running on port " + pPort);
