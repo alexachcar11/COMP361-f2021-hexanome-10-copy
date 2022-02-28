@@ -11,12 +11,8 @@ public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
-<<<<<<< HEAD
     private User aUser;
-=======
-    private User user;
     private String name;
->>>>>>> 7c8e5c727c86d5552a6ea2616d6ba179df8c6576
 
     public Client(String pHost, int pPort, User pUser) {
         try {
