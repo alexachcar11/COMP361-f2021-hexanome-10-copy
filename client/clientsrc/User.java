@@ -36,7 +36,7 @@ public class User {
             throw new RuntimeException("Error: could not create user.");
         }
         // client-server connection (1 user = 1 client)
-        Client client = new Client("elfenland.simui.com", 4444, name);
+        Client client = new Client("elfenland.simui.com", 13645, name);
         this.client = client;
         client.start();
     }
