@@ -10,8 +10,10 @@ import org.json.simple.parser.ParseException;
 import networksrc.Action;
 import networksrc.Client;
 // import serversrc.Color;
+import networksrc.TestAction;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class User {
@@ -24,7 +26,7 @@ public class User {
     private boolean ready;
     private Color color;
     private Client client;
-    private Queue<Action> actionQueue;
+    private Queue<Action> actionQueue = new LinkedList<Action>();
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -39,6 +41,8 @@ public class User {
         Client client = new Client("elfenland.simui.com", 13645, this);
         this.client = client;
         client.start();
+        actionQueue.add(new TestAction(name));
+        System.out.println("sent test action");
     }
 
     public User(String name) {
@@ -93,5 +97,9 @@ public class User {
 
     public void sendAction(Action action) {
         actionQueue.add(action);
+    }
+
+    public Client getClient() {
+        return client;
     }
 }
