@@ -9,10 +9,8 @@ import org.json.simple.parser.ParseException;
 
 import networksrc.Action;
 import networksrc.Client;
-// import serversrc.Color;
 import networksrc.TestAction;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -41,8 +39,6 @@ public class User {
         Client client = new Client("elfenland.simui.com", 13645, this);
         this.client = client;
         client.start();
-        actionQueue.add(new TestAction(name));
-        System.out.println("sent test action");
     }
 
     public User(String name) {
@@ -89,5 +85,13 @@ public class User {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    /**
+     * Return this user's client (for the network stuff)
+     * @return client
+     */
+    public Client getClient() {
+        return client;
     }
 }

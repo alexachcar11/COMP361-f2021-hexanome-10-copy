@@ -196,14 +196,17 @@ public class ClientMain {
                             // user exists, login
                             System.out.println("User exists");
                             currentUser = new User(userString, passString);
+                            // send test
                             ObjectOutputStream out = currentUser.getClient().getObjectOutputStream();
                             out.writeObject(new TestAction(currentUser.getName()));
                             System.out.println("sent action from main. waiting for reply...");
+                            // wait for reply
                             ObjectInputStream in = currentUser.getClient().getObjectInputStream();
                             boolean noAnswer = true;
                             while (noAnswer) {
                                 Action actionIn = (Action) in.readObject();
                                 if (actionIn != null) {
+                                    // action received
                                     if (actionIn.isValid()) {
                                         actionIn.execute();
                                     }
