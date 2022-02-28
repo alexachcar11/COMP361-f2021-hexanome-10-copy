@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import serversrc.ServerUser;
+
 public class TestAction extends Action {
 
-    private Socket socket;
+    private String senderName;
 
-    private String test = "The network is working!!!";
+    public TestAction(String senderName) {
+        this.senderName = senderName;
+    }
 
     @Override
     public boolean isValid() {
@@ -18,29 +22,18 @@ public class TestAction extends Action {
     @Override
     public void execute() {
         // server has received the message
-        System.out.println(test);
+        System.out.println("The network is working!!!");
         // client receives a confirmation
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectOutputStream.writeObject(new TestActionConfirmation());
+            // get the senderName's socket
+            Server serverInstance = Server.getInstance();
+            Socket socketToNotify = serverInstance.getSocketByUsername(senderName);
+            // get the socket's output stream
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socketToNotify.getOutputStream());
+            objectOutputStream.writeObject(new TestActionACK(senderName));
         } catch (IOException e) {
             System.err.println("IOException in TestAction.execute().");
         }
         
     }
-
-    public class TestActionConfirmation extends Action{
-
-        @Override
-        public boolean isValid() {
-            return false;
-        }
-
-        @Override
-        public void execute() {
-            System.out.println("TestActionConfirmation is working!");
-        }
-
-    }
-
 }

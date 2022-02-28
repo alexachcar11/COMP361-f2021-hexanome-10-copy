@@ -3,14 +3,17 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.lang.Thread;
+import serversrc.ServerUser;
 
 public class Server implements NetworkNode {
     // listening socket
     private ServerSocket aSocket;
     // list of sockets communicating with clients
     private final List<ClientTuple> aClientSockets = new ArrayList<>();
+    // instance of Server
+    private static Server INSTANCE = new Server(4444);
 
-    public Server(int pPort) {
+    private Server(int pPort) {
         try {
             aSocket = new ServerSocket(pPort);// listening socket
             System.out.println("Server running on port " + pPort);
@@ -19,6 +22,10 @@ public class Server implements NetworkNode {
             e.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    public static Server getInstance() {
+        return INSTANCE;
     }
 
     // create a thread to do this, in ServerMain
@@ -43,7 +50,8 @@ public class Server implements NetworkNode {
 
     private void listenToClient(ClientTuple pTuple) {
         try {
-            Action actionIn = (Action) pTuple.input().readObject();
+            ServerAction actionIn = (ServerAction) pTuple.input().readObject();
+            actionIn.setSender(pTuple.getUsername());
             if (actionIn.isValid()) {
                 actionIn.execute();
             }
@@ -59,6 +67,15 @@ public class Server implements NetworkNode {
     public int getPort() {
         return aSocket.getLocalPort();
     }
+
+    public Socket getSocketByUsername(String username) {
+        for (ClientTuple clientTuple : aClientSockets) {
+            if (clientTuple.getUsername().equals(username)) {
+                return clientTuple.socket();
+            }
+        }
+        return null;
+    }
 }
 
 /**
@@ -70,6 +87,7 @@ class ClientTuple {
     private Socket aSocket;
     private ObjectInputStream aInputStream;
     private ObjectOutputStream aOutputStream;
+    private String username;
 
     ClientTuple(Socket pSocket) {
         aSocket = pSocket;
@@ -91,5 +109,13 @@ class ClientTuple {
 
     ObjectOutputStream output() {
         return aOutputStream;
+    }
+
+    String getUsername() {
+        return username;
+    }
+
+    void setName(String name) {
+        username = name;
     }
 }

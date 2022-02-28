@@ -32,7 +32,7 @@ public class Client implements NetworkNode {
     @Override
     public void start() {
         try {
-            aObjectOut.writeObject(new TestAction());
+            aObjectOut.writeObject(new TestAction(name));
             Action actionIn;
             try {
                 actionIn = (Action) aObjectIn.readObject();
@@ -40,10 +40,8 @@ public class Client implements NetworkNode {
                     actionIn.execute();
                 }
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            //aObjectOut.writeObject((new userConnectionAction(this, name)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,6 +50,8 @@ public class Client implements NetworkNode {
     public String getHost() {
         return aSocket.getInetAddress().getHostName();
     }
+
+    
 
     /* public void setPlayer(Player pPlayer) {
         aPlayer = pPlayer;
