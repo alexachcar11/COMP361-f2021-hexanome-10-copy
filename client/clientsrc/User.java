@@ -24,7 +24,6 @@ public class User {
     private boolean ready;
     private Color color;
     private Client client;
-    private Queue<Action> actionQueue = new LinkedList<Action>();
 
     // CONSTRUCTOR
     public User(String name, String password) {

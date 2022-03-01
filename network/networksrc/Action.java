@@ -1,8 +1,7 @@
 package networksrc;
 import java.io.*;
 
-public abstract class Action implements Serializable {
-        private int gameID;
+public interface Action extends Serializable {
 
         public abstract boolean isValid();
 

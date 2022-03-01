@@ -1,6 +1,6 @@
 package networksrc;
 
-public class GiveNameAction extends ServerAction {
+public class GiveNameAction implements Action {
 
     private String name;
 

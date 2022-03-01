@@ -1,6 +1,8 @@
 package serversrc;
 /* This class contains all info relevant to a single Player */
 
+import static org.junit.Assert.assertThrows;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,13 @@ public class Player {
     private String aName;
     private Action aBootAction;
 
-    public Player(Client pClient, Color pColor) {
+    // used in ServerActions
+    private ServerUser aServerUser;
+    private ServerGame currentGame;
+
+    private static ArrayList<Player> allPlayers = new ArrayList<Player>();
+
+    public Player(Client pClient, Color pColor, ServerUser pServerUser, ServerGame currentGame) {
         aClient = pClient;
         aName = aClient.getHost();
         aBoot = new Boot();
@@ -36,15 +44,39 @@ public class Player {
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
 
+        this.aServerUser = pServerUser;
+        this.currentGame = currentGame;
+
         // aBootAction = new BootAction(this);
     }
 
+
+    public static Player getPlayerByName(String name) {
+        for (Player p : allPlayers) {
+            if (p.getServerUser().getName().equals(name)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public ServerGame getCurrentGame() {
+        return currentGame;
+    }
+
+    public ServerUser getServerUser() {
+        return aServerUser;
+    }
     public void setTurn(boolean bool) {
         isTurn = bool;
     }
 
     public Action getBootAction() {
         return aBootAction;
+    }
+
+    public String getName() {
+        return aServerUser.getName();
     }
     /*
     Operation: Player::startGame(gameSession: Session)

@@ -58,12 +58,11 @@ public class Server implements NetworkNode {
     private void listenToClient(ClientTuple pTuple) {
         while(true) {
             try {
-                ServerAction actionIn = (ServerAction) pTuple.input().readObject();
+                Action actionIn = (Action) pTuple.input().readObject();
                 if (actionIn.getClass().equals(GiveNameAction.class)) {
                     GiveNameAction giveNameAction = (GiveNameAction) actionIn;
                     pTuple.setName(giveNameAction.getName());
                 } else {
-                    actionIn.setSender(pTuple.getUsername());
                     if (actionIn.isValid()) {
                         actionIn.execute();
                     }
