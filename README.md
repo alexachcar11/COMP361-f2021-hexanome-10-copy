@@ -36,36 +36,21 @@ Installed:
 * Create a __Action.java class in networksrc. It implements Action.
 * The constructor needs to take a parameter String senderName and save it in a senderName field. You can add more fields but they need to be serializable objects
 * Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc (very important!!! don't even import clientsrc)
-* Send an ACK to the client in execute():
+* Send an ACK to all players in the specified game (see ExampleServerAction):
 ```
-// send an ACK to all clients in the game
-try {
-    Server serverInstance = Server.getInstance();
-    for (Player p : playersCurrentGame.getAllPlayers()) {
-        String playersName = p.getName();
-        // get the player's socket
-        ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(playersName);
-        // get the socket's output stream (don't forget to import java.io.ObjectOutputStream;)
-        ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-        // send the acknowledgment
-        objectOutputStream.writeObject(new ExampleActionACK(playersName));
-    }
-} catch (IOException e) { // dont forget to import java.io.IOException;
-    System.err.println("IOException in ExampleServerAction.execute().");
-}
+// get the player + game info
+Player playerWhoSent = Player.getPlayerByName(senderName);
+ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
+// send to all players in the game
+ACKManager ackManager = ACKManager.getInstance();
+ExampleActionACK actionToSend = new ExampleActionACK(senderName);
+ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
 ```
+* Or send an ACK to the sender only (see TestAction)
 ```
-// or send an ACK to the sender only
-try {
-  // get the senderName's socket
-  Server serverInstance = Server.getInstance();
-  ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(senderName);
-  // get the socket's output stream
-  ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-  objectOutputStream.writeObject(new TestActionACK(senderName));
-} catch (IOException e) {
-  System.err.println("IOException in TestAction.execute().");
-}
+ACKManager ackManager = ACKManager.getInstance();
+TestActionACK actionToSend = new TestActionACK();
+ackManager.sendToSender(actionToSend, senderName);
 ```
 
 * Create a __ActionACK.java class in networksrc. It implements Action.
