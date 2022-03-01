@@ -56,7 +56,12 @@ ackManager.sendToSender(actionToSend, senderName);
 * Create a __ActionACK.java class in networksrc. It implements Action.
 * Implement isValid and execute. The network will call these on the client so only use classes/methods that are already in clientsrc (very important!! don't even import serversrc)
 
-*Now you can send the message from client to server and wait for a reply:
+* Now you can send the message from client to server and wait for a reply:
 ``` 
 ACCOUNT_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
+```
+
+* When it's not your turn, wait for messages from the server. This method will run until it's the player's turn again, then it will exit.
+``` 
+ACCOUNT_MANAGER.waitForMessages();
 ```
