@@ -35,7 +35,7 @@ Installed:
 ## How to send message through the network
 * Create a __Action.java class in networksrc. It implements Action.
 * The constructor needs to take a parameter String senderName and save it in a senderName field. You can add more fields but they need to be serializable objects
-* Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc.
+* Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc (very important!!! don't even import clientsrc)
 * Send an ACK to the client in execute():
 ```
 // send an ACK to all clients in the game
@@ -69,29 +69,9 @@ try {
 ```
 
 * Create a __ActionACK.java class in networksrc. It implements Action.
-* Implement isValid and execute. The network will call these on the client so only use classes/methods that are already in clientsrc.
+* Implement isValid and execute. The network will call these on the client so only use classes/methods that are already in clientsrc (very important!! don't even import serversrc)
 
-*Now you can send the message from client to server:
+*Now you can send the message from client to server and wait for a reply:
 ``` 
-// send TestAction
-ObjectOutputStream out = currentUser.getClient().getObjectOutputStream();
-out.writeObject(new TestAction(currentUser.getName()));
-//System.out.println("sent action from main. waiting for reply...");
-```
-
-* Now you can wait for an ACK from the server to client:
-``` 
-// wait for reply
-ObjectInputStream in = currentUser.getClient().getObjectInputStream();
-boolean noAnswer = true;
-while (noAnswer) {
-    Action actionIn = (Action) in.readObject();
-    if (actionIn != null) {
-        // action received
-        if (actionIn.isValid()) {
-            actionIn.execute();
-        }
-        noAnswer = false;
-    }   
-}
+ACCOUNT_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
 ```
