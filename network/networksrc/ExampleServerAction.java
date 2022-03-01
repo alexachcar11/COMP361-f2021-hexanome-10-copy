@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import serversrc.Player;
 import serversrc.ServerGame;
 
-public class ExampleServerAction implements Action{
+public class ExampleServerAction implements Action {
 
     private String senderName;
 
@@ -40,8 +40,6 @@ public class ExampleServerAction implements Action{
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
 
-        System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
-
         // here you can do stuff with playerWhoSent and playersCurrentGame
 
         // send an ACK to all clients in the game
@@ -51,7 +49,8 @@ public class ExampleServerAction implements Action{
                 String playersName = p.getName();
                 // get the player's socket
                 ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(playersName);
-                // get the socket's output stream (don't forget to import java.io.ObjectOutputStream;)
+                // get the socket's output stream (don't forget to import
+                // java.io.ObjectOutputStream;)
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
                 objectOutputStream.writeObject(new ExampleActionACK(playersName));
@@ -60,5 +59,5 @@ public class ExampleServerAction implements Action{
             System.err.println("IOException in ExampleServerAction.execute().");
         }
     }
-    
+
 }

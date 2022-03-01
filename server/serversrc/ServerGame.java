@@ -32,19 +32,15 @@ public class ServerGame {
     public ArrayList<Card> faceDownCardPile;
     public ArrayList<Card> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
-    //public Auction auction; not doing this now
-<<<<<<< HEAD
-    public String gameID; // should be same as on LS
-=======
+    // public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
->>>>>>> dad5aaa8abfb42e98abf7f4b1a8af7b162f7c175
-
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption, String gameID) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled,
+            Mode mode, TownGoldOption townGoldOption, String gameID) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
@@ -53,13 +49,12 @@ public class ServerGame {
         this.witchEnabled = witchEnabled;
         this.mode = mode;
         this.currentRound = 1;
-        this.gameID = gameID;
-
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
 
-        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
+        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
+        // depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);
@@ -176,16 +171,15 @@ public class ServerGame {
         // depending on mode, tokens are different
         List<Token> allTokens = new ArrayList<>();
         // list of the counter types
-        if (this.mode == Mode.ELFENLAND){
-            //create tokens and add to list
-            for (int j = 0; j<6; j++){
-                for (int i = 0; i < 8; i++){
+        if (this.mode == Mode.ELFENLAND) {
+            // create tokens and add to list
+            for (int j = 0; j < 6; j++) {
+                for (int i = 0; i < 8; i++) {
                     Token tok = new TransportationCounter(CardType.values()[j]);
                     allTokens.add(tok);
                 }
             }
-        }
-        else if (this.mode == Mode.ELFENGOLD){
+        } else if (this.mode == Mode.ELFENGOLD) {
             // TODO
         }
 
@@ -193,10 +187,12 @@ public class ServerGame {
     }
 
     /**
-     * Adds a player to the players arraylist. If the max number of players has already been reached, throw an error
+     * Adds a player to the players arraylist. If the max number of players has
+     * already been reached, throw an error
+     * 
      * @param player player to add to the game
      */
-    public void addPlayer(Player player) throws IndexOutOfBoundsException{
+    public void addPlayer(Player player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
         } else {
@@ -204,18 +200,18 @@ public class ServerGame {
         }
     }
 
-    //GETTER for number of players in the game instance
-    public int getNumberOfPlayers() { 
+    // GETTER for number of players in the game instance
+    public int getNumberOfPlayers() {
         return this.numberOfPlayers;
     }
 
-    public static ArrayList<Town> getTowns() { 
+    public static ArrayList<Town> getTowns() {
         return towns;
     }
 
-    public static boolean notClickingOnATown(int x, int y) { 
-        for(Town t: towns) { 
-            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
+    public static boolean notClickingOnATown(int x, int y) {
+        for (Town t : towns) {
+            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
                 return false;
             }
         }
@@ -223,137 +219,155 @@ public class ServerGame {
         return false;
     }
 
-    public String getGameID() {
-        return gameID;
-    }
-
     public ArrayList<Player> getAllPlayers() {
         return players;
     }
+
     // TODO
-    public void updateFaceUpToken(Token pToken){
+    public void updateFaceUpToken(Token pToken) {
 
     }
 
     /*
-    Operation: Game::loadGame(savedGame: Game)
-    Scope: Player;
-    Messages: Player::{gameSessionCreationConfirmation; gameSessionCreationFailed_e}
-    Post: Upon success, sends a confirmation message to the player that their gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e” message.
-    */
+     * Operation: Game::loadGame(savedGame: Game)
+     * Scope: Player;
+     * Messages: Player::{gameSessionCreationConfirmation;
+     * gameSessionCreationFailed_e}
+     * Post: Upon success, sends a confirmation message to the player that their
+     * gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e”
+     * message.
+     */
 
     /*
-    Operation: Game::availableBootColors(Set{color})
-    Scope: Game; Player;
-    Messages: Player::{availableBootColors}
-    Post: Sends the player a set of boot colors available for the player to choose from.
-
-    Operation: Game::bootColorConfirmation(bootColor: color)
-    Scope: Player; Boot;
-    New: newBoot: Boot;
-    Messages: Player::{gameState; bootColorInvalid_e};
-    Post: Sends a new game state to the player that they are allocated a boot with color of their choice if their choice of color is available. If the chosen colour is taken, sends the player a message, which informs them to pick another boot color.
-
-    Operation: Game::displayFaceUpTokens(tokensToDisplay: Set{Token})
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayFaceUpTokens}
-    Post: Sends all face up tokens available for display to the GUI.
-
-    Operation: Game::isYourTurn(player: Player)
-    Scope: Player; Game; Auction;
-    Messages: Player::{gameState}
-    Post: Sends a new game state and notifies the player it is now their turn.
-
-    Operation: Game::displayFaceUpCards(cardsToDisplay: Set{Card})
-    Scope: GUI; Game; Card;
-    Messages: GUI::{displayFaceUpCard}
-    Post: Sends all face up cards available for display to the GUI.
-
-    Operation: Game::displayAvailableBoardMovements()
-    Scope: GUI; Game; Road; Card;
-    Messages: GUI::{displayAvailableBoardMovements}
-    Post: Prompts the player to select a card to sacrifice and highlights all available routes.
-
-    Operation: Game::promptForCardSacrifice(numToSacrifice: int)
-    Scope: GUI; Game; Card;
-    Messages: GUI::{promptForCardSacrifice}
-    Post: Sends a new game state to the player.
-
-    Operation: Game::displayBlockedRoutes()
-    Scope: GUI; Game; Road; Town; Card;
-    Messages: GUI::{displayBlockedRoutes}
-    Post: Highlight all blocked routes on the map.
-
-    Operation: Game::promptForObstacleToCrossByWitch()
-    Scope: GUI; Game; Road;
-    Messages: GUI::{displayBlockedRoutes}
-    Post: Highlight all blocked routes on the map.
-
-    Operation: Game::displayUnmarkedRoutes()
-    Scope: GUI, Game;
-    Messages: GUI::{displayUnmarkedRoutes}
-    Post: The effect of playTravelCard operation is to declare that the next step is to place a travel counter on the map. All unmarked routes will be highlighted.
-
-    Operation: Game::displayMarkedRoutes()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayMarkedRoutes}
-    Post: The effect of playObstacle operation is to declare that the next step is to place an obstacle on the map. All marked routes will be highlighted.
-
-    Operation: Game::displayMarkedWater()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayMarkedWater}
-    Post: The effect of playSeaMonster operation is to declare that the next step is to place a sea monster on the map. All marked water will be highlighted.
-
-    Operation: Game::promptForCounterSacrifice()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{promptForCounterSacrifice}
-    Post: The effect of playDoubleTransportSpell operation is to declare that the next step is to place a double transportation counter on the map. The player will be prompted for which counter they would like to sacrifice.
-
-    Operation: Game::promptForTwoCounterSwap()
-    Scope: Game; GUI; Road;
-    Messages: GUI::{promptForTwoCounterSwap}
-    Post: The effect of playExchangeSpell operation is to declare that the next step is to place an exchange spell on the map. Prompts the player to select 2 counters placed on the map and confirms the swap.
-
-    Operation: Game::displayRoundNumberAndStartingPlayer(roundNumber: int, player: Player)
-    Scope: Game, GUI
-    Messages: GUI::{displayFinalResults}
-    Post: Displays the current round number and the starting player for this round.
-
-    Operation: Game::displayFinalResults()
-    Scope: Game; GUI
-    Messages: GUI::{displayFinalResults}
-    Post: Displays the final tallies for each of the players in the lobby.
-
-    Operation: Game::displayGameWinner(player: Player)
-    Scope: Game, GUI
-    Messages: GUI::{displayGameWinner}
-    Post: Display the game winner to all players.
-
-    Operation: Game::gameState()
-    Scope: Game; Player;
-    Messages: Player::{gameState}
-    Post: Sends a new game state to the player.
-
-    Operation: Game::promptToKeepTransportationCounter()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{promptToKeepTransportationCounter}
-    Post: Prompts which transportation counter the player would like to keep in their hand.
-
-    Operation: Game::displayLatestAuctionInfo(auction: Auction)
-    Scope: GUI; Auction; Token;
-    Messages: GUI::{displayLatestAuctionInfo}
-    Post: Displays the latest auction information to the player before they make their bid.
-
-    Operation: Game::displayBidWinner()
-    Scope: GUI; Auction; Token;
-    Messages: GUI::{displayBidWinner}
-    Post: Displays the bid winner.
-
-    Operation: Game::displayNoBidsMade()
-    Scope: GUI; Auction;
-    Messages: GUI::{displayNoBidsMade}
-    Post: If no players have made a bid on a particular auctioned counter, then display to all players that no players have made a bid.
-
+     * Operation: Game::availableBootColors(Set{color})
+     * Scope: Game; Player;
+     * Messages: Player::{availableBootColors}
+     * Post: Sends the player a set of boot colors available for the player to
+     * choose from.
+     * 
+     * Operation: Game::bootColorConfirmation(bootColor: color)
+     * Scope: Player; Boot;
+     * New: newBoot: Boot;
+     * Messages: Player::{gameState; bootColorInvalid_e};
+     * Post: Sends a new game state to the player that they are allocated a boot
+     * with color of their choice if their choice of color is available. If the
+     * chosen colour is taken, sends the player a message, which informs them to
+     * pick another boot color.
+     * 
+     * Operation: Game::displayFaceUpTokens(tokensToDisplay: Set{Token})
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayFaceUpTokens}
+     * Post: Sends all face up tokens available for display to the GUI.
+     * 
+     * Operation: Game::isYourTurn(player: Player)
+     * Scope: Player; Game; Auction;
+     * Messages: Player::{gameState}
+     * Post: Sends a new game state and notifies the player it is now their turn.
+     * 
+     * Operation: Game::displayFaceUpCards(cardsToDisplay: Set{Card})
+     * Scope: GUI; Game; Card;
+     * Messages: GUI::{displayFaceUpCard}
+     * Post: Sends all face up cards available for display to the GUI.
+     * 
+     * Operation: Game::displayAvailableBoardMovements()
+     * Scope: GUI; Game; Road; Card;
+     * Messages: GUI::{displayAvailableBoardMovements}
+     * Post: Prompts the player to select a card to sacrifice and highlights all
+     * available routes.
+     * 
+     * Operation: Game::promptForCardSacrifice(numToSacrifice: int)
+     * Scope: GUI; Game; Card;
+     * Messages: GUI::{promptForCardSacrifice}
+     * Post: Sends a new game state to the player.
+     * 
+     * Operation: Game::displayBlockedRoutes()
+     * Scope: GUI; Game; Road; Town; Card;
+     * Messages: GUI::{displayBlockedRoutes}
+     * Post: Highlight all blocked routes on the map.
+     * 
+     * Operation: Game::promptForObstacleToCrossByWitch()
+     * Scope: GUI; Game; Road;
+     * Messages: GUI::{displayBlockedRoutes}
+     * Post: Highlight all blocked routes on the map.
+     * 
+     * Operation: Game::displayUnmarkedRoutes()
+     * Scope: GUI, Game;
+     * Messages: GUI::{displayUnmarkedRoutes}
+     * Post: The effect of playTravelCard operation is to declare that the next step
+     * is to place a travel counter on the map. All unmarked routes will be
+     * highlighted.
+     * 
+     * Operation: Game::displayMarkedRoutes()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayMarkedRoutes}
+     * Post: The effect of playObstacle operation is to declare that the next step
+     * is to place an obstacle on the map. All marked routes will be highlighted.
+     * 
+     * Operation: Game::displayMarkedWater()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayMarkedWater}
+     * Post: The effect of playSeaMonster operation is to declare that the next step
+     * is to place a sea monster on the map. All marked water will be highlighted.
+     * 
+     * Operation: Game::promptForCounterSacrifice()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{promptForCounterSacrifice}
+     * Post: The effect of playDoubleTransportSpell operation is to declare that the
+     * next step is to place a double transportation counter on the map. The player
+     * will be prompted for which counter they would like to sacrifice.
+     * 
+     * Operation: Game::promptForTwoCounterSwap()
+     * Scope: Game; GUI; Road;
+     * Messages: GUI::{promptForTwoCounterSwap}
+     * Post: The effect of playExchangeSpell operation is to declare that the next
+     * step is to place an exchange spell on the map. Prompts the player to select 2
+     * counters placed on the map and confirms the swap.
+     * 
+     * Operation: Game::displayRoundNumberAndStartingPlayer(roundNumber: int,
+     * player: Player)
+     * Scope: Game, GUI
+     * Messages: GUI::{displayFinalResults}
+     * Post: Displays the current round number and the starting player for this
+     * round.
+     * 
+     * Operation: Game::displayFinalResults()
+     * Scope: Game; GUI
+     * Messages: GUI::{displayFinalResults}
+     * Post: Displays the final tallies for each of the players in the lobby.
+     * 
+     * Operation: Game::displayGameWinner(player: Player)
+     * Scope: Game, GUI
+     * Messages: GUI::{displayGameWinner}
+     * Post: Display the game winner to all players.
+     * 
+     * Operation: Game::gameState()
+     * Scope: Game; Player;
+     * Messages: Player::{gameState}
+     * Post: Sends a new game state to the player.
+     * 
+     * Operation: Game::promptToKeepTransportationCounter()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{promptToKeepTransportationCounter}
+     * Post: Prompts which transportation counter the player would like to keep in
+     * their hand.
+     * 
+     * Operation: Game::displayLatestAuctionInfo(auction: Auction)
+     * Scope: GUI; Auction; Token;
+     * Messages: GUI::{displayLatestAuctionInfo}
+     * Post: Displays the latest auction information to the player before they make
+     * their bid.
+     * 
+     * Operation: Game::displayBidWinner()
+     * Scope: GUI; Auction; Token;
+     * Messages: GUI::{displayBidWinner}
+     * Post: Displays the bid winner.
+     * 
+     * Operation: Game::displayNoBidsMade()
+     * Scope: GUI; Auction;
+     * Messages: GUI::{displayNoBidsMade}
+     * Post: If no players have made a bid on a particular auctioned counter, then
+     * display to all players that no players have made a bid.
+     * 
      */
 
 }
