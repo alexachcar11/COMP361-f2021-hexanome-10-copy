@@ -1,7 +1,4 @@
 package networksrc;
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import serversrc.Player;
@@ -45,20 +42,10 @@ public class ExampleServerAction implements Action{
         // here you can do stuff with playerWhoSent and playersCurrentGame
 
         // send an ACK to all clients in the game
-        try {
-            Server serverInstance = Server.getInstance();
-            for (Player p : playersCurrentGame.getAllPlayers()) {
-                String playersName = p.getName();
-                // get the player's socket
-                ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(playersName);
-                // get the socket's output stream (don't forget to import java.io.ObjectOutputStream;)
-                ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-                // send the acknowledgment
-                objectOutputStream.writeObject(new ExampleActionACK(playersName));
-            }
-        } catch (IOException e) { // dont forget to import java.io.IOException;
-            System.err.println("IOException in ExampleServerAction.execute().");
-        }
+        ACKManager ackManager = ACKManager.getInstance();
+        ExampleActionACK actionToSend = new ExampleActionACK(senderName);
+        ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
+        
     }
     
 }
