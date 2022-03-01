@@ -78,6 +78,37 @@ public class Player {
     public String getName() {
         return aServerUser.getName();
     }
+    // draw counter from face down pile
+
+    /*
+    Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
+    Scope: Player; Game; Token;
+    Messages: Player::{}
+    Post: Sends a new game state to the player indicating that the requested travel card is allocated to their hand face-up.
+     */
+    // draw counter from face up pile and add it to player's counters
+    public void drawFaceUpToken(Token pToken, ServerGame sg){
+        // inside the game class update the tokens
+        sg.updateFaceUpToken(pToken);
+        this.tokensInHand.add(pToken);  // add counter to player's hand
+        // update client's GUI by:
+        // 1) remove on GUI the Token that just got taken
+        // 2) add to player's GUI his Token
+    }
+
+     /*
+    Operation: Player::drawTransportationCounter(tStack: TokenStack)
+    Scope: Player; Token; Game;
+    Messages: Player::{}
+    Post: Sends a new game state to the player indicating that the requested travel card is allocated to their hand.
+     */
+    // draw random counter and add it to player's counters
+    public void drawTransportationCounter(TokenStack tStack){
+        this.tokensInHand.add(tStack.pop());
+        // update client's GUI by:
+        // add to player's GUI his Token
+    }
+
     /*
     Operation: Player::startGame(gameSession: Session)
     Scope: Player; Session;
@@ -117,27 +148,12 @@ public class Player {
 
      */
 
-    /*
-    Operation: Player::drawTransportationCounter()
-    Scope: Player; Token; Game;
-    Messages: Player::{}
-    Post: Sends a new game state to the player indicating that the requested travel card is allocated to their hand.
-
-     */
 
     /*
     Operation: Player::makeTokensFaceDown(tokens: Set{Token})
     Scope: Player; Game; Token;
     Messages: Player::{}
     Post: The tokens chosen by the player are now face down.
-
-     */
-
-    /*
-    Operation: Player::drawFaceUpToken(token: Token)
-    Scope: Player; Game; Token;
-    Messages: Player::{}
-    Post: Sends a new game state to the player indicating that the requested travel card is allocated to their hand face-up.
 
      */
 

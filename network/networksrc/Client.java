@@ -5,13 +5,12 @@ import java.net.*;
 
 import clientsrc.User;
 
-//import clientsrc.Player;
-
 public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private User aUser;
+    private String name;
 
     public Client(String pHost, int pPort, User pUser) {
         try {

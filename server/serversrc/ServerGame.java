@@ -7,6 +7,7 @@ max 6 players
  */
 
 import java.util.ArrayList;
+import java.util.*;
 
 // import clientsrc.Card;
 // import clientsrc.GoldCard;
@@ -32,7 +33,12 @@ public class ServerGame {
     public ArrayList<Card> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
+<<<<<<< HEAD
     public String gameID; // should be same as on LS
+=======
+    public ArrayList<Token> faceUpTokenPile;
+    public TokenStack faceDownTokenPile;
+>>>>>>> dad5aaa8abfb42e98abf7f4b1a8af7b162f7c175
 
 
     /**
@@ -48,6 +54,7 @@ public class ServerGame {
         this.mode = mode;
         this.currentRound = 1;
         this.gameID = gameID;
+
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
@@ -163,7 +170,26 @@ public class ServerGame {
         routes.add(jaccarandaTichih);
         routes.add(kihromahDagamura);
         routes.add(grangorMahdavikia);
-        
+
+        // add all counters ingame to faceDownTokenPile
+        // first make list with all tokens:
+        // depending on mode, tokens are different
+        List<Token> allTokens = new ArrayList<>();
+        // list of the counter types
+        if (this.mode == Mode.ELFENLAND){
+            //create tokens and add to list
+            for (int j = 0; j<6; j++){
+                for (int i = 0; i < 8; i++){
+                    Token tok = new TransportationCounter(CardType.values()[j]);
+                    allTokens.add(tok);
+                }
+            }
+        }
+        else if (this.mode == Mode.ELFENGOLD){
+            // TODO
+        }
+
+        this.faceDownTokenPile = new TokenStack(allTokens);
     }
 
     /**
@@ -189,7 +215,6 @@ public class ServerGame {
 
     public static boolean notClickingOnATown(int x, int y) { 
         for(Town t: towns) { 
-            
             if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
                 return false;
             }
@@ -205,6 +230,11 @@ public class ServerGame {
     public ArrayList<Player> getAllPlayers() {
         return players;
     }
+    // TODO
+    public void updateFaceUpToken(Token pToken){
+
+    }
+
     /*
     Operation: Game::loadGame(savedGame: Game)
     Scope: Player;
