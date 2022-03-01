@@ -21,7 +21,12 @@ public class Player {
     private String aName;
     private Action aBootAction;
 
-    public Player(Client pClient, Color pColor) {
+    // used in ActionManager
+    private User aUser;
+    private Game currentGame;
+    private static ArrayList<Player> allPlayers = new ArrayList<Player>();
+
+    public Player(Client pClient, Color pColor, User pUser, Game currentGame) {
         aClient = pClient;
         aName = aClient.getHost();
         // TODO: fix these coordinates to match start town
@@ -31,12 +36,39 @@ public class Player {
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
+        this.aUser = pUser;
+        this.currentGame = currentGame;
 
         //aBootAction = new BootAction(this);
     }
 
+    public static Player getPlayerByName(String name) {
+        for (Player p : allPlayers) {
+            if (p.getServerUser().getName().equals(name)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public String getName() {
+        return aUser.getName();
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public User getServerUser() {
+        return aUser;
+    }
+
     public void setTurn(boolean bool) {
         isTurn = bool;
+    }
+
+    public boolean isTurn() {
+        return isTurn;
     }
 
     public int[] getCoords() {
