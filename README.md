@@ -32,12 +32,66 @@ Installed:
 * docker
 * maven 3.8.4
 
-## Running LS on your machine
+## How to send message through the network
+* Create a __Action.java class in networksrc. It implements Action.
+* The constructor needs to take a parameter String senderName and save it in a senderName field. You can add more fields but they need to be serializable objects
+* Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc.
+* Send an ACK to the client in execute():
+```
+// send an ACK to all clients in the game
+try {
+    Server serverInstance = Server.getInstance();
+    for (Player p : playersCurrentGame.getAllPlayers()) {
+        String playersName = p.getName();
+        // get the player's socket
+        ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(playersName);
+        // get the socket's output stream (don't forget to import java.io.ObjectOutputStream;)
+        ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+        // send the acknowledgment
+        objectOutputStream.writeObject(new ExampleActionACK(playersName));
+    }
+} catch (IOException e) { // dont forget to import java.io.IOException;
+    System.err.println("IOException in ExampleServerAction.execute().");
+}
+```
+```
+// or send an ACK to the sender only
+try {
+  // get the senderName's socket
+  Server serverInstance = Server.getInstance();
+  ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(senderName);
+  // get the socket's output stream
+  ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+  objectOutputStream.writeObject(new TestActionACK(senderName));
+} catch (IOException e) {
+  System.err.println("IOException in TestAction.execute().");
+}
+```
 
-To setup LobbyService the first time: mvn -f LobbyService-master/pom.xml package
+* Create a __ActionACK.java class in networksrc. It implements Action.
+* Implement isValid and execute. The network will call these on the client so only use classes/methods that are already in clientsrc.
 
-Start docker: docker start ls-db
+*Now you can send the message from client to server:
+``` 
+// send TestAction
+ObjectOutputStream out = currentUser.getClient().getObjectOutputStream();
+out.writeObject(new TestAction(currentUser.getName()));
+//System.out.println("sent action from main. waiting for reply...");
+```
 
-Start the lobby service: mvn clean package spring-boot:run
-
-Test the lobby service connection: http://127.0.0.1:4242/api/online
+* Now you can wait for an ACK from the server to client:
+``` 
+// wait for reply
+ObjectInputStream in = currentUser.getClient().getObjectInputStream();
+boolean noAnswer = true;
+while (noAnswer) {
+    Action actionIn = (Action) in.readObject();
+    if (actionIn != null) {
+        // action received
+        if (actionIn.isValid()) {
+            actionIn.execute();
+        }
+        noAnswer = false;
+    }   
+}
+```
