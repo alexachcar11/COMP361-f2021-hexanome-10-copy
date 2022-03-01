@@ -1,6 +1,6 @@
 package networksrc;
 
-public class TestActionACK extends Action{
+public class TestActionACK implements Action{
 
     private String receiverName;
 
@@ -16,6 +16,7 @@ public class TestActionACK extends Action{
     @Override
     public void execute() {
         System.out.println("TestActionACK received by: " +  receiverName);
+        // client does this
     }
 
 }

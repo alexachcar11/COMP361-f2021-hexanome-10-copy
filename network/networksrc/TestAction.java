@@ -2,9 +2,8 @@ package networksrc;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
-public class TestAction extends ServerAction {
+public class TestAction implements Action {
 
     private String senderName;
 
@@ -21,7 +20,7 @@ public class TestAction extends ServerAction {
     public void execute() {
         // server has received the message
         System.out.println("The network is working!!!");
-        // client receives a confirmation
+        // send the client a confirmation that the server correctly received + executed their request
         try {
             // get the senderName's socket
             Server serverInstance = Server.getInstance();

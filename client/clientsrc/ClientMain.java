@@ -1,7 +1,6 @@
 package clientsrc;
 // minueto
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.minueto.MinuetoColor;
 import org.minueto.MinuetoEventQueue;
 import org.minueto.MinuetoFileException;
@@ -24,7 +23,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
