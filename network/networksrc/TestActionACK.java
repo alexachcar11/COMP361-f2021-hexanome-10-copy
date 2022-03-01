@@ -2,12 +2,6 @@ package networksrc;
 
 public class TestActionACK implements Action{
 
-    private String receiverName;
-
-    public TestActionACK(String receiverName) {
-        this.receiverName = receiverName;
-    }
-
     @Override
     public boolean isValid() {
         return true;
@@ -15,7 +9,7 @@ public class TestActionACK implements Action{
 
     @Override
     public void execute() {
-        System.out.println("TestActionACK received by: " +  receiverName);
+        System.out.println("TestActionACK received.");
         // client does this
     }
 
