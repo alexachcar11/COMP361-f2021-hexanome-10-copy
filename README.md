@@ -63,5 +63,5 @@ ACCOUNT_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
 
 * When it's not your turn, wait for messages from the server. This method will run until it's the player's turn again, then it will exit.
 ``` 
-ACCOUNT_MANAGER.waitForMessages();
+ACTION_MANAGER.waitForMessages();
 ```
