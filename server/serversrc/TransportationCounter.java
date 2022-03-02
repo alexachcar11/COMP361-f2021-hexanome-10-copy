@@ -17,4 +17,12 @@ public class TransportationCounter extends Token {
     public boolean isFaceDown(){
         return this.faceDown;
     }
+
+    public void setFaceDown(){
+        this.faceDown = true;
+    }
+
+    public void setFaceUp(){
+        this.faceDown = false;
+    }
 }
