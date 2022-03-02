@@ -6,12 +6,12 @@ import networksrc.Client;
 
 public class GameLobby {
 
-    private String name;
+    private String gameID;
     private ArrayList<ServerUser> serverUsers;
     private static ArrayList<GameLobby> allGameLobbies;
 
-    public GameLobby(String name) {
-        this.name = name;
+    public GameLobby(String gameID) {
+        this.gameID = gameID;
         allGameLobbies.add(this);
     }
 
@@ -19,9 +19,9 @@ public class GameLobby {
         this.serverUsers.add(user);
     }
 
-    public static GameLobby getGameLobby(String name) {
+    public static GameLobby getGameLobby(String gameID) {
         for (GameLobby gameLobby : allGameLobbies) {
-            if (gameLobby.name.equals(name)) {
+            if (gameLobby.getGameID().equals(gameID)) {
                 return gameLobby;
             }
         }
@@ -37,13 +37,11 @@ public class GameLobby {
         return false;
     }
 
-    /* public ArrayList<Client> getClients() {
-        ArrayList<Client> clients = new ArrayList<>();
-        for (ServerUser u : serverUsers) {
-            Client c = u.getClient();
-            clients.add(c);
-        }
-        return clients;
-    } */
+    public ArrayList<ServerUser> getAllUsers() {
+        return serverUsers;
+    }
 
+    public String getGameID() {
+        return gameID;
+    }
 }

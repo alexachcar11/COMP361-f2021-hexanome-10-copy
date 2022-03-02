@@ -3,6 +3,8 @@ package serversrc;
 Represents one user from the moment the game is launched (they may not be a player yet)
  */
 
+import java.util.ArrayList;
+
 // import clientsrc.Color;
 
 public class ServerUser {
@@ -11,10 +13,22 @@ public class ServerUser {
     private boolean ready;
     private Color color;
     private String name;
+    private static ArrayList<ServerUser> allUsers = new ArrayList<ServerUser>();
 
     // CONSTRUCTOR
     public ServerUser(String name) {
         this.name = name;
+        allUsers.add(this);
+    }
+
+    public static ServerUser getServerUser(String name) {
+        for (ServerUser sUser : allUsers) {
+            if (sUser.getName().equals(name)) {
+                return sUser;
+            }
+        }
+
+        return null;
     }
 
     public String getName() {
