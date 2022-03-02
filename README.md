@@ -59,7 +59,7 @@ ackManager.sendToSender(actionToSend, senderName);
 
 * Now you can send the message from client to server and wait for a reply:
 ``` 
-ACCOUNT_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
+ACTION_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
 ```
 
 * When it's not your turn, wait for messages from the server. This method will run until it's the player's turn again, then it will exit.
