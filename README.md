@@ -33,6 +33,7 @@ Installed:
 * maven 3.8.4
 
 ## How to send message through the network
+* Don't forget to pull the code in the server machine too :). Just ssh to the server, go to your branch and pull :)
 * Create a __Action.java class in networksrc. It implements Action.
 * The constructor needs to take a parameter String senderName and save it in a senderName field. You can add more fields but they need to be serializable objects
 * Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc (very important!!! don't even import clientsrc)
