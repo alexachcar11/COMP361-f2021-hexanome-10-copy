@@ -16,7 +16,7 @@ import java.util.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import networksrc.CreateNewGameAction;
-import networksrc.PlayerHasJoined;
+import networksrc.PlayerHasJoinedAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 import unirest.shaded.com.google.gson.Gson;
@@ -322,12 +322,14 @@ public class Registrator {
             // create the new LobbyServiceGame instance
             LobbyServiceGameSession lsgs = new LobbyServiceGameSession("", creator, gameService, id);
             // send this info to the server
+            LobbyServiceGame gs = lsgs.getGameService();
+            Game g = gs.getGame();
             String senderName = creator.getName();
-            int numberOfPlayers = gameService.getNumberOfUsers();
-            int gameRoundsLimit = gameService.getNumberOfRounds();
-            boolean destinationTownEnabled = gameService.isDestinationTownEnabled();
-            boolean witchEnabled = gameService.isWitchEnabled();
-            TownGoldOption townGoldOption = gameService.getTownGoldOption();
+            int numberOfPlayers = g.getNumberOfPlayers();
+            int gameRoundsLimit = g.getNumberOfRounds();
+            boolean destinationTownEnabled = g.isDestinationTownEnabled();
+            boolean witchEnabled = g.isWitchEnabled();
+            TownGoldOption townGoldOption = g.getTownGoldOption();
             String stringTown = null;
             if (townGoldOption.equals(TownGoldOption.NO)) {
                 stringTown = "no";
@@ -336,7 +338,7 @@ public class Registrator {
             } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
                 stringTown = "yes-random";
             }
-            Mode mode = gameService.getMode();
+            Mode mode = g.getMode();
             String stringMode = null;
             if (mode.equals(Mode.ELFENLAND)) {
                 stringMode = "elfenland";
@@ -368,7 +370,7 @@ public class Registrator {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
             throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoined(userJoining.getName(), gameSessionToJoin.getSessionID()));
+            System.out.println("successful join on LS side");
         }
     }
 

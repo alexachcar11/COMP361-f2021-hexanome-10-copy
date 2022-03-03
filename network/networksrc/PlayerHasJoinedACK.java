@@ -25,6 +25,7 @@ public class PlayerHasJoinedACK implements Action {
         // display users
         try {
             ClientMain.displayUsers();
+            System.out.println("displaying users.");
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }

@@ -180,7 +180,27 @@ public class Game {
 
     //GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
-        return this.numberOfPlayers;
+        return numberOfPlayers;
+    }
+
+    public int getNumberOfRounds() {
+        return gameRoundsLimit;
+    }
+
+    public boolean isDestinationTownEnabled() {
+        return destinationTownEnabled;
+    }
+
+    public boolean isWitchEnabled() {
+        return witchEnabled;
+    }
+
+    public TownGoldOption getTownGoldOption() {
+        return townGoldOption;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     public static ArrayList<Town> getTowns() {

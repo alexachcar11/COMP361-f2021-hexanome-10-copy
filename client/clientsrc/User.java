@@ -13,7 +13,6 @@ public class User {
 
     // FIELDS
     private String name;
-    private String password;
     private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
     private boolean ready = false;
@@ -23,7 +22,6 @@ public class User {
     // CONSTRUCTOR
     public User(String name, String password) {
         this.name = name;
-        this.password = password;
         try {
             this.currentTokenJSON = REGISTRATOR.createToken(name, password);
         } catch (ParseException e) {

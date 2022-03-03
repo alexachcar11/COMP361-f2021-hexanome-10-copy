@@ -6,12 +6,12 @@ import java.io.ObjectOutputStream;
 import serversrc.GameLobby;
 import serversrc.ServerUser;
 
-public class PlayerHasJoined implements Action{
+public class PlayerHasJoinedAction implements Action{
 
     private String senderName;
     private String gameID;
 
-    public PlayerHasJoined(String senderName, String gameID) {
+    public PlayerHasJoinedAction(String senderName, String gameID) {
         if (senderName == null) {
             throw new NullPointerException("PlayerHasJoined: senderName cannot be null.");
         }
@@ -20,6 +20,7 @@ public class PlayerHasJoined implements Action{
         }
         this.senderName = senderName;
         this.gameID = gameID;
+        System.out.println("created a playerhasjoineaction!");
     }
 
     /**

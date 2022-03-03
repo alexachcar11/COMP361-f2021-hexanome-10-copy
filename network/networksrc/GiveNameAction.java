@@ -10,14 +10,12 @@ public class GiveNameAction implements Action {
 
     @Override
     public boolean isValid() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-        
+        // empty on purpose
     }
 
     public String getName() {

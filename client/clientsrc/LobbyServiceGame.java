@@ -6,6 +6,8 @@ package clientsrc;
 
 import java.util.ArrayList;
 
+import networksrc.PlayerHasJoinedAction;
+
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 
@@ -19,13 +21,7 @@ public class LobbyServiceGame implements Joinable{
     private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
     private static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
-    // game logic related
     private Game game;
-    private Mode mode;
-    private boolean destinationTownEnabled;
-    private int numRounds;
-    private boolean witchEnabled;
-    private TownGoldOption townGoldOption;
 
     /**
      * FULL CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service that you create.
@@ -100,28 +96,12 @@ public class LobbyServiceGame implements Joinable{
         return numberOfUsers;
     }
 
-    public int getNumberOfRounds() {
-        return numRounds;
-    }
-
-    public boolean isDestinationTownEnabled() {
-        return destinationTownEnabled;
-    }
-
-    public boolean isWitchEnabled() {
-        return witchEnabled;
-    }
-
-    public TownGoldOption getTownGoldOption() {
-        return townGoldOption;
-    }
-
     public LobbyServiceGameSession getActiveSession() {
         return  activeSession;
     }
 
-    public Mode getMode() {
-        return mode;
+    public Game getGame() {
+        return game;
     }
 
     /**
@@ -144,6 +124,8 @@ public class LobbyServiceGame implements Joinable{
     public LobbyServiceGameSession join() throws Exception {
         LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
         this.activeSession = newSessionCreated;
+        ClientMain.currentSession = newSessionCreated;
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
         return newSessionCreated;
     }
 }
