@@ -33,12 +33,9 @@ public class ServerGame {
     public ArrayList<Card> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
-<<<<<<< HEAD
-    public String gameID; // should be same as on LS
-=======
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
->>>>>>> dad5aaa8abfb42e98abf7f4b1a8af7b162f7c175
+    private String gameID;
 
 
     /**
@@ -223,16 +220,16 @@ public class ServerGame {
         return false;
     }
 
-    public String getGameID() {
-        return gameID;
-    }
-
     public ArrayList<Player> getAllPlayers() {
         return players;
     }
     // TODO
     public void updateFaceUpToken(Token pToken){
 
+    }
+
+    public String getGameID() {
+        return gameID;
     }
 
     /*

@@ -10,7 +10,6 @@ public class Client implements NetworkNode {
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private User aUser;
-    private String name;
 
     public Client(String pHost, int pPort, User pUser) {
         try {

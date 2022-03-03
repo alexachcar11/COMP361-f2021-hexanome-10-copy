@@ -1,6 +1,8 @@
 package clientsrc;
 import java.util.ArrayList;
 
+import networksrc.PlayerHasJoinedAction;
+
 // represents one active game session
 public class LobbyServiceGameSession implements Joinable{
 
@@ -23,7 +25,6 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
-        this.users.add(creator);
         this.gameService = gameService;
         this.sessionID = sessionID;
     }
@@ -156,6 +157,8 @@ public class LobbyServiceGameSession implements Joinable{
     @Override
     public LobbyServiceGameSession join() throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
+        ClientMain.currentSession = this;
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID));
         return this;
     }
 
