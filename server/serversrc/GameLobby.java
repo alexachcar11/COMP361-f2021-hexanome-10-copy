@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class GameLobby {
 
     private String gameID;
-    private ArrayList<ServerUser> serverUsers;
-    private static ArrayList<GameLobby> allGameLobbies;
+    private ArrayList<ServerUser> serverUsers = new ArrayList<ServerUser>();
+    private static ArrayList<GameLobby> allGameLobbies = new ArrayList<GameLobby>();
     private ServerGame serverGame;
     private boolean launched;
 

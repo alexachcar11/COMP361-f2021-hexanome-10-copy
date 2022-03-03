@@ -35,12 +35,13 @@ public class ServerGame {
     //public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
+    private String gameID;
 
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption, String gameID) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
@@ -49,6 +50,7 @@ public class ServerGame {
         this.witchEnabled = witchEnabled;
         this.mode = mode;
         this.currentRound = 1;
+        this.gameID = gameID;
 
 
         towns = new ArrayList<>();
@@ -224,6 +226,10 @@ public class ServerGame {
     // TODO
     public void updateFaceUpToken(Token pToken){
 
+    }
+
+    public String getGameID() {
+        return gameID;
     }
 
     /*

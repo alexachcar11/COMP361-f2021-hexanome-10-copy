@@ -27,7 +27,6 @@ public class ServerUser {
                 return sUser;
             }
         }
-
         return null;
     }
 

@@ -58,7 +58,7 @@ public class PlayerHasJoinedAction implements Action{
             System.err.println(senderName + " is already in the Game Lobby " + gameID);
             return false;
         }
-
+        System.out.println("is valid");
         return true;
     }
 
@@ -80,6 +80,7 @@ public class PlayerHasJoinedAction implements Action{
                 // get the socket's output stream 
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
+                System.out.println("sending back...");
                 objectOutputStream.writeObject(actionToSend);
             }
         } catch (IOException e) { 

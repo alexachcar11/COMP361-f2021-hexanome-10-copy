@@ -74,7 +74,7 @@ public class CreateNewGameAction implements Action{
      */
     @Override
     public void execute() {
-        ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+        ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
         GameLobby gameLobby = new GameLobby(gameID, serverGame);
         // send ack to the sender only
         ACKManager ackManager = ACKManager.getInstance();
