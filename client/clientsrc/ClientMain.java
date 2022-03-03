@@ -792,6 +792,15 @@ public class ClientMain {
                         && (currentUser.getName().equals(currentSession.getCreator()))) {
                     // click on Launch button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
+                    // go to board screen
+                    LobbyServiceGame gameService = currentSession.getGameService();
+                    Game game = gameService.getGame();
+                    Mode currentMode = game.getMode();
+                    if (currentMode.equals(Mode.ELFENLAND)) {
+                        gui.currentBackground = GUI.Screen.ELFENLAND;
+                    } else if (currentMode.equals(Mode.ELFENGOLD)) {
+                        gui.currentBackground = GUI.Screen.ELFENGOLD;
+                    }
                 }
 
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
@@ -1265,14 +1274,16 @@ public class ClientMain {
             }
 
             MinuetoImage background = null;
-
-            if (modeSel.equals(Mode.ELFENLAND)) {
+            LobbyServiceGame gameService = currentSession.getGameService();
+            Game game = gameService.getGame();
+            Mode currentMode = game.getMode();
+            if (currentMode.equals(Mode.ELFENLAND)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {
                     background = lobbyElfenlandCreatorBackground;
                 } else {
                     background = lobbyElfenlandBackground;
                 }
-            } else if (modeSel.equals(Mode.ELFENGOLD)) {
+            } else if (currentMode.equals(Mode.ELFENGOLD)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {
                     background = lobbyElfengoldCreatorBackground;
                 } else {
