@@ -16,6 +16,7 @@ import java.util.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import networksrc.CreateNewGameAction;
+import networksrc.LaunchGameAction;
 import networksrc.PlayerHasJoinedAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
@@ -437,8 +438,9 @@ public class Registrator {
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not launch game session");
         } else {
-            System.out.println("launched successfully");
-            sessionToLaunch.launch();
+            System.out.println("launched successfully on the LS");
+            // send to the server
+            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
         }
     }
 

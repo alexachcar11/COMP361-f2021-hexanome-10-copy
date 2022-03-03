@@ -37,8 +37,6 @@ public class ExampleServerAction implements Action{
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
 
-        System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
-
         // here you can do stuff with playerWhoSent and playersCurrentGame
 
         // send an ACK to all clients in the game

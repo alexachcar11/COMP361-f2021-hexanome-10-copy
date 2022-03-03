@@ -13,8 +13,6 @@ import networksrc.*;
 
 public class Player {
     boolean isTurn = false;
-
-    private Client aClient;
     private Boot aBoot;
 
     private int gold;
@@ -32,9 +30,7 @@ public class Player {
 
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
-    public Player(Client pClient, Color pColor, ServerUser pServerUser, ServerGame currentGame) {
-        aClient = pClient;
-        aName = aClient.getHost();
+    public Player(ServerUser pServerUser, ServerGame currentGame) {
         aBoot = new Boot();
 
         // inTown = elvenhold;         // fix this
@@ -44,7 +40,8 @@ public class Player {
 
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
-
+        currentGame.addPlayer(this);
+        allPlayers.add(this);
         // aBootAction = new BootAction(this);
     }
 

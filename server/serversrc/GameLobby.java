@@ -8,10 +8,12 @@ public class GameLobby {
     private ArrayList<ServerUser> serverUsers;
     private static ArrayList<GameLobby> allGameLobbies;
     private ServerGame serverGame;
+    private boolean launched;
 
     public GameLobby(String gameID, ServerGame serverGame) {
         this.gameID = gameID;
         this.serverGame = serverGame;
+        this.launched = false;
         allGameLobbies.add(this);
     }
 
@@ -43,5 +45,17 @@ public class GameLobby {
 
     public String getGameID() {
         return gameID;
+    }
+
+    public void setLaunched(boolean launch) {
+        this.launched = launch;
+    }
+
+    public boolean isLaunched() {
+        return launched;
+    }
+
+    public ServerGame getServerGame() {
+        return serverGame;
     }
 }
