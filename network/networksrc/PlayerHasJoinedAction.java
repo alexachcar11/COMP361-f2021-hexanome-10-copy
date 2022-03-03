@@ -20,6 +20,7 @@ public class PlayerHasJoinedAction implements Action{
         }
         this.senderName = senderName;
         this.gameID = gameID;
+        System.out.println("created a playerhasjoineaction!");
     }
 
     /**

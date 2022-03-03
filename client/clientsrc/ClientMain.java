@@ -55,6 +55,8 @@ public class ClientMain {
     static MinuetoImage elfenGoldSelected;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
+    private static MinuetoImage lobbyElfenlandCreatorBackground;
+    private static MinuetoImage lobbyElfengoldCreatorBackground;
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
@@ -711,7 +713,7 @@ public class ClientMain {
                                     // join calls CreateGameSession which sends CreateNewGameAction to the server
                                     // join then calls joinSession which sends PlayerHasJoinedAction to the server
                                     // PlayerHasJoinedACK displays users
-                                    currentSession = newLSGame.join();
+                                    newLSGame.join();
                                     // go to lobby screen
                                     if (currentUser.getName().equals(currentSession.getCreator())) {
                                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
@@ -728,7 +730,7 @@ public class ClientMain {
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // join the game
-                                    currentSession = newLSGame.join();
+                                    newLSGame.join();
                                     // go to lobby screen
                                     if (currentUser.getName().equals(currentSession.getCreator())) {
                                         gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
@@ -893,6 +895,8 @@ public class ClientMain {
             lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
             lobbyElfenlandBackground = new MinuetoImageFile("images/game-lobby-elfenland.png");
             lobbyElfengoldBackground = new MinuetoImageFile("images/game-lobby-elfengold.png");
+            lobbyElfenlandCreatorBackground = new MinuetoImageFile("images/game-lobby-elfenland-creator.png");
+            lobbyElfengoldCreatorBackground = new MinuetoImageFile("images/game-lobby-elfengold-creator.png");
             readyGreen = new MinuetoImageFile("images/ready-button-green.png");
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
             startButton = new MinuetoImageFile("images/launch-button.png");
@@ -939,13 +943,6 @@ public class ClientMain {
             playSound("music/flute.mid");
             soundStarted = true;
         }
-
-        // create players TODO: remove this
-        List<Player> players = new ArrayList<>();
-        // Player p1 = new Player(null, Color.YELLOW);
-        // Player p2 = new Player(null, Color.BLACK);
-        // players.add(p1);
-        // players.add(p2);
 
         // create window that will contain our game - stays in Main
         MinuetoWindow window = new MinuetoFrame(1024, 768, true);
@@ -1095,10 +1092,22 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
-
+                while (elfenlandLobbyQueue.hasNext()) {
+                    elfenlandLobbyQueue.handle();
+                }
+            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
+                gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
+                while (elfenlandLobbyQueue.hasNext()) {
+                    elfenlandLobbyQueue.handle();
+                }
+            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
+                gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
+                while (elfenlandLobbyQueue.hasNext()) {
+                    elfenlandLobbyQueue.handle();
+                }
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
-
+                
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
             }
@@ -1255,13 +1264,29 @@ public class ClientMain {
                 uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
             }
 
-            lobbyElfenlandBackground.draw(uName, 45, 240 + counter * 50);
-            if (uColor == null) {
-                lobbyElfenlandBackground.draw(uColorText, 240, 240 + counter * 50);
-            } else {
-                lobbyElfenlandBackground.draw(uColor, 240, 240 + counter * 50);
+            MinuetoImage background = null;
+
+            if (modeSel.equals(Mode.ELFENLAND)) {
+                if (currentUser.getName().equals(currentSession.getCreator())) {
+                    background = lobbyElfenlandCreatorBackground;
+                } else {
+                    background = lobbyElfenlandBackground;
+                }
+            } else if (modeSel.equals(Mode.ELFENGOLD)) {
+                if (currentUser.getName().equals(currentSession.getCreator())) {
+                    background = lobbyElfengoldCreatorBackground;
+                } else {
+                    background = lobbyElfengoldBackground;
+                } 
             }
-            lobbyElfenlandBackground.draw(uReady, 475, 240 + counter * 50);
+
+            background.draw(uName, 45, 240 + counter * 50);
+            if (uColor == null) {
+                background.draw(uColorText, 240, 240 + counter * 50);
+            } else {
+                background.draw(uColor, 240, 240 + counter * 50);
+            }
+            background.draw(uReady, 475, 240 + counter * 50);
 
             counter++;
         }
