@@ -33,7 +33,6 @@ public class ServerGame {
     public ArrayList<Card> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
-    public String gameID; // should be same as on LS
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
 
@@ -41,7 +40,7 @@ public class ServerGame {
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption, String gameID) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
@@ -50,7 +49,6 @@ public class ServerGame {
         this.witchEnabled = witchEnabled;
         this.mode = mode;
         this.currentRound = 1;
-        this.gameID = gameID;
 
 
         towns = new ArrayList<>();
@@ -218,10 +216,6 @@ public class ServerGame {
         }
 
         return false;
-    }
-
-    public String getGameID() {
-        return gameID;
     }
 
     public ArrayList<Player> getAllPlayers() {

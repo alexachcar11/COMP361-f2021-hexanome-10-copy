@@ -15,6 +15,7 @@ import java.util.*;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import networksrc.CreateNewGameAction;
 import networksrc.PlayerHasJoined;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
@@ -269,14 +270,11 @@ public class Registrator {
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
         } else {
-            // create a new ServerGame object
+            // create a new Game object
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
             // create a new LobbyServiceGame object
-             newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
-
-            // send gameCreationConfirmed(Game newGameObject) to the User
-            // gameCreationConfirmed(newGame);
+            newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
         }
         return newLSGame;
     }
@@ -322,8 +320,32 @@ public class Registrator {
             String id = jsonResponse.getBody();
             System.out.println("SUCCESS! " + id);
             // create the new LobbyServiceGame instance
-            return new LobbyServiceGameSession("", creator,
-                    gameService, id);
+            LobbyServiceGameSession lsgs = new LobbyServiceGameSession("", creator, gameService, id);
+            // send this info to the server
+            String senderName = creator.getName();
+            int numberOfPlayers = gameService.getNumberOfUsers();
+            int gameRoundsLimit = gameService.getNumberOfRounds();
+            boolean destinationTownEnabled = gameService.isDestinationTownEnabled();
+            boolean witchEnabled = gameService.isWitchEnabled();
+            TownGoldOption townGoldOption = gameService.getTownGoldOption();
+            String stringTown = null;
+            if (townGoldOption.equals(TownGoldOption.NO)) {
+                stringTown = "no";
+            } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
+                stringTown = "yes-default";
+            } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
+                stringTown = "yes-random";
+            }
+            Mode mode = gameService.getMode();
+            String stringMode = null;
+            if (mode.equals(Mode.ELFENLAND)) {
+                stringMode = "elfenland";
+            } else if (mode.equals(Mode.ELFENGOLD)) {
+                stringMode = "elfengold"; 
+            }
+            CreateNewGameAction createNewGameAction = new CreateNewGameAction(senderName, id, numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTown);
+            ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
+            return lsgs;
         }
     }
 

@@ -431,7 +431,6 @@ public class ClientMain {
                         try {
                             gameToJoin.join();
                             currentSession = gameToJoin.getActiveSession();
-                            displayUsers();
                             gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -709,14 +708,10 @@ public class ClientMain {
                                     MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
-                                    // join the game
+                                    // join calls CreateGameSession which sends CreateNewGameAction to the server
+                                    // join then calls joinSession which sends PlayerHasJoinedAction to the server
+                                    // PlayerHasJoinedACK displays users
                                     currentSession = newLSGame.join();
-                                    // load the display for users
-                                    try {
-                                        displayUsers();
-                                    } catch (MinuetoFileException e) {
-                                        e.printStackTrace();
-                                    }
                                     // go to lobby screen
                                     if (currentUser.getName().equals(currentSession.getCreator())) {
                                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
@@ -734,12 +729,6 @@ public class ClientMain {
                                 } else {
                                     // join the game
                                     currentSession = newLSGame.join();
-                                    // load the display for users
-                                    try {
-                                        displayUsers();
-                                    } catch (MinuetoFileException e) {
-                                        e.printStackTrace();
-                                    }
                                     // go to lobby screen
                                     if (currentUser.getName().equals(currentSession.getCreator())) {
                                         gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;

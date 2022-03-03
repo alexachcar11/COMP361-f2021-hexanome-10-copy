@@ -23,7 +23,7 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
-        this.users.add(creator);
+        //this.users.add(creator);
         this.gameService = gameService;
         this.sessionID = sessionID;
     }

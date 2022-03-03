@@ -2,16 +2,16 @@ package serversrc;
 
 import java.util.ArrayList;
 
-import networksrc.Client;
-
 public class GameLobby {
 
     private String gameID;
     private ArrayList<ServerUser> serverUsers;
     private static ArrayList<GameLobby> allGameLobbies;
+    private ServerGame serverGame;
 
-    public GameLobby(String gameID) {
+    public GameLobby(String gameID, ServerGame serverGame) {
         this.gameID = gameID;
+        this.serverGame = serverGame;
         allGameLobbies.add(this);
     }
 

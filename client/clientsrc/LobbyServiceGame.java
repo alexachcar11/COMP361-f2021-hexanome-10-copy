@@ -100,8 +100,28 @@ public class LobbyServiceGame implements Joinable{
         return numberOfUsers;
     }
 
+    public int getNumberOfRounds() {
+        return numRounds;
+    }
+
+    public boolean isDestinationTownEnabled() {
+        return destinationTownEnabled;
+    }
+
+    public boolean isWitchEnabled() {
+        return witchEnabled;
+    }
+
+    public TownGoldOption getTownGoldOption() {
+        return townGoldOption;
+    }
+
     public LobbyServiceGameSession getActiveSession() {
         return  activeSession;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     /**
