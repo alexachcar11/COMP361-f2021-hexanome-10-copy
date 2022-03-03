@@ -16,7 +16,7 @@ import java.util.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import networksrc.CreateNewGameAction;
-import networksrc.PlayerHasJoined;
+import networksrc.PlayerHasJoinedAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 import unirest.shaded.com.google.gson.Gson;
@@ -368,7 +368,7 @@ public class Registrator {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
             throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoined(userJoining.getName(), gameSessionToJoin.getSessionID()));
+            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(userJoining.getName(), gameSessionToJoin.getSessionID()));
         }
     }
 

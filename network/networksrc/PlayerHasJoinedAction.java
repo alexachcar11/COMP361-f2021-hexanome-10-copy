@@ -6,12 +6,12 @@ import java.io.ObjectOutputStream;
 import serversrc.GameLobby;
 import serversrc.ServerUser;
 
-public class PlayerHasJoined implements Action{
+public class PlayerHasJoinedAction implements Action{
 
     private String senderName;
     private String gameID;
 
-    public PlayerHasJoined(String senderName, String gameID) {
+    public PlayerHasJoinedAction(String senderName, String gameID) {
         if (senderName == null) {
             throw new NullPointerException("PlayerHasJoined: senderName cannot be null.");
         }
@@ -47,7 +47,7 @@ public class PlayerHasJoined implements Action{
             System.err.println(senderName + " is already in the Game Lobby " + gameID);
             return false;
         }
-
+        System.out.println("is valid");
         return true;
     }
 
@@ -69,6 +69,7 @@ public class PlayerHasJoined implements Action{
                 // get the socket's output stream 
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
+                System.out.println("sending back...");
                 objectOutputStream.writeObject(actionToSend);
             }
         } catch (IOException e) { 
