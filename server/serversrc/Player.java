@@ -1,8 +1,6 @@
 package serversrc;
 /* This class contains all info relevant to a single Player */
 
-import static org.junit.Assert.assertThrows;
-
 import java.util.ArrayList;
 import java.util.List;
 

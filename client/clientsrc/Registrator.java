@@ -15,6 +15,7 @@ import java.util.*;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import networksrc.CreateNewGameAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 import unirest.shaded.com.google.gson.Gson;
@@ -268,14 +269,11 @@ public class Registrator {
             // send gameCreationConfirmed(Game null) to the User
             // gameCreationConfirmed(null);
         } else {
-            // create a new ServerGame object
+            // create a new Game object
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
             // create a new LobbyServiceGame object
-             newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
-
-            // send gameCreationConfirmed(Game newGameObject) to the User
-            // gameCreationConfirmed(newGame);
+            newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
         }
         return newLSGame;
     }
@@ -321,8 +319,34 @@ public class Registrator {
             String id = jsonResponse.getBody();
             System.out.println("SUCCESS! " + id);
             // create the new LobbyServiceGame instance
-            return new LobbyServiceGameSession("", creator,
-                    gameService, id);
+            LobbyServiceGameSession lsgs = new LobbyServiceGameSession("", creator, gameService, id);
+            // send this info to the server
+            LobbyServiceGame gs = lsgs.getGameService();
+            Game g = gs.getGame();
+            String senderName = creator.getName();
+            int numberOfPlayers = g.getNumberOfPlayers();
+            int gameRoundsLimit = g.getNumberOfRounds();
+            boolean destinationTownEnabled = g.isDestinationTownEnabled();
+            boolean witchEnabled = g.isWitchEnabled();
+            TownGoldOption townGoldOption = g.getTownGoldOption();
+            String stringTown = null;
+            if (townGoldOption.equals(TownGoldOption.NO)) {
+                stringTown = "no";
+            } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
+                stringTown = "yes-default";
+            } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
+                stringTown = "yes-random";
+            }
+            Mode mode = g.getMode();
+            String stringMode = null;
+            if (mode.equals(Mode.ELFENLAND)) {
+                stringMode = "elfenland";
+            } else if (mode.equals(Mode.ELFENGOLD)) {
+                stringMode = "elfengold"; 
+            }
+            CreateNewGameAction createNewGameAction = new CreateNewGameAction(senderName, id, numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTown);
+            ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
+            return lsgs;
         }
     }
 
@@ -345,8 +369,7 @@ public class Registrator {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not join game");
             throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
-            gameSessionToJoin.addUser(userJoining);
-            // TODO: notify all users that a player has joined
+            System.out.println("successful join on LS side");
         }
     }
 

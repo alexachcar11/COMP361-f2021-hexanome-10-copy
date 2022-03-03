@@ -6,6 +6,8 @@ package clientsrc;
 
 import java.util.ArrayList;
 
+import networksrc.PlayerHasJoinedAction;
+
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 
@@ -19,13 +21,7 @@ public class LobbyServiceGame implements Joinable{
     private final int numberOfUsers;
     private LobbyServiceGameSession activeSession;
     private static ArrayList<LobbyServiceGame> allGameServices = new ArrayList<>();
-    // game logic related
     private Game game;
-    private Mode mode;
-    private boolean destinationTownEnabled;
-    private int numRounds;
-    private boolean witchEnabled;
-    private TownGoldOption townGoldOption;
 
     /**
      * FULL CONSTRUCTOR : Creates a LobbyServiceGame object. Represents a single available game on the Lobby Service that you create.
@@ -104,6 +100,10 @@ public class LobbyServiceGame implements Joinable{
         return  activeSession;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     /**
      * Returns the current available session
      * @param session LobbyServiceGameSession or null
@@ -124,6 +124,8 @@ public class LobbyServiceGame implements Joinable{
     public LobbyServiceGameSession join() throws Exception {
         LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
         this.activeSession = newSessionCreated;
+        ClientMain.currentSession = newSessionCreated;
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
         return newSessionCreated;
     }
 }

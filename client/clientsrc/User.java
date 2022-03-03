@@ -7,28 +7,21 @@ package clientsrc;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import networksrc.Action;
 import networksrc.Client;
-import networksrc.TestAction;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class User {
 
     // FIELDS
     private String name;
-    private String password;
     private JSONObject currentTokenJSON;
     private static final Registrator REGISTRATOR = Registrator.instance();
-    private boolean ready;
-    private Color color;
+    private boolean ready = false;
+    private Color color = null;
     private Client client;
 
     // CONSTRUCTOR
     public User(String name, String password) {
         this.name = name;
-        this.password = password;
         try {
             this.currentTokenJSON = REGISTRATOR.createToken(name, password);
         } catch (ParseException e) {

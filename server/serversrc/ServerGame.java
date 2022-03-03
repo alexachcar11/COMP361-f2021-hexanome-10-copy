@@ -35,6 +35,7 @@ public class ServerGame {
     // public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
+    private String gameID;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -226,6 +227,10 @@ public class ServerGame {
     // TODO
     public void updateFaceUpToken(Token pToken) {
 
+    }
+
+    public String getGameID() {
+        return gameID;
     }
 
     /*

@@ -1,6 +1,4 @@
 package clientsrc;
-
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -8,13 +6,11 @@ import networksrc.Action;
 
 public class ActionManager {
 
-    private User currentUser;
-
     // singleton
     private static ActionManager INSTANCE = new ActionManager();
 
     private ActionManager() {
-        this.currentUser = ClientMain.currentUser;
+        
     }
 
     /**
@@ -31,8 +27,8 @@ public class ActionManager {
      */
     public void waitForMessages() {
         // WAIT FOR A MESSAGE
-        ObjectInputStream in = currentUser.getClient().getObjectInputStream();
-        Player currentPlayer = Player.getPlayerByName(currentUser.getName());
+        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        Player currentPlayer = Player.getPlayerByName(ClientMain.currentUser.getName());
         while (!currentPlayer.isTurn()) {
             Action actionIn = null;
             try {
@@ -56,11 +52,11 @@ public class ActionManager {
     public void sendActionAndGetReply(Action action) {
         try {
             // SEND TEST
-            ObjectOutputStream out = currentUser.getClient().getObjectOutputStream();
+            ObjectOutputStream out = ClientMain.currentUser.getClient().getObjectOutputStream();
             out.writeObject(action);
 
             // WAIT FOR REPLY
-            ObjectInputStream in = currentUser.getClient().getObjectInputStream();
+            ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
             boolean noAnswer = true;
             while (noAnswer) {
                 Action actionIn = null;
