@@ -774,7 +774,9 @@ public class ClientMain {
 
                 // join the game
                 try {
-                    gameToJoin.join();
+                    if (!gameToJoin.getCreator().equals(currentUser.getName())) {
+                        gameToJoin.join();
+                    }
                     currentSession = gameToJoin.getActiveSession();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -782,9 +784,15 @@ public class ClientMain {
 
                 // go to lobby screen
                 if (currentUser.getName().equals(currentSession.getCreator())) {
+                    try {
+                        displayUsers();
+                        System.out.println("displaying users as a creator");
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    }
                     gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
                 } else {
-                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+                    gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                 }
             } else {
                 // Click on a Color
@@ -1298,7 +1306,7 @@ public class ClientMain {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-yellow.png");
                 c = Color.YELLOW;
             } else if (colorString.equals("green")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-gren.png");
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-green.png");
                 c = Color.GREEN;
             } else if (colorString.equals("purple")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-purple.png");

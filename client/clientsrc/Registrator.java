@@ -287,7 +287,7 @@ public class Registrator {
                 e.printStackTrace();
             }
             ClientMain.currentSession = newSessionCreated;
-            //ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
+            ClientMain.currentSession.addUser(ClientMain.currentUser);
         }
         return newSessionCreated;
     }
