@@ -36,6 +36,9 @@ public class ClientMain {
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
 
+    public static Player currentPlayer;
+    public static Game currentGame;
+
     static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue;
@@ -792,15 +795,6 @@ public class ClientMain {
                         && (currentUser.getName().equals(currentSession.getCreator()))) {
                     // click on Launch button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
-                    // go to board screen
-                    LobbyServiceGame gameService = currentSession.getGameService();
-                    Game game = gameService.getGame();
-                    Mode currentMode = game.getMode();
-                    if (currentMode.equals(Mode.ELFENLAND)) {
-                        gui.currentBackground = GUI.Screen.ELFENLAND;
-                    } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                        gui.currentBackground = GUI.Screen.ELFENGOLD;
-                    }
                 }
 
             } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
@@ -1274,16 +1268,14 @@ public class ClientMain {
             }
 
             MinuetoImage background = null;
-            LobbyServiceGame gameService = currentSession.getGameService();
-            Game game = gameService.getGame();
-            Mode currentMode = game.getMode();
-            if (currentMode.equals(Mode.ELFENLAND)) {
+
+            if (modeSel.equals(Mode.ELFENLAND)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {
                     background = lobbyElfenlandCreatorBackground;
                 } else {
                     background = lobbyElfenlandBackground;
                 }
-            } else if (currentMode.equals(Mode.ELFENGOLD)) {
+            } else if (modeSel.equals(Mode.ELFENGOLD)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {
                     background = lobbyElfengoldCreatorBackground;
                 } else {

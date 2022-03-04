@@ -36,6 +36,7 @@ public class ServerGame {
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenPile;
     private String gameID;
+    public TownGraph aTownGraph;
 
 
     /**
@@ -168,6 +169,10 @@ public class ServerGame {
         routes.add(kihromahDagamura);
         routes.add(grangorMahdavikia);
 
+        // initialize town graph
+        this.aTownGraph = new TownGraph();
+        this.aTownGraph.addEdges(routes);
+
         // add all counters ingame to faceDownTokenPile
         // first make list with all tokens:
         // depending on mode, tokens are different
@@ -187,6 +192,15 @@ public class ServerGame {
         }
 
         this.faceDownTokenPile = new TokenStack(allTokens);
+    }
+
+    public Town getTownByName(String townName){
+        for(Town t:towns){
+            if (t.getTownName().equalsIgnoreCase(townName)){
+                return t;
+            }
+        }
+        return null;
     }
 
     /**
@@ -231,6 +245,57 @@ public class ServerGame {
     public String getGameID() {
         return gameID;
     }
+
+    public void nextPhase(){
+        if (currentPhase == 6){
+
+        }
+        else{
+            this.currentPhase++;
+        }
+    }
+
+    /*
+    *   Notes for moving boot:
+    *   - It's currently the move boot phase of the game (phase 5)
+    *   - It's currently player's turn to move boot (Player.getIsTurn())
+    *   - Player (from client) sends coordinate where they clicked
+    *   - server receives coordinate (or receive route clicked ?)
+    *   - server makes sure it's a valid coordinates
+    *   - server checks wether or not that town is adjacent to player's town (is there a route) (send message to client if not valid)
+    *
+    *   ^^^^^^^^^^^^^^^^^^^^^^^^^ (this part might not be necessary for m7)
+    *   - server checks wether the player has cards required to move to that town
+    *   - if it doesn't then return message to client
+    *   - if it does then do the move and take away player's cards
+    *   - send meesage to client to move boot (update state on all player's screens)
+    *
+    *   ^^^^^^^^^^^^^^^^^^^^^^^^^
+    *   - Player can move as many time as he wishes, (until no more moves available click on end turn)
+    *   - goes to next player's turn
+    *   - if everyone passed turn (keep track of this somehow) go to next phase of the game (not necessary for m7?)
+    */
+
+    // @pre: current phase == 5 and it's player's turn and town is adjacent
+    public void playerMovedBoot(Player p, Route r){
+        
+        // check if the route is valid (i.e. it's adjacent to player's town)
+        // if it's valid, move boot
+        if (r.getSource() == p.getTown() || r.getDest() == p.getTown()){
+            // remove the cards from the player
+            // update player's town location
+            // update the town's player list
+        }
+    }
+
+    public int getCurrentPhase(){
+        return this.currentPhase;
+    }
+
+    public TownGraph getTownGraph(){
+        return this.aTownGraph;
+    }
+
 
     /*
     Operation: Game::loadGame(savedGame: Game)
