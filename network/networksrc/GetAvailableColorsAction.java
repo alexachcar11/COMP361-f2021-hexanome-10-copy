@@ -66,8 +66,9 @@ public class GetAvailableColorsAction implements Action {
         // remove colors that are taken
         GameLobby gameLobby = GameLobby.getGameLobby(gameID);
         for (ServerUser sUser : gameLobby.getAllUsers()) {
-            String colorTaken = sUser.getColor().name();
-            availableColors.remove(colorTaken);
+            Color colorTaken = sUser.getColor();
+            if (colorTaken != null)
+            availableColors.remove(colorTaken.name());
         }
 
         // send ACK to sender
