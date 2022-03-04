@@ -11,7 +11,7 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
-import networksrc.Action;
+import networksrc.GetAvailableColorsAction;
 import networksrc.TestAction;
 
 // import serversrc.Color;
@@ -23,8 +23,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class ClientMain {
 
     static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
-            elfenlandLobbyQueue;
+            elfenlandLobbyQueue, chooseBootQueue;
     static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     static List<Player> players; // not sure if this should be here
     // make images
@@ -53,6 +51,7 @@ public class ClientMain {
     static MinuetoImage createGameBackgroundElfengold;
     static MinuetoImage elfenlandSelected;
     static MinuetoImage elfenGoldSelected;
+    private static MinuetoImage chooseBootBackground;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
     private static MinuetoImage lobbyElfenlandCreatorBackground;
@@ -418,22 +417,21 @@ public class ClientMain {
                 gui.currentBackground = GUI.Screen.CREATELOBBY;
             } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
                 // click on the Refresh button
-                // TODO: test this when there is a difference in between refreshes
                 displayAvailableGames();
             } else {
                 // click on a Join button
-                for (AbstractMap.SimpleEntry<ImmutableList, Joinable> coords : joinButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> coords : joinButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
                     int minY = (int) coords.getKey().get(3);
 
                     if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-                        Joinable gameToJoin = coords.getValue();
+                        gameToJoin = coords.getValue();
                         try {
-                            gameToJoin.join();
-                            currentSession = gameToJoin.getActiveSession();
-                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                            // get available boot colors
+                            ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
+                            gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -704,39 +702,27 @@ public class ClientMain {
                         try {
                             if (modeSel.equals(Mode.ELFENLAND)) {
                                 // create an elfenland game
-                                LobbyServiceGame newLSGame = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel, Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
-                                if (newLSGame == null) {
+                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel, Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
+                                if (gameToJoin == null) {
                                     // show error message because the game already exists
                                     MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
-                                    // join calls CreateGameSession which sends CreateNewGameAction to the server
-                                    // join then calls joinSession which sends PlayerHasJoinedAction to the server
-                                    // PlayerHasJoinedACK displays users
-                                    newLSGame.join();
-                                    // go to lobby screen
-                                    if (currentUser.getName().equals(currentSession.getCreator())) {
-                                        gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
-                                    } else {
-                                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                                    }
+                                    // get available boot colors
+                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
+                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
                             } else if(modeSel.equals(Mode.ELFENGOLD)) {
                                 // create an elfengold game
-                                LobbyServiceGame newLSGame = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
-                                if (newLSGame == null) {
+                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
+                                if (gameToJoin == null) {
                                     // show error message because the game already exists
                                     MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
-                                    // join the game
-                                    newLSGame.join();
-                                    // go to lobby screen
-                                    if (currentUser.getName().equals(currentSession.getCreator())) {
-                                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
-                                    } else {
-                                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                                    }
+                                    // get available boot colors
+                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
+                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
                             }
                         } catch (Exception e) {
@@ -773,6 +759,61 @@ public class ClientMain {
         public void handleMouseMove(int x, int y) {
             // do nothing
         }
+    };
+
+    static MinuetoMouseHandler chooseBootMouseHandler = new MinuetoMouseHandler() {
+
+        @Override
+        public void handleMousePress(int x, int y, int button) {
+            System.out.println("x: " + x + " y: " + y);
+            if (x >= 320 && x <= 705 && y >= 665 && y <= 740) {
+                // Click on Confirm
+
+                // send a ChooseBootColor action
+
+
+                // join the game
+                try {
+                    gameToJoin.join();
+                    currentSession = gameToJoin.getActiveSession();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // go to lobby screen
+                if (currentUser.getName().equals(currentSession.getCreator())) {
+                    gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
+                } else {
+                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+                }
+            } else {
+                // Click on a Color
+                for (AbstractMap.SimpleEntry<ImmutableList, Color> coords : colorButtonCoordinates) {
+                    int maxX = (int) coords.getKey().get(0);
+                    int minX = (int) coords.getKey().get(1);
+                    int maxY = (int) coords.getKey().get(2);
+                    int minY = (int) coords.getKey().get(3);
+
+                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                        colorChosen = coords.getValue();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void handleMouseMove(int x, int y) {
+            // TODO Auto-generated method stub
+            
+        }
+
+    
+        @Override
+        public void handleMouseRelease(int x, int y, int button) {
+            // TODO Auto-generated method stub
+            
+        }
+        
     };
 
     static MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
@@ -874,9 +915,14 @@ public class ClientMain {
     private static boolean roundsDropdownActive = false;
     private static boolean witchDropdownActive = false;
     private static boolean townGoldDropdownActive = false;
+    private static LobbyServiceGameSession gameToJoin;
 
     // for lobbyMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Joinable>> joinButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
+
+    // for chooseBootMouseHandler
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Color>> colorButtonCoordinates = new ArrayList<>();
+    private static Color colorChosen;
 
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
@@ -900,6 +946,8 @@ public class ClientMain {
             playScreenImage = new MinuetoImageFile("images/play.png");
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
+            // choose boot
+            chooseBootBackground = new MinuetoImageFile("images/choose-boot-screen.png");
             // lobby
             lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
             lobbyElfenlandBackground = new MinuetoImageFile("images/game-lobby-elfenland.png");
@@ -984,6 +1032,10 @@ public class ClientMain {
 
         // create game screen mouse handler
         gui.window.registerMouseHandler(gameScreenMouseHandler, createGameQueue);
+
+        // mouse handler for choose boot
+        chooseBootQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(chooseBootMouseHandler, chooseBootQueue);
 
         // mouse handler for elfenland lobby
         elfenlandLobbyQueue = new MinuetoEventQueue();
@@ -1091,6 +1143,12 @@ public class ClientMain {
                     gui.window.draw(witchDropdownRectangle, 168, 487);
                     gui.window.draw(witchNoText, 178, 500);
                     gui.window.draw(witchYesText, 178, 542);
+                }
+
+            } else if (gui.currentBackground == GUI.Screen.CHOOSEBOOT) {
+                gui.window.draw(chooseBootBackground, 0, 0);
+                while (chooseBootQueue.hasNext()) {
+                    chooseBootQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
@@ -1220,6 +1278,54 @@ public class ClientMain {
         loadedClip.start();
     }
 
+    public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
+        int counter = 0; // how many colors are displayed so far
+
+        for (String colorString : colors) {
+            // get the image + enum
+            MinuetoImage boot;
+            Color c;
+            if (colorString.equals("blue")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-blue.png");
+                c = Color.BLUE;
+            } else if (colorString.equals("black")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-black.png");
+                c = Color.BLACK;
+            } else if (colorString.equals("red")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-red.png");
+                c = Color.RED;
+            } else if (colorString.equals("yellow")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-yellow.png");
+                c = Color.YELLOW;
+            } else if (colorString.equals("green")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-gren.png");
+                c = Color.GREEN;
+            } else if (colorString.equals("purple")) {
+                boot = new MinuetoImageFile("images/böppels-and-boots/boot-purple.png");
+                c = Color.PURPLE;
+            } else {
+                // just for the compiler
+                boot = null;
+                c = null;
+            }
+
+            // display the boot
+            chooseBootBackground.draw(boot, 0 + counter * 300, 0);
+
+            // keep track of the button location
+            Integer maxX = 0 + (counter * 300);
+            Integer minX = 0 + (counter * 300);
+            Integer maxY = 0;
+            Integer minY = 0;
+            ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
+            AbstractMap.SimpleEntry<ImmutableList, Color> entry = new AbstractMap.SimpleEntry<>(
+                    listOfCoordinates, c);
+            colorButtonCoordinates.add(entry);
+            
+            counter ++;
+        }
+    }
+
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         ArrayList<User> users = currentSession.getUsers();
@@ -1326,48 +1432,6 @@ public class ClientMain {
 
             int totalCounter = 0; // how many games are displayed so far
             int pageCounter = 0; // how many games are displayed on one page so far
-            // display available game services (i.e. games with no creator)
-            for (LobbyServiceGame g : availableGamesList) {
-                if (g.getActiveSession() == null) { // only show games which don't have an activeSession
-                    /*
-                    if (totalCounter % 10 == 0) {
-                        // display a new page
-                        MinuetoImage greyRectangle = new MinuetoImageFile("images/greyRectangle.png");
-                        lobbyBackground.draw(greyRectangle, 60, 100);
-                    }*/
-                    String gDisplayName = g.getDisplayName();
-                    if (gDisplayName.length() > 20) {
-                        // display with ... instead of the entire name
-                        gDisplayName = gDisplayName.substring(0, 19) + "...";
-                    }
-                    String gMaxPlayers = String.valueOf(g.getNumberOfUsers());
-
-                    MinuetoText displayName = new MinuetoText(gDisplayName, font, MinuetoColor.BLACK);
-                    MinuetoText creator = new MinuetoText("No creator", font, MinuetoColor.BLACK);
-                    MinuetoText size = new MinuetoText("0/" + gMaxPlayers, font, MinuetoColor.BLACK);
-                    MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
-                    MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
-
-                    lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
-                    lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
-
-                    // keep track of the button location
-                    Integer maxX = 935;
-                    Integer minX = 835;
-                    Integer maxY = 245 + (pageCounter * 50);
-                    Integer minY = 210 + (pageCounter * 50);
-                    ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<>(
-                            listOfCoordinates, g);
-                    joinButtonCoordinates.add(entry);
-
-                    pageCounter++;
-                    totalCounter++;
-                }
-            }
 
             // display available game sessions (i.e. games with a creator)
             for (LobbyServiceGameSession gs : availableSessionsList) {
@@ -1396,7 +1460,7 @@ public class ClientMain {
                     Integer maxY = 245 + (pageCounter * 50);
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, Joinable> entry = new AbstractMap.SimpleEntry<>(
+                    AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 

@@ -223,7 +223,7 @@ public class Registrator {
      * @param destinationTownEnabled true if players will have a destination town,
      *                               false otherwise
      */
-    public LobbyServiceGame createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
+    public LobbyServiceGameSession createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
                                        boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
@@ -260,7 +260,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(GSON.toJson(fields)).asString();
 
-        LobbyServiceGame newLSGame = null;
+        LobbyServiceGameSession newSessionCreated = null;
 
         // verify response
         if (jsonResponse.getStatus() == 400) {
@@ -274,9 +274,22 @@ public class Registrator {
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
             // create a new LobbyServiceGame object
-            newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
+            LobbyServiceGame newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
+
+            try {
+                newSessionCreated = Registrator.instance().createGameSession(newLSGame, ClientMain.currentUser, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                newLSGame.setActiveSession(newSessionCreated);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ClientMain.currentSession = newSessionCreated;
+            //ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
         }
-        return newLSGame;
+        return newSessionCreated;
     }
 
     /**
