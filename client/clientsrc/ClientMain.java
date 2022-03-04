@@ -11,6 +11,7 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
+import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.TestAction;
 
@@ -769,30 +770,40 @@ public class ClientMain {
             if (x >= 320 && x <= 705 && y >= 665 && y <= 740) {
                 // Click on Confirm
 
-                // send a ChooseBootColor action
+                // check that a color was chosen
+                if (colorChosen == null) {
+                    // print error message
+                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
+                    chooseBootBackground.draw(errorText, 0, 0);
+                } else {
+                    // send action to the server
+                    String senderName = currentUser.getName();
+                    String color = colorChosen.name();
+                    String gameID = currentSession.getSessionID();
+                    ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID));
 
-
-                // join the game
-                try {
-                    if (!gameToJoin.getCreator().equals(currentUser.getName())) {
-                        gameToJoin.join();
-                    }
-                    currentSession = gameToJoin.getActiveSession();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                // go to lobby screen
-                if (currentUser.getName().equals(currentSession.getCreator())) {
+                    // join the game
                     try {
-                        displayUsers();
-                        System.out.println("displaying users as a creator");
-                    } catch (MinuetoFileException e) {
+                        if (!gameToJoin.getCreator().equals(currentUser.getName())) {
+                            gameToJoin.join();
+                        }
+                        currentSession = gameToJoin.getActiveSession();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
-                } else {
-                    gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+
+                    // go to lobby screen
+                    if (currentUser.getName().equals(currentSession.getCreator())) {
+                        try {
+                            displayUsers();
+                            System.out.println("displaying users as a creator");
+                        } catch (MinuetoFileException e) {
+                            e.printStackTrace();
+                        }
+                        gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
+                    } else {
+                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                    }
                 }
             } else {
                 // Click on a Color
@@ -1293,22 +1304,22 @@ public class ClientMain {
             // get the image + enum
             MinuetoImage boot;
             Color c;
-            if (colorString.equals("blue")) {
+            if (colorString.equals("BLUE")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-blue.png");
                 c = Color.BLUE;
-            } else if (colorString.equals("black")) {
+            } else if (colorString.equals("BLACK")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-black.png");
                 c = Color.BLACK;
-            } else if (colorString.equals("red")) {
+            } else if (colorString.equals("RED")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-red.png");
                 c = Color.RED;
-            } else if (colorString.equals("yellow")) {
+            } else if (colorString.equals("YELLOW")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-yellow.png");
                 c = Color.YELLOW;
-            } else if (colorString.equals("green")) {
+            } else if (colorString.equals("GREEN")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-green.png");
                 c = Color.GREEN;
-            } else if (colorString.equals("purple")) {
+            } else if (colorString.equals("PURPLE")) {
                 boot = new MinuetoImageFile("images/böppels-and-boots/boot-purple.png");
                 c = Color.PURPLE;
             } else {
