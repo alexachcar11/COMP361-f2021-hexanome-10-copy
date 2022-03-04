@@ -56,12 +56,12 @@ public class GetAvailableColorsAction implements Action {
     public void execute() {
         // list all colors
         ArrayList<String> availableColors = new ArrayList<String>();
-        availableColors.add("green");
-        availableColors.add("blue");
-        availableColors.add("black");
-        availableColors.add("red");
-        availableColors.add("purple");
-        availableColors.add("yellow");
+        availableColors.add("GREEN");
+        availableColors.add("BLUE");
+        availableColors.add("BLACK");
+        availableColors.add("RED");
+        availableColors.add("PURPLE");
+        availableColors.add("YELLOW");
         
         // remove colors that are taken
         GameLobby gameLobby = GameLobby.getGameLobby(gameID);

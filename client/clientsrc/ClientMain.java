@@ -1300,6 +1300,8 @@ public class ClientMain {
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
         int counter = 0; // how many colors are displayed so far
 
+        System.out.println(colors.toString());
+
         for (String colorString : colors) {
             // get the image + enum
             MinuetoImage boot;
