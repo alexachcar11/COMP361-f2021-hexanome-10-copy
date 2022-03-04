@@ -44,7 +44,7 @@ public class GetAvailableColorsAction implements Action {
 
         // senderName doesn't have a color yet
         Color color = sUser.getColor();
-        if (color == null) {
+        if (color != null) {
             System.err.println(senderName + " already has the color " + color);
             return false;
         }
