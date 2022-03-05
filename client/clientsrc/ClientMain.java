@@ -10,9 +10,12 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
+import org.minueto.window.MinuetoPanel;
 
 import networksrc.Action;
 import networksrc.TestAction;
+
+import javax.imageio.ImageIO;
 
 // import serversrc.Color;
 // import serversrc.Mode;
@@ -22,7 +25,18 @@ import networksrc.TestAction;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
@@ -38,12 +52,13 @@ public class ClientMain {
 
     static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
-            elfenlandLobbyQueue;
+            elfenlandLobbyQueue, elfenlandQueue;
     static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     static List<Player> players; // not sure if this should be here
     // make images
     static MinuetoImage elfenlandImage;
     static MinuetoImage elfengoldImage;
+    
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
     static MinuetoImage loginScreenImage;
@@ -109,7 +124,8 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
-                gui.currentBackground = GUI.Screen.LOGIN;
+                // gui.currentBackground = GUI.Screen.LOGIN;
+                gui.currentBackground = GUI.Screen.ELFENLAND;
             }
 
             // click on Quit
@@ -311,50 +327,23 @@ public class ClientMain {
         }
     };
 
-    static MinuetoMouseHandler moveBootMouseHandler = new MinuetoMouseHandler() {
-        int ind = 0; // index of players
+    static MinuetoMouseHandler elfenlandMouseHandler = new MinuetoMouseHandler() {
+
+        // @Override
+        // public void handleMouseMove() { 
+        //
+        // }
 
         @Override
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x: " + x + ". This is y: " + y);
-            // for left click : move boot
-            /*
-             * if (button == 1) {
-             * players.get(ind).moveBoot(x, y);
-             * }
-             * // for right click : change next player
-             * else if (button == 3) {
-             * ind++;
-             * if (ind == players.size()) { ind = 0; } // reset index if we reached last
-             * player
-             * }
-             */
 
-            /*
-             * for (int i = 0; i < players.size(); i++) {
-             * // check for player's turn and if button is left click
-             * if (players.get(i).isTurn && button == 1) {
-             * players.get(i).moveBoot(x, y);
-             * break;
-             * }
-             * // if press right mouse button, change to next player
-             * if (button == 3) {
-             * // set isTurn to false for current player
-             * players.get(i).setTurn(false);
-             * 
-             * // if we reached last player, go back to first player
-             * if (i == players.size()-1) {
-             * players.get(0).setTurn(true);
-             * }
-             * else {
-             * // change isTurn to true for next player
-             * players.get(i + 1).setTurn(true);
-             * }
-             * break;
-             * }
-             * }
-             */
+            // boxes for the cards 
 
+
+            // boxes for the tokens 
+
+            // sound 
             if (x > 1000 && y > 740) {
                 if (soundOn) {
                     soundOn = false;
@@ -880,7 +869,7 @@ public class ClientMain {
 
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         /*
          * in the Boot class
          * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
@@ -897,6 +886,8 @@ public class ClientMain {
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
             elfenlandImage = new MinuetoImageFile("images/elfenland.png");
+            // T01medium = new MinuetoImageFile("images/elfenroads-sprites/T01test.png");
+            // T01small = new MinuetoImageFile("images/elfenroads-sprites/T01small.png");
             playScreenImage = new MinuetoImageFile("images/play.png");
             loginScreenImage = new MinuetoImageFile("images/login.png");
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
@@ -971,8 +962,11 @@ public class ClientMain {
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
 
         // TODO: move this to where it belongs
-        moveBootQueue = new MinuetoEventQueue();
-        gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
+        // moveBootQueue = new MinuetoEventQueue();
+        // gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
+
+        elfenlandQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(elfenlandMouseHandler, elfenlandQueue);
 
         // lobby screen mouse handler
         lobbyScreenQueue = new MinuetoEventQueue();
@@ -1116,23 +1110,200 @@ public class ClientMain {
                 }
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
+
+                // draw Cards text
+                MinuetoText cardsText = new MinuetoText("Cards:", fontArial22Bold, MinuetoColor.BLACK);
+                gui.window.draw(cardsText, 145, 600);
+
+                // draw Tokens text 
+                MinuetoText tokensText = new MinuetoText("Tokens:", fontArial22Bold, MinuetoColor.BLACK);
+                gui.window.draw(tokensText, 580, 600);
+
+                // draw line between the text: 
+                gui.window.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
+
+                // draw indication on all of the routes
+                MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
+                gui.window.draw(indicator, 90, 55);
+                gui.window.draw(indicator, 38, 189);
+                gui.window.draw(indicator, 169, 126);
+                gui.window.draw(indicator, 121, 162);
+                gui.window.draw(indicator, 45, 318);
+                gui.window.draw(indicator, 78, 307);
+                gui.window.draw(indicator, 119, 231);
+                gui.window.draw(indicator, 125, 282);
+                gui.window.draw(indicator, 246, 130);
+                gui.window.draw(indicator, 259, 210);
+                gui.window.draw(indicator, 194, 424);
+                gui.window.draw(indicator, 165, 510);
+                gui.window.draw(indicator, 283, 442);
+                gui.window.draw(indicator, 378, 545);
+                gui.window.draw(indicator, 279, 57);
+                gui.window.draw(indicator, 381, 199);
+                gui.window.draw(indicator, 241, 342);
+                gui.window.draw(indicator, 354, 401);
+                gui.window.draw(indicator, 368, 462);
+                gui.window.draw(indicator, 451, 467);
+                gui.window.draw(indicator, 563, 431);
+                gui.window.draw(indicator, 577, 483);
+                gui.window.draw(indicator, 584, 557);
+                gui.window.draw(indicator, 728, 489);
+                gui.window.draw(indicator, 620, 171);
+                gui.window.draw(indicator, 726, 373);
+                gui.window.draw(indicator, 635, 252);
+                gui.window.draw(indicator, 49, 450);
+                gui.window.draw(indicator, 244, 551);
+                gui.window.draw(indicator, 621, 423);
+                gui.window.draw(indicator, 443, 219);
+                gui.window.draw(indicator, 376, 255);
+                gui.window.draw(indicator, 302, 311);
+                gui.window.draw(indicator, 699, 395);
+                gui.window.draw(indicator, 488, 80);
+                gui.window.draw(indicator, 383, 131);
+                gui.window.draw(indicator, 302, 313);
+                gui.window.draw(indicator, 555, 141);
+                gui.window.draw(indicator, 717, 291);
+                gui.window.draw(indicator, 450, 339);
+                gui.window.draw(indicator, 489, 254);
+                gui.window.draw(indicator, 526, 390);
+                gui.window.draw(indicator, 364, 315);
+                gui.window.draw(indicator, 687, 174);
+                gui.window.draw(indicator, 510, 310);
+                gui.window.draw(indicator, 149, 102);
+                gui.window.draw(indicator, 533, 185);
+                gui.window.draw(indicator, 438, 549);
+                gui.window.draw(indicator, 536, 185);
+                gui.window.draw(indicator, 88, 439);
+
+                // organize tokens in inventory
+
+                // if(listOfTokens.size() == 1) { 
+                //     MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
+                //     gui.window.draw(p1, 642, 640);
+                // } else if (listOfTokens.size() == 2) { 
+                //     MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
+                //     MinuetoImage p2 = listOfTokens.get(1).getMediumImage();
+                //     gui.window.draw(p1, 587, 640);
+                //     gui.window.draw(p2, 695, 640);
+                // } else if (listOfTokens.size() == 3) { 
+                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                //     gui.window.draw(p1, 615, 636);
+                //     gui.window.draw(p2, 709, 636);
+                //     gui.window.draw(p3, 663, 698);
+                // } else if (listOfTokens.size() == 4) { 
+                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                //     MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
+                //     gui.window.draw(p1, 615, 636);
+                //     gui.window.draw(p2, 709, 636);
+                //     gui.window.draw(p3, 615, 698);
+                //     gui.window.draw(p4, 709, 698);
+                        
+                // } else if (listOfTokens.size() == 5) { 
+                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                //     MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
+                //     MinuetoImage p5 = listOfTokens.get(4).getSmallImage();
+                //     gui.window.draw(p1, 592, 636);
+                //     gui.window.draw(p2, 663, 636);
+                //     gui.window.draw(p3, 734, 636);
+                //     gui.window.draw(p4, 615, 698);
+                //     gui.window.draw(p5, 709, 698);
+                // }
+
+                // organize cards in inventory
+                // if(listOfCards.size() == 1) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                //     gui.window.draw(p1,314,634);
+                // } else if (listOfCards.size() == 2) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                //     gui.window.draw(p1, 258, 634);
+                //     gui.window.draw(p2, 370, 634);
+                // } else if (listOfCards.size() == 3) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                //     gui.window.draw(p1, 202, 634);
+                //     gui.window.draw(p2, 314, 634);
+                //     gui.window.draw(p3, 426, 634);
+                // } else if (listOfCards.size() == 4) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                //     MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+                //     gui.window.draw(p1, 153, 634);
+                //     gui.window.draw(p2, 261, 634);
+                //     gui.window.draw(p3, 369, 634);
+                //     gui.window.draw(p4, 477, 634);
+                // } else if (listOfCards.size() == 5) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                //     MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+                //     MinuetoImage p5 = listOfCards.get(4).getMediumImage();
+                //     gui.window.draw(p1, 150, 634);
+                //     gui.window.draw(p2, 232, 634);
+                //     gui.window.draw(p3, 314, 634);
+                //     gui.window.draw(p4, 396, 634);
+                //     gui.window.draw(p5, 478, 634);
+                // } else if (listOfCards.size() == 6) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                //     gui.window.draw(p1, 235, 605);
+                //     gui.window.draw(p2, 348, 605);
+                //     gui.window.draw(p3, 461, 605);
+                //     gui.window.draw(p4, 235, 685);
+                //     gui.window.draw(p5, 348, 685);
+                //     gui.window.draw(p6, 461, 685);
+                // } else if (listOfCards.size() == 7) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                //     MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+                //     gui.window.draw(p1, 235, 605);
+                //     gui.window.draw(p2, 318, 605);
+                //     gui.window.draw(p3, 414, 605);
+                //     gui.window.draw(p4, 235, 685);
+                //     gui.window.draw(p5, 318, 685);
+                //     gui.window.draw(p6, 414, 685);
+                //     gui.window.draw(p7, 510, 646);
+                // } else if (listOfCards.size() == 8) { 
+                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                //     MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+                //     MinuetoImage p8 = listOfCards.get(7).getSmallImage();
+                //     gui.window.draw(p1, 222, 605);
+                //     gui.window.draw(p2, 318, 605);
+                //     gui.window.draw(p3, 414, 605);
+                //     gui.window.draw(p4, 510, 605);
+                //     gui.window.draw(p5, 222, 685);
+                //     gui.window.draw(p6, 318, 685);
+                //     gui.window.draw(p7, 414, 685);
+                //     gui.window.draw(p8, 510, 685);
+                // }
+
+                while (elfenlandQueue.hasNext()) {
+                    elfenlandQueue.handle();
+                }
                 
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
-            }
-
-            if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
-                // draw boots
-                /*
-                 * for (Player player : players) {
-                 * gui.window.draw(player.getIcon(), player.getxPos(),
-                 * player.getyPos());
-                 * }
-                 */
-                // players.get(0).isTurn = true; // only player 1 can move
-                while (moveBootQueue.hasNext()) {
-                    moveBootQueue.handle();
-                }
             }
 
             // Add a button in the bottom right to pause the music
@@ -1198,7 +1369,7 @@ public class ClientMain {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
             loadedClip = AudioSystem.getClip();
             loadedClip.open(audioIn);
-            loadedClip.start();
+            // loadedClip.start();
         } catch (Exception e) {
             throw new Error("Unable to play sound file");
         }

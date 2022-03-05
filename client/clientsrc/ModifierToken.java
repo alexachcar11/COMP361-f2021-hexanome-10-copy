@@ -19,7 +19,7 @@ public class ModifierToken extends Token {
      * @param image MinuetoImage to display
      */
     public ModifierToken(int minX, int maxX, int minY, int maxY, MinuetoImage image, ModifierType pType) {
-        super(minX, maxX, minY, maxY, image);
+        super(image);
         aType = pType;
     }
 

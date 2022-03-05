@@ -88,6 +88,31 @@ public class Player {
     public Action getBootAction() {
         return aBootAction;
     }
+
+    public void addCard(TravelCard card){ 
+        try{
+            this.cardsInHand.add(card);
+        } catch (Exception e) { 
+            System.out.println("Can't add a card to the hand");
+        }
+    }
+
+    public List<Card> getCardsInHand(){ 
+        return this.cardsInHand;
+    }
+    
+    public void addCounter(TransportationCounter counter){ 
+        try{
+            this.tokensInHand.add(counter);
+        } catch (Exception e) { 
+            System.out.println("Can't add a card to the hand");
+        }
+    }
+
+    public List<Token> getTokensInHand(){ 
+        return this.tokensInHand;
+    }
+
     /*
     Operation: Player::startGame(gameSession: Session)
     Scope: Player; Session;
