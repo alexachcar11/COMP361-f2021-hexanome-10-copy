@@ -9,7 +9,6 @@ public class GoldCard extends Card{
     CardType aType = CardType.GOLD;
 
     public GoldCard() {
-        super("GoldCard");
     }
 
     // for each Gold Card, they give player 3 gold if they choose the gold card stack

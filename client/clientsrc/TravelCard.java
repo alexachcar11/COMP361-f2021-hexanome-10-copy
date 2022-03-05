@@ -19,6 +19,7 @@ public class TravelCard extends Card{
      int[] requirements = new int[5];
      MinuetoImage medium;
      MinuetoImage small;
+     Boolean faceDown;
 
      /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -34,6 +35,7 @@ public class TravelCard extends Card{
     public TravelCard(CardType pType) throws MinuetoFileException {
         // super(minX, maxX, minY, maxY, image, name);
         aType = pType;
+        faceDown = false;
         // set up requirements depending on type
         switch (aType) {
             case CLOUD: 
@@ -92,5 +94,9 @@ public class TravelCard extends Card{
 
     public MinuetoImage getSmallImage() { 
         return small;
+    }
+
+    public Boolean isFaceDown() { 
+        return faceDown;
     }
 }

@@ -1176,7 +1176,6 @@ public class ClientMain {
                 gui.window.draw(indicator, 88, 439);
 
                 // organize tokens in inventory
-
                 // if(listOfTokens.size() == 1) { 
                 //     MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
                 //     gui.window.draw(p1, 642, 640);
@@ -1297,6 +1296,24 @@ public class ClientMain {
                 //     gui.window.draw(p7, 414, 685);
                 //     gui.window.draw(p8, 510, 685);
                 // }
+
+                // organize opponents area to show what cards they have 
+                numberPlayers = 5;
+                for(int i = 0; i < numberPlayers; i++) { 
+                    // Player opponent = players.get(i);
+                    int xName = 835;
+                    int yName = 70 + (i*92); 
+
+                    // MinuetoText pName = new MinuetoText(opponent.getName(), fontArial20, opponent.getColor());
+                    MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
+                    gui.window.draw(playerBackground, xName - 10, yName - 10);
+                    
+                    MinuetoText pName = new MinuetoText("jeff", fontArial20, MinuetoColor.BLACK);
+                    gui.window.draw(pName, xName, yName);
+                    MinuetoText seeInv = new MinuetoText("See Inventory", fontArial20, MinuetoColor.BLACK);
+                    gui.window.draw(seeInv,xName + 25, yName + 35 );
+                }
+
 
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();

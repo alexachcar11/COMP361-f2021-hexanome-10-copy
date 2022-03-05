@@ -10,11 +10,12 @@ public class Player {
 
     private Client aClient;
     private Boot aBoot;
+    private Color aColor;
 
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
     private Boot boot;
-    private List<Card> cardsInHand;
+    private List<TravelCard> cardsInHand;
     private List<Token> tokensInHand;
     private Town inTown;
 
@@ -38,6 +39,7 @@ public class Player {
         this.tokensInHand = new ArrayList<>();
         this.aUser = pUser;
         this.currentGame = currentGame;
+        this.aColor = pColor;
 
         //aBootAction = new BootAction(this);
     }
@@ -97,7 +99,7 @@ public class Player {
         }
     }
 
-    public List<Card> getCardsInHand(){ 
+    public List<TravelCard> getCardsInHand(){ 
         return this.cardsInHand;
     }
     
@@ -111,6 +113,10 @@ public class Player {
 
     public List<Token> getTokensInHand(){ 
         return this.tokensInHand;
+    }
+
+    public Color getColor(){ 
+        return this.aColor;
     }
 
     /*
