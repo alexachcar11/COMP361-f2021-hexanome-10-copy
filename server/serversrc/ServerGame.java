@@ -176,7 +176,7 @@ public class ServerGame {
             // create tokens and add to list
             for (int j = 0; j < 6; j++) {
                 for (int i = 0; i < 8; i++) {
-                    Token tok = new TransportationCounter(CardType.values()[j]);
+                    Token tok = new Token(CardType.values()[j]);
                     allTokens.add(tok);
                 }
             }
