@@ -49,7 +49,7 @@ public class ActionManager {
      * Sends the action to the Server and waits for a reply. When the reply is received, it is executed if it is valid.
      * @param action action to send to the user. Don't forget to set senderName in the action parameters.
      */
-    public void sendActionAndGetReply(Action action) {
+    public Action sendActionAndGetReply(Action action) {
         try {
             // SEND TEST
             ObjectOutputStream out = ClientMain.currentUser.getClient().getObjectOutputStream();
@@ -67,12 +67,14 @@ public class ActionManager {
                         actionIn.execute();
                     }
                     noAnswer = false;
+                    return actionIn;
                 }   
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
     
 }

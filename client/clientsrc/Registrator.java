@@ -16,6 +16,8 @@ import java.util.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import networksrc.CreateNewGameAction;
+import networksrc.GetGameInfoACK;
+import networksrc.GetGameInfoAction;
 import networksrc.LaunchGameAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
@@ -273,6 +275,8 @@ public class Registrator {
             // create a new Game object
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
+            // set as currentgame
+            ClientMain.currentGame = newGame;
             // create a new LobbyServiceGame object
             LobbyServiceGame newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
 
@@ -384,6 +388,18 @@ public class Registrator {
             throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
             System.out.println("successful join on LS side");
+            // ask the server for game info
+            GetGameInfoACK info = (GetGameInfoACK) ClientMain.ACTION_MANAGER.sendActionAndGetReply(new GetGameInfoAction(userJoining.getName(), gameSessionToJoin.getSessionID()));
+            int numberOfPlayers = info.getNumberOfPlayers();
+            int numberOfRounds = info.getNumberOfRounds();
+            boolean destinationTownEnabled = info.isDestinationTownEnabled();
+            boolean witchEnabled = info.isWitchEnabled();
+            Mode mode = info.getMode();
+            TownGoldOption townGoldOption = info.getTownGoldOption();
+            // create a new Game object
+            Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+            // set a currentGame
+            ClientMain.currentGame = newGame;
         }
     }
 

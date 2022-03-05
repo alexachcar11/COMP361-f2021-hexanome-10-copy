@@ -29,6 +29,7 @@ public class ServerGame {
     public boolean destinationTownEnabled;
     public boolean witchEnabled;
     public Mode mode;
+    public TownGoldOption townGoldOption;
     public ArrayList<Card> faceDownCardPile;
     public ArrayList<Card> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
@@ -49,6 +50,7 @@ public class ServerGame {
         this.destinationTownEnabled = destinationTownEnabled;
         this.witchEnabled = witchEnabled;
         this.mode = mode;
+        this.townGoldOption = townGoldOption;
         this.currentRound = 1;
         this.gameID = gameID;
 
@@ -204,6 +206,26 @@ public class ServerGame {
     //GETTER for number of players in the game instance
     public int getNumberOfPlayers() { 
         return this.numberOfPlayers;
+    }
+
+    public int getGameRoundsLimit() {
+        return gameRoundsLimit;
+    }
+
+    public boolean isDestinationTownEnabled() {
+        return destinationTownEnabled;
+    }
+
+    public boolean isWitchEnabled() {
+        return witchEnabled;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public TownGoldOption getTownGoldOption() {
+        return townGoldOption;
     }
 
     public static ArrayList<Town> getTowns() { 

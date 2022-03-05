@@ -104,6 +104,14 @@ public class LobbyServiceGame implements Joinable{
         return game;
     }
 
+    public void setGame(Game game) {
+        if (this.game == null) {
+            this.game = game;
+        } else {
+            throw new IllegalStateException("The LobbyServiceGame's Game is already set.");
+        }
+    }
+
     /**
      * Returns the current available session
      * @param session LobbyServiceGameSession or null

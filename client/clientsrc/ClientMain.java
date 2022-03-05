@@ -34,6 +34,8 @@ public class ClientMain {
     // fields
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
+    public static Game currentGame;
+    public static Player currentPlayer;
 
     static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
@@ -439,6 +441,7 @@ public class ClientMain {
                         try {
                             // get available boot colors
                             ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
+                            currentSession = gameToJoin;
                             gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -1444,8 +1447,9 @@ public class ClientMain {
             }
 
             MinuetoImage background = null;
-            LobbyServiceGame gameService = currentSession.getGameService();
-            Game game = gameService.getGame();
+            Game game = currentGame;
+            //LobbyServiceGame gameService = currentSession.getGameService();
+            //Game game = gameService.getGame();
             Mode currentMode = game.getMode();
             if (currentMode.equals(Mode.ELFENLAND)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {
