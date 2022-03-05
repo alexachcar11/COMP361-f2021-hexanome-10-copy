@@ -7,13 +7,10 @@ public class Obstacle extends Token {
     private Optional<Token> tokenOnPath = Optional.empty();
 
     /**
-     * pCT must be one of the barrier types
-     * 
-     * @param pCT
+     * @return new Obstacle with CardType OBSTACLE
      */
-    public Obstacle(CardType pCT) {
-        super(pCT);
-
+    public Obstacle() {
+        super(CardType.OBSTACLE);
     }
 
     /**
@@ -22,11 +19,11 @@ public class Obstacle extends Token {
     @Override
     public int cost() {
         assert !tokenOnPath.isEmpty();
-        return tokenOnPath.get().cost() * 2;
+        return tokenOnPath.get().cost() + 1;
     }
 
     /**
-     * @return type of token occupying path. if only barrier, return barrier type
+     * @return type of token occupying path. if only obstacle, return obstacle type
      */
     @Override
     public CardType getTokenType() {

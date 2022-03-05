@@ -1,7 +1,4 @@
 package serversrc;
-/*
-Abstract class for Tokens
- */
 
 import java.util.Optional;
 
@@ -37,7 +34,8 @@ public class Token {
      * @return number of cards needed to cross route
      */
     public int cost() {
-        return 0;
+        assert route.isPresent();
+        return route.get().costWithCardType(tokenType);
     }
 
     /**
@@ -49,6 +47,11 @@ public class Token {
         this.route = Optional.ofNullable(route);
     }
 
+    /**
+     * overridden in Obstacle class
+     * 
+     * @return false
+     */
     public boolean isObstacle() {
         return false;
     }

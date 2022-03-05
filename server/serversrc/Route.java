@@ -18,6 +18,14 @@ public class Route {
     boolean isRiver = false;
     // upstream
     boolean isUpstream;
+    private RouteType type;
+    private static final int[][] COST_ARRAY = {
+            { 1, 1, 2, 0, 1, 1, 0, 0 },
+            { 1, 1, 2, 1, 2, 2, 0, 0 },
+            { 0, 0, 0, 2, 2, 1, 0, 0 },
+            { 0, 2, 1, 1, 2, 1, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 1, 2 }
+    };
 
     Route(Town pStartingTown, Town pEndTown) {
         this.aStartingTown = pStartingTown;
@@ -74,6 +82,7 @@ public class Route {
         if (this.aToken != null) {
             if (token.isObstacle()) {
                 ((Obstacle) token).setTokenOnPath(this.aToken);
+                this.aToken = token;
             } else
                 throw new RuntimeException("Cannot add more than one travel counter to a route.");
         } else {
@@ -86,5 +95,24 @@ public class Route {
 
     public void clearToken() {
         this.aToken = null;
+    }
+
+    /**
+     * 
+     * @param cardType
+     * @return cost to travel on path with a given CardType, assuming no obstacles
+     */
+    public int costWithCardType(CardType cardType) {
+        return cardType == CardType.RAFT && isUpstream ? COST_ARRAY[type.ordinal()][cardType.ordinal() + 1]
+                : COST_ARRAY[type.ordinal()][cardType.ordinal()];
+    }
+
+    /**
+     * @pre this.aToken != null
+     * @return cost to travel the path with correct cards, in current state
+     */
+    public int cost() {
+        assert aToken != null;
+        return aToken.cost();
     }
 }
