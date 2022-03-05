@@ -1,8 +1,11 @@
 package networksrc;
 
+import java.util.ArrayList;
+
 import serversrc.GameLobby;
 import serversrc.Mode;
 import serversrc.ServerGame;
+import serversrc.ServerUser;
 import serversrc.TownGoldOption;
 
 public class GetGameInfoAction implements Action{
@@ -32,7 +35,7 @@ public class GetGameInfoAction implements Action{
         boolean witchEnabled = serverGame.witchEnabled;
         Mode mode = serverGame.getMode();
         TownGoldOption townGoldOption = serverGame.getTownGoldOption();
-
+        
         // convert custom objects into strings
 
         String modeString = null;

@@ -2,6 +2,7 @@ package clientsrc;
 import java.util.ArrayList;
 
 import networksrc.PlayerHasJoinedAction;
+import networksrc.UpdateUsersAction;
 
 // represents one active game session
 public class LobbyServiceGameSession implements Joinable{
@@ -13,6 +14,7 @@ public class LobbyServiceGameSession implements Joinable{
     private String creator;
     private LobbyServiceGame gameService;
     private String sessionID;
+    private Game game;
 
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
@@ -27,6 +29,7 @@ public class LobbyServiceGameSession implements Joinable{
         this.creator = creator.getName();
         this.gameService = gameService;
         this.sessionID = sessionID;
+        this.game = gameService.getGame();
     }
 
     /**
@@ -43,6 +46,15 @@ public class LobbyServiceGameSession implements Joinable{
      */
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    public void updateUsers() {
+        String senderName = ClientMain.currentUser.getName();
+        ArrayList<String> usernames = new ArrayList<>();
+        for (User u : users) {
+            usernames.add(u.getName());
+        }
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID, usernames));
     }
 
     /**
@@ -127,6 +139,14 @@ public class LobbyServiceGameSession implements Joinable{
 
     public void setLaunched(boolean launched) {
         this.launched = launched;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     /**

@@ -1395,6 +1395,7 @@ public class ClientMain {
 
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        currentSession.updateUsers();
         ArrayList<User> users = currentSession.getUsers();
 
         int counter = 0; // how many users are displayed so far
@@ -1447,9 +1448,7 @@ public class ClientMain {
             }
 
             MinuetoImage background = null;
-            Game game = currentGame;
-            //LobbyServiceGame gameService = currentSession.getGameService();
-            //Game game = gameService.getGame();
+            Game game = currentSession.getGame();
             Mode currentMode = game.getMode();
             if (currentMode.equals(Mode.ELFENLAND)) {
                 if (currentUser.getName().equals(currentSession.getCreator())) {

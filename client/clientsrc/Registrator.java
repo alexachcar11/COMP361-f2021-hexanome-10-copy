@@ -398,6 +398,7 @@ public class Registrator {
             TownGoldOption townGoldOption = info.getTownGoldOption();
             // create a new Game object
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+            gameSessionToJoin.setGame(newGame);
             // set a currentGame
             ClientMain.currentGame = newGame;
         }
