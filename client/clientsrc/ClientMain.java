@@ -53,6 +53,12 @@ public class ClientMain {
     static MinuetoImage elfenlandSelected;
     static MinuetoImage elfenGoldSelected;
     private static MinuetoImage chooseBootBackground;
+    private static MinuetoImage redBoppel;
+    private static MinuetoImage blueBoppel;
+    private static MinuetoImage greenBoppel;
+    private static MinuetoImage blackBoppel;
+    private static MinuetoImage yellowBoppel;
+    private static MinuetoImage purpleBoppel;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
     private static MinuetoImage lobbyElfenlandCreatorBackground;
@@ -60,6 +66,7 @@ public class ClientMain {
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
+    static MinuetoImage greyStartButton;
     static MinuetoFont fontArial22Bold;
     static MinuetoRectangle modeDropdownRectangle;
     static MinuetoRectangle destinationTownDropdownRectangle;
@@ -774,7 +781,7 @@ public class ClientMain {
                 if (colorChosen == null) {
                     // print error message
                     MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
-                    chooseBootBackground.draw(errorText, 0, 0);
+                    chooseBootBackground.draw(errorText, 378, 526);
                 } else {
                     // send action to the server
                     String senderName = currentUser.getName();
@@ -813,8 +820,24 @@ public class ClientMain {
                     int maxY = (int) coords.getKey().get(2);
                     int minY = (int) coords.getKey().get(3);
 
-                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) { 
+                        // select the color
                         colorChosen = coords.getValue();
+                        System.out.println("chose: " + colorChosen);
+                        // display a boppel on the confirm button
+                        if (colorChosen.equals(Color.BLACK)) {
+                            chooseBootBackground.draw(blackBoppel, 640, 691);
+                        } else if (colorChosen.equals(Color.BLUE)) {
+                            chooseBootBackground.draw(blueBoppel, 640, 691);
+                        } else if (colorChosen.equals(Color.YELLOW)) {
+                            chooseBootBackground.draw(yellowBoppel, 640, 691);
+                        } else if (colorChosen.equals(Color.GREEN)) {
+                            chooseBootBackground.draw(greenBoppel, 640, 691);
+                        } else if (colorChosen.equals(Color.PURPLE)) {
+                            chooseBootBackground.draw(purpleBoppel, 640, 691);
+                        } else if (colorChosen.equals(Color.RED)) {
+                            chooseBootBackground.draw(redBoppel, 640, 691);
+                        }
                     }
                 }
             }
@@ -840,16 +863,30 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             System.out.println("x: " + x + "y: " + y);
 
-            if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
-                // click on Leave / Launch button
-                if (!currentUser.getName().equals(currentSession.getCreator())) {
-                    // click on leave
+            if (!currentUser.getName().equals(currentSession.getCreator())) {
+                // for users that are not the creator
+                if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
+                    // click on Leave
                     REGISTRATOR.leaveGame(currentSession, currentUser);
                     // return to lobby screen
                     displayAvailableGames();
                     gui.currentBackground = GUI.Screen.LOBBY;
-                } else if (currentSession.isLaunchable()
-                        && (currentUser.getName().equals(currentSession.getCreator()))) {
+                } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
+                    // click on Ready button: only works if you are not ready, else nothing happens
+                    if (!currentUser.isReady()) {
+                        // set user to ready
+                        currentUser.toggleReady();
+                        // draw the green ready image
+                        lobbyElfenlandBackground.draw(readyGreen, 823, 581);
+                        // TODO: display Ready next to the player's name
+                        // TODO: notify all players that this player is ready
+                    }
+                }
+            } else {
+                // for the creator
+                if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
+                    // click on Launch
+                    REGISTRATOR.leaveGame(currentSession, currentUser);
                     // click on Launch button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
                     // go to board screen
@@ -862,26 +899,11 @@ public class ClientMain {
                         gui.currentBackground = GUI.Screen.ELFENGOLD;
                     }
                 }
-
-            } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                // click on Ready button: only works if you are not ready, else nothing happens
-                if (!currentUser.isReady()) {
-                    // set user to ready
-                    currentUser.toggleReady();
-                    // draw the green ready image
-                    lobbyElfenlandBackground.draw(readyGreen, 823, 581);
-                    // TODO: display Ready next to the player's name
-                    // TODO: notify all players that this player is ready
-                    if (currentSession.isLaunchable() && (currentUser.getName().equals(currentSession.getCreator()))){
-                        // if the user is the creator and all users are ready, then show the launch button
-                        lobbyElfenlandBackground.draw(startButton, 825, 675);
-                    }
-                }
-            } else if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
-                // click on Send Message button
             }
 
-            if (x > 1000 && y > 740) {
+            if (x >= 710 && x <= 800 && y >= 700 && y <= 735) {
+                // click on Send Message button
+            } else if (x > 1000 && y > 740) {
                 // click on mute/unmute button
                 if (soundOn) {
                     soundOn = false;
@@ -967,6 +989,12 @@ public class ClientMain {
             whiteBoxImage = new MinuetoRectangle(470, 50, MinuetoColor.WHITE, true);
             // choose boot
             chooseBootBackground = new MinuetoImageFile("images/choose-boot-screen.png");
+            redBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-red.png");
+            blueBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-blue.png");
+            greenBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-green.png");
+            blackBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-black.png");
+            yellowBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-yellow.png");
+            purpleBoppel = new MinuetoImageFile("images/böppels-and-boots/böppel-purple.png");
             // lobby
             lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
             lobbyElfenlandBackground = new MinuetoImageFile("images/game-lobby-elfenland.png");
@@ -975,7 +1003,8 @@ public class ClientMain {
             lobbyElfengoldCreatorBackground = new MinuetoImageFile("images/game-lobby-elfengold-creator.png");
             readyGreen = new MinuetoImageFile("images/ready-button-green.png");
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
-            startButton = new MinuetoImageFile("images/launch-button.png");
+            startButton = new MinuetoImageFile("images/blue-launch-button.png");
+            greyStartButton = new MinuetoImageFile("images/grey-launch-button.png");
             // Create Game
             createGameBackground = new MinuetoImageFile("images/create-game-elfenland.png");
             createGameBackgroundElfengold = new MinuetoImageFile("images/create-game-elfengold.png");
@@ -1183,11 +1212,25 @@ public class ClientMain {
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
                 gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    // launchable
+                    lobbyElfenlandBackground.draw(startButton, 825, 580);
+                } else {
+                    // not launchable
+                    lobbyElfenlandBackground.draw(greyStartButton, 825, 580);
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
                 gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    // launchable
+                    lobbyElfenlandBackground.draw(startButton, 825, 580);
+                } else {
+                    // not launchable
+                    lobbyElfenlandBackground.draw(greyStartButton, 825, 580);
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
@@ -1307,22 +1350,22 @@ public class ClientMain {
             MinuetoImage boot;
             Color c;
             if (colorString.equals("BLUE")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-blue.png");
+                boot = new MinuetoImageFile("images/choose-boot-blue.png");
                 c = Color.BLUE;
             } else if (colorString.equals("BLACK")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-black.png");
+                boot = new MinuetoImageFile("images/choose-boot-black.png");
                 c = Color.BLACK;
             } else if (colorString.equals("RED")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-red.png");
+                boot = new MinuetoImageFile("images/choose-boot-red.png");
                 c = Color.RED;
             } else if (colorString.equals("YELLOW")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-yellow.png");
+                boot = new MinuetoImageFile("images/choose-boot-yellow.png");
                 c = Color.YELLOW;
             } else if (colorString.equals("GREEN")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-green.png");
+                boot = new MinuetoImageFile("images/choose-boot-green.png");
                 c = Color.GREEN;
             } else if (colorString.equals("PURPLE")) {
-                boot = new MinuetoImageFile("images/böppels-and-boots/boot-purple.png");
+                boot = new MinuetoImageFile("images/choose-boot-purple.png");
                 c = Color.PURPLE;
             } else {
                 // just for the compiler
@@ -1331,13 +1374,13 @@ public class ClientMain {
             }
 
             // display the boot
-            chooseBootBackground.draw(boot, 0 + counter * 300, 0);
+            chooseBootBackground.draw(boot, 75 + counter * 150, 300);
 
             // keep track of the button location
-            Integer maxX = 0 + (counter * 300);
-            Integer minX = 0 + (counter * 300);
-            Integer maxY = 0;
-            Integer minY = 0;
+            Integer maxX = 150 + (counter * 150);
+            Integer minX = 75 + (counter * 150);
+            Integer maxY = 410;
+            Integer minY = 300;
             ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
             AbstractMap.SimpleEntry<ImmutableList, Color> entry = new AbstractMap.SimpleEntry<>(
                     listOfCoordinates, c);
@@ -1379,17 +1422,17 @@ public class ClientMain {
                 uColorText = new MinuetoText("?", font, MinuetoColor.BLACK);
             } else {
                 if (color.equals(Color.BLACK)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-black.png");
+                    uColor = blackBoppel;
                 } else if (color.equals(Color.RED)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-red.png");
+                    uColor = redBoppel;
                 } else if (color.equals(Color.BLUE)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-blue.png");
+                    uColor = blueBoppel;
                 } else if (color.equals(Color.GREEN)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-green.png");
+                    uColor = greenBoppel;
                 } else if (color.equals(Color.YELLOW)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-yellow.png");
+                    uColor = yellowBoppel;
                 } else if (color.equals(Color.PURPLE)) {
-                    uColor = new MinuetoImageFile("image/böppels-and-boots/boot-purple.png");
+                    uColor = purpleBoppel;
                 }
             }
 
@@ -1420,9 +1463,9 @@ public class ClientMain {
 
             background.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
-                background.draw(uColorText, 240, 240 + counter * 50);
+                background.draw(uColorText, 290, 240 + counter * 50);
             } else {
-                background.draw(uColor, 240, 240 + counter * 50);
+                background.draw(uColor, 290, 240 + counter * 50);
             }
             background.draw(uReady, 475, 240 + counter * 50);
 
