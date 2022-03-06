@@ -2,6 +2,8 @@ package serversrc;
 
 import javax.management.RuntimeErrorException;
 
+import unirest.shaded.org.apache.http.Consts;
+
 // import clientsrc.Player;
 // import clientsrc.Token;
 // import clientsrc.Town;
@@ -19,13 +21,6 @@ public class Route {
     // upstream
     boolean isUpstream;
     private RouteType type;
-    private static final int[][] COST_ARRAY = {
-            { 1, 1, 2, 0, 1, 1, 0, 0 },
-            { 1, 1, 2, 1, 2, 2, 0, 0 },
-            { 0, 0, 0, 2, 2, 1, 0, 0 },
-            { 0, 2, 1, 1, 2, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 1, 2 }
-    };
 
     Route(Town pStartingTown, Town pEndTown) {
         this.aStartingTown = pStartingTown;
@@ -85,12 +80,10 @@ public class Route {
                 this.aToken = token;
             } else
                 throw new RuntimeException("Cannot add more than one travel counter to a route.");
-        } else {
-            if (!token.isObstacle()) {
-                this.aToken = token;
-            } else
-                throw new RuntimeException("Cannot add an obstacle without first placing a travel counter.");
-        }
+        } else if (!token.isObstacle()) {
+            this.aToken = token;
+        } else
+            throw new RuntimeException("Cannot add an obstacle without first placing a travel counter.");
     }
 
     public void clearToken() {
@@ -103,8 +96,8 @@ public class Route {
      * @return cost to travel on path with a given CardType, assuming no obstacles
      */
     public int costWithCardType(CardType cardType) {
-        return cardType == CardType.RAFT && isUpstream ? COST_ARRAY[type.ordinal()][cardType.ordinal() + 1]
-                : COST_ARRAY[type.ordinal()][cardType.ordinal()];
+        return cardType == CardType.RAFT && isUpstream ? CostCard.getCost(type.ordinal(), cardType.ordinal() + 1)
+                : CostCard.getCost(type.ordinal(), cardType.ordinal());
     }
 
     /**

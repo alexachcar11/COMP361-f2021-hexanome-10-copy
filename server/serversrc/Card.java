@@ -4,18 +4,22 @@ Interface representing a Card.
 
 package serversrc;
 
-public abstract class Card{
+public abstract class Card {
 
     private String aName;
 
+    Card(String name) {
+        aName = name;
+    }
+
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         // if compared with itself then true
         if (o == this) {
             return true;
         }
         // check if o is instance of Card
-        if (!(o instanceof Card)){
+        if (!(o instanceof Card)) {
             return false;
         }
 
@@ -26,7 +30,7 @@ public abstract class Card{
         return c.getName().equalsIgnoreCase(this.aName);
     }
 
-    private String getName(){
+    private String getName() {
         return this.aName;
     }
 }
