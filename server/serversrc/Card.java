@@ -6,10 +6,10 @@ package serversrc;
 
 public abstract class Card {
 
-    private String aName;
+    private CardType type;
 
-    Card(String name) {
-        aName = name;
+    Card(CardType someType) {
+        type = someType;
     }
 
     @Override
@@ -27,10 +27,10 @@ public abstract class Card {
         Card c = (Card) o;
 
         // Compare them by name
-        return c.getName().equalsIgnoreCase(this.aName);
+        return c.getCardType() == this.getCardType();
     }
 
-    private String getName() {
-        return this.aName;
+    private CardType getCardType() {
+        return type;
     }
 }

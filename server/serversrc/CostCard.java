@@ -22,7 +22,7 @@ public class CostCard extends Card {
     private static final CostCard INSTANCE = new CostCard();
 
     private CostCard() {
-        super("CostCard");
+        super(CardType.COST_CARD);
     }
 
     public static CostCard getInstance() {
