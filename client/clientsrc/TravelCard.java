@@ -20,6 +20,8 @@ public class TravelCard extends Card{
      MinuetoImage medium;
      MinuetoImage small;
      Boolean faceDown;
+     String mediumAddress;
+     String smallAddress;
 
      /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -42,6 +44,10 @@ public class TravelCard extends Card{
                 requirements[0] = 2; 
                 requirements[1] = 2; 
                 requirements[3] = 1; 
+
+                mediumAddress = "images/elfenroads-sprites/T03medium.png";
+                smallAddress = "images/elfenroads-sprites/T03small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T03medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T03small.png");
                 break;
@@ -49,6 +55,10 @@ public class TravelCard extends Card{
                 requirements[1] = 1; 
                 requirements[2] = 2; 
                 requirements[3] = 1; 
+
+                mediumAddress = "images/elfenroads-sprites/T04medium.png";
+                smallAddress = "images/elfenroads-sprites/T04small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T04medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T04small.png");
                 break;
@@ -57,6 +67,10 @@ public class TravelCard extends Card{
                 requirements[1] = 2; 
                 requirements[2] = 2; 
                 requirements[3] = 2; 
+
+                mediumAddress = "images/elfenroads-sprites/T05medium.png";
+                smallAddress = "images/elfenroads-sprites/T05small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T05medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T05small.png");
                 break;
@@ -64,12 +78,20 @@ public class TravelCard extends Card{
                 requirements[0] = 1;   
                 requirements[1] = 1; 
                 requirements[3] = 2; 
+
+                mediumAddress = "images/elfenroads-sprites/T02medium.png";
+                smallAddress = "images/elfenroads-sprites/T02small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T02medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T02small.png");
                 break;
             case PIG: 
                 requirements[0] = 1; 
                 requirements[1] = 1; 
+
+                mediumAddress = "images/elfenroads-sprites/T01medium.png";
+                smallAddress = "images/elfenroads-sprites/T01small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T01medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T01small.png");
                 break;
@@ -78,10 +100,18 @@ public class TravelCard extends Card{
                 requirements[1] = 2; 
                 requirements[2] = 1; 
                 requirements[3] = 1; 
+
+                mediumAddress = "images/elfenroads-sprites/T06medium.png";
+                smallAddress = "images/elfenroads-sprites/T06small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T06medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T06small.png");
                 break;
             case RAFT: 
+
+                mediumAddress = "images/elfenroads-sprites/T07medium.png";
+                smallAddress = "images/elfenroads-sprites/T07small.png";
+
                 medium = new MinuetoImageFile("images/elfenroads-sprites/T07medium.png");
                 small = new MinuetoImageFile("images/elfenroads-sprites/T07small.png");
                 requirements[4] = 1; break;
@@ -94,6 +124,14 @@ public class TravelCard extends Card{
 
     public MinuetoImage getSmallImage() { 
         return small;
+    }
+
+    public String getMediumAddress() { 
+        return mediumAddress;
+    }
+
+    public String getSmallAddress() { 
+        return smallAddress;
     }
 
     public Boolean isFaceDown() { 

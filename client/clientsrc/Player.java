@@ -16,7 +16,7 @@ public class Player {
     private GUI guiDisplayed; // TODO: initialize this
     private Boot boot;
     private List<TravelCard> cardsInHand;
-    private List<Token> tokensInHand;
+    private List<TransportationCounter> tokensInHand;
     private Town inTown;
 
     private String aName;
@@ -111,7 +111,7 @@ public class Player {
         }
     }
 
-    public List<Token> getTokensInHand(){ 
+    public List<TransportationCounter> getTokensInHand(){ 
         return this.tokensInHand;
     }
 

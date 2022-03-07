@@ -26,11 +26,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -327,6 +326,53 @@ public class ClientMain {
         }
     };
 
+    static void openPlayerInventory(Player p) { 
+
+        JPanel inventory = new JPanel();
+        inventory.setLayout(new BoxLayout(inventory, BoxLayout.Y_AXIS));
+
+        JPanel cardPanel = new JPanel();
+        cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.X_AXIS));
+                    
+        JPanel tokenPanel = new JPanel();
+        tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
+
+        // can substitute 'Opponent's' for the actual name of the opponent
+        String playerName = p.getName();
+        JFrame opponentFrame = new JFrame(playerName + "'s Inventory");
+
+        JLabel travelCardText = new JLabel("Travel Cards:");
+        JLabel tokenText = new JLabel("Tokens:");
+        travelCardText.setText("Travel Cards:     ");
+        tokenText.setText("Tokens:     ");
+
+        cardPanel.add(travelCardText);
+        tokenPanel.add(tokenText);
+
+        for(TravelCard tCard : p.getCardsInHand()) {
+            JLabel pic = new JLabel(new ImageIcon(tCard.getMediumAddress()));
+            cardPanel.add(pic);
+        }
+        for(TransportationCounter tCounter: p.getTokensInHand()) { 
+            JLabel pic = new JLabel(new ImageIcon(tCounter.getMediumAddress()));
+            tokenPanel.add(pic);
+        }        
+
+        inventory.add(Box.createVerticalStrut(30));
+        inventory.add(cardPanel);
+        inventory.add(Box.createVerticalStrut(10));
+        inventory.add(tokenPanel);
+
+        opponentFrame.add(inventory);
+
+        //set the location of the window
+        opponentFrame.setLocation(300, 200);
+        opponentFrame.setSize(new Dimension(700, 300));
+
+        opponentFrame.setVisible(true);
+
+    } 
+
     static MinuetoMouseHandler elfenlandMouseHandler = new MinuetoMouseHandler() {
 
         // @Override
@@ -338,10 +384,64 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x: " + x + ". This is y: " + y);
 
-            // boxes for the cards 
 
-
-            // boxes for the tokens 
+            // CLICKING ON THE OPPONENTS PROFILE
+            if(numberPlayers == 2) { 
+                if(x > 856 && x < 984 && y > 105 && y < 132) { 
+                    //CLICKING ON PLAYER 1
+                    openPlayerInventory(players.get(0));
+                }
+            } else if (numberPlayers == 3) { 
+                if(x > 856 && x < 984 && y > 105 && y < 132) { 
+                    //CLICKING ON PLAYER 1
+                    openPlayerInventory(players.get(0));
+                } else if(x > 856 && x < 984 && y > 197 && y < 225) { 
+                    //CLICKING ON PLAYER 2
+                    openPlayerInventory(players.get(1));
+                }
+            } else if (numberPlayers == 4) { 
+                if(x > 856 && x < 984 && y > 105 && y < 132) { 
+                    //CLICKING ON PLAYER 1
+                    openPlayerInventory(players.get(0));
+                }else if(x > 856 && x < 984 && y > 197 && y < 225) { 
+                    //CLICKING ON PLAYER 2
+                    openPlayerInventory(players.get(1));
+                }else if(x > 856 && x < 984 && y > 290 && y < 317) { 
+                    //CLICKING ON PLAYER 3
+                    openPlayerInventory(players.get(2));
+                }
+            } else if (numberPlayers == 5) { 
+                if(x > 856 && x < 984 && y > 105 && y < 132) { 
+                    //CLICKING ON PLAYER 1
+                    openPlayerInventory(players.get(0));
+                } else if(x > 856 && x < 984 && y > 197 && y < 225) { 
+                    //CLICKING ON PLAYER 2
+                    openPlayerInventory(players.get(1));
+                } else if(x > 856 && x < 984 && y > 290 && y < 317) { 
+                    //CLICKING ON PLAYER 3
+                    openPlayerInventory(players.get(2));
+                } else if(x > 856 && x < 984 && y > 382 && y < 409) { 
+                    //CLICKING ON PLAYER 4
+                    openPlayerInventory(players.get(3));
+                }
+            } else if (numberPlayers == 6) { 
+                if(x > 856 && x < 984 && y > 105 && y < 132) { 
+                    //CLICKING ON PLAYER 1
+                    openPlayerInventory(players.get(0));
+                } else if(x > 856 && x < 984 && y > 197 && y < 225) { 
+                    //CLICKING ON PLAYER 2
+                    openPlayerInventory(players.get(1));
+                } else if(x > 856 && x < 984 && y > 290 && y < 317) { 
+                    //CLICKING ON PLAYER 3
+                    openPlayerInventory(players.get(2));
+                } else if(x > 856 && x < 984 && y > 382 && y < 409) { 
+                    //CLICKING ON PLAYER 4
+                    openPlayerInventory(players.get(3));
+                } else if(x > 856 && x < 984 && y > 474 && y < 499) { 
+                    //CLICKING ON PLAYER 5
+                    openPlayerInventory(players.get(4));
+                }
+            }
 
             // sound 
             if (x > 1000 && y > 740) {
@@ -983,6 +1083,7 @@ public class ClientMain {
         elfenlandLobbyQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenLandLobbyMouseHandler, elfenlandLobbyQueue);
 
+        int once = 1;
         // draw on the window
         while (true) {
             if (gui.currentBackground == GUI.Screen.MENU) {
@@ -1298,8 +1399,85 @@ public class ClientMain {
                 // }
 
                 // organize opponents area to show what cards they have 
-                numberPlayers = 5;
-                for(int i = 0; i < numberPlayers; i++) { 
+                // if(once == 1) {
+                //     JPanel inventory = new JPanel();
+                //     inventory.setLayout(new BoxLayout(inventory, BoxLayout.Y_AXIS));
+
+                //     JPanel cardPanel = new JPanel();
+                //     cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.X_AXIS));
+                    
+                //     JPanel tokenPanel = new JPanel();
+                //     tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
+
+                //     // can substitute 'Opponent's' for the actual name of the opponent
+                //     JFrame opponentFrame = new JFrame("Opponent's Inventory");
+
+                //     JLabel travelCardText = new JLabel("Travel Cards:");
+                //     JLabel tokenText = new JLabel("Tokens:");
+                //     travelCardText.setText("Travel Cards:     ");
+                //     tokenText.setText("Tokens:     ");
+
+                //     // add an image to the window: 
+                //     JLabel pic1 = new JLabel(new ImageIcon("images/elfenroads-sprites/T01medium.png"));
+                //     JLabel pic2 = new JLabel(new ImageIcon("images/elfenroads-sprites/T02medium.png"));
+                //     JLabel pic3 = new JLabel(new ImageIcon("images/elfenroads-sprites/T03medium.png"));
+                //     JLabel pic4 = new JLabel(new ImageIcon("images/elfenroads-sprites/T04medium.png"));
+                //     JLabel pic5 = new JLabel(new ImageIcon("images/elfenroads-sprites/T05medium.png"));
+                //     JLabel pic6 = new JLabel(new ImageIcon("images/elfenroads-sprites/T06medium.png"));
+                //     JLabel pic7 = new JLabel(new ImageIcon("images/elfenroads-sprites/T07medium.png"));
+                //     JLabel pic8 = new JLabel(new ImageIcon("images/elfenroads-sprites/T07medium.png"));
+
+                //     JLabel tok1 = new JLabel(new ImageIcon("images/elfenroads-sprites/M01medium.png"));
+                //     JLabel tok2 = new JLabel(new ImageIcon("images/elfenroads-sprites/M02medium.png"));
+                //     JLabel tok3 = new JLabel(new ImageIcon("images/elfenroads-sprites/M03medium.png"));
+                //     JLabel tok4 = new JLabel(new ImageIcon("images/elfenroads-sprites/M04medium.png"));
+                //     JLabel tok5 = new JLabel(new ImageIcon("images/elfenroads-sprites/M05medium.png"));
+
+                //     // add text for the travel cards and counters
+                //     cardPanel.add(travelCardText);
+                //     cardPanel.add(pic1);
+                //     cardPanel.add(pic2);
+                //     cardPanel.add(pic3);
+                //     cardPanel.add(pic4);
+                //     cardPanel.add(pic5);
+                //     cardPanel.add(pic6);
+                //     cardPanel.add(pic7);
+                //     cardPanel.add(pic8);
+                    
+                //     tokenPanel.add(tokenText);
+                //     tokenPanel.add(tok1);
+                //     tokenPanel.add(tok2);
+                //     tokenPanel.add(tok3);
+                //     tokenPanel.add(tok4);
+                //     tokenPanel.add(tok5);
+                    
+                //     inventory.add(Box.createVerticalStrut(30));
+                //     inventory.add(cardPanel);
+                //     inventory.add(Box.createVerticalStrut(10));
+                //     inventory.add(tokenPanel);
+
+                //     opponentFrame.add(inventory);
+
+                //     //set the location of the window
+                //     opponentFrame.setLocation(300, 200);
+                //     opponentFrame.setSize(new Dimension(700, 300));
+
+                //     opponentFrame.setVisible(true);
+                    
+                    // assert that there is a player whose information we can pull 
+                    
+                    // add a label for cards 
+                    // add components for the cards 
+
+                    // add a label for counters 
+                    // add components for the players
+                    
+
+                //     once = 3;
+                // }
+                
+                numberPlayers = 6;
+                for(int i = 0; i < numberPlayers-1; i++) { 
                     // Player opponent = players.get(i);
                     int xName = 835;
                     int yName = 70 + (i*92); 
@@ -1308,11 +1486,13 @@ public class ClientMain {
                     MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
                     gui.window.draw(playerBackground, xName - 10, yName - 10);
                     
-                    MinuetoText pName = new MinuetoText("jeff", fontArial20, MinuetoColor.BLACK);
+                    MinuetoText pName = new MinuetoText("Template Name", fontArial20, MinuetoColor.BLACK);
                     gui.window.draw(pName, xName, yName);
                     MinuetoText seeInv = new MinuetoText("See Inventory", fontArial20, MinuetoColor.BLACK);
                     gui.window.draw(seeInv,xName + 25, yName + 35 );
                 }
+
+
 
 
                 while (elfenlandQueue.hasNext()) {
