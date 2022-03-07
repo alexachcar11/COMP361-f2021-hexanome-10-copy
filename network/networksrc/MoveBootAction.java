@@ -52,10 +52,10 @@ public class MoveBootAction implements Action {
             return false;
         }
         // check if player has the cards required to travel that route
-        // if (!playerWhoSent.hasCards(route.getRequiredCards())){
-        //     System.out.println("ERROR: Player doesn't have all cards required!");
-        //     return false;
-        // }
+        if (!playerWhoSent.hasCards(route.getRequiredCards(playerWhoSent.getTown()))){
+            System.out.println("ERROR: Player doesn't have all cards required!");
+            return false;
+        }
 
         return true;
     }

@@ -103,6 +103,7 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
+        // TODO: add region to the construction of routes (Dijian (me) will do this soon)
         Route esselenWylhien = new Route(esselen, wylhien);
         Route esselenYttar = new Route(esselen, yttar);
         Route esselenParundia = new Route(esselen, parundia);

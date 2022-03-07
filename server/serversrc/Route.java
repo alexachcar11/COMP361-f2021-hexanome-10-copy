@@ -1,5 +1,8 @@
 package serversrc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // import clientsrc.Player;
 // import clientsrc.Token;
 // import clientsrc.Town;
@@ -11,20 +14,25 @@ public class Route {
     
     Town aStartingTown;
     Town aEndTown;
-    Token aToken;       // TODO: there could be multiple tokens, list ?
+    TransportationCounter aCounter;       // TODO: there could be multiple tokens, list ?
     // road or river
     boolean isRiver = false;
     // upstream
     boolean isUpstream;
+    MapRegion aRegion;
+    // might be subject to change 
+    boolean hasObstacle;
 
-    Route(Town pStartingTown, Town pEndTown){ 
+    Route(Town pStartingTown, Town pEndTown, MapRegion pRegion){ 
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
-        this.aToken = null;
+        this.aCounter = null;
+        this.aRegion = pRegion;
+        this.hasObstacle = false;
     }
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    Route(Town pStartingTown, Town pEndTown, int n){
+    Route(Town pStartingTown, Town pEndTown, MapRegion pRegion, int n){
         this.isRiver = true;
         if(n == 1){
             this.isUpstream = true;
@@ -38,11 +46,13 @@ public class Route {
         }
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
-        this.aToken = null;
+        this.aCounter = null;
+        this.aRegion = pRegion;
+        this.hasObstacle = false;
     }
 
     public boolean getisRiver(){
-        return isRiver;
+        return this.aRegion.equals(MapRegion.RIVER);
     }
 
     // sets Upstream with a boolean
@@ -65,19 +75,213 @@ public class Route {
      * 
      * @param token
      */
-    public void placeToken(Player player, Token token) { 
-        assert token != null;
+    public void placeToken(Player player, TransportationCounter pCounter) { 
+        assert pCounter != null;
 
-        if(this.aToken == null) { 
+        if(this.aCounter == null) { 
             throw new IllegalArgumentException();
         } else { 
-            player.consumeToken(token);
-            this.aToken = token;
+            player.consumeToken(pCounter);
+            this.aCounter = pCounter;
             
         }
     }
 
+    public void placeObstacle(Player player){
+        //remove obstacle from player's hand
+        // add obstacle to route
+        this.hasObstacle = true;
+    }
+
     public void clearToken() { 
-        this.aToken = null;
+        this.aCounter = null;
+    }
+
+    // @pre should check if there's a counter on road first 
+    // (extra note, check region type is valid for the counter when placing counters
+    // so that means counter will be valid at this stage no matter the region)
+    public List<Card> getRequiredCards(Town currTown){
+        List<Card> output = new ArrayList<>();
+        // Card goldCard = new Card(CardType.GOLD);
+        // witch card ? don't think it goes here...
+
+        // for lake (use ferries which is 2 rafts for every move on lake)
+        if (aRegion.equals(MapRegion.LAKE)){
+            Card raftCard = new Card(CardType.RAFT);
+            output.add(raftCard);
+            output.add(raftCard);
+        }
+        // for river
+        else if (aRegion.equals(MapRegion.RIVER)){
+            Card raftCard = new Card(CardType.RAFT);
+            output.add(raftCard);
+            // check for upstream/downstream
+            if (currTown.getTownName().equalsIgnoreCase(this.aStartingTown.getTownName())){
+                if (isUpstream){
+                    // add a raft card
+                    output.add(raftCard);
+                }
+            }
+            else{
+                if (!isUpstream){
+                    output.add(raftCard);
+                }
+            }
+        }
+        else{
+            switch(this.aCounter.getCounterType()){
+
+                case CLOUD:
+                    Card cloudCard = new Card(CardType.CLOUD);
+                    // if there's an obstacle, add an extra one
+                    if(this.hasObstacle){
+                        output.add(cloudCard);
+                    }
+
+                    // check by region
+                    switch(aRegion){
+                        case MOUNTAIN:
+                            output.add(cloudCard);
+                            break;
+                        case PLAIN:
+                            output.add(cloudCard);
+                            output.add(cloudCard);
+                            break;
+                        case WOOD:
+                            output.add(cloudCard);
+                            output.add(cloudCard);
+                            break;
+                        default:
+                            break;
+                        
+                    }
+                    break;
+
+                case DRAGON:
+                    Card dragonCard = new Card(CardType.DRAGON);
+                    if(this.hasObstacle){
+                        output.add(dragonCard);
+                    }
+
+                    switch(aRegion){
+                        case DESERT:
+                            output.add(dragonCard);
+                            break;
+                        case MOUNTAIN:
+                            output.add(dragonCard);
+                            break;
+                        case PLAIN:
+                            output.add(dragonCard);
+                            break;
+                        case WOOD:
+                            output.add(dragonCard);
+                            output.add(dragonCard);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case ELFCYCLE:
+                    Card elfcyleCard = new Card(CardType.ELFCYCLE);
+                    if(this.hasObstacle){
+                        output.add(elfcyleCard);
+                    }
+
+                    switch(aRegion){
+                        case MOUNTAIN:
+                            output.add(elfcyleCard);
+                            output.add(elfcyleCard);
+                            break;
+                        case PLAIN:
+                            output.add(elfcyleCard);
+                            break;
+                        case WOOD:
+                            output.add(elfcyleCard);
+                            break;
+                        default:
+                            break;
+                        
+                    }
+                    break;
+                // TODO: for elfengold
+                case GOLD:
+
+                    break;
+
+                case PIG:
+                    Card pigCard = new Card(CardType.PIG);
+                    if(this.hasObstacle){
+                        output.add(pigCard);
+                    }
+
+                    switch(aRegion){
+                        case PLAIN:
+                            output.add(pigCard);
+                            break;
+                        case WOOD:
+                            output.add(pigCard);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case TROLL:
+                    Card trollCard = new Card(CardType.TROLL);
+                    if(this.hasObstacle){
+                        output.add(trollCard);
+                    }
+
+                    switch(aRegion){
+                        case DESERT:
+                            output.add(trollCard);
+                            output.add(trollCard);
+                            break;
+                        case MOUNTAIN:
+                            output.add(trollCard);
+                            output.add(trollCard);
+                            break;
+                        case PLAIN:
+                            output.add(trollCard);
+                            break;
+                        
+                        case WOOD:
+                            output.add(trollCard);
+                            output.add(trollCard);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case UNICORN:
+                    Card unicornCard = new Card(CardType.UNICORN);
+                    if(this.hasObstacle){
+                        output.add(unicornCard);
+                    }
+
+                    switch(aRegion){
+                        case DESERT:
+                            output.add(unicornCard);
+                            output.add(unicornCard);
+                            break;
+                        case MOUNTAIN:
+                            output.add(unicornCard);
+                            break;
+                        case WOOD:
+                            output.add(unicornCard);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                // case WITCH:
+                //     break;
+                default:
+                    break;
+
+            }
+        }
+        return output;
     }
 }

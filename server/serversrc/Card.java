@@ -4,9 +4,13 @@ Interface representing a Card.
 
 package serversrc;
 
-public abstract class Card{
+public class Card extends AbstractCard{
 
-    private String aName;
+    private CardType aCardType;
+
+    public Card(CardType pCardType){
+        this.aCardType = pCardType;
+    }
 
     @Override
     public boolean equals(Object o){
@@ -23,10 +27,10 @@ public abstract class Card{
         Card c = (Card) o;
 
         // Compare them by name
-        return c.getName().equalsIgnoreCase(this.aName);
+        return c.getName().equalsIgnoreCase(this.getName());
     }
 
     private String getName(){
-        return this.aName;
+        return this.aCardType.name();
     }
 }

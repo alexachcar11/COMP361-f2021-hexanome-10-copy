@@ -2,6 +2,7 @@ package serversrc;
 /* This class contains all info relevant to a single Player */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // import clientsrc.Boot;
@@ -53,6 +54,24 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public boolean hasCards(List<Card> cardList){
+        // copy the cardList 
+        List<Card> copyList = new ArrayList<Card>(cardList.size());
+        Collections.copy(copyList, cardList);
+
+        for (Card c: cardList){
+            // check if player doesn't have card c
+            if (!copyList.contains(c)){
+                return false;
+            }
+            // if player has that card, remove it from the copied list
+            else {
+                copyList.remove(c);
+            }
+        }
+        return true;
     }
 
     public ServerGame getCurrentGame() {

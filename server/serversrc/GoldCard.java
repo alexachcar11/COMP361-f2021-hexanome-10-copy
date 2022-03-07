@@ -3,7 +3,7 @@ package serversrc;
 // import clientsrc.Card;
 // import clientsrc.CardType;
 
-public class GoldCard extends Card{
+public class GoldCard extends AbstractCard{
 
     //field
     CardType aType = CardType.GOLD;
