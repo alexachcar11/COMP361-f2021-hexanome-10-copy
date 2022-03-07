@@ -9,12 +9,10 @@ public class UpdateUsersAction implements Action{
 
     private String senderName;
     private String gameID;
-    private ArrayList<String> currentUsers;
 
-    public UpdateUsersAction(String senderName, String gameID, ArrayList<String> currentUsers) {
+    public UpdateUsersAction(String senderName, String gameID) {
         this.senderName = senderName;
         this.gameID = gameID;
-        this.currentUsers = currentUsers;
     }
 
     @Override
@@ -32,10 +30,8 @@ public class UpdateUsersAction implements Action{
         ArrayList<String> newUsers = new ArrayList<>();
         for (ServerUser sUser : allUsers) {
             String name = sUser.getName();
-            if (!currentUsers.contains(name)) {
-                newUsers.add(name);
-                newUsers.add(sUser.getColor().name());
-            }
+            newUsers.add(name);
+            newUsers.add(sUser.getColor().name());
         }
 
         // send ACK to sender

@@ -50,11 +50,7 @@ public class LobbyServiceGameSession implements Joinable{
 
     public void updateUsers() {
         String senderName = ClientMain.currentUser.getName();
-        ArrayList<String> usernames = new ArrayList<>();
-        for (User u : users) {
-            usernames.add(u.getName());
-        }
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID, usernames));
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID));
     }
 
     /**
