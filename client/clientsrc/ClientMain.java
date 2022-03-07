@@ -815,7 +815,7 @@ public class ClientMain {
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                     }
-                    ACTION_MANAGER.waitForMessages();
+                    ACTION_MANAGER.waitForPlayers();
                 }
             } else {
                 // Click on a Color

@@ -22,14 +22,36 @@ public class ActionManager {
     }
 
     /**
+     * Waits for a message from the Server. This runs while the session is NOT launched.
+     * When a message is received, execute it if it's valid, then wait for another message.
+     */
+    public void waitForPlayers() {
+        // WAIT FOR PLAYERS
+        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        while (!ClientMain.currentSession.isLaunched()) {
+            Action actionIn = null;
+            try {
+                actionIn = (Action) in.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+            if (actionIn != null) {
+                // MESSAGE RECEIVED
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
+            }   
+        }
+    }
+
+    /**
      * Waits for a message from the Server. This runs while it is NOT the player's turn.
      * When a message is received, execute it if it's valid, then wait for another message.
      */
     public void waitForMessages() {
         // WAIT FOR A MESSAGE
         ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
-        Player currentPlayer = Player.getPlayerByName(ClientMain.currentUser.getName());
-        while (!currentPlayer.isTurn()) {
+        while (!ClientMain.currentPlayer.isTurn()) {
             Action actionIn = null;
             try {
                 actionIn = (Action) in.readObject();
