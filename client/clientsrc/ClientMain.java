@@ -810,6 +810,7 @@ public class ClientMain {
                         } catch (MinuetoFileException e) {
                             e.printStackTrace();
                         }
+                        // TODO: add elfengold options
                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;

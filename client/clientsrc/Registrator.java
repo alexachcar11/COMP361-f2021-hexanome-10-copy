@@ -200,6 +200,7 @@ public class Registrator {
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
+            System.err.println(jsonResponse.getBody());
             throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
 
