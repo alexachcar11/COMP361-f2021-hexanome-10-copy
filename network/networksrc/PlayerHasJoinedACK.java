@@ -24,7 +24,9 @@ public class PlayerHasJoinedACK implements Action {
         User existing = User.getUserByName(joinerName);
         if (existing == null) {
             ClientMain.currentSession.addUser(new User(joinerName));
-        } 
+        } else {
+            ClientMain.currentSession.addUser(existing);
+        }
         // display users
         try {
             ClientMain.displayUsers();
