@@ -815,7 +815,6 @@ public class ClientMain {
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                     }
-                    ACTION_MANAGER.waitForPlayers();
                 }
             } else {
                 // Click on a Color
@@ -1206,17 +1205,20 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                ACTION_MANAGER.waitForPlayers();
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
+                ACTION_MANAGER.waitForPlayers();
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
                 gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
+                ACTION_MANAGER.waitForPlayers();
                 if (currentSession.isLaunchable()) {
                     // launchable
                     lobbyElfenlandBackground.draw(startButton, 825, 580);
@@ -1229,6 +1231,7 @@ public class ClientMain {
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
                 gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
+                ACTION_MANAGER.waitForPlayers();
                 if (currentSession.isLaunchable()) {
                     // launchable
                     lobbyElfenlandBackground.draw(startButton, 825, 580);
