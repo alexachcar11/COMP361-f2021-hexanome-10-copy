@@ -70,7 +70,7 @@ public class PlayerHasJoinedAction implements Action{
         ServerUser sUser = ServerUser.getServerUser(senderName);
         gameLobby.addUser(sUser);
         // notify all users in the lobby
-        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK(senderName);
+        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK();
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {
@@ -80,7 +80,6 @@ public class PlayerHasJoinedAction implements Action{
                 // get the socket's output stream 
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
-                System.out.println("sending back...");
                 objectOutputStream.writeObject(actionToSend);
             }
         } catch (IOException e) { 

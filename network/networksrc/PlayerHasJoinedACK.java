@@ -3,15 +3,8 @@ package networksrc;
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
-import clientsrc.User;
 
 public class PlayerHasJoinedACK implements Action {
-
-    private String joinerName;
-
-    public PlayerHasJoinedACK(String joinerName) {
-        this.joinerName = joinerName;
-    }
 
     @Override
     public boolean isValid() {
@@ -20,15 +13,6 @@ public class PlayerHasJoinedACK implements Action {
 
     @Override
     public void execute() {
-        /* // add the player to LobbyServiceGameSession
-        User existing = User.getUserByName(joinerName);
-        if (existing == null) {
-            ClientMain.currentSession.addUser(new User(joinerName));
-        } else {
-            ClientMain.currentSession.addUser(existing);
-        } */
-        // ClientMain.currentSession.updateUsers();
-        // display users
         try {
             ClientMain.displayUsers();
             System.out.println("displaying users.");

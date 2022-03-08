@@ -816,11 +816,10 @@ public class ClientMain {
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                        gui.window.render();
+                        ACTION_MANAGER.waitForPlayers();
                     }
-
-                    gui.window.render();
-
-                    ACTION_MANAGER.waitForPlayers();
+                    
                 }
             } else {
                 // Click on a Color
@@ -874,7 +873,7 @@ public class ClientMain {
             System.out.println("x: " + x + "y: " + y);
 
             if (!currentUser.getName().equals(currentSession.getCreator())) {
-                // for users that are not the creator
+                /* // for users that are not the creator
                 if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
                     // click on Leave
                     REGISTRATOR.leaveGame(currentSession, currentUser);
@@ -891,14 +890,13 @@ public class ClientMain {
                         // TODO: display Ready next to the player's name
                         // TODO: notify all players that this player is ready
                     }
-                }
+                } */
             } else {
                 // for the creator
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
-                    // click on Launch
-                    REGISTRATOR.leaveGame(currentSession, currentUser);
                     // click on Launch button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
+
                     // go to board screen
                     LobbyServiceGame gameService = currentSession.getGameService();
                     Game game = gameService.getGame();

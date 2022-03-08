@@ -1,6 +1,9 @@
 package networksrc;
 
 import clientsrc.ClientMain;
+import clientsrc.Game;
+import clientsrc.LobbyServiceGame;
+import clientsrc.Mode;
 
 public class LaunchGameACK implements Action{
 
@@ -17,7 +20,7 @@ public class LaunchGameACK implements Action{
         // set the session to launched
         ClientMain.currentSession.launch();
 
-        System.out.println("LaunchGameACK received");
+        // display board screen
     }
     
 }

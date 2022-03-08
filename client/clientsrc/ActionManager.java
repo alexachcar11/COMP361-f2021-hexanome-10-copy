@@ -22,12 +22,41 @@ public class ActionManager {
     }
 
     /**
+     * Waits for a message from the Server. This runs while the session is NOT launchable.
+     * When a message is received, execute it if it's valid, then wait for another message.
+     */
+    public void waitForPlayersAsCreator() {
+        // WAIT FOR PLAYERS
+        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        
+        // wait until launched
+        while (!ClientMain.currentSession.isLaunchable()) {
+            Action actionIn = null;
+            try {
+                actionIn = (Action) in.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+            if (actionIn != null) {
+                // MESSAGE RECEIVED
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
+                // update gui
+                ClientMain.gui.window.render();
+            }   
+        }
+    }
+
+    /**
      * Waits for a message from the Server. This runs while the session is NOT launched.
      * When a message is received, execute it if it's valid, then wait for another message.
      */
     public void waitForPlayers() {
         // WAIT FOR PLAYERS
         ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        
+        // wait until launched
         while (!ClientMain.currentSession.isLaunched()) {
             Action actionIn = null;
             try {
@@ -66,6 +95,8 @@ public class ActionManager {
                     actionIn.execute();
                 }
             }   
+            // update gui
+            ClientMain.gui.window.render();
         }
     }
 
