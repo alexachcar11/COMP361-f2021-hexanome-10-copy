@@ -73,7 +73,6 @@ public class PlayerHasJoinedAction implements Action{
         }
 
         // the color is not taken yet
-        GameLobby gameLobby = GameLobby.getGameLobby(gameID);
         for (ServerUser user : gameLobby.getAllUsers()) {
             Color colorTaken = user.getColor();
             if (colorTaken != null && color.equals(colorTaken.name())) {
@@ -109,7 +108,7 @@ public class PlayerHasJoinedAction implements Action{
         }
 
         // notify all users in the lobby
-        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK(senderName);
+        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK(senderName, color);
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {
