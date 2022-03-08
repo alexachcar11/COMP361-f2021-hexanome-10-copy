@@ -1,5 +1,6 @@
 package serversrc;
 
 public enum MapRegion {
-    DESERT, MOUNTAIN, PLAIN, WOOD, RIVER, LAKE
+    PLAIN, WOOD, DESERT, MOUNTAIN,  RIVER
+    // plain, wood, desert, mountain, river
 }

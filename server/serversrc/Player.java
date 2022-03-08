@@ -10,6 +10,7 @@ import networksrc.*;
 public class Player {
     boolean isTurn = false;
     private Boot aBoot;
+    private boolean turnPassed;
 
     private int gold;
     private Boot boot;
@@ -36,6 +37,7 @@ public class Player {
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aName = pServerUser.getName();
+        this.turnPassed = false;
 
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
@@ -52,6 +54,18 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public void passTurn(){
+        this.turnPassed = true;
+    }
+
+    public void resetTurnPassed(){
+        this.turnPassed = false;
+    }
+
+    public boolean getTurnPassed(){
+        return this.turnPassed;
     }
 
     public boolean hasCards(List<AbstractCard> cardList){

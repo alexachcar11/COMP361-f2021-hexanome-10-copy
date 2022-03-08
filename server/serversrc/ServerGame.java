@@ -34,7 +34,7 @@ public class ServerGame {
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
-    public TokenStack faceDownTokenPile;
+    public TokenStack faceDownTokenStack;
     private String gameID;
     public TownGraph aTownGraph;
     public CardStack aCardStack;
@@ -114,8 +114,8 @@ public class ServerGame {
         Route WylhienJaccaranda = new Route(wylhien, jaccaranda, MapRegion.MOUNTAIN);
         Route WylhienParundia = new Route(wylhien, parundia, MapRegion.PLAIN);
         Route WylhienAlbaran = new Route(wylhien, albaran, MapRegion.DESERT);
-        Route yttarParundia = new Route(yttar, parundia, MapRegion.LAKE);   // lake
-        Route parundiaGrangor = new Route(parundia, grangor, MapRegion.LAKE); // lake
+        Route yttarParundia = new Route(yttar, parundia, MapRegion.RIVER, 1);   // lake
+        Route parundiaGrangor = new Route(parundia, grangor, MapRegion.RIVER, 1); // lake
         Route parundiaAlbaran = new Route(parundia, albaran, MapRegion.DESERT);
         Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, MapRegion.MOUNTAIN);
         Route jaccarandaTichih = new Route(jaccaranda, tichih, MapRegion.MOUNTAIN);
@@ -127,7 +127,7 @@ public class ServerGame {
         Route albaranDagamura = new Route(albaran, dagamura, MapRegion.DESERT);
         Route dagamuraFeodori = new Route(dagamura, feodori, MapRegion.DESERT);
         Route yttarGrangor = new Route(yttar, grangor, MapRegion.MOUNTAIN);
-        Route yttarGrangor2 = new Route(yttar, grangor, MapRegion.LAKE); // lake
+        Route yttarGrangor2 = new Route(yttar, grangor, MapRegion.RIVER, 1); // lake
         Route grangorMahdavikia = new Route(grangor, mahdavikia, MapRegion.MOUNTAIN);
         Route grangorMahdavikia2 = new Route(grangor, mahdavikia, MapRegion.RIVER, 1);  // river
         Route mahdavikiaIxara = new Route(mahdavikia, ixara, MapRegion.RIVER, 1);   // river
@@ -139,13 +139,13 @@ public class ServerGame {
         Route ixaraVirst2 = new Route(ixara, virst, MapRegion.RIVER, 1);    // river
         Route virstLapphalya = new Route(virst, lapphalya, MapRegion.PLAIN);
         Route virstStrykhaven = new Route(virst, strykhaven, MapRegion.MOUNTAIN);
-        Route virstStrykhaven2 = new Route(virst, strykhaven, MapRegion.LAKE);  // lake
-        Route virstElvenhold = new Route(virst, elvenhold, MapRegion.LAKE);  // lake
+        Route virstStrykhaven2 = new Route(virst, strykhaven, MapRegion.RIVER, 1);  // lake
+        Route virstElvenhold = new Route(virst, elvenhold, MapRegion.RIVER, 1);  // lake
         Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, MapRegion.PLAIN);
         Route beataStrykhaven = new Route(beata, strykhaven, MapRegion.PLAIN);
         Route beataElvenhold = new Route(beata, elvenhold, MapRegion.PLAIN);
         Route beataElvenhold2 = new Route(beata, elvenhold, MapRegion.RIVER, 0);    // lake
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, MapRegion.LAKE);   // lake
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, MapRegion.RIVER, 1);   // lake
         Route elvenholdRivinia = new Route(elvenhold, rivinia, MapRegion.RIVER, 0); // river
         Route riviniaTichih = new Route(rivinia, tichih, MapRegion.RIVER, 0);   // river
         Route tichihErgeren = new Route(tichih, ergeren, MapRegion.WOOD);
@@ -244,7 +244,7 @@ public class ServerGame {
 
         }
 
-        this.faceDownTokenPile = new TokenStack(allTokens);
+        this.faceDownTokenStack = new TokenStack(allTokens);
         this.aCardStack = new CardStack(faceDownCardPile);
 
     }
@@ -320,6 +320,18 @@ public class ServerGame {
                 p.addCard(aCardStack.pop());
             }
         }
+    }
+
+    // method that checks if all players passed turn, to know if we move on to next phase/round
+    public boolean didAllPlayersPassTurn(){
+        // checks if all players has turnPassed as true
+        for(Player p: this.players){
+            // if one player doesn't have turnPassed as true, return false
+            if(!p.getTurnPassed()){
+                return false;
+            }
+        }
+        return true;
     }
 
     /*

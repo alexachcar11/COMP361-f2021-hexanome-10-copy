@@ -30,6 +30,7 @@ public class Route {
         this.aRegion = pRegion;
         this.hasObstacle = false;
     }
+
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
     Route(Town pStartingTown, Town pEndTown, MapRegion pRegion, int n){
@@ -104,15 +105,9 @@ public class Route {
         List<AbstractCard> output = new ArrayList<>();
         // Card goldCard = new Card(CardType.GOLD);
         // witch card ? don't think it goes here...
-
-        // for lake (use ferries which is 2 rafts for every move on lake)
-        if (aRegion.equals(MapRegion.LAKE)){
-            Card raftCard = new Card(CardType.RAFT);
-            output.add(raftCard);
-            output.add(raftCard);
-        }
-        // for river
-        else if (aRegion.equals(MapRegion.RIVER)){
+        
+        // for river and lake
+        if (aRegion.equals(MapRegion.RIVER)){
             Card raftCard = new Card(CardType.RAFT);
             output.add(raftCard);
             // check for upstream/downstream
