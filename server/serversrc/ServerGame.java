@@ -168,23 +168,15 @@ public class ServerGame {
         routes.add(grangorMahdavikia);
 
         // add all counters ingame to faceDownTokenPile
-        // first make list with all tokens:
         // depending on mode, tokens are different
-        List<Token> allTokens = new ArrayList<>();
-        // list of the counter types
         if (this.mode == Mode.ELFENLAND) {
             // create tokens and add to list
-            for (int j = 0; j < 6; j++) {
-                for (int i = 0; i < 8; i++) {
-                    Token tok = new Token(CardType.values()[j]);
-                    allTokens.add(tok);
-                }
-            }
+            this.faceDownTokenPile = TokenStack.getFullTokenStackEL();
         } else if (this.mode == Mode.ELFENGOLD) {
             // TODO
+            this.faceDownTokenPile = TokenStack.getFullTokenStackEG();
         }
 
-        this.faceDownTokenPile = new TokenStack(allTokens);
     }
 
     /**

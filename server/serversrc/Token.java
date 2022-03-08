@@ -2,15 +2,24 @@ package serversrc;
 
 import java.util.Optional;
 
+import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImageFile;
+
 public class Token {
     // type of counter
     private final CardType tokenType;
     private boolean faceDown;
     private Optional<Route> route = Optional.empty();
+    private MinuetoImageFile tokenImageFile;
 
     public Token(CardType pCT) {
         this.tokenType = pCT;
         this.faceDown = false;
+        try {
+            this.tokenImageFile = new MinuetoImageFile("images/elfenroads-sprites/M0" + pCT.ordinal() + ".png");
+        } catch (MinuetoFileException e) {
+            e.printStackTrace();
+        }
     }
 
     public CardType getTokenType() {
@@ -54,5 +63,9 @@ public class Token {
      */
     public boolean isObstacle() {
         return false;
+    }
+
+    public MinuetoImageFile getMinuetoImageFile() {
+        return this.tokenImageFile;
     }
 }

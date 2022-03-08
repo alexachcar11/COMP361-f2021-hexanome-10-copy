@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
 // import clientsrc.Token;
 
 public class TokenStack implements Iterable<Token> {
@@ -84,4 +82,8 @@ public class TokenStack implements Iterable<Token> {
         return toReturn;
     }
 
+    public static TokenStack getFullTokenStackEG() {
+        // TODO
+        return new TokenStack();
+    }
 }
