@@ -5,7 +5,7 @@ import networksrc.PlayerHasJoinedAction;
 import networksrc.UpdateUsersAction;
 
 // represents one active game session
-public class LobbyServiceGameSession implements Joinable{
+public class LobbyServiceGameSession{
 
     // fields
     private boolean launched;
@@ -170,11 +170,25 @@ public class LobbyServiceGameSession implements Joinable{
     /**
      * The Registrator will make this user join this game session
      */
-    @Override
-    public LobbyServiceGameSession join() throws Exception {
+    public LobbyServiceGameSession join(Color pColor) throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
         ClientMain.currentSession = this;
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID));
+        // pColor into string format
+        String colorStr = null;
+        if (pColor.equals(Color.BLACK)) {
+            colorStr = "BLACK";
+        } else if (pColor.equals(Color.BLUE)) {
+            colorStr = "BLUE";
+        } else if (pColor.equals(Color.YELLOW)) {
+            colorStr = "YELLOW";
+        } else if (pColor.equals(Color.PURPLE)) {
+            colorStr = "PURPLE";
+        } else if (pColor.equals(Color.RED)) {
+            colorStr = "RED";
+        } else if (pColor.equals(Color.GREEN)) {
+            colorStr = "GREEN";
+        }
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
 
@@ -182,7 +196,6 @@ public class LobbyServiceGameSession implements Joinable{
      * Returns this session
      * @return this session
      */
-    @Override
     public LobbyServiceGameSession getActiveSession() {
         return this;
     }

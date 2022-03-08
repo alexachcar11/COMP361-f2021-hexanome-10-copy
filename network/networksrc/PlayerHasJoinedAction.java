@@ -3,6 +3,7 @@ package networksrc;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import serversrc.Color;
 import serversrc.GameLobby;
 import serversrc.ServerUser;
 
@@ -10,16 +11,21 @@ public class PlayerHasJoinedAction implements Action{
 
     private String senderName;
     private String gameID;
+    private String color;
 
-    public PlayerHasJoinedAction(String senderName, String gameID) {
+    public PlayerHasJoinedAction(String senderName, String gameID, String color) {
         if (senderName == null) {
             throw new NullPointerException("PlayerHasJoined: senderName cannot be null.");
         }
         if (gameID == null) {
             throw new NullPointerException("PlayerHasJoined: gameID cannot be null.");
         }
+        if (color == null) {
+            throw new NullPointerException("PlayerHasJoined: color cannot be null.");
+        }
         this.senderName = senderName;
         this.gameID = gameID;
+        this.color = color;
         System.out.println("created a playerhasjoineaction!");
     }
 
@@ -58,6 +64,23 @@ public class PlayerHasJoinedAction implements Action{
             System.err.println(senderName + " is already in the Game Lobby " + gameID);
             return false;
         }
+
+        // senderName doesn't already have a color
+        Color currentColor = sUser.getColor();
+        if (currentColor != null) {
+            System.err.println("ChooseBootColorAction: senderName already has a color.");
+            return false;
+        }
+
+        // the color is not taken yet
+        GameLobby gameLobby = GameLobby.getGameLobby(gameID);
+        for (ServerUser user : gameLobby.getAllUsers()) {
+            Color colorTaken = user.getColor();
+            if (colorTaken != null && color.equals(colorTaken.name())) {
+                System.err.println("ChooseBootColorAction: the color is already taken");
+                return false;
+            }
+        }
         System.out.println("is valid");
         return true;
     }
@@ -69,8 +92,24 @@ public class PlayerHasJoinedAction implements Action{
         GameLobby gameLobby = GameLobby.getGameLobby(gameID);
         ServerUser sUser = ServerUser.getServerUser(senderName);
         gameLobby.addUser(sUser);
+
+        // set the user's color
+        if (color.equals("BLUE")) {
+            sUser.setColor(Color.BLUE);
+        } else if (color.equals("BLACK")) {
+            sUser.setColor(Color.BLACK);
+        } else if (color.equals("RED")) {
+            sUser.setColor(Color.RED);
+        } else if (color.equals("GREEN")) {
+            sUser.setColor(Color.GREEN);
+        } else if (color.equals("YELLOW")) {
+            sUser.setColor(Color.YELLOW);
+        } else if (color.equals("PURPLE")) {
+            sUser.setColor(Color.PURPLE);
+        }
+
         // notify all users in the lobby
-        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK();
+        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK(senderName);
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {

@@ -11,7 +11,7 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
-import networksrc.ChooseBootColorAction;
+//import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.TestAction;
 
@@ -786,16 +786,16 @@ public class ClientMain {
                     MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
                     chooseBootBackground.draw(errorText, 378, 526);
                 } else {
-                    // send action to the server
+                    /* // send action to the server
                     String senderName = currentUser.getName();
                     String color = colorChosen.name();
                     String gameID = currentSession.getSessionID();
-                    ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID));
+                    ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID)); */
 
                     // join the game
                     try {
                         if (!gameToJoin.getCreator().equals(currentUser.getName())) {
-                            gameToJoin.join();
+                            gameToJoin.join(colorChosen);
                         }
                         currentSession = gameToJoin.getActiveSession();
                     } catch (Exception e) {
