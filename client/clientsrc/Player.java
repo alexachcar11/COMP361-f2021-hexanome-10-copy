@@ -7,8 +7,6 @@ import networksrc.*;
 
 public class Player {
     boolean isTurn = false;
-
-    private Client aClient;
     private Boot aBoot;
 
     private int gold;
@@ -26,10 +24,7 @@ public class Player {
     private Game currentGame;
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
-    public Player(Client pClient, Color pColor, User pUser, Game currentGame) {
-        aClient = pClient;
-        aName = aClient.getHost();
-        // TODO: fix these coordinates to match start town
+    public Player(Color pColor, User pUser, Game currentGame) {
         aBoot = new Boot(pColor, 577, 666, 291, 370);
 
         // inTown = elvenhold;         // fix this

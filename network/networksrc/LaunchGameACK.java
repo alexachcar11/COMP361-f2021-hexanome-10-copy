@@ -17,9 +17,6 @@ public class LaunchGameACK implements Action{
         // set the session to launched
         ClientMain.currentSession.launch();
 
-        // modify game objects based on the game state received
-        // display the new board
-
         System.out.println("LaunchGameACK received");
     }
     

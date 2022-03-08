@@ -1405,6 +1405,23 @@ public class ClientMain {
         currentSession.updateUsers();
         ArrayList<User> users = currentSession.getUsers();
 
+        MinuetoImage background = null;
+        Game game = currentSession.getGame();
+        Mode currentMode = game.getMode();
+        if (currentMode.equals(Mode.ELFENLAND)) {
+            if (currentUser.getName().equals(currentSession.getCreator())) {
+                background = lobbyElfenlandCreatorBackground;
+            } else {
+                background = lobbyElfenlandBackground;
+            }
+        } else if (currentMode.equals(Mode.ELFENGOLD)) {
+            if (currentUser.getName().equals(currentSession.getCreator())) {
+                background = lobbyElfengoldCreatorBackground;
+            } else {
+                background = lobbyElfengoldBackground;
+            } 
+        }
+
         int counter = 0; // how many users are displayed so far
 
         for (User u : users) {
@@ -1454,23 +1471,6 @@ public class ClientMain {
                 uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
             }
 
-            MinuetoImage background = null;
-            Game game = currentSession.getGame();
-            Mode currentMode = game.getMode();
-            if (currentMode.equals(Mode.ELFENLAND)) {
-                if (currentUser.getName().equals(currentSession.getCreator())) {
-                    background = lobbyElfenlandCreatorBackground;
-                } else {
-                    background = lobbyElfenlandBackground;
-                }
-            } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                if (currentUser.getName().equals(currentSession.getCreator())) {
-                    background = lobbyElfengoldCreatorBackground;
-                } else {
-                    background = lobbyElfengoldBackground;
-                } 
-            }
-
             background.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
                 background.draw(uColorText, 290, 240 + counter * 50);
@@ -1481,6 +1481,8 @@ public class ClientMain {
 
             counter++;
         }
+
+        gui.window.draw(background, 0, 0);
     }
 
     public static void displayAvailableGames() {

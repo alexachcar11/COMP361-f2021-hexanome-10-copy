@@ -20,13 +20,14 @@ public class PlayerHasJoinedACK implements Action {
 
     @Override
     public void execute() {
-        // add the player to LobbyServiceGameSession
+        /* // add the player to LobbyServiceGameSession
         User existing = User.getUserByName(joinerName);
         if (existing == null) {
             ClientMain.currentSession.addUser(new User(joinerName));
         } else {
             ClientMain.currentSession.addUser(existing);
-        }
+        } */
+        // ClientMain.currentSession.updateUsers();
         // display users
         try {
             ClientMain.displayUsers();
