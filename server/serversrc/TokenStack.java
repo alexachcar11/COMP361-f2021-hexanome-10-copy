@@ -66,10 +66,22 @@ public class TokenStack implements Iterable<Token> {
         return aTokens.iterator();
     }
 
-    public static TokenStack fullStack() {
-        for (CardType cT : CardType.values()) {
-
+    /**
+     * 8x all travel counters and 6x obstacles
+     * 
+     * @return TokenStack with all tokens and obstacles for elfenland
+     */
+    public static TokenStack getFullTokenStackEL() {
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int cT = 0; cT <= CardType.DRAGON.ordinal(); cT++) {
+            for (int i = 0; i < 8; i++) {
+                tokens.add(new Token(CardType.values()[cT]));
+            }
         }
+        for (int i = 0; i < 6; i++)
+            tokens.add(new Obstacle());
+        TokenStack toReturn = new TokenStack(tokens);
+        return toReturn;
     }
 
 }
