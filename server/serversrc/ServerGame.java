@@ -30,7 +30,7 @@ public class ServerGame {
     public boolean witchEnabled;
     public Mode mode;
     public ArrayList<AbstractCard> faceDownCardPile;
-    public ArrayList<AbstractCard> faceUpCardPile;
+    public ArrayList<AbstractCard> disposedCardPile;
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
@@ -57,8 +57,10 @@ public class ServerGame {
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
+        disposedCardPile = new ArrayList<>();
 
-        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
+        // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the mode
+
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);
@@ -153,7 +155,20 @@ public class ServerGame {
         Route feodoriLapphalya = new Route(feodori, lapphalya, MapRegion.WOOD);
         Route feodoriAlbaran = new Route(feodori, albaran, MapRegion.WOOD);
 
-
+        routes.add(WylhienAlbaran);
+        routes.add(feodoriAlbaran);
+        routes.add(feodoriLapphalya);
+        routes.add(lapphalyaRivinia);
+        routes.add(feodoriRivinia);
+        routes.add(elvenholdErgeren);
+        routes.add(beataElvenhold2);
+        routes.add(virstStrykhaven2);
+        routes.add(virstElvenhold);
+        routes.add(yttarGrangor2);
+        routes.add(grangorMahdavikia2);
+        routes.add(mahdavikiaIxara2);
+        routes.add(ixaraVirst2);
+        routes.add(esselenWylhien2);
         routes.add(virstLapphalya);
         routes.add(virstStrykhaven);
         routes.add(esselenParundia);
@@ -329,15 +344,26 @@ public class ServerGame {
 
     // @pre: current phase == 5 and it's player's turn and town is adjacent
     public void playerMovedBoot(Player p, Route r){
-        
         // check if the route is valid (i.e. it's adjacent to player's town)
         // if it's valid, move boot
         if (r.getSource() == p.getTown() || r.getDest() == p.getTown()){
             // remove the cards from the player
             List<AbstractCard> requiredCards = r.getRequiredCards(p.getTown());
-            
-            // update player's town location
-            // update the town's player list
+            for (AbstractCard c: requiredCards){
+                p.removeCard(c);
+                disposedCardPile.add(c);
+            }
+            // get the town player's trying to go to
+            Town dstTown;
+            if (r.getSource() == p.getTown()){
+                dstTown = r.getDest();
+            }
+            else {
+                dstTown = r.getSource();
+            }
+            // update player's town location done in Player.moveBoot(Town t)
+            p.moveBoot(dstTown);
+            // update the town's player list is done in p.moveBoot(dstTown)
         }
     }
 

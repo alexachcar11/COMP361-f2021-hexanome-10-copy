@@ -35,6 +35,7 @@ public class Player {
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
+        this.aName = pServerUser.getName();
 
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
@@ -274,12 +275,17 @@ public class Player {
         t.addPlayer(this);
 
         // TODO: check if the player has traveled to the new town in the past already, 
-        //     -> if yes, do nothing 
-        if ()
         //     -> if no, collect the town marker and remove the town marker from the town
-
-        // note: actually GUI movement is all done inside of client main
+        if (!this.townsPassed.contains(t)){
+            this.townsPassed.add(t);
+        }
     }
+
+    // gets the total score by seeing how many towns player has passed
+    public int getScore(){
+        return this.townsPassed.size();
+    }
+
 
     /*
     Operation: Player::playCaravan()
