@@ -5,15 +5,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 // import clientsrc.Token;
 
 public class TokenStack implements Iterable<Token> {
 
     private final List<Token> aTokens;
 
-    //Creates an empty TokenStack.
-    public TokenStack()
-    {
+    // Creates an empty TokenStack.
+    public TokenStack() {
         aTokens = new ArrayList<>();
     }
 
@@ -22,7 +23,7 @@ public class TokenStack implements Iterable<Token> {
      * 
      * @param pList The tokens to initialize the stack with.
      */
-    public TokenStack(List<Token> pList){
+    public TokenStack(List<Token> pList) {
         this();
         aTokens.addAll(pList);
     }
@@ -31,11 +32,9 @@ public class TokenStack implements Iterable<Token> {
      * Shuffles TokenStack
      * 
      */
-    public void shuffle(){
+    public void shuffle() {
         Collections.shuffle(aTokens);
     }
-
-    
 
     /**
      * Removes the token on top of the stack and returns it.
@@ -43,29 +42,34 @@ public class TokenStack implements Iterable<Token> {
      * @return The token on top of the stack.
      * @pre !isEmpty()
      */
-    public Token pop()
-    {
+    public Token pop() {
         assert !isEmpty();
-        return aTokens.remove(aTokens.size()-1);
+        return aTokens.remove(aTokens.size() - 1);
     }
 
     /**
      * @return The number of tokens in the stack.
      */
-    public int size()
-    {
+    public int size() {
         return aTokens.size();
     }
 
     /**
      * @return True if and only if the stack has no cards in it.
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return aTokens.size() == 0;
     }
-    
+
     @Override
-    public Iterator<Token> iterator() {return aTokens.iterator();}
-    
+    public Iterator<Token> iterator() {
+        return aTokens.iterator();
+    }
+
+    public static TokenStack fullStack() {
+        for (CardType cT : CardType.values()) {
+
+        }
+    }
+
 }
