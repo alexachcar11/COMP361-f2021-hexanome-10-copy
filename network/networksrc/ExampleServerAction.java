@@ -1,10 +1,11 @@
 package networksrc;
+
 import java.util.ArrayList;
 
 import serversrc.Player;
 import serversrc.ServerGame;
 
-public class ExampleServerAction implements Action{
+public class ExampleServerAction implements Action {
 
     private String senderName;
 
@@ -43,7 +44,7 @@ public class ExampleServerAction implements Action{
         ACKManager ackManager = ACKManager.getInstance();
         ExampleActionACK actionToSend = new ExampleActionACK(senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
-        
+
     }
-    
+
 }
