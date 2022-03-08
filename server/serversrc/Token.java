@@ -16,7 +16,7 @@ public class Token {
         this.tokenType = pCT;
         this.faceDown = false;
         try {
-            this.tokenImageFile = new MinuetoImageFile("images/elfenroads-sprites/M0" + pCT.ordinal() + ".png");
+            this.tokenImageFile = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }

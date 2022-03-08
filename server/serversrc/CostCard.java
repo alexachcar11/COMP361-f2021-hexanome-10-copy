@@ -29,6 +29,13 @@ public class CostCard extends Card {
         return INSTANCE;
     }
 
+    /**
+     * 
+     * @param rT
+     * @param cT
+     * @return cost, as number of cards of matching type, to travel route
+     * @return 0, if cannot travel
+     */
     public static int getCost(int rT, int cT) {
         return INSTANCE.COST_ARRAY[rT][cT];
     }

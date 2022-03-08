@@ -76,8 +76,6 @@ public class TokenStack implements Iterable<Token> {
                 tokens.add(new Token(CardType.values()[cT]));
             }
         }
-        for (int i = 0; i < 6; i++)
-            tokens.add(new Obstacle());
         TokenStack toReturn = new TokenStack(tokens);
         return toReturn;
     }
