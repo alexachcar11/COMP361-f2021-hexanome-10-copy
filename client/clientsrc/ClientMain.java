@@ -813,6 +813,7 @@ public class ClientMain {
                         // TODO: add elfengold options
                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
                         gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
+                        ACTION_MANAGER.waitForPlayersAsCreator();
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
