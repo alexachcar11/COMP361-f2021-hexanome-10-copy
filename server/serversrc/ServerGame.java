@@ -155,6 +155,7 @@ public class ServerGame {
         Route feodoriLapphalya = new Route(feodori, lapphalya, MapRegion.WOOD);
         Route feodoriAlbaran = new Route(feodori, albaran, MapRegion.WOOD);
 
+        routes.add(parundiaGrangor);
         routes.add(WylhienAlbaran);
         routes.add(feodoriAlbaran);
         routes.add(feodoriLapphalya);
