@@ -37,6 +37,7 @@ public class ServerGame {
     public TokenStack faceDownTokenPile;
     private String gameID;
     public TownGraph aTownGraph;
+    public CardStack aCardStack;
 
 
     /**
@@ -191,8 +192,29 @@ public class ServerGame {
         else if (this.mode == Mode.ELFENGOLD){
             // TODO
         }
+        // initialize TravelCard array
+
+        // initialize TravelCard objects
+        if (this.mode == Mode.ELFENLAND){
+            //
+            for (int j = 0; j<6; j++){
+                for (int i = 0; i < 10; i++){
+                    Card newCard = new Card(CardType.values()[j]);
+                    faceDownCardPile.add(newCard);
+                }
+            }
+
+            // initialize raft cards
+            for (int i = 0; i < 12; i++){
+                Card newCard = new Card(CardType.RAFT);
+                faceDownCardPile.add(newCard);
+            }
+
+        }
 
         this.faceDownTokenPile = new TokenStack(allTokens);
+        this.aCardStack = new CardStack(faceDownCardPile);
+
     }
 
     public Town getTownByName(String townName){
@@ -254,6 +276,19 @@ public class ServerGame {
         else{
             this.currentPhase++;
         }
+    }
+
+    public void phaseOne(){
+
+        // shuffle
+        aCardStack.shuffle();
+
+        for (Player p: players){
+            for (int i; i <8 ; i++) {
+                p.addCard(aCardStack.pop());
+            }
+        }
+
     }
 
     /*

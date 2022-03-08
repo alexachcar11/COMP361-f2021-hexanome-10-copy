@@ -2,11 +2,10 @@ package networksrc;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import serversrc.GameLobby;
-import serversrc.Player;
-import serversrc.ServerGame;
-import serversrc.ServerUser;
+import serversrc.*;
 
 public class LaunchGameAction implements Action{
 
@@ -63,10 +62,27 @@ public class LaunchGameAction implements Action{
         }
 
         // distribute resources here
-        
+        serverGame.phaseOne();
+
         // notify all users in the lobby
         // TODO: LaunchGameACK will contain the game state
-        LaunchGameACK actionToSend = new LaunchGameACK();
+
+        ArrayList<String> sendPlayer = new ArrayList<>();
+        ArrayList<ArrayList<String>> travelCards = new ArrayList<>();
+
+        for (Player p: serverGame.getAllPlayers()){
+            String name = p.getName();
+            sendPlayer.add(name);
+            ArrayList<String> cards = new ArrayList<String>();
+
+            List<AbstractCard> abstractCards = p.getCards();
+            for (AbstractCard c: abstractCards){
+                cards.add(c.getName());
+            }
+            travelCards.add(cards);
+        }
+        LaunchGameACK actionToSend = new LaunchGameACK(sendPlayer, travelCards);
+
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {

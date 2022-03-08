@@ -18,7 +18,7 @@ public class Player {
 
     private int gold;
     private Boot boot;
-    private List<Card> cardsInHand;
+    private List<AbstractCard> cardsInHand;
     private List<Token> tokensInHand;
     private Town inTown;
 
@@ -104,6 +104,14 @@ public class Player {
         return this.aBoot.getColor();
     }
     // draw counter from face down pile
+
+    public void addCard(AbstractCard c){
+        cardsInHand.add(c);
+    }
+
+    public List<AbstractCard> getCards(){
+        return cardsInHand;
+    }
 
     /*
     Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
