@@ -130,6 +130,10 @@ public class Player {
         return cardsInHand;
     }
 
+    public void addToken(Token tok){
+        this.tokensInHand.add(tok);
+    }
+
     /*
     Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
     Scope: Player; Game; Token;

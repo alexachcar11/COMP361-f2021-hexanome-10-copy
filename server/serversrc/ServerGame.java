@@ -53,7 +53,7 @@ public class ServerGame {
         this.mode = mode;
         this.currentRound = 1;
         this.gameID = gameID;
-
+    
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
@@ -265,6 +265,9 @@ public class ServerGame {
     public void addPlayer(Player player) throws IndexOutOfBoundsException{
         if (players.size() <= numberOfPlayers) {
             players.add(player);
+            // give player an obstacle
+            Obstacle aObstacle = new Obstacle();
+            player.addToken(aObstacle);
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
