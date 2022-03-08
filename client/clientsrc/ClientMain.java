@@ -37,7 +37,7 @@ public class ClientMain {
     public static Game currentGame;
     public static Player currentPlayer;
 
-    static GUI gui;
+    public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue, chooseBootQueue;
     static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
@@ -812,9 +812,15 @@ public class ClientMain {
                         }
                         // TODO: add elfengold options
                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
+                        gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
                     } else {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                        gui.window.draw(lobbyElfenlandBackground, 0, 0);
                     }
+
+                    gui.window.render();
+
+                    ACTION_MANAGER.waitForPlayers();
                 }
             } else {
                 // Click on a Color
@@ -1061,7 +1067,7 @@ public class ClientMain {
         // make window visible
         gui.window.setVisible(true);
 
-        // create entry screen mouse handler TODO: where does this go (Lilia / Owen)
+        // create entry screen mouse handler
         entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(entryScreenMouseHandler, entryScreenQueue);
 
@@ -1205,20 +1211,17 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                ACTION_MANAGER.waitForPlayers();
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
-                ACTION_MANAGER.waitForPlayers();
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
                 gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                ACTION_MANAGER.waitForPlayers();
                 if (currentSession.isLaunchable()) {
                     // launchable
                     lobbyElfenlandBackground.draw(startButton, 825, 580);
@@ -1231,7 +1234,6 @@ public class ClientMain {
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
                 gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
-                ACTION_MANAGER.waitForPlayers();
                 if (currentSession.isLaunchable()) {
                     // launchable
                     lobbyElfenlandBackground.draw(startButton, 825, 580);

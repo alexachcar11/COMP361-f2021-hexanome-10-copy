@@ -40,6 +40,8 @@ public class ActionManager {
                 if (actionIn.isValid()) {
                     actionIn.execute();
                 }
+                // update gui
+                ClientMain.gui.window.render();
             }   
         }
     }
