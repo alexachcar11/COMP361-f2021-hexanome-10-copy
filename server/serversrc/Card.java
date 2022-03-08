@@ -30,7 +30,7 @@ public class Card extends AbstractCard{
         return c.getName().equalsIgnoreCase(this.getName());
     }
 
-    private String getName(){
+    public String getName(){
         return this.aCardType.name();
     }
 }

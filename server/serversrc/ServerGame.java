@@ -29,8 +29,8 @@ public class ServerGame {
     public boolean destinationTownEnabled;
     public boolean witchEnabled;
     public Mode mode;
-    public ArrayList<Card> faceDownCardPile;
-    public ArrayList<Card> faceUpCardPile;
+    public ArrayList<AbstractCard> faceDownCardPile;
+    public ArrayList<AbstractCard> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     //public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
@@ -104,46 +104,62 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
-        // TODO: add region to the construction of routes (Dijian (me) will do this soon)
-        Route esselenWylhien = new Route(esselen, wylhien);
-        Route esselenYttar = new Route(esselen, yttar);
-        Route esselenParundia = new Route(esselen, parundia);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda);
-        Route WyhlienParundia = new Route(wylhien, parundia);
-        Route yttarParundia = new Route(yttar, parundia);
-        Route parundiaAlbaran = new Route(parundia, albaran);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia);
-        Route throtmanniTichih = new Route(thortmanni, tichih);
-        Route throtmanniFeodori = new Route(thortmanni, feodori);
-        Route kihromahDagamura = new Route(kihromah, dagamura);
-        Route albaranDagamura = new Route(albaran, dagamura);
-        Route dagamuraFeodori = new Route(dagamura, feodori);
-        Route yttarGrangor = new Route(yttar, grangor);
-        Route grangorMahdavikia = new Route(grangor, mahdavikia);
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya);
-        Route ixaraLapphalya = new Route(ixara, lapphalya);
-        Route ixaraDagamura = new Route(ixara, dagamura);
-        Route ixaraVirst = new Route(ixara, virst);
-        Route virstLapphalya = new Route(virst, lapphalya);
-        Route virstStrykhaven = new Route(virst, strykhaven);
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold);
-        Route beataStrykhaven = new Route(beata, strykhaven);
-        Route beataElvenhold = new Route(beata, elvenhold);
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven);
-        Route elvenholdRivinia = new Route(elvenhold, rivinia);
-        Route riviniaTichih = new Route(rivinia, tichih);
-        Route tichihErgeren = new Route(tichih, ergeren);
+        
+        Route esselenWylhien = new Route(esselen, wylhien, MapRegion.PLAIN);
+        Route esselenWylhien2 = new Route(esselen, wylhien, MapRegion.RIVER, 1);    // river
+        Route esselenYttar = new Route(esselen, yttar, MapRegion.WOOD);
+        Route esselenParundia = new Route(esselen, parundia, MapRegion.WOOD);
+        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, MapRegion.MOUNTAIN);
+        Route WylhienParundia = new Route(wylhien, parundia, MapRegion.PLAIN);
+        Route WylhienAlbaran = new Route(wylhien, albaran, MapRegion.DESERT);
+        Route yttarParundia = new Route(yttar, parundia, MapRegion.LAKE);   // lake
+        Route parundiaGrangor = new Route(parundia, grangor, MapRegion.LAKE); // lake
+        Route parundiaAlbaran = new Route(parundia, albaran, MapRegion.DESERT);
+        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, MapRegion.MOUNTAIN);
+        Route jaccarandaTichih = new Route(jaccaranda, tichih, MapRegion.MOUNTAIN);
+        Route throtmanniAlbaran = new Route(thortmanni, albaran, MapRegion.DESERT);
+        Route throtmanniRivinia = new Route(thortmanni, rivinia, MapRegion.WOOD);
+        Route throtmanniTichih = new Route(thortmanni, tichih, MapRegion.PLAIN);
+        Route throtmanniFeodori = new Route(thortmanni, feodori, MapRegion.DESERT);
+        Route kihromahDagamura = new Route(kihromah, dagamura, MapRegion.WOOD);
+        Route albaranDagamura = new Route(albaran, dagamura, MapRegion.DESERT);
+        Route dagamuraFeodori = new Route(dagamura, feodori, MapRegion.DESERT);
+        Route yttarGrangor = new Route(yttar, grangor, MapRegion.MOUNTAIN);
+        Route yttarGrangor2 = new Route(yttar, grangor, MapRegion.LAKE); // lake
+        Route grangorMahdavikia = new Route(grangor, mahdavikia, MapRegion.MOUNTAIN);
+        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, MapRegion.RIVER, 1);  // river
+        Route mahdavikiaIxara = new Route(mahdavikia, ixara, MapRegion.RIVER, 1);   // river
+        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, MapRegion.MOUNTAIN);
+        Route dagamuraLapphalya = new Route(dagamura, lapphalya, MapRegion.WOOD);
+        Route ixaraLapphalya = new Route(ixara, lapphalya, MapRegion.WOOD);
+        Route ixaraDagamura = new Route(ixara, dagamura, MapRegion.WOOD);
+        Route ixaraVirst = new Route(ixara, virst, MapRegion.PLAIN);
+        Route ixaraVirst2 = new Route(ixara, virst, MapRegion.RIVER, 1);    // river
+        Route virstLapphalya = new Route(virst, lapphalya, MapRegion.PLAIN);
+        Route virstStrykhaven = new Route(virst, strykhaven, MapRegion.MOUNTAIN);
+        Route virstStrykhaven2 = new Route(virst, strykhaven, MapRegion.LAKE);  // lake
+        Route virstElvenhold = new Route(virst, elvenhold, MapRegion.LAKE);  // lake
+        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, MapRegion.PLAIN);
+        Route beataStrykhaven = new Route(beata, strykhaven, MapRegion.PLAIN);
+        Route beataElvenhold = new Route(beata, elvenhold, MapRegion.PLAIN);
+        Route beataElvenhold2 = new Route(beata, elvenhold, MapRegion.RIVER, 0);    // lake
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, MapRegion.LAKE);   // lake
+        Route elvenholdRivinia = new Route(elvenhold, rivinia, MapRegion.RIVER, 0); // river
+        Route riviniaTichih = new Route(rivinia, tichih, MapRegion.RIVER, 0);   // river
+        Route tichihErgeren = new Route(tichih, ergeren, MapRegion.WOOD);
+        Route elvenholdErgeren = new Route(elvenhold, ergeren, MapRegion.WOOD);
+        Route feodoriRivinia = new Route(feodori, rivinia, MapRegion.WOOD);
+        Route lapphalyaRivinia = new Route(lapphalya, rivinia, MapRegion.WOOD);
+        Route feodoriLapphalya = new Route(feodori, lapphalya, MapRegion.WOOD);
+        Route feodoriAlbaran = new Route(feodori, albaran, MapRegion.WOOD);
+
 
         routes.add(virstLapphalya);
         routes.add(virstStrykhaven);
         routes.add(esselenParundia);
         routes.add(esselenYttar);
         routes.add(esselenWylhien);
-        routes.add(WyhlienParundia);
+        routes.add(WylhienParundia);
         routes.add(WylhienJaccaranda);
         routes.add(yttarGrangor);
         routes.add(yttarParundia);
@@ -284,11 +300,10 @@ public class ServerGame {
         aCardStack.shuffle();
 
         for (Player p: players){
-            for (int i; i <8 ; i++) {
+            for (int i=0; i <8 ; i++) {
                 p.addCard(aCardStack.pop());
             }
         }
-
     }
 
     /*
@@ -319,6 +334,8 @@ public class ServerGame {
         // if it's valid, move boot
         if (r.getSource() == p.getTown() || r.getDest() == p.getTown()){
             // remove the cards from the player
+            List<AbstractCard> requiredCards = r.getRequiredCards(p.getTown());
+            
             // update player's town location
             // update the town's player list
         }

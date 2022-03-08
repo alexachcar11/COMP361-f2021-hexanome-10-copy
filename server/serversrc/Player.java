@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// import clientsrc.Boot;
-// import clientsrc.Card;
-// import clientsrc.Color;
-// import clientsrc.Token;
-// import clientsrc.Town;
 import networksrc.*;
 
 public class Player {
@@ -21,6 +16,8 @@ public class Player {
     private List<AbstractCard> cardsInHand;
     private List<Token> tokensInHand;
     private Town inTown;
+    private List<Town> townsPassed; // to keep track of score 
+    private Town targetTown;    // destination town for variant
 
     private String aName;
     private Action aBootAction;
@@ -56,12 +53,12 @@ public class Player {
         return null;
     }
 
-    public boolean hasCards(List<Card> cardList){
+    public boolean hasCards(List<AbstractCard> cardList){
         // copy the cardList 
-        List<Card> copyList = new ArrayList<Card>(cardList.size());
+        List<AbstractCard> copyList = new ArrayList<AbstractCard>(cardList.size());
         Collections.copy(copyList, cardList);
 
-        for (Card c: cardList){
+        for (AbstractCard c: cardList){
             // check if player doesn't have card c
             if (!copyList.contains(c)){
                 return false;
@@ -98,6 +95,11 @@ public class Player {
 
     public boolean getIsTurn(){
         return this.isTurn;
+    }
+
+    // returns the removed card and removes card from hand
+    public void removeCard(AbstractCard card){
+        this.cardsInHand.remove(card);
     }
 
     public Color getBootColor(){
@@ -261,6 +263,7 @@ public class Player {
     // }
 
     public void moveBoot(Town t) { 
+
         // remove the player from the old town 
         inTown.playersHere.remove(this);
 
@@ -272,6 +275,7 @@ public class Player {
 
         // TODO: check if the player has traveled to the new town in the past already, 
         //     -> if yes, do nothing 
+        if ()
         //     -> if no, collect the town marker and remove the town marker from the town
 
         // note: actually GUI movement is all done inside of client main

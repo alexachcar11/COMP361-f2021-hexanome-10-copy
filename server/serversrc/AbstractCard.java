@@ -6,5 +6,4 @@ public abstract class AbstractCard {
     public String getName(){
         return aType.name();
     }
-
 }

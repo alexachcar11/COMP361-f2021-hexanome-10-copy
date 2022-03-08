@@ -100,8 +100,8 @@ public class Route {
     // @pre should check if there's a counter on road first 
     // (extra note, check region type is valid for the counter when placing counters
     // so that means counter will be valid at this stage no matter the region)
-    public List<Card> getRequiredCards(Town currTown){
-        List<Card> output = new ArrayList<>();
+    public List<AbstractCard> getRequiredCards(Town currTown){
+        List<AbstractCard> output = new ArrayList<>();
         // Card goldCard = new Card(CardType.GOLD);
         // witch card ? don't think it goes here...
 
