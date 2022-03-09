@@ -1399,9 +1399,7 @@ public class ClientMain {
 
     public static void displayOriginalBoard() {
         // display background depending on the mode
-        LobbyServiceGame gameService = currentSession.getGameService();
-        Game game = gameService.getGame();
-        Mode currentMode = game.getMode();
+        Mode currentMode = currentGame.getMode();
         if (currentMode.equals(Mode.ELFENLAND)) {
             gui.currentBackground = GUI.Screen.ELFENLAND;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
