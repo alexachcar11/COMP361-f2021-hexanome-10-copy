@@ -39,8 +39,9 @@ public class ServerGame {
     public boolean destinationTownEnabled;
     public boolean witchEnabled;
     public Mode mode;
+    public TownGoldOption townGoldOption;
     public ArrayList<AbstractCard> faceDownCardPile;
-    public ArrayList<AbstractCard> disposedCardPile;
+    public ArrayList<AbstractCard> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     // public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
@@ -48,6 +49,7 @@ public class ServerGame {
     private String gameID;
     public TownGraph aTownGraph;
     public CardStack aCardStack;
+    private List<AbstractCard> disposedCardPile;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -61,6 +63,7 @@ public class ServerGame {
         this.destinationTownEnabled = destinationTownEnabled;
         this.witchEnabled = witchEnabled;
         this.mode = mode;
+        this.townGoldOption = townGoldOption;
         this.currentRound = 1;
 
         towns = new ArrayList<>();
@@ -269,6 +272,26 @@ public class ServerGame {
     // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
+    }
+
+    public int getGameRoundsLimit() {
+        return gameRoundsLimit;
+    }
+
+    public boolean isDestinationTownEnabled() {
+        return destinationTownEnabled;
+    }
+
+    public boolean isWitchEnabled() {
+        return witchEnabled;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public TownGoldOption getTownGoldOption() {
+        return townGoldOption;
     }
 
     public static ArrayList<Town> getTowns() {

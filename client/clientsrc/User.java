@@ -4,6 +4,8 @@ Represents one user from the moment the game is launched (they may not be a play
 
 package clientsrc;
 
+import java.util.ArrayList;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -18,6 +20,7 @@ public class User {
     private boolean ready = false;
     private Color color = null;
     private Client client;
+    private static ArrayList<User> allUsers = new ArrayList<>();
 
     // CONSTRUCTOR
     public User(String name, String password) {
@@ -31,10 +34,20 @@ public class User {
         Client client = new Client("elfenland.simui.com", 13645, this);
         this.client = client;
         client.start();
+        allUsers.add(this);
     }
 
     public User(String name) {
         this.name = name;
+    }
+
+    public static User getUserByName(String name) {
+        for (User u : allUsers) {
+            if (u.getName().equals(name)) {
+                return u;
+            }
+        }
+        return null;
     }
 
 

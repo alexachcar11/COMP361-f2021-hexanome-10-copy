@@ -28,6 +28,7 @@ public class LaunchGameACK implements Action{
         // set the session to launched
         ClientMain.currentSession.launch();
 
+<<<<<<< HEAD
         // modify game objects based on the game state received
         // TODO: iterate thru playerNames, index for loop --> use to iterate thru playerCards, give Players their cards :)
 
@@ -35,6 +36,10 @@ public class LaunchGameACK implements Action{
         // display the new board
 
         System.out.println("LaunchGameACK received");
+=======
+        // display board screen
+        ClientMain.displayOriginalBoard();
+>>>>>>> lobbyservice
     }
     
 }

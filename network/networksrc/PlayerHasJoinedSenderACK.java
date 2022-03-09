@@ -6,12 +6,12 @@ import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.User;
 
-public class PlayerHasJoinedACK implements Action {
+public class PlayerHasJoinedSenderACK implements Action{
 
     private String joinerName;
     private String color;
 
-    public PlayerHasJoinedACK(String joinerName, String color) {
+    public PlayerHasJoinedSenderACK(String joinerName, String color) {
         this.joinerName = joinerName;
         this.color = color;
     }
@@ -24,29 +24,31 @@ public class PlayerHasJoinedACK implements Action {
     @Override
     public void execute() {
         // add the player to LobbyServiceGameSession
-        User newUser = new User(joinerName);
-        ClientMain.currentSession.addUser(newUser);
+        User existing = User.getUserByName(joinerName);
+        ClientMain.currentSession.addUser(existing);
 
         // assign the color
         if (color.equals("BLUE")) {
-            newUser.setColor(Color.BLUE);
+            existing.setColor(Color.BLUE);
         } else if (color.equals("BLACK")) {
-            newUser.setColor(Color.BLACK);
+            existing.setColor(Color.BLACK);
         } else if (color.equals("RED")) {
-            newUser.setColor(Color.RED);
+            existing.setColor(Color.RED);
         } else if (color.equals("GREEN")) {
-            newUser.setColor(Color.GREEN);
+            existing.setColor(Color.GREEN);
         } else if (color.equals("YELLOW")) {
-            newUser.setColor(Color.YELLOW);
+            existing.setColor(Color.YELLOW);
         } else if (color.equals("PURPLE")) {
-            newUser.setColor(Color.PURPLE);
+            existing.setColor(Color.PURPLE);
         } 
+        ClientMain.currentSession.updateUsers();
         try {
             ClientMain.displayUsers();
-            System.out.println("displaying users.");
+            System.out.println("displaying users to the sender");
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
+        
     }
     
 }
