@@ -1,9 +1,6 @@
 package networksrc;
 
 import clientsrc.ClientMain;
-import clientsrc.Game;
-import clientsrc.LobbyServiceGame;
-import clientsrc.Mode;
 
 public class LaunchGameACK implements Action{
 
@@ -21,6 +18,7 @@ public class LaunchGameACK implements Action{
         ClientMain.currentSession.launch();
 
         // display board screen
+        ClientMain.displayOriginalBoard();
     }
     
 }

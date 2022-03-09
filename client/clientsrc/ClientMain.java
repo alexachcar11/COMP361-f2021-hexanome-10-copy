@@ -804,12 +804,32 @@ public class ClientMain {
                         } catch (MinuetoFileException e) {
                             e.printStackTrace();
                         }
-                        // switch backgrounds
-                        gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
-                        gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                        gui.window.render();
-                        // wait for enough players to join
-                        ACTION_MANAGER.waitForPlayersAsCreator();
+
+                        Game game = currentSession.getGame();
+                        Mode currentMode = game.getMode();
+                        // switch backgrounds depending on the game mode
+                        if (currentMode.equals(Mode.ELFENLAND)) {
+                            gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
+                            gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
+                            lobbyElfenlandCreatorBackground.draw(greyStartButton, 822, 580);
+                            gui.window.render();
+                            // wait for enough players to join
+                            ACTION_MANAGER.waitForPlayersAsCreator();
+                            // we arrive here if the session is launchable: then display the launch button
+                            lobbyElfenlandCreatorBackground.draw(startButton, 822, 580);
+                        } else if (currentMode.equals(Mode.ELFENGOLD)) {
+                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
+                            gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
+                            lobbyElfenlandCreatorBackground.draw(greyStartButton, 822, 580);
+                            gui.window.render();
+                            // wait for enough players to join
+                            ACTION_MANAGER.waitForPlayersAsCreator();
+                            // we arrive here if the session is launchable: then display the launch button
+                            lobbyElfengoldCreatorBackground.draw(startButton, 822, 580);
+                        }
+                        
+                        
+                        
                     } else {
                         // not the creator
 
@@ -903,19 +923,9 @@ public class ClientMain {
                 } */
             } else {
                 // for the creator
-                if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
+                if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
                     // click on Launch button -> launch the session
                     REGISTRATOR.launchSession(currentSession, currentUser);
-
-                    // go to board screen
-                    LobbyServiceGame gameService = currentSession.getGameService();
-                    Game game = gameService.getGame();
-                    Mode currentMode = game.getMode();
-                    if (currentMode.equals(Mode.ELFENLAND)) {
-                        gui.currentBackground = GUI.Screen.ELFENLAND;
-                    } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                        gui.currentBackground = GUI.Screen.ELFENGOLD;
-                    }
                 }
             }
 
@@ -1230,25 +1240,11 @@ public class ClientMain {
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
                 gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                if (currentSession.isLaunchable()) {
-                    // launchable
-                    lobbyElfenlandBackground.draw(startButton, 825, 580);
-                } else {
-                    // not launchable
-                    lobbyElfenlandBackground.draw(greyStartButton, 825, 580);
-                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
                 gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
-                if (currentSession.isLaunchable()) {
-                    // launchable
-                    lobbyElfenlandBackground.draw(startButton, 825, 580);
-                } else {
-                    // not launchable
-                    lobbyElfenlandBackground.draw(greyStartButton, 825, 580);
-                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
@@ -1408,9 +1404,20 @@ public class ClientMain {
         }
     }
 
+    public static void displayOriginalBoard() {
+        // display background depending on the mode
+        LobbyServiceGame gameService = currentSession.getGameService();
+        Game game = gameService.getGame();
+        Mode currentMode = game.getMode();
+        if (currentMode.equals(Mode.ELFENLAND)) {
+            gui.currentBackground = GUI.Screen.ELFENLAND;
+        } else if (currentMode.equals(Mode.ELFENGOLD)) {
+            gui.currentBackground = GUI.Screen.ELFENGOLD;
+        }
+    }
+
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
-        //currentSession.updateUsers();
         ArrayList<User> users = currentSession.getUsers();
 
         MinuetoImage background = null;

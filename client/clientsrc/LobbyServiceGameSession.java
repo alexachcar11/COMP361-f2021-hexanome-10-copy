@@ -152,6 +152,11 @@ public class LobbyServiceGameSession{
      */
     public boolean isLaunchable() {
         // check there are enough users
+
+        return users.size() == gameService.getNumberOfUsers();
+
+
+        /* // check there are enough users
         if (users.size() != gameService.getNumberOfUsers()) {
             return false;
         }
@@ -164,7 +169,7 @@ public class LobbyServiceGameSession{
                 break;
             }
         }
-        return allReady;
+        return allReady; */
     }
 
     /**
