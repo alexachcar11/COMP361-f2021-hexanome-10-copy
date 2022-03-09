@@ -10,19 +10,17 @@ import java.util.Set;
 
 public class Route {
 
-    // route needs to have a starting town and an ending town
-    // routes carry one transportation counter maximum, but don't need to have one
-
-    private List<Town> towns;
+    //
+    private Town source;
+    private Town dest;
     Token aToken; // TODO: there could be multiple tokens, list ?
     // upstream
     boolean isUpstream;
     private RouteType type;
 
     Route(Town pStartingTown, Town pEndTown, RouteType rType) {
-        this.towns = new ArrayList<>();
-        this.towns.add(pStartingTown);
-        this.towns.add(pEndTown);
+        this.source = pStartingTown;
+        this.dest = pEndTown;
         this.aToken = null;
         this.type = rType;
     }
@@ -30,10 +28,9 @@ public class Route {
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
     Route(Town pStartingTown, Town pEndTown, boolean upstream) {
-        this.towns = new ArrayList<>();
         this.isUpstream = upstream;
-        this.towns.add(pStartingTown);
-        this.towns.add(pEndTown);
+        this.source = pStartingTown;
+        this.dest = pEndTown;
         this.aToken = null;
         this.type = RouteType.RIVER;
     }
@@ -43,16 +40,12 @@ public class Route {
         isUpstream = b;
     }
 
-    public List<Town> getTowns() {
-        return this.towns;
-    }
-
     public Town getSource() {
-        return towns.get(0);
+        return source;
     }
 
     public Town getDest() {
-        return towns.get(1);
+        return dest;
     }
 
     /**

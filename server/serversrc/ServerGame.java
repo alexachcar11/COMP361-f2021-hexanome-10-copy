@@ -307,6 +307,10 @@ public class ServerGame {
         }
     }
 
+    public void phaseTwo() {
+
+    }
+
     // method that checks if all players passed turn, to know if we move on to next
     // phase/round
     public boolean didAllPlayersPassTurn() {
@@ -348,7 +352,7 @@ public class ServerGame {
     public void playerMovedBoot(Player p, Route r) {
         // check if the route is valid (i.e. it's adjacent to player's town)
         // if it's valid, move boot
-        if (r.getTowns().contains(p.getTown())) {
+        if (r.getSource() == p.getTown() || r.getDest() == p.getTown()) {
             // remove the cards from the player
             p.getCards().removeAll(r.getRequiredCards(p.getTown()));
             // get the town player's trying to go to
@@ -372,6 +376,14 @@ public class ServerGame {
         return this.aTownGraph;
     }
 
+    public Town getTownByName(String townName) {
+        for (Town t : towns) {
+            if (t.getTownName().equalsIgnoreCase(townName)) {
+                return t;
+            }
+        }
+        return null;
+    }
     /*
      * Operation: Game::loadGame(savedGame: Game)
      * Scope: Player;
