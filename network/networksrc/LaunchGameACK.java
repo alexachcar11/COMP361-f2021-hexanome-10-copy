@@ -28,11 +28,11 @@ public class LaunchGameACK implements Action{
             Color pColor = u.getColor();
             Game currentGame = ClientMain.currentSession.getGame();
             Player newPlayer = new Player(pColor, u, currentGame);
-            Town elvenhold = Game.getTownByName("Elvenhold");
-            newPlayer.setTown(elvenhold);
+            currentGame.addPlayer(newPlayer);
+            if (u.getName().equals(ClientMain.currentUser.getName())) {
+                ClientMain.currentPlayer = newPlayer;
+            }
         }
-
-        ClientMain.currentPlayer = ...;
 
         // modify game objects based on the game state received
         
