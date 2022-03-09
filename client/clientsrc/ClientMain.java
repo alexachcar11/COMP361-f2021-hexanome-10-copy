@@ -811,7 +811,7 @@ public class ClientMain {
                         if (currentMode.equals(Mode.ELFENLAND)) {
                             gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
                             gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                            lobbyElfenlandCreatorBackground.draw(greyStartButton, 822, 580);
+                            gui.window.draw(greyStartButton, 822, 580);
                             gui.window.render();
                             // wait for enough players to join
                             ACTION_MANAGER.waitForPlayersAsCreator();
@@ -820,7 +820,7 @@ public class ClientMain {
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
                             gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
                             gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
-                            lobbyElfenlandCreatorBackground.draw(greyStartButton, 822, 580);
+                            gui.window.draw(greyStartButton, 822, 580);
                             gui.window.render();
                             // wait for enough players to join
                             ACTION_MANAGER.waitForPlayersAsCreator();

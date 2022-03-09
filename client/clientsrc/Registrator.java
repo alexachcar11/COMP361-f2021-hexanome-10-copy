@@ -466,7 +466,7 @@ public class Registrator {
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": could not launch game session");
+            System.err.println("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
         } else {
             System.out.println("launched successfully on the LS");
             // send to the server
