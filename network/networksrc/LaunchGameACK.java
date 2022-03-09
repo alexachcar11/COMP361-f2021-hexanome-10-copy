@@ -3,7 +3,6 @@ package networksrc;
 import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.Player;
-import clientsrc.Town;
 import clientsrc.User;
 import clientsrc.Game;
 
