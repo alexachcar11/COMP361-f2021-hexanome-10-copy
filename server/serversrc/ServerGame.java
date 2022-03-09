@@ -247,6 +247,9 @@ public class ServerGame {
     public void addPlayer(Player player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
+            // give player an obstacle
+            Obstacle aObstacle = new Obstacle();
+            player.addToken(aObstacle);
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
