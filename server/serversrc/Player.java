@@ -86,6 +86,19 @@ public class Player {
     }
     // draw counter from face down pile
 
+<<<<<<< Updated upstream
+=======
+    public void addCard(AbstractCard c){
+        cardsInHand.add(c);
+    }
+
+    public List<AbstractCard> getCards(){
+        return cardsInHand;
+    }
+
+
+
+>>>>>>> Stashed changes
     /*
     Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
     Scope: Player; Game; Token;

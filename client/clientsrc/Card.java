@@ -24,6 +24,7 @@ public abstract class Card extends Image{
     public Card(int minX, int maxX, int minY, int maxY, MinuetoImage image, String name) {
         super(minX, maxX, minY, maxY, image);
         // name of card
+        // TODO: make sure is consistent w CardType enum in serversrc
         aName = name;
     }
 
@@ -45,7 +46,12 @@ public abstract class Card extends Image{
         return c.getName().equalsIgnoreCase(this.aName);
     }
 
-    private String getName(){
+    public String getName(){
         return this.aName;
     }
+
+    /** DID NOT NEED THIS. USED Game.getFaceDownCard(cardString) directly from game in Player
+    public Card getCardByName(String cardString){
+        return Game.getFaceDownCard(cardString);
+    } **/
 }

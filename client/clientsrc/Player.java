@@ -88,6 +88,12 @@ public class Player {
     public Action getBootAction() {
         return aBootAction;
     }
+
+    public void addCardStringArray(ArrayList<String> cardArray){
+        for (String cardString : cardArray) {
+            this.cardsInHand.add(Game.getFaceDownCard(cardString));
+        }
+    }
     /*
     Operation: Player::startGame(gameSession: Session)
     Scope: Player; Session;

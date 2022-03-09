@@ -26,7 +26,14 @@ public abstract class Card{
         return c.getName().equalsIgnoreCase(this.aName);
     }
 
+<<<<<<< Updated upstream
     private String getName(){
         return this.aName;
+=======
+    // public or private idk it says to make it public
+    public String getName(){
+        return this.aCardType.name();
+>>>>>>> Stashed changes
     }
+
 }

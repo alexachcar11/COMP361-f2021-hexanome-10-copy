@@ -255,6 +255,22 @@ public class ServerGame {
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    public void phaseOne(){
+
+        // shuffle
+        aCardStack.shuffle();
+
+        for (Player p: players){
+            for (int i; i < 8 ; i++) {
+                p.addCard(aCardStack.pop());
+            }
+        }
+
+    }
+
+>>>>>>> Stashed changes
     /*
     *   Notes for moving boot:
     *   - It's currently the move boot phase of the game (phase 5)
