@@ -35,6 +35,7 @@ public class Player {
         this.currentGame = currentGame;
 
         //aBootAction = new BootAction(this);
+        allPlayers.add(this);
     }
 
     public static Player getPlayerByName(String name) {

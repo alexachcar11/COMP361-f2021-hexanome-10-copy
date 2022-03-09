@@ -801,6 +801,8 @@ public class ClientMain {
                             // display users
                             displayUsers();
                             System.out.println("displaying users as a creator");
+                            // display game info
+                            displayLobbyInfo();
                         } catch (MinuetoFileException e) {
                             e.printStackTrace();
                         }
@@ -814,7 +816,7 @@ public class ClientMain {
                             gui.window.draw(greyStartButton, 822, 580);
                             gui.window.render();
                             // wait for enough players to join
-                            ACTION_MANAGER.waitForPlayersAsCreator();
+                            //ACTION_MANAGER.waitForPlayersAsCreator();
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfenlandCreatorBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
@@ -1414,6 +1416,65 @@ public class ClientMain {
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             gui.currentBackground = GUI.Screen.ELFENGOLD;
         }
+    }
+
+    public static void displayLobbyInfo() {
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        LobbyServiceGame lsGame = currentSession.getGameService();
+        String name = lsGame.getDisplayName();
+        MinuetoText nameText = new MinuetoText(name, font, MinuetoColor.BLACK);
+        Game game = currentSession.getGame();
+        Mode currentMode = game.getMode();
+        boolean destinationEnabled = game.isDestinationTownEnabled();
+        MinuetoText destText = null;
+        if (destinationEnabled) {
+            destText = new MinuetoText("Yes", font, MinuetoColor.BLACK);
+        } else {
+            destText = new MinuetoText("No", font, MinuetoColor.BLACK);
+        }
+        MinuetoImage background = null;
+        MinuetoText modeText = null;
+        if (currentMode.equals(Mode.ELFENLAND)) {
+            if (currentUser.getName().equals(currentSession.getCreator())) {
+                background = lobbyElfenlandCreatorBackground;
+            } else {
+                background = lobbyElfenlandBackground;
+            }
+            modeText = new MinuetoText("Elfenland", font, MinuetoColor.BLACK);
+            int numberRounds = game.getNumberOfRounds();
+            MinuetoText numRoundsText = new MinuetoText(String.valueOf(numberRounds), font, MinuetoColor.BLACK);
+            background.draw(numRoundsText, 805, 415);
+        } else if (currentMode.equals(Mode.ELFENGOLD)) {
+            if (currentUser.getName().equals(currentSession.getCreator())) {
+                background = lobbyElfengoldCreatorBackground;
+            } else {
+                background = lobbyElfengoldBackground;
+            }
+            modeText = new MinuetoText("Elfengold", font, MinuetoColor.BLACK);
+            boolean witchEnabled = game.isWitchEnabled();
+            MinuetoText witchText = null;
+            if (witchEnabled) {
+                witchText = new MinuetoText("Yes", font, MinuetoColor.BLACK);
+            } else {
+                witchText = new MinuetoText("No", font, MinuetoColor.BLACK);
+            }
+            background.draw(witchText, 0, 0); // TODO: fix this
+            TownGoldOption townGoldOption = game.getTownGoldOption();
+            MinuetoText townText = null;
+            if (townGoldOption.equals(TownGoldOption.NO)) {
+                townText = new MinuetoText("Yes", font, MinuetoColor.BLACK);
+            } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
+                townText = new MinuetoText("Yes: default", font, MinuetoColor.BLACK);
+            } else {
+                townText = new MinuetoText("Yes: random", font, MinuetoColor.BLACK);
+            }
+            background.draw(townText, 0, 0); // TODO: fix this
+        }
+        
+        background.draw(nameText, 0, 0); // TODO: fix this
+        background.draw(modeText, 770, 185);
+        background.draw(destText, 695, 365);
+        
     }
 
     public static void displayUsers() throws MinuetoFileException {
