@@ -29,6 +29,19 @@ public class LaunchGameACK implements Action {
 
         // display board screen
         ClientMain.displayOriginalBoard();
+        // modify game objects based on the game state received
+        // TODO: iterate thru playerNames, index for loop --> use to iterate thru playerCards, give Players their cards :)
+        for (int i = 0; i < playerNames.size(); i++){
+            String playerID = playerNames.get(i);
+            ArrayList<String> aPlayersCards = playerCards.get(i);
+
+            ClientMain.recievePhaseOne(playerID, aPlayersCards);
+
+        }
+
+        // display the new board
+
+        System.out.println("LaunchGameACK received");
     }
 
 }
