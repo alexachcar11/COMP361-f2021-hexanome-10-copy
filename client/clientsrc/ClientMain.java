@@ -11,6 +11,7 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
+import networksrc.ChooseBootColorAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.TestAction;
@@ -786,39 +787,46 @@ public class ClientMain {
                     MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
                     chooseBootBackground.draw(errorText, 378, 526);
                 } else {
-                    /* // send action to the server
-                    String senderName = currentUser.getName();
-                    String color = colorChosen.name();
-                    String gameID = currentSession.getSessionID();
-                    ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID)); */
+                    
+                    // TODO: add elfengold options
 
-                    // join the game
-                    try {
-                        if (!gameToJoin.getCreator().equals(currentUser.getName())) {
-                            gameToJoin.join(colorChosen);
-                        }
-                        currentSession = gameToJoin.getActiveSession();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    // go to lobby screen
                     if (currentUser.getName().equals(currentSession.getCreator())) {
+                        // creator
                         try {
+                            // send action to the server
+                            String senderName = currentUser.getName();
+                            String color = colorChosen.name();
+                            String gameID = currentSession.getSessionID();
+                            ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID));
+                            // display users
                             displayUsers();
                             System.out.println("displaying users as a creator");
                         } catch (MinuetoFileException e) {
                             e.printStackTrace();
                         }
-                        // TODO: add elfengold options
+                        // switch backgrounds
                         gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
                         gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
                         gui.window.render();
+                        // wait for enough players to join
                         ACTION_MANAGER.waitForPlayersAsCreator();
                     } else {
+                        // not the creator
+
+                        try {
+                            // join the game
+                            gameToJoin.join(colorChosen);
+                            currentSession = gameToJoin.getActiveSession();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        
+                        // change backgrounds
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
                         gui.window.render();
+
+                        // wait for other players (i.e wait for the game to launch)
                         ACTION_MANAGER.waitForPlayers();
                     }
                     
