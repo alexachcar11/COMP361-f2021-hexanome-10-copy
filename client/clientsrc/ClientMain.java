@@ -64,12 +64,10 @@ public class ClientMain {
     private static MinuetoImage purpleBoppel;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
-    private static MinuetoImage lobbyElfenlandCreatorBackground;
-    private static MinuetoImage lobbyElfengoldCreatorBackground;
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
-    static MinuetoImage greyStartButton;
+    public static MinuetoImage waitingForLaunch;
     static MinuetoFont fontArial22Bold;
     static MinuetoRectangle modeDropdownRectangle;
     static MinuetoRectangle destinationTownDropdownRectangle;
@@ -811,23 +809,21 @@ public class ClientMain {
                         Mode currentMode = game.getMode();
                         // switch backgrounds depending on the game mode
                         if (currentMode.equals(Mode.ELFENLAND)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENLANDCREATOR;
-                            gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                            gui.window.draw(greyStartButton, 822, 580);
+                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                            gui.window.draw(lobbyElfenlandBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
                             //ACTION_MANAGER.waitForPlayersAsCreator();
                             // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfenlandCreatorBackground.draw(startButton, 822, 580);
+                            lobbyElfenlandBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLDCREATOR;
-                            gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
-                            gui.window.draw(greyStartButton, 822, 580);
+                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                            gui.window.draw(lobbyElfengoldBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
                             ACTION_MANAGER.waitForPlayersAsCreator();
                             // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfengoldCreatorBackground.draw(startButton, 822, 580);
+                            lobbyElfengoldBackground.draw(startButton, 822, 580);
                         }
                         
                         
@@ -1029,12 +1025,10 @@ public class ClientMain {
             lobbyBackground = new MinuetoImageFile("images/open-lobbies.png");
             lobbyElfenlandBackground = new MinuetoImageFile("images/game-lobby-elfenland.png");
             lobbyElfengoldBackground = new MinuetoImageFile("images/game-lobby-elfengold.png");
-            lobbyElfenlandCreatorBackground = new MinuetoImageFile("images/game-lobby-elfenland-creator.png");
-            lobbyElfengoldCreatorBackground = new MinuetoImageFile("images/game-lobby-elfengold-creator.png");
             readyGreen = new MinuetoImageFile("images/ready-button-green.png");
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
             startButton = new MinuetoImageFile("images/blue-launch-button.png");
-            greyStartButton = new MinuetoImageFile("images/grey-launch-button.png");
+            waitingForLaunch = new MinuetoImageFile("images/waiting-for-launch.png");
             // Create Game
             createGameBackground = new MinuetoImageFile("images/create-game-elfenland.png");
             createGameBackgroundElfengold = new MinuetoImageFile("images/create-game-elfengold.png");
@@ -1240,16 +1234,7 @@ public class ClientMain {
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
-            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLANDCREATOR) {
-                gui.window.draw(lobbyElfenlandCreatorBackground, 0, 0);
-                while (elfenlandLobbyQueue.hasNext()) {
-                    elfenlandLobbyQueue.handle();
-                }
-            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLDCREATOR) {
-                gui.window.draw(lobbyElfengoldCreatorBackground, 0, 0);
-                while (elfenlandLobbyQueue.hasNext()) {
-                    elfenlandLobbyQueue.handle();
-                }
+
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
                 
@@ -1425,6 +1410,8 @@ public class ClientMain {
         MinuetoText nameText = new MinuetoText(name, font, MinuetoColor.BLACK);
         Game game = currentSession.getGame();
         Mode currentMode = game.getMode();
+        String size = String.valueOf(game.getNumberOfPlayers());
+        MinuetoText sizeText = new MinuetoText(size, font, MinuetoColor.BLACK);
         boolean destinationEnabled = game.isDestinationTownEnabled();
         MinuetoText destText = null;
         if (destinationEnabled) {
@@ -1435,21 +1422,13 @@ public class ClientMain {
         MinuetoImage background = null;
         MinuetoText modeText = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
-            if (currentUser.getName().equals(currentSession.getCreator())) {
-                background = lobbyElfenlandCreatorBackground;
-            } else {
-                background = lobbyElfenlandBackground;
-            }
+            background = lobbyElfenlandBackground;
             modeText = new MinuetoText("Elfenland", font, MinuetoColor.BLACK);
             int numberRounds = game.getNumberOfRounds();
             MinuetoText numRoundsText = new MinuetoText(String.valueOf(numberRounds), font, MinuetoColor.BLACK);
             background.draw(numRoundsText, 805, 415);
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
-            if (currentUser.getName().equals(currentSession.getCreator())) {
-                background = lobbyElfengoldCreatorBackground;
-            } else {
-                background = lobbyElfengoldBackground;
-            }
+            background = lobbyElfengoldBackground;
             modeText = new MinuetoText("Elfengold", font, MinuetoColor.BLACK);
             boolean witchEnabled = game.isWitchEnabled();
             MinuetoText witchText = null;
@@ -1471,8 +1450,9 @@ public class ClientMain {
             background.draw(townText, 0, 0); // TODO: fix this
         }
         
-        background.draw(nameText, 0, 0); // TODO: fix this
+        background.draw(nameText, 430, 130); 
         background.draw(modeText, 770, 185);
+        background.draw(sizeText, 765, 255);
         background.draw(destText, 695, 365);
         
     }
@@ -1485,17 +1465,9 @@ public class ClientMain {
         Game game = currentSession.getGame();
         Mode currentMode = game.getMode();
         if (currentMode.equals(Mode.ELFENLAND)) {
-            if (currentUser.getName().equals(currentSession.getCreator())) {
-                background = lobbyElfenlandCreatorBackground;
-            } else {
-                background = lobbyElfenlandBackground;
-            }
+            background = lobbyElfenlandBackground;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
-            if (currentUser.getName().equals(currentSession.getCreator())) {
-                background = lobbyElfengoldCreatorBackground;
-            } else {
-                background = lobbyElfengoldBackground;
-            } 
+            background = lobbyElfengoldBackground;
         }
 
         int counter = 0; // how many users are displayed so far

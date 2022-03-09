@@ -42,6 +42,10 @@ public class ActionManager {
                 if (actionIn.isValid()) {
                     actionIn.execute();
                 }
+                if (ClientMain.currentSession.isLaunchable()) {
+                    ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
+                }
+                // show wait for launch image
                 // update gui
                 ClientMain.gui.window.render();
             }   
