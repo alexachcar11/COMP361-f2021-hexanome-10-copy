@@ -45,6 +45,20 @@ public class TokenStack implements Iterable<Token> {
         return aTokens.remove(aTokens.size() - 1);
     }
 
+    // add tokens from a list
+    public void addTokens(List<Token> tokens){
+        for (Token tok: tokens){
+            this.aTokens.add(tok);
+        }
+    }
+
+    // add token 
+    public void addToken(Token tok){
+        
+        this.aTokens.add(tok);
+        
+    }
+
     /**
      * @return The number of tokens in the stack.
      */
