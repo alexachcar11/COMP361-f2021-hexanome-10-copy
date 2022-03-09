@@ -1419,14 +1419,14 @@ public class ClientMain {
         } else {
             destText = new MinuetoText("No", font, MinuetoColor.BLACK);
         }
+        int numberRounds = game.getNumberOfRounds();
+        MinuetoText numRoundsText = new MinuetoText(String.valueOf(numberRounds), font, MinuetoColor.BLACK);
         MinuetoImage background = null;
         MinuetoText modeText = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
             background = lobbyElfenlandBackground;
             modeText = new MinuetoText("Elfenland", font, MinuetoColor.BLACK);
-            int numberRounds = game.getNumberOfRounds();
-            MinuetoText numRoundsText = new MinuetoText(String.valueOf(numberRounds), font, MinuetoColor.BLACK);
-            background.draw(numRoundsText, 805, 415);
+            
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             background = lobbyElfengoldBackground;
             modeText = new MinuetoText("Elfengold", font, MinuetoColor.BLACK);
@@ -1450,10 +1450,11 @@ public class ClientMain {
             background.draw(townText, 0, 0); // TODO: fix this
         }
         
-        background.draw(nameText, 430, 130); 
+        background.draw(nameText, 480, 125); 
         background.draw(modeText, 770, 185);
+        background.draw(numRoundsText, 808, 390);
         background.draw(sizeText, 765, 255);
-        background.draw(destText, 695, 365);
+        background.draw(destText, 937, 326);
         
     }
 
