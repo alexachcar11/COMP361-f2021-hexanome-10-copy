@@ -338,6 +338,21 @@ public class ServerGame {
         return gameID;
     }
 
+    public void nextPlayer(){
+        // change next player 
+        for (int i = 0; i<players.size(); i++){
+            if (players.get(i).getIsTurn()){
+                // if it's last player in list, go back to start of list
+                if (i == players.size()-1){
+                    players.get(i).passTurn(players.get(0));
+                }
+                else {
+                    players.get(i).passTurn(players.get(i+1));
+                }
+            }
+        }
+    }
+
     public void nextPhase(){
         // go to next round if current phase is 6
         if (currentPhase == 6){
@@ -469,6 +484,7 @@ public class ServerGame {
         currentRound++;
         // change starting player by index in list
         int startingPlayerIndex = players.indexOf(startingPlayer);
+        // if starting player is last in list, go back to first player in list
         if (startingPlayerIndex == players.size()-1){
             this.startingPlayer = players.get(0);
         }
@@ -565,6 +581,7 @@ public class ServerGame {
             // update player's town location done in Player.moveBoot(Town t)
             p.moveBoot(dstTown);
             // update the town's player list is done in p.moveBoot(dstTown)
+
         }
     }
 

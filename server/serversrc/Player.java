@@ -58,8 +58,15 @@ public class Player {
         return null;
     }
 
-    public void passTurn() {
+    public void passTurn(Player nextPlayer) {
         this.turnPassed = true;
+        this.isTurn = false;
+        // next player's turn
+        nextPlayer.setTrueIsTurn();
+    }
+
+    public void setTrueIsTurn(){
+        this.isTurn = true;
     }
 
     public void resetTurnPassed() {
@@ -155,6 +162,8 @@ public class Player {
         }
         return output;
     }
+
+
     
 
     /*
