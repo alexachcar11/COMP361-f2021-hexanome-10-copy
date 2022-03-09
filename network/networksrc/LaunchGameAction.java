@@ -99,6 +99,8 @@ public class LaunchGameAction implements Action {
         } catch (IOException e) {
             System.err.println("IOException in LaunchGameAction.execute()");
         }
+        serverGame.phaseTwo();
+        serverGame.phaseThree();
     }
 
 }
