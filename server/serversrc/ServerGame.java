@@ -7,11 +7,15 @@ max 6 players
  */
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
+import org.minueto.MinuetoEventQueue;
+import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.MinuetoImage;
 import org.minueto.window.MinuetoWindow;
 
 import clientsrc.ClientMain;
+import clientsrc.TokenImage;
 import networksrc.ACKManager;
 import networksrc.Action;
 
@@ -379,8 +383,33 @@ public class ServerGame {
                 MinuetoWindow window = ClientMain.WINDOW;
                 for (Token t : faceUpCopy) {
                     // change these coords
-                    window.draw(t.getMinuetoImageFile(), 200 + faceUpCopy.indexOf(t) * 20, 200);
+                    t.getTokenImage().setPos(200 + faceUpCopy.indexOf(t) * 20, 200);
+                    window.draw(t.getTokenImage(), t.getTokenImage().getX(), t.getTokenImage().getY());
                 }
+                MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
+
+                    @Override
+                    public void handleMousePress(int xClicked, int yClicked, int arg2) {
+                        List<TokenImage> imageList = faceUpCopy.stream().map((token) -> token.getTokenImage())
+                                .collect(Collectors.toList());
+                        for (TokenImage t : imageList) {
+                            if (t.hasCollidePoint(xClicked, yClicked)) {
+                                // inform server that user has selected t.getToken()
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void handleMouseRelease(int arg0, int arg1, int arg2) {
+                    }
+
+                    @Override
+                    public void handleMouseMove(int arg0, int arg1) {
+                    }
+                };
+                MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
+                window.registerMouseHandler(tokenSelect, selectTokenQueue);
             }
         }, currentPlayerName);
     }
