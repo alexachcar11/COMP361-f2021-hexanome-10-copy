@@ -23,9 +23,11 @@ public class LaunchGameAction implements Action{
         // null check
         if (senderName == null) {
             System.err.println("LaunchGameAction: The senderName cannot be null.");
+            return false;
         }
         if (gameID == null) {
             System.err.println("LaunchGameAction: The gameID cannot be null.");
+            return false;
         }
 
         // gameID is associated with a GameLobby

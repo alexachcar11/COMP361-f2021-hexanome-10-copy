@@ -173,6 +173,8 @@ public class Game {
     public void addPlayer(Player player) throws IndexOutOfBoundsException{
         if (players.size() <= numberOfPlayers) {
             players.add(player);
+            Town elvenhold = Game.getTownByName("Elvenhold");
+            elvenhold.addPlayer(player);
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
@@ -205,6 +207,16 @@ public class Game {
 
     public static ArrayList<Town> getTowns() {
         return towns;
+    }
+
+    //GETTER: gets town in towns by name
+    public static Town getTownByName(String name) {
+        for (Town t : towns) {
+            if (t.getTownName().equals(name)) {
+                return t;
+                }
+            }
+        return null;
     }
 
     public static boolean notClickingOnATown(int x, int y) {

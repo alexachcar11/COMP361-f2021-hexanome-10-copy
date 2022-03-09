@@ -11,7 +11,7 @@ import networksrc.PlayerHasJoinedAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
 
-public class LobbyServiceGame implements Joinable{
+public class LobbyServiceGame {
 
     // FIELDS
     // lobby service relate
@@ -104,6 +104,14 @@ public class LobbyServiceGame implements Joinable{
         return game;
     }
 
+    public void setGame(Game game) {
+        if (this.game == null) {
+            this.game = game;
+        } else {
+            throw new IllegalStateException("The LobbyServiceGame's Game is already set.");
+        }
+    }
+
     /**
      * Returns the current available session
      * @param session LobbyServiceGameSession or null
@@ -120,12 +128,11 @@ public class LobbyServiceGame implements Joinable{
     /**
      * The Registrator will make this user join this game service by creating a session.
      */
-    @Override
-    public LobbyServiceGameSession join() throws Exception {
+    /* public LobbyServiceGameSession join() throws Exception {
         LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
         this.activeSession = newSessionCreated;
         ClientMain.currentSession = newSessionCreated;
         ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
         return newSessionCreated;
-    }
+    } */
 }

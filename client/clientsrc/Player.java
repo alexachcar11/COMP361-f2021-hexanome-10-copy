@@ -7,8 +7,6 @@ import networksrc.*;
 
 public class Player {
     boolean isTurn = false;
-
-    private Client aClient;
     private Boot aBoot;
     private Color aColor;
 
@@ -27,13 +25,10 @@ public class Player {
     private Game currentGame;
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
-    public Player(Client pClient, Color pColor, User pUser, Game currentGame) {
-        aClient = pClient;
-        aName = aClient.getHost();
-        // TODO: fix these coordinates to match start town
-        aBoot = new Boot(pColor, 577, 666, 291, 370);
+    public Player(Color pColor, User pUser, Game currentGame) {
+        aBoot = new Boot(pColor, 577, 666, 291, 370); 
 
-        // inTown = elvenhold;         // fix this
+        this.inTown = Game.getTownByName("Elvenhold");
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
@@ -42,6 +37,7 @@ public class Player {
         this.aColor = pColor;
 
         //aBootAction = new BootAction(this);
+        allPlayers.add(this);
     }
 
     public static Player getPlayerByName(String name) {
@@ -251,6 +247,15 @@ public class Player {
     //     // ??? end player's turn ???
     //     return -1;
     // }
+
+    /**
+     * Sets the inTown parameter to Town t
+     * @param t
+     */
+    public void setTown(Town t) {
+        inTown = t;
+        t.addPlayer(this);
+    }
 
     public void moveBoot(Town t) { 
         // remove the player from the old town 

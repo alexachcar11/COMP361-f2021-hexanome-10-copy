@@ -16,6 +16,8 @@ import java.util.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import networksrc.CreateNewGameAction;
+import networksrc.GetGameInfoACK;
+import networksrc.GetGameInfoAction;
 import networksrc.LaunchGameAction;
 // import serversrc.Mode;
 // import serversrc.TownGoldOption;
@@ -198,6 +200,7 @@ public class Registrator {
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
+            System.err.println(jsonResponse.getBody());
             throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
 
@@ -223,7 +226,7 @@ public class Registrator {
      * @param destinationTownEnabled true if players will have a destination town,
      *                               false otherwise
      */
-    public LobbyServiceGame createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
+    public LobbyServiceGameSession createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
                                        boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
@@ -260,7 +263,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(GSON.toJson(fields)).asString();
 
-        LobbyServiceGame newLSGame = null;
+        LobbyServiceGameSession newSessionCreated = null;
 
         // verify response
         if (jsonResponse.getStatus() == 400) {
@@ -273,10 +276,25 @@ public class Registrator {
             // create a new Game object
             Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled,
                     mode, townGoldOption);
+            // set as currentgame
+            ClientMain.currentGame = newGame;
             // create a new LobbyServiceGame object
-            newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
+            LobbyServiceGame newLSGame = new LobbyServiceGame(name, displayName, location, numberOfPlayers, newGame);
+
+            try {
+                newSessionCreated = Registrator.instance().createGameSession(newLSGame, ClientMain.currentUser, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                newLSGame.setActiveSession(newSessionCreated);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ClientMain.currentSession = newSessionCreated;
+            ClientMain.currentSession.addUser(ClientMain.currentUser);
         }
-        return newLSGame;
+        return newSessionCreated;
     }
 
     /**
@@ -371,6 +389,19 @@ public class Registrator {
             throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
         } else {
             System.out.println("successful join on LS side");
+            // ask the server for game info
+            GetGameInfoACK info = (GetGameInfoACK) ClientMain.ACTION_MANAGER.sendActionAndGetReply(new GetGameInfoAction(userJoining.getName(), gameSessionToJoin.getSessionID()));
+            int numberOfPlayers = info.getNumberOfPlayers();
+            int numberOfRounds = info.getNumberOfRounds();
+            boolean destinationTownEnabled = info.isDestinationTownEnabled();
+            boolean witchEnabled = info.isWitchEnabled();
+            Mode mode = info.getMode();
+            TownGoldOption townGoldOption = info.getTownGoldOption();
+            // create a new Game object
+            Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+            gameSessionToJoin.setGame(newGame);
+            // set a currentGame
+            ClientMain.currentGame = newGame;
         }
     }
 
@@ -419,7 +450,14 @@ public class Registrator {
         }
     }
 
+    // TEMPORARY LAUNCHSESSION UNTIL THE BUG IS RESOLVED:
+    // CONSEQUENCE: the available games screen will show launched games + LS won't know that the game is launched
     public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
+        // send to the server
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
+    }
+
+    /* public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
         // user token
         String token = userAskingToLaunch.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -435,13 +473,13 @@ public class Registrator {
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": could not launch game session");
+            System.err.println("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
         } else {
             System.out.println("launched successfully on the LS");
             // send to the server
             ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
         }
-    }
+    } */
 
     /**
      * Helper function for availableGames(). Returns an arraylist of
