@@ -3,9 +3,6 @@ package serversrc;
 import java.util.ArrayList;
 import java.util.List;
 
-// import clientsrc.Player;
-// import clientsrc.Token;
-// import clientsrc.Town;
 
 public class Route {
     
@@ -76,26 +73,36 @@ public class Route {
      * 
      * @param token
      */
-    public void placeToken(Player player, TransportationCounter pCounter) { 
+    public void placeToken(Player player, Token pCounter) { 
         assert pCounter != null;
 
         if(this.aCounter == null) { 
             throw new IllegalArgumentException();
         } else { 
             player.consumeToken(pCounter);
-            this.aCounter = pCounter;
+            if (pCounter instanceof Obstacle){
+                placeObstacle(player);
+            }
+            else{
+                this.aCounter = (TransportationCounter) pCounter;
+            }
             
         }
     }
 
     public void placeObstacle(Player player){
         //remove obstacle from player's hand
+        player.removeObstacle();
         // add obstacle to route
         this.hasObstacle = true;
     }
 
-    public void clearToken() { 
+    // reset route's token delets obstacle from game and returns it
+    public Token removeToken() { 
+        Token temp = this.aCounter;
         this.aCounter = null;
+        this.hasObstacle = false;
+        return temp;
     }
 
     // @pre should check if there's a counter on road first 
@@ -124,7 +131,7 @@ public class Route {
             }
         }
         else{
-            switch(this.aCounter.getCounterType()){
+            switch( this.aCounter.getCounterType()){
 
                 case CLOUD:
                     Card cloudCard = new Card(CardType.CLOUD);
