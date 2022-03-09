@@ -206,6 +206,7 @@ public class ServerGame {
         // initialize town graph
         this.aTownGraph = new TownGraph();
         this.aTownGraph.addEdges(routes);
+        this.faceUpTokenPile = new ArrayList<>();
 
         // add all counters ingame to faceDownTokenPile
         // depending on mode, tokens are different
@@ -296,7 +297,6 @@ public class ServerGame {
     }
 
     public void phaseOne() {
-
         // shuffle
         aCardStack.shuffle();
 
@@ -308,6 +308,16 @@ public class ServerGame {
     }
 
     public void phaseTwo() {
+        faceDownTokenStack.shuffle();
+
+        for (Player p : players) {
+            p.addToken(faceDownTokenStack.pop());
+        }
+    }
+
+    public void phaseThree() {
+        for (int i = 0; i < 5; i++)
+            faceUpTokenPile.add(faceDownTokenStack.pop());
 
     }
 
