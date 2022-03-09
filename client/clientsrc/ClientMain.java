@@ -842,6 +842,10 @@ public class ClientMain {
                         // change backgrounds
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                        // show wait for launch image
+                        if (ClientMain.currentSession.isLaunchable()) {
+                            ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
+                        }
                         gui.window.render();
 
                         // wait for other players (i.e wait for the game to launch)
