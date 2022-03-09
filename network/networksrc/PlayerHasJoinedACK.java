@@ -26,7 +26,8 @@ public class PlayerHasJoinedACK implements Action {
         // add the player to LobbyServiceGameSession
         User existing = User.getUserByName(joinerName);
         if (existing == null) {
-            ClientMain.currentSession.addUser(new User(joinerName));
+            existing = new User(joinerName);
+            ClientMain.currentSession.addUser(existing);
         } else {
             ClientMain.currentSession.addUser(existing);
         }

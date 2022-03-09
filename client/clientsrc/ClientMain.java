@@ -1410,7 +1410,7 @@ public class ClientMain {
 
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
-        currentSession.updateUsers();
+        //currentSession.updateUsers();
         ArrayList<User> users = currentSession.getUsers();
 
         MinuetoImage background = null;
