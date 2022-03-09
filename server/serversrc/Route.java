@@ -58,6 +58,9 @@ public class Route {
      */
     public void placeToken(Token token) {
         assert token != null;
+        if (this.type == RouteType.RIVER || this.type == RouteType.LAKE) {
+            throw new RuntimeException("Cannot add transportation counters to waterways.");
+        }
         if (this.aToken != null) {
             if (token.isObstacle()) {
                 ((Obstacle) token).setTokenOnPath(this.aToken);
@@ -79,8 +82,13 @@ public class Route {
      * @param cardType
      * @return cost to travel on path with a given CardType, assuming no obstacles
      */
-    public int costWithCardType(CardType cardType) {
-        return cardType == CardType.RAFT && isUpstream ? CostCard.getCost(type.ordinal(), cardType.ordinal() + 1)
+    public int costWithCardType(CardType cardType, Town startingTown) {
+        // startingTown doesn't matter if it's a lake
+        if (this.type == RouteType.LAKE) {
+            return 2;
+        }
+        return cardType == CardType.RAFT && this.isUpstream(startingTown)
+                ? CostCard.getCost(type.ordinal(), cardType.ordinal() + 1)
                 : CostCard.getCost(type.ordinal(), cardType.ordinal());
     }
 
@@ -88,16 +96,23 @@ public class Route {
      * @pre this.aToken != null
      * @return cost to travel the path with correct cards, in current state
      */
-    public int cost() {
+    public int cost(Town startingTown) {
         assert aToken != null;
-        return aToken.cost();
+        if (this.aToken.isObstacle())
+            return costWithCardType(this.aToken.getTokenType(), startingTown) + 1;
+        else
+            return costWithCardType(this.aToken.getTokenType(), startingTown);
     }
 
-    public List<AbstractCard> getRequiredCards(Town town) {
+    public List<AbstractCard> getRequiredCards(Town startingTown) {
         List<AbstractCard> toReturn = new ArrayList<>();
-        for (int i = 0; i < this.cost(); i++) {
+        for (int i = 0; i < this.cost(startingTown); i++) {
             toReturn.add(new TravelCard(this.aToken.getTokenType()));
         }
         return toReturn;
+    }
+
+    public boolean isUpstream(Town startingTown) {
+        return startingTown == this.source && this.type == RouteType.RIVER;
     }
 }

@@ -14,15 +14,6 @@ public class Obstacle extends Token {
     }
 
     /**
-     * @pre !tokenOnPath.isEmpty()
-     */
-    @Override
-    public int cost() {
-        assert !tokenOnPath.isEmpty();
-        return tokenOnPath.get().cost() + 1;
-    }
-
-    /**
      * @return type of token occupying path. if only obstacle, return obstacle type
      */
     @Override

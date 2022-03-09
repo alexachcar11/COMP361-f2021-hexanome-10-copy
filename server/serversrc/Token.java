@@ -27,15 +27,6 @@ public class Token {
     }
 
     /**
-     * 
-     * @return number of cards needed to cross route
-     */
-    public int cost() {
-        assert route.isPresent();
-        return route.get().costWithCardType(tokenType);
-    }
-
-    /**
      * sets the route that the token is placed on
      * 
      * @param route
