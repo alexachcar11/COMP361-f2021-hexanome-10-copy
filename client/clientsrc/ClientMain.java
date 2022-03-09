@@ -1401,4 +1401,12 @@ public class ClientMain {
             e.printStackTrace();
         }
     }
+
+    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
+        for (Player p: players){
+            if (p.getName().equalsIgnoreCase(playerID)){
+                p.addCardStringArray(cardArray);
+            }
+        }
+    }
 }

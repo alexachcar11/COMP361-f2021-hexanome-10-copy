@@ -88,6 +88,7 @@ public class Player {
         return true;
     }
 
+
     public ServerGame getCurrentGame() {
         return currentGame;
     }

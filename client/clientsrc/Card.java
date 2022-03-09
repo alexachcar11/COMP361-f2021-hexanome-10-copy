@@ -45,7 +45,7 @@ public abstract class Card extends Image{
         return c.getName().equalsIgnoreCase(this.aName);
     }
 
-    private String getName(){
+    public String getName(){
         return this.aName;
     }
 }
