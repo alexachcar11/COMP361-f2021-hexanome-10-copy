@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.hamcrest.core.IsInstanceOf;
+
 import networksrc.*;
 
 public class Player {
@@ -135,6 +137,24 @@ public class Player {
     public void addToken(Token tok) {
         this.tokensInHand.add(tok);
     }
+
+    // returns list of tokens except obstacle from player's hand
+    public List<Token> removeAllTokens(){
+        List<Token> output = new ArrayList<>();
+        for (Token tok: tokensInHand){
+            if (tok instanceof Obstacle){
+                continue;
+            }
+            else {
+                // add to output
+                output.add(tok);
+                // remove from player's hand
+                tokensInHand.remove(tok);
+            }
+        }
+        return output;
+    }
+    
 
     /*
      * Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
@@ -398,6 +418,20 @@ public class Player {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    // remove the obstacle token from player's tokens hand
+    public void removeObstacle() {
+        for (Token tok: tokensInHand){
+            if (tok instanceof Obstacle){
+                tokensInHand.remove(tok);
+            }
+        }
+    }
+
+
+    public int getNberCards() {
+        return this.cardsInHand.size();
     }
 
     /*

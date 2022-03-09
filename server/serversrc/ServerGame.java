@@ -22,13 +22,6 @@ import networksrc.TokenSelectedAction;
 
 import java.util.*;
 
-// import clientsrc.Card;
-// import clientsrc.GoldCard;
-// import clientsrc.Mode;
-// import clientsrc.Player;
-// import clientsrc.Route;
-// import clientsrc.Town;
-// import clientsrc.TownGoldOption;
 
 public class ServerGame {
 
@@ -55,6 +48,8 @@ public class ServerGame {
     public TownGraph aTownGraph;
     public CardStack aCardStack;
     private List<AbstractCard> disposedCardPile;
+    private Player startingPlayer;
+
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -70,6 +65,9 @@ public class ServerGame {
         this.mode = mode;
         this.townGoldOption = townGoldOption;
         this.currentRound = 1;
+        this.gameID = gameID;
+        this.startingPlayer = null;
+    
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
@@ -235,7 +233,6 @@ public class ServerGame {
             // TODO
             this.faceDownTokenStack = TokenStack.getFullTokenStackEG();
         }
-        // initialize TravelCard array
 
         // initialize TravelCard objects
         if (this.mode == Mode.ELFENLAND) {
@@ -255,6 +252,7 @@ public class ServerGame {
 
         }
 
+        this.aCardStack = new CardStack(faceDownCardPile);
     }
 
     /**
@@ -267,8 +265,12 @@ public class ServerGame {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
             // give player an obstacle
-            Obstacle aObstacle = new Obstacle();
+            Token aObstacle = new Obstacle();
             player.addToken(aObstacle);
+            // make first player as starting player (can be changed to get random player)
+            if (this.startingPlayer == null){
+                this.startingPlayer = player;
+            }
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
@@ -336,10 +338,12 @@ public class ServerGame {
         return gameID;
     }
 
-    public void nextPhase() {
-        if (currentPhase == 6) {
-
-        } else {
+    public void nextPhase(){
+        // go to next round if current phase is 6
+        if (currentPhase == 6){
+            currentPhase = 1;
+        }
+        else{
             this.currentPhase++;
         }
     }
@@ -417,9 +421,88 @@ public class ServerGame {
         }, currentPlayerName);
     }
 
-    // method that checks if all players passed turn, to know if we move on to next
-    // phase/round
-    public boolean didAllPlayersPassTurn() {
+    // TODO: game ends and winner announced
+    public void winner(Player winner){
+        // ...
+
+        // should send an action...
+        System.out.println(winner.getName());;
+    }
+
+    // @pre we're in phase 6 (just finished phase 5 move boot)
+    // finish phase
+    public void phaseSix(){
+        // ending game...
+        if (currentPhase == gameRoundsLimit){
+            // player with highest score wins
+            // list of players with equal highest score
+            List<Player> winningPlayers = new ArrayList<>();
+            int highestScore = getHighestScore();
+            for (Player p: players){
+                if (p.getScore() == highestScore){
+                    winningPlayers.add(p);
+                }
+            }
+            
+            // if only one winning player vs multiple winning player, so the one with highest number of cards in hand wins
+            if (winningPlayers.size() == 1){
+                // TODO player wins
+                winner(winningPlayers.get(0));
+            }
+
+            else {
+                int highestNumberOfCards = 0;
+                Player playerWinner = null;
+                // find player with highest number of hands
+                for (Player p: winningPlayers){
+                    if(highestNumberOfCards<p.getNberCards()){
+                        highestNumberOfCards = p.getNberCards();
+                        playerWinner = p;
+                    }
+                }
+                winner(playerWinner);
+            }
+            return;
+        }
+
+        // update round
+        currentRound++;
+        // change starting player by index in list
+        int startingPlayerIndex = players.indexOf(startingPlayer);
+        if (startingPlayerIndex == players.size()-1){
+            this.startingPlayer = players.get(0);
+        }
+        else {
+            this.startingPlayer = players.get(startingPlayerIndex+1);
+        }
+        // each player turns in all their transportation counters
+        for (Player p: players){
+            // TODO: player chooses to keep a token ?
+
+            List<Token> removedTokens = p.removeAllTokens();
+            // add these back to token stack
+            faceDownTokenStack.addTokens(removedTokens);
+        }
+
+        // remove transportation counters from board (note this doesn't add the tokens that are face up (aka up for grabs during drawing counter phase))
+        for (Route r: routes){
+            // remove token delets obstacle from game basically
+            Token tok = r.removeToken();
+            // check if not null
+            if (tok != null){
+                // check if it's face down
+                // add to the tokenStack
+                faceDownTokenStack.addToken(tok);
+            }
+        }
+        faceDownTokenStack.shuffle();
+
+
+        // send ACK to client for update
+    }
+
+    // method that checks if all players passed turn, to know if we move on to next phase/round
+    public boolean didAllPlayersPassTurn(){
         // checks if all players has turnPassed as true
         for (Player p : this.players) {
             // if one player doesn't have turnPassed as true, return false
@@ -428,6 +511,17 @@ public class ServerGame {
             }
         }
         return true;
+    }
+
+    // gets highest score from all players
+    public int getHighestScore(){
+        int output = 0;
+        for (Player p: players){
+            if (output<p.getScore()){
+                output = p.getScore();
+            }
+        }
+        return output;
     }
 
     /*
@@ -490,6 +584,7 @@ public class ServerGame {
         }
         return null;
     }
+    
     /*
      * Operation: Game::loadGame(savedGame: Game)
      * Scope: Player;

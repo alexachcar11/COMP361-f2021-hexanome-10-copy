@@ -35,4 +35,8 @@ public class Obstacle extends Token {
         assert !token.isObstacle();
         tokenOnPath = Optional.ofNullable(token);
     }
+
+    public Token getInnerToken(){
+        return tokenOnPath.get();
+    }
 }
