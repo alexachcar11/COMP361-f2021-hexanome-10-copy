@@ -8,13 +8,12 @@ import java.util.List;
 
 // import serversrc.Token;
 
-public class TokenStack implements Iterable<Token> {
+public class TokenStack implements Iterable<TokenImage> {
 
-    private final List<Token> aTokens;
+    private final List<TokenImage> aTokens;
 
-    //Creates an empty TokenStack.
-    public TokenStack()
-    {
+    // Creates an empty TokenStack.
+    public TokenStack() {
         aTokens = new ArrayList<>();
     }
 
@@ -23,7 +22,7 @@ public class TokenStack implements Iterable<Token> {
      * 
      * @param pList The tokens to initialize the stack with.
      */
-    public TokenStack(List<Token> pList){
+    public TokenStack(List<TokenImage> pList) {
         this();
         aTokens.addAll(pList);
     }
@@ -32,7 +31,7 @@ public class TokenStack implements Iterable<Token> {
      * Shuffles TokenStack
      * 
      */
-    public void shuffle(){
+    public void shuffle() {
         Collections.shuffle(aTokens);
     }
 
@@ -42,29 +41,28 @@ public class TokenStack implements Iterable<Token> {
      * @return The token on top of the stack.
      * @pre !isEmpty()
      */
-    public Token pop()
-    {
+    public TokenImage pop() {
         assert !isEmpty();
-        return aTokens.remove(aTokens.size()-1);
+        return aTokens.remove(aTokens.size() - 1);
     }
 
     /**
      * @return The number of tokens in the stack.
      */
-    public int size()
-    {
+    public int size() {
         return aTokens.size();
     }
 
     /**
      * @return True if and only if the stack has no cards in it.
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return aTokens.size() == 0;
     }
-    
+
     @Override
-    public Iterator<Token> iterator() {return aTokens.iterator();}
-    
+    public Iterator<TokenImage> iterator() {
+        return aTokens.iterator();
+    }
+
 }

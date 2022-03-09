@@ -1,10 +1,12 @@
 package clientsrc;
-import org.minueto.image.MinuetoImage;
+
+import org.minueto.MinuetoFileException;
 
 // import serversrc.Token;
 
 // modifier includes the spells and so on for elfenGold and obstacles
-public class ModifierToken extends Token {
+// don't think we need this class
+public class ModifierToken extends TokenImage {
 
     // field
     ModifierType aType;
@@ -18,14 +20,13 @@ public class ModifierToken extends Token {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public ModifierToken(int minX, int maxX, int minY, int maxY, MinuetoImage image, ModifierType pType) {
-        super(image);
-        aType = pType;
+    public ModifierToken(String tName, String url) throws MinuetoFileException {
+        super(tName, url);
     }
 
     // get type of modifier
-    public ModifierType getModifier(){
+    public ModifierType getModifier() {
         return aType;
     }
-    
+
 }

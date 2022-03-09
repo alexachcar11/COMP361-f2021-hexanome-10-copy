@@ -2,13 +2,12 @@ package networksrc;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import serversrc.GameLobby;
-import serversrc.Player;
-import serversrc.ServerGame;
-import serversrc.ServerUser;
+import serversrc.*;
 
-public class LaunchGameAction implements Action{
+public class LaunchGameAction implements Action {
 
     private String senderName;
     private String gameID;
@@ -36,14 +35,14 @@ public class LaunchGameAction implements Action{
             System.err.println("The GameLobby " + gameID + " does not exist on the server.");
             return false;
         }
-        
+
         // The gameLobby is not launched yet
         boolean isLaunched = gameLobby.isLaunched();
         if (isLaunched) {
             System.err.println("The GameLobby " + gameID + " has already been laucnehd.");
             return false;
         }
-    
+
         // senderName exists
         ServerUser sUser = ServerUser.getServerUser(senderName);
         if (sUser == null) {
@@ -65,24 +64,43 @@ public class LaunchGameAction implements Action{
         }
 
         // distribute resources here
-        
+        serverGame.phaseOne();
+
         // notify all users in the lobby
         // TODO: LaunchGameACK will contain the game state
-        LaunchGameACK actionToSend = new LaunchGameACK();
+
+        ArrayList<String> sendPlayer = new ArrayList<>();
+        ArrayList<ArrayList<String>> travelCards = new ArrayList<>();
+
+        for (Player p : serverGame.getAllPlayers()) {
+            String name = p.getName();
+            sendPlayer.add(name);
+            ArrayList<String> cards = new ArrayList<String>();
+
+            List<AbstractCard> abstractCards = p.getCards();
+            for (AbstractCard c : abstractCards) {
+                cards.add(c.getCardType().toString());
+            }
+            travelCards.add(cards);
+        }
+        LaunchGameACK actionToSend = new LaunchGameACK(sendPlayer, travelCards);
+
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {
                 String username = serverUser.getName();
                 // get the user's socket
                 ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
-                // get the socket's output stream 
+                // get the socket's output stream
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
                 objectOutputStream.writeObject(actionToSend);
             }
-        } catch (IOException e) { 
+        } catch (IOException e) {
             System.err.println("IOException in LaunchGameAction.execute()");
         }
+        serverGame.phaseTwo();
+        serverGame.phaseThree();
     }
-    
+
 }

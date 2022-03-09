@@ -1,5 +1,5 @@
 package serversrc;
 
 public enum RouteType {
-    PLAIN, WOOD, DESERT, MOUNTAIN, RIVER
+    PLAIN, WOOD, DESERT, MOUNTAIN, RIVER, LAKE
 }

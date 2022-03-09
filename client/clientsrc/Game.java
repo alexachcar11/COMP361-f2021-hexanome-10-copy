@@ -29,7 +29,7 @@ public class Game {
     private boolean witchEnabled;
     private Mode mode;
     private TownGoldOption townGoldOption;
-    private ArrayList<Card> faceDownCardPile;
+    private static ArrayList<Card> faceDownCardPile;
     private ArrayList<Card> faceUpCardPile;
     private ArrayList<GoldCard> goldCardPile;
     //private Auction auction; not doing this now

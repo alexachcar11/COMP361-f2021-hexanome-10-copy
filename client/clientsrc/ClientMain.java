@@ -534,7 +534,8 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
-                            ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
+                            ACTION_MANAGER.sendActionAndGetReply(
+                                    new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                             currentSession = gameToJoin;
                             gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                         } catch (Exception e) {
@@ -817,7 +818,8 @@ public class ClientMain {
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
+                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
+                                            currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
                             } else if (modeSel.equals(Mode.ELFENGOLD)) {
@@ -830,7 +832,8 @@ public class ClientMain {
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
+                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
+                                            currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
                             }
@@ -881,10 +884,11 @@ public class ClientMain {
                 // check that a color was chosen
                 if (colorChosen == null) {
                     // print error message
-                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
+                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold,
+                            MinuetoColor.RED);
                     chooseBootBackground.draw(errorText, 378, 526);
                 } else {
-                    
+
                     // TODO: add elfengold options
 
                     if (currentUser.getName().equals(currentSession.getCreator())) {
@@ -924,9 +928,7 @@ public class ClientMain {
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfengoldBackground.draw(startButton, 822, 580);
                         }
-                        
-                        
-                        
+
                     } else {
                         // not the creator
 
@@ -937,7 +939,7 @@ public class ClientMain {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        
+
                         // change backgrounds
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
@@ -952,7 +954,7 @@ public class ClientMain {
                         // wait for other players (i.e wait for the game to launch)
                         ACTION_MANAGER.waitForPlayers();
                     }
-                    
+
                 }
             } else {
                 // Click on a Color
@@ -962,7 +964,7 @@ public class ClientMain {
                     int maxY = (int) coords.getKey().get(2);
                     int minY = (int) coords.getKey().get(3);
 
-                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) { 
+                    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
                         // select the color
                         colorChosen = coords.getValue();
                         System.out.println("chose: " + colorChosen);
@@ -988,16 +990,15 @@ public class ClientMain {
         @Override
         public void handleMouseMove(int x, int y) {
             // TODO Auto-generated method stub
-            
+
         }
 
-    
         @Override
         public void handleMouseRelease(int x, int y, int button) {
             // TODO Auto-generated method stub
-            
+
         }
-        
+
     };
 
     static MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
@@ -1006,24 +1007,27 @@ public class ClientMain {
             System.out.println("x: " + x + "y: " + y);
 
             if (!currentUser.getName().equals(currentSession.getCreator())) {
-                /* // for users that are not the creator
-                if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
-                    // click on Leave
-                    REGISTRATOR.leaveGame(currentSession, currentUser);
-                    // return to lobby screen
-                    displayAvailableGames();
-                    gui.currentBackground = GUI.Screen.LOBBY;
-                } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
-                    // click on Ready button: only works if you are not ready, else nothing happens
-                    if (!currentUser.isReady()) {
-                        // set user to ready
-                        currentUser.toggleReady();
-                        // draw the green ready image
-                        lobbyElfenlandBackground.draw(readyGreen, 823, 581);
-                        // TODO: display Ready next to the player's name
-                        // TODO: notify all players that this player is ready
-                    }
-                } */
+                /*
+                 * // for users that are not the creator
+                 * if (x >= 825 && x <= 1000 && y >= 675 && y <= 735) {
+                 * // click on Leave
+                 * REGISTRATOR.leaveGame(currentSession, currentUser);
+                 * // return to lobby screen
+                 * displayAvailableGames();
+                 * gui.currentBackground = GUI.Screen.LOBBY;
+                 * } else if (x >= 822 & x <= 998 && y <= 655 && y >= 585) {
+                 * // click on Ready button: only works if you are not ready, else nothing
+                 * happens
+                 * if (!currentUser.isReady()) {
+                 * // set user to ready
+                 * currentUser.toggleReady();
+                 * // draw the green ready image
+                 * lobbyElfenlandBackground.draw(readyGreen, 823, 581);
+                 * // TODO: display Ready next to the player's name
+                 * // TODO: notify all players that this player is ready
+                 * }
+                 * }
+                 */
             } else {
                 // for the creator
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
@@ -1087,6 +1091,9 @@ public class ClientMain {
     private static boolean witchDropdownActive = false;
     private static boolean townGoldDropdownActive = false;
     private static LobbyServiceGameSession gameToJoin;
+
+    // create window that will contain our game - stays in Main (or not lol)
+    public static final MinuetoWindow WINDOW = new MinuetoFrame(1024, 768, true);;
 
     // for lobbyMouseHandler
     private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
@@ -1184,10 +1191,8 @@ public class ClientMain {
             soundStarted = true;
         }
 
-        // create window that will contain our game - stays in Main
-        MinuetoWindow window = new MinuetoFrame(1024, 768, true);
-        gui = new GUI(window, GUI.Screen.MENU);
-        window.setMaxFrameRate(60);
+        gui = new GUI(WINDOW, GUI.Screen.MENU);
+        WINDOW.setMaxFrameRate(60);
 
         // make window visible
         gui.window.setVisible(true);
@@ -1597,7 +1602,7 @@ public class ClientMain {
                 gui.window.draw(soundOnButton, 1000, 745);
             }
 
-            window.render();
+            WINDOW.render();
             Thread.yield();
         }
 
@@ -1720,8 +1725,8 @@ public class ClientMain {
             AbstractMap.SimpleEntry<ImmutableList, Color> entry = new AbstractMap.SimpleEntry<>(
                     listOfCoordinates, c);
             colorButtonCoordinates.add(entry);
-            
-            counter ++;
+
+            counter++;
         }
     }
 
@@ -1928,6 +1933,14 @@ public class ClientMain {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
+        for (Player p: players){
+            if (p.getName().equalsIgnoreCase(playerID)){
+                p.addCardStringArray(cardArray);
+            }
         }
     }
 }
