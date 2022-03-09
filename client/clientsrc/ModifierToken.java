@@ -2,8 +2,6 @@ package clientsrc;
 
 import org.minueto.MinuetoFileException;
 
-import serversrc.Token;
-
 // import serversrc.Token;
 
 // modifier includes the spells and so on for elfenGold and obstacles

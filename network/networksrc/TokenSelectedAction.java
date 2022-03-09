@@ -44,6 +44,7 @@ public class TokenSelectedAction implements Action {
             game.faceDownTokenStack.remove(this.token);
         }
         final String tokenName = this.token.getTokenType().toString();
+        final String name = this.playerName;
         ACKManager.getInstance().sendToSender(new Action() {
 
             @Override
@@ -53,7 +54,10 @@ public class TokenSelectedAction implements Action {
 
             @Override
             public void execute() {
-                System.out.println("Removed a " + tokenName + " travel counter from the pile.");
+                System.out.println(
+                        "Removed a " + tokenName + " travel counter from the pile and added it to " + name
+                                + "'s tokens.");
+                // update gui to reflect tokens in hand
             }
 
         }, playerName);

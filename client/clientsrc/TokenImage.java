@@ -3,11 +3,6 @@ package clientsrc;
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
 
-/**
- * observes the Transportation counter tokens
- */
-import serversrc.Token;
-
 public class TokenImage extends MinuetoImageFile implements HitBox {
     private String tokenName;
     private int x;

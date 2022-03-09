@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.minueto.MinuetoEventQueue;
 import org.minueto.handlers.MinuetoMouseHandler;
-import org.minueto.image.MinuetoImage;
 import org.minueto.window.MinuetoWindow;
 
 import clientsrc.ActionManager;
