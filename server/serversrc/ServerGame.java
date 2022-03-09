@@ -462,12 +462,20 @@ public class ServerGame {
 
     // for planning travel routes phase (5)
     public void playerPlaceCounter(Player p, Route r, Token tok){
+
         // only one counter per road
         if (r.hasCounter()){
+            // there's already a counter on route, so if tok is obstacle we can place it
+            if (tok instanceof Obstacle){
+                // TODO: place obstacle
+
+                return;
+            }
             // do something maybe send message to client
             return;
         }
         else {
+            
             // remove token from player's hand
             p.consumeToken(tok);
             // add token to route r
