@@ -7,6 +7,14 @@ max 6 players
  */
 
 import java.util.ArrayList;
+
+import org.minueto.image.MinuetoImage;
+import org.minueto.window.MinuetoWindow;
+
+import clientsrc.ClientMain;
+import networksrc.ACKManager;
+import networksrc.Action;
+
 import java.util.*;
 
 // import clientsrc.Card;
@@ -18,6 +26,8 @@ import java.util.*;
 // import clientsrc.TownGoldOption;
 
 public class ServerGame {
+
+    private static final ACKManager ACK_MANAGER = ACKManager.getInstance();
 
     private ArrayList<Player> players;
     private int numberOfPlayers;
@@ -279,6 +289,16 @@ public class ServerGame {
         return players;
     }
 
+    public Player getCurrentTurn() {
+        for (Player p : this.players) {
+            if (p.getIsTurn()) {
+                return p;
+            }
+        }
+        // no player's turn, shouldn't happen
+        return null;
+    }
+
     // TODO
     public void updateFaceUpToken(Token pToken) {
 
@@ -315,10 +335,31 @@ public class ServerGame {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void phaseThree() {
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
+        final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
+        Player currentTurn = this.getCurrentTurn();
+        String currentPlayerName = currentTurn.getName();
+        // anonymous action class
+        ACK_MANAGER.sendToSender(new Action() {
 
+            @Override
+            public boolean isValid() {
+                return true;
+            }
+
+            @Override
+            public void execute() {
+                // TODO display faceup tokens
+                MinuetoWindow window = ClientMain.WINDOW;
+                for (Token t : faceUpCopy) {
+                    // change these coords
+                    window.draw(t.getMinuetoImageFile(), 200 + faceUpCopy.indexOf(t) * 20, 200);
+                }
+            }
+        }, currentPlayerName);
     }
 
     // method that checks if all players passed turn, to know if we move on to next

@@ -877,6 +877,9 @@ public class ClientMain {
     private static boolean witchDropdownActive = false;
     private static boolean townGoldDropdownActive = false;
 
+    // create window that will contain our game - stays in Main (or not lol)
+    public static final MinuetoWindow WINDOW = new MinuetoFrame(1024, 768, true);;
+
     // for lobbyMouseHandler
     private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Joinable>> joinButtonCoordinates = new ArrayList<>();
 
@@ -955,10 +958,8 @@ public class ClientMain {
             soundStarted = true;
         }
 
-        // create window that will contain our game - stays in Main
-        MinuetoWindow window = new MinuetoFrame(1024, 768, true);
-        gui = new GUI(window, GUI.Screen.MENU);
-        window.setMaxFrameRate(60);
+        gui = new GUI(WINDOW, GUI.Screen.MENU);
+        WINDOW.setMaxFrameRate(60);
 
         // make window visible
         gui.window.setVisible(true);
@@ -1143,7 +1144,7 @@ public class ClientMain {
                 gui.window.draw(soundOnButton, 1000, 745);
             }
 
-            window.render();
+            WINDOW.render();
             Thread.yield();
         }
 
