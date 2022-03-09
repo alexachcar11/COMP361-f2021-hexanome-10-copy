@@ -26,13 +26,10 @@ public class Player {
     private Game currentGame;
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
-    public Player(Client pClient, Color pColor, User pUser, Game currentGame) {
-        aClient = pClient;
-        aName = aClient.getHost();
-        // TODO: fix these coordinates to match start town
-        aBoot = new Boot(pColor, 577, 666, 291, 370);
+    public Player(Color pColor, User pUser, Game currentGame) {
+        aBoot = new Boot(pColor, 577, 666, 291, 370); 
 
-        // inTown = elvenhold;         // fix this
+        this.inTown = currentGame.getTown("Elvenhold");
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
