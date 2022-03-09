@@ -813,7 +813,7 @@ public class ClientMain {
                             gui.window.draw(lobbyElfenlandBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
-                            //ACTION_MANAGER.waitForPlayersAsCreator();
+                            ACTION_MANAGER.waitForPlayersAsCreator();
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfenlandBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
@@ -846,6 +846,8 @@ public class ClientMain {
                         if (ClientMain.currentSession.isLaunchable()) {
                             ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
                         }
+                        // display game info
+                        displayLobbyInfo();
                         gui.window.render();
 
                         // wait for other players (i.e wait for the game to launch)
@@ -1441,24 +1443,24 @@ public class ClientMain {
             } else {
                 witchText = new MinuetoText("No", font, MinuetoColor.BLACK);
             }
-            background.draw(witchText, 0, 0); // TODO: fix this
+            background.draw(witchText, 787, 455); 
             TownGoldOption townGoldOption = game.getTownGoldOption();
             MinuetoText townText = null;
             if (townGoldOption.equals(TownGoldOption.NO)) {
-                townText = new MinuetoText("Yes", font, MinuetoColor.BLACK);
+                townText = new MinuetoText("No", font, MinuetoColor.BLACK);
             } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
-                townText = new MinuetoText("Yes: default", font, MinuetoColor.BLACK);
+                townText = new MinuetoText("Yes(default)", font, MinuetoColor.BLACK);
             } else {
-                townText = new MinuetoText("Yes: random", font, MinuetoColor.BLACK);
+                townText = new MinuetoText("Yes(random)", font, MinuetoColor.BLACK);
             }
-            background.draw(townText, 0, 0); // TODO: fix this
+            background.draw(townText, 856, 508); 
         }
         
         background.draw(nameText, 480, 125); 
         background.draw(modeText, 770, 185);
-        background.draw(numRoundsText, 808, 390);
+        background.draw(numRoundsText, 808, 385);
         background.draw(sizeText, 765, 255);
-        background.draw(destText, 937, 326);
+        background.draw(destText, 937, 321);
         
     }
 
