@@ -108,7 +108,8 @@ public class PlayerHasJoinedAction implements Action{
         }
 
         // notify all users in the lobby
-        PlayerHasJoinedACK actionToSend = new PlayerHasJoinedACK(senderName, color);
+        PlayerHasJoinedACK actionToSendToOthers = new PlayerHasJoinedACK(senderName, color);
+        PlayerHasJoinedSenderACK actionToSendToSender = new PlayerHasJoinedSenderACK(senderName, color);
         try {
             Server serverInstance = Server.getInstance();
             for (ServerUser serverUser : gameLobby.getAllUsers()) {
@@ -118,7 +119,13 @@ public class PlayerHasJoinedAction implements Action{
                 // get the socket's output stream 
                 ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                 // send the acknowledgment
-                objectOutputStream.writeObject(actionToSend);
+                if (username.equals(senderName)) {
+                    // sender' ack
+                    objectOutputStream.writeObject(actionToSendToSender);
+                } else {
+                    // others' ack
+                    objectOutputStream.writeObject(actionToSendToOthers);
+                }
             }
         } catch (IOException e) { 
             System.err.println("IOException in PlayerHasJoined.execute().");
