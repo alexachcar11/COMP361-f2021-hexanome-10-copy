@@ -58,10 +58,12 @@ public class ClientMain {
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue;
     static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
-    static List<Player> players; // not sure if this should be here
     // make images
     static MinuetoImage elfenlandImage;
     static MinuetoImage elfengoldImage;
+    // create a list of the players 
+    static ArrayList<Player> listOfPlayers = currentGame.getPlayers();
+    static List<Player> players;
     
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
@@ -1072,7 +1074,7 @@ public class ClientMain {
 
     private static boolean nameSel = false;
     private static String nameString = "";
-    private static int numberPlayers = 6;
+    private static int numberPlayers = listOfPlayers.size();
     private static Mode modeSel = Mode.ELFENLAND;
     private static boolean destinationTownSel = false;
     private static int numRoundsSel = 3;
@@ -1164,6 +1166,13 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+
+            for(Player p : players) { 
+                if(p != currentPlayer) { 
+                   players.add(p);
+                }
+            }
+
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
             return;
@@ -1407,131 +1416,130 @@ public class ClientMain {
                 gui.window.draw(indicator, 536, 185);
                 gui.window.draw(indicator, 88, 439);
 
-                // Player player = players.get(0);
-                // List<TransportationCounter> listOfTokens = player.getTokensInHand();
-                // List<TravelCard> listOfCards = player.getCardsInHand();
+                List<TransportationCounter> listOfTokens = currentPlayer.getTokensInHand();
+                List<TravelCard> listOfCards = currentPlayer.getCardsInHand();
 
-                // // organize tokens in inventory
-                // if(listOfTokens.size() == 1) { 
-                //     MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
-                //     gui.window.draw(p1, 642, 640);
-                // } else if (listOfTokens.size() == 2) { 
-                //     MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
-                //     MinuetoImage p2 = listOfTokens.get(1).getMediumImage();
-                //     gui.window.draw(p1, 587, 640);
-                //     gui.window.draw(p2, 695, 640);
-                // } else if (listOfTokens.size() == 3) { 
-                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
-                //     gui.window.draw(p1, 615, 636);
-                //     gui.window.draw(p2, 709, 636);
-                //     gui.window.draw(p3, 663, 698);
-                // } else if (listOfTokens.size() == 4) { 
-                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
-                //     MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
-                //     gui.window.draw(p1, 615, 636);
-                //     gui.window.draw(p2, 709, 636);
-                //     gui.window.draw(p3, 615, 698);
-                //     gui.window.draw(p4, 709, 698);
+                // organize tokens in inventory
+                if(listOfTokens.size() == 1) { 
+                    MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
+                    gui.window.draw(p1, 642, 640);
+                } else if (listOfTokens.size() == 2) { 
+                    MinuetoImage p1 = listOfTokens.get(0).getMediumImage();
+                    MinuetoImage p2 = listOfTokens.get(1).getMediumImage();
+                    gui.window.draw(p1, 587, 640);
+                    gui.window.draw(p2, 695, 640);
+                } else if (listOfTokens.size() == 3) { 
+                    MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                    gui.window.draw(p1, 615, 636);
+                    gui.window.draw(p2, 709, 636);
+                    gui.window.draw(p3, 663, 698);
+                } else if (listOfTokens.size() == 4) { 
+                    MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                    MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
+                    gui.window.draw(p1, 615, 636);
+                    gui.window.draw(p2, 709, 636);
+                    gui.window.draw(p3, 615, 698);
+                    gui.window.draw(p4, 709, 698);
                         
-                // } else if (listOfTokens.size() == 5) { 
-                //     MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
-                //     MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
-                //     MinuetoImage p5 = listOfTokens.get(4).getSmallImage();
-                //     gui.window.draw(p1, 592, 636);
-                //     gui.window.draw(p2, 663, 636);
-                //     gui.window.draw(p3, 734, 636);
-                //     gui.window.draw(p4, 615, 698);
-                //     gui.window.draw(p5, 709, 698);
-                // }
+                } else if (listOfTokens.size() == 5) { 
+                    MinuetoImage p1 = listOfTokens.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfTokens.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfTokens.get(2).getSmallImage();
+                    MinuetoImage p4 = listOfTokens.get(3).getSmallImage();
+                    MinuetoImage p5 = listOfTokens.get(4).getSmallImage();
+                    gui.window.draw(p1, 592, 636);
+                    gui.window.draw(p2, 663, 636);
+                    gui.window.draw(p3, 734, 636);
+                    gui.window.draw(p4, 615, 698);
+                    gui.window.draw(p5, 709, 698);
+                }
 
-                // //organize cards in inventory
-                // if(listOfCards.size() == 1) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                //     gui.window.draw(p1,314,634);
-                // } else if (listOfCards.size() == 2) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                //     gui.window.draw(p1, 258, 634);
-                //     gui.window.draw(p2, 370, 634);
-                // } else if (listOfCards.size() == 3) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                //     gui.window.draw(p1, 202, 634);
-                //     gui.window.draw(p2, 314, 634);
-                //     gui.window.draw(p3, 426, 634);
-                // } else if (listOfCards.size() == 4) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                //     MinuetoImage p4 = listOfCards.get(3).getMediumImage();
-                //     gui.window.draw(p1, 153, 634);
-                //     gui.window.draw(p2, 261, 634);
-                //     gui.window.draw(p3, 369, 634);
-                //     gui.window.draw(p4, 477, 634);
-                // } else if (listOfCards.size() == 5) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                //     MinuetoImage p4 = listOfCards.get(3).getMediumImage();
-                //     MinuetoImage p5 = listOfCards.get(4).getMediumImage();
-                //     gui.window.draw(p1, 150, 634);
-                //     gui.window.draw(p2, 232, 634);
-                //     gui.window.draw(p3, 314, 634);
-                //     gui.window.draw(p4, 396, 634);
-                //     gui.window.draw(p5, 478, 634);
-                // } else if (listOfCards.size() == 6) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                //     gui.window.draw(p1, 235, 605);
-                //     gui.window.draw(p2, 348, 605);
-                //     gui.window.draw(p3, 461, 605);
-                //     gui.window.draw(p4, 235, 685);
-                //     gui.window.draw(p5, 348, 685);
-                //     gui.window.draw(p6, 461, 685);
-                // } else if (listOfCards.size() == 7) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                //     MinuetoImage p7 = listOfCards.get(6).getSmallImage();
-                //     gui.window.draw(p1, 235, 605);
-                //     gui.window.draw(p2, 318, 605);
-                //     gui.window.draw(p3, 414, 605);
-                //     gui.window.draw(p4, 235, 685);
-                //     gui.window.draw(p5, 318, 685);
-                //     gui.window.draw(p6, 414, 685);
-                //     gui.window.draw(p7, 510, 646);
-                // } else if (listOfCards.size() == 8) { 
-                //     MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                //     MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                //     MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                //     MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                //     MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                //     MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                //     MinuetoImage p7 = listOfCards.get(6).getSmallImage();
-                //     MinuetoImage p8 = listOfCards.get(7).getSmallImage();
-                //     gui.window.draw(p1, 222, 605);
-                //     gui.window.draw(p2, 318, 605);
-                //     gui.window.draw(p3, 414, 605);
-                //     gui.window.draw(p4, 510, 605);
-                //     gui.window.draw(p5, 222, 685);
-                //     gui.window.draw(p6, 318, 685);
-                //     gui.window.draw(p7, 414, 685);
-                //     gui.window.draw(p8, 510, 685);
-                // }
+                //organize cards in inventory
+                if(listOfCards.size() == 1) { 
+                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                    gui.window.draw(p1,314,634);
+                } else if (listOfCards.size() == 2) { 
+                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                    gui.window.draw(p1, 258, 634);
+                    gui.window.draw(p2, 370, 634);
+                } else if (listOfCards.size() == 3) { 
+                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                    gui.window.draw(p1, 202, 634);
+                    gui.window.draw(p2, 314, 634);
+                    gui.window.draw(p3, 426, 634);
+                } else if (listOfCards.size() == 4) { 
+                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                    MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+                    gui.window.draw(p1, 153, 634);
+                    gui.window.draw(p2, 261, 634);
+                    gui.window.draw(p3, 369, 634);
+                    gui.window.draw(p4, 477, 634);
+                } else if (listOfCards.size() == 5) { 
+                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+                    MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+                    MinuetoImage p5 = listOfCards.get(4).getMediumImage();
+                    gui.window.draw(p1, 150, 634);
+                    gui.window.draw(p2, 232, 634);
+                    gui.window.draw(p3, 314, 634);
+                    gui.window.draw(p4, 396, 634);
+                    gui.window.draw(p5, 478, 634);
+                } else if (listOfCards.size() == 6) { 
+                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                    gui.window.draw(p1, 235, 605);
+                    gui.window.draw(p2, 348, 605);
+                    gui.window.draw(p3, 461, 605);
+                    gui.window.draw(p4, 235, 685);
+                    gui.window.draw(p5, 348, 685);
+                    gui.window.draw(p6, 461, 685);
+                } else if (listOfCards.size() == 7) { 
+                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                    MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+                    gui.window.draw(p1, 235, 605);
+                    gui.window.draw(p2, 318, 605);
+                    gui.window.draw(p3, 414, 605);
+                    gui.window.draw(p4, 235, 685);
+                    gui.window.draw(p5, 318, 685);
+                    gui.window.draw(p6, 414, 685);
+                    gui.window.draw(p7, 510, 646);
+                } else if (listOfCards.size() == 8) { 
+                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+                    MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+                    MinuetoImage p8 = listOfCards.get(7).getSmallImage();
+                    gui.window.draw(p1, 222, 605);
+                    gui.window.draw(p2, 318, 605);
+                    gui.window.draw(p3, 414, 605);
+                    gui.window.draw(p4, 510, 605);
+                    gui.window.draw(p5, 222, 685);
+                    gui.window.draw(p6, 318, 685);
+                    gui.window.draw(p7, 414, 685);
+                    gui.window.draw(p8, 510, 685);
+                }
 
                 //draw circle for the current turn 
                 MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);

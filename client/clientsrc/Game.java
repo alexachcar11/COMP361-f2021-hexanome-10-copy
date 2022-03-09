@@ -230,4 +230,8 @@ public class Game {
         return false;
     }
 
+    public ArrayList<Player> getPlayers() { 
+        return players;
+    }
+
 }
