@@ -32,18 +32,18 @@ public class ServerGame {
     public ArrayList<AbstractCard> faceDownCardPile;
     public ArrayList<AbstractCard> disposedCardPile;
     public ArrayList<GoldCard> goldCardPile;
-    //public Auction auction; not doing this now
+    // public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenStack;
     private String gameID;
     public TownGraph aTownGraph;
     public CardStack aCardStack;
 
-
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption, String gameID) {
+    public ServerGame(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled,
+            Mode mode, TownGoldOption townGoldOption, String gameID) {
 
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
@@ -52,15 +52,16 @@ public class ServerGame {
         this.witchEnabled = witchEnabled;
         this.mode = mode;
         this.currentRound = 1;
-        this.gameID = gameID;
-
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
         disposedCardPile = new ArrayList<>();
 
-        // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the mode
+        // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the
+        // mode
 
+        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
+        // depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);
@@ -106,54 +107,53 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
-        
-        Route esselenWylhien = new Route(esselen, wylhien, MapRegion.PLAIN);
-        Route esselenWylhien2 = new Route(esselen, wylhien, MapRegion.RIVER, 1);    // river
-        Route esselenYttar = new Route(esselen, yttar, MapRegion.WOOD);
-        Route esselenParundia = new Route(esselen, parundia, MapRegion.WOOD);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, MapRegion.MOUNTAIN);
-        Route WylhienParundia = new Route(wylhien, parundia, MapRegion.PLAIN);
-        Route WylhienAlbaran = new Route(wylhien, albaran, MapRegion.DESERT);
-        Route yttarParundia = new Route(yttar, parundia, MapRegion.RIVER, 1);   // lake
-        Route parundiaGrangor = new Route(parundia, grangor, MapRegion.RIVER, 1); // lake
-        Route parundiaAlbaran = new Route(parundia, albaran, MapRegion.DESERT);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, MapRegion.MOUNTAIN);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih, MapRegion.MOUNTAIN);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran, MapRegion.DESERT);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia, MapRegion.WOOD);
-        Route throtmanniTichih = new Route(thortmanni, tichih, MapRegion.PLAIN);
-        Route throtmanniFeodori = new Route(thortmanni, feodori, MapRegion.DESERT);
-        Route kihromahDagamura = new Route(kihromah, dagamura, MapRegion.WOOD);
-        Route albaranDagamura = new Route(albaran, dagamura, MapRegion.DESERT);
-        Route dagamuraFeodori = new Route(dagamura, feodori, MapRegion.DESERT);
-        Route yttarGrangor = new Route(yttar, grangor, MapRegion.MOUNTAIN);
-        Route yttarGrangor2 = new Route(yttar, grangor, MapRegion.RIVER, 1); // lake
-        Route grangorMahdavikia = new Route(grangor, mahdavikia, MapRegion.MOUNTAIN);
-        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, MapRegion.RIVER, 1);  // river
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara, MapRegion.RIVER, 1);   // river
-        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, MapRegion.MOUNTAIN);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya, MapRegion.WOOD);
-        Route ixaraLapphalya = new Route(ixara, lapphalya, MapRegion.WOOD);
-        Route ixaraDagamura = new Route(ixara, dagamura, MapRegion.WOOD);
-        Route ixaraVirst = new Route(ixara, virst, MapRegion.PLAIN);
-        Route ixaraVirst2 = new Route(ixara, virst, MapRegion.RIVER, 1);    // river
-        Route virstLapphalya = new Route(virst, lapphalya, MapRegion.PLAIN);
-        Route virstStrykhaven = new Route(virst, strykhaven, MapRegion.MOUNTAIN);
-        Route virstStrykhaven2 = new Route(virst, strykhaven, MapRegion.RIVER, 1);  // lake
-        Route virstElvenhold = new Route(virst, elvenhold, MapRegion.RIVER, 1);  // lake
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, MapRegion.PLAIN);
-        Route beataStrykhaven = new Route(beata, strykhaven, MapRegion.PLAIN);
-        Route beataElvenhold = new Route(beata, elvenhold, MapRegion.PLAIN);
-        Route beataElvenhold2 = new Route(beata, elvenhold, MapRegion.RIVER, 0);    // lake
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, MapRegion.RIVER, 1);   // lake
-        Route elvenholdRivinia = new Route(elvenhold, rivinia, MapRegion.RIVER, 0); // river
-        Route riviniaTichih = new Route(rivinia, tichih, MapRegion.RIVER, 0);   // river
-        Route tichihErgeren = new Route(tichih, ergeren, MapRegion.WOOD);
-        Route elvenholdErgeren = new Route(elvenhold, ergeren, MapRegion.WOOD);
-        Route feodoriRivinia = new Route(feodori, rivinia, MapRegion.WOOD);
-        Route lapphalyaRivinia = new Route(lapphalya, rivinia, MapRegion.WOOD);
-        Route feodoriLapphalya = new Route(feodori, lapphalya, MapRegion.WOOD);
-        Route feodoriAlbaran = new Route(feodori, albaran, MapRegion.WOOD);
+        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN);
+        Route esselenWylhien2 = new Route(esselen, wylhien, true); // river
+        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD);
+        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD);
+        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN);
+        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN);
+        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT);
+        Route yttarParundia = new Route(yttar, parundia, true); // lake
+        Route parundiaGrangor = new Route(parundia, grangor, true); // lake
+        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT);
+        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN);
+        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN);
+        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT);
+        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD);
+        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN);
+        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT);
+        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD);
+        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT);
+        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT);
+        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN);
+        Route yttarGrangor2 = new Route(yttar, grangor, true); // lake
+        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN);
+        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, true); // river
+        Route mahdavikiaIxara = new Route(mahdavikia, ixara, true); // river
+        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN);
+        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD);
+        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD);
+        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD);
+        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN);
+        Route ixaraVirst2 = new Route(ixara, virst, true); // river
+        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN);
+        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN);
+        Route virstStrykhaven2 = new Route(virst, strykhaven, true); // lake
+        Route virstElvenhold = new Route(virst, elvenhold, true); // lake
+        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN);
+        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN);
+        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN);
+        Route beataElvenhold2 = new Route(beata, elvenhold, false); // lake
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, true); // lake
+        Route elvenholdRivinia = new Route(elvenhold, rivinia, false); // river
+        Route riviniaTichih = new Route(rivinia, tichih, false); // river
+        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD);
+        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD);
+        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD);
+        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD);
+        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD);
+        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD);
 
         routes.add(parundiaGrangor);
         routes.add(WylhienAlbaran);
@@ -208,61 +208,43 @@ public class ServerGame {
         this.aTownGraph.addEdges(routes);
 
         // add all counters ingame to faceDownTokenPile
-        // first make list with all tokens:
         // depending on mode, tokens are different
-        List<Token> allTokens = new ArrayList<>();
-        // list of the counter types
-        if (this.mode == Mode.ELFENLAND){
-            //create tokens and add to list
-            for (int j = 0; j<6; j++){
-                for (int i = 0; i < 8; i++){
-                    Token tok = new TransportationCounter(CardType.values()[j]);
-                    allTokens.add(tok);
-                }
-            }
-        }
-        else if (this.mode == Mode.ELFENGOLD){
+        if (this.mode == Mode.ELFENLAND) {
+            // create tokens and add to list
+            this.faceDownTokenStack = TokenStack.getFullTokenStackEL();
+        } else if (this.mode == Mode.ELFENGOLD) {
             // TODO
+            this.faceDownTokenStack = TokenStack.getFullTokenStackEG();
         }
         // initialize TravelCard array
 
         // initialize TravelCard objects
-        if (this.mode == Mode.ELFENLAND){
+        if (this.mode == Mode.ELFENLAND) {
             //
-            for (int j = 0; j<6; j++){
-                for (int i = 0; i < 10; i++){
-                    Card newCard = new Card(CardType.values()[j]);
+            for (int j = 0; j < 6; j++) {
+                for (int i = 0; i < 10; i++) {
+                    AbstractCard newCard = new TravelCard(CardType.values()[j]);
                     faceDownCardPile.add(newCard);
                 }
             }
 
             // initialize raft cards
-            for (int i = 0; i < 12; i++){
-                Card newCard = new Card(CardType.RAFT);
+            for (int i = 0; i < 12; i++) {
+                AbstractCard newCard = new TravelCard(CardType.RAFT);
                 faceDownCardPile.add(newCard);
             }
 
         }
 
-        this.faceDownTokenStack = new TokenStack(allTokens);
-        this.aCardStack = new CardStack(faceDownCardPile);
-
-    }
-
-    public Town getTownByName(String townName){
-        for(Town t:towns){
-            if (t.getTownName().equalsIgnoreCase(townName)){
-                return t;
-            }
-        }
-        return null;
     }
 
     /**
-     * Adds a player to the players arraylist. If the max number of players has already been reached, throw an error
+     * Adds a player to the players arraylist. If the max number of players has
+     * already been reached, throw an error
+     * 
      * @param player player to add to the game
      */
-    public void addPlayer(Player player) throws IndexOutOfBoundsException{
+    public void addPlayer(Player player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
         } else {
@@ -270,18 +252,18 @@ public class ServerGame {
         }
     }
 
-    //GETTER for number of players in the game instance
-    public int getNumberOfPlayers() { 
+    // GETTER for number of players in the game instance
+    public int getNumberOfPlayers() {
         return this.numberOfPlayers;
     }
 
-    public static ArrayList<Town> getTowns() { 
+    public static ArrayList<Town> getTowns() {
         return towns;
     }
 
-    public static boolean notClickingOnATown(int x, int y) { 
-        for(Town t: towns) { 
-            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) { 
+    public static boolean notClickingOnATown(int x, int y) {
+        for (Town t : towns) {
+            if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
                 return false;
             }
         }
@@ -292,8 +274,9 @@ public class ServerGame {
     public ArrayList<Player> getAllPlayers() {
         return players;
     }
+
     // TODO
-    public void updateFaceUpToken(Token pToken){
+    public void updateFaceUpToken(Token pToken) {
 
     }
 
@@ -301,33 +284,33 @@ public class ServerGame {
         return gameID;
     }
 
-    public void nextPhase(){
-        if (currentPhase == 6){
+    public void nextPhase() {
+        if (currentPhase == 6) {
 
-        }
-        else{
+        } else {
             this.currentPhase++;
         }
     }
 
-    public void phaseOne(){
+    public void phaseOne() {
 
         // shuffle
         aCardStack.shuffle();
 
-        for (Player p: players){
-            for (int i=0; i <8 ; i++) {
+        for (Player p : players) {
+            for (int i = 0; i < 8; i++) {
                 p.addCard(aCardStack.pop());
             }
         }
     }
 
-    // method that checks if all players passed turn, to know if we move on to next phase/round
-    public boolean didAllPlayersPassTurn(){
+    // method that checks if all players passed turn, to know if we move on to next
+    // phase/round
+    public boolean didAllPlayersPassTurn() {
         // checks if all players has turnPassed as true
-        for(Player p: this.players){
+        for (Player p : this.players) {
             // if one player doesn't have turnPassed as true, return false
-            if(!p.getTurnPassed()){
+            if (!p.getTurnPassed()) {
                 return false;
             }
         }
@@ -335,43 +318,41 @@ public class ServerGame {
     }
 
     /*
-    *   Notes for moving boot:
-    *   - It's currently the move boot phase of the game (phase 5)
-    *   - It's currently player's turn to move boot (Player.getIsTurn())
-    *   - Player (from client) sends coordinate where they clicked
-    *   - server receives coordinate (or receive route clicked ?)
-    *   - server makes sure it's a valid coordinates
-    *   - server checks wether or not that town is adjacent to player's town (is there a route) (send message to client if not valid)
-    *
-    *   ^^^^^^^^^^^^^^^^^^^^^^^^^ (this part might not be necessary for m7)
-    *   - server checks wether the player has cards required to move to that town
-    *   - if it doesn't then return message to client
-    *   - if it does then do the move and take away player's cards
-    *   - send meesage to client to move boot (update state on all player's screens)
-    *
-    *   ^^^^^^^^^^^^^^^^^^^^^^^^^
-    *   - Player can move as many time as he wishes, (until no more moves available click on end turn)
-    *   - goes to next player's turn
-    *   - if everyone passed turn (keep track of this somehow) go to next phase of the game (not necessary for m7?)
-    */
+     * Notes for moving boot:
+     * - It's currently the move boot phase of the game (phase 5)
+     * - It's currently player's turn to move boot (Player.getIsTurn())
+     * - Player (from client) sends coordinate where they clicked
+     * - server receives coordinate (or receive route clicked ?)
+     * - server makes sure it's a valid coordinates
+     * - server checks wether or not that town is adjacent to player's town (is
+     * there a route) (send message to client if not valid)
+     *
+     * ^^^^^^^^^^^^^^^^^^^^^^^^^ (this part might not be necessary for m7)
+     * - server checks wether the player has cards required to move to that town
+     * - if it doesn't then return message to client
+     * - if it does then do the move and take away player's cards
+     * - send meesage to client to move boot (update state on all player's screens)
+     *
+     * ^^^^^^^^^^^^^^^^^^^^^^^^^
+     * - Player can move as many time as he wishes, (until no more moves available
+     * click on end turn)
+     * - goes to next player's turn
+     * - if everyone passed turn (keep track of this somehow) go to next phase of
+     * the game (not necessary for m7?)
+     */
 
     // @pre: current phase == 5 and it's player's turn and town is adjacent
-    public void playerMovedBoot(Player p, Route r){
+    public void playerMovedBoot(Player p, Route r) {
         // check if the route is valid (i.e. it's adjacent to player's town)
         // if it's valid, move boot
-        if (r.getSource() == p.getTown() || r.getDest() == p.getTown()){
+        if (r.getTowns().contains(p.getTown())) {
             // remove the cards from the player
-            List<AbstractCard> requiredCards = r.getRequiredCards(p.getTown());
-            for (AbstractCard c: requiredCards){
-                p.removeCard(c);
-                disposedCardPile.add(c);
-            }
+            p.getCards().removeAll(r.getRequiredCards(p.getTown()));
             // get the town player's trying to go to
             Town dstTown;
-            if (r.getSource() == p.getTown()){
+            if (r.getSource() == p.getTown()) {
                 dstTown = r.getDest();
-            }
-            else {
+            } else {
                 dstTown = r.getSource();
             }
             // update player's town location done in Player.moveBoot(Town t)
@@ -380,134 +361,154 @@ public class ServerGame {
         }
     }
 
-    public int getCurrentPhase(){
+    public int getCurrentPhase() {
         return this.currentPhase;
     }
 
-    public TownGraph getTownGraph(){
+    public TownGraph getTownGraph() {
         return this.aTownGraph;
     }
 
+    /*
+     * Operation: Game::loadGame(savedGame: Game)
+     * Scope: Player;
+     * Messages: Player::{gameSessionCreationConfirmation;
+     * gameSessionCreationFailed_e}
+     * Post: Upon success, sends a confirmation message to the player that their
+     * gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e”
+     * message.
+     */
 
     /*
-    Operation: Game::loadGame(savedGame: Game)
-    Scope: Player;
-    Messages: Player::{gameSessionCreationConfirmation; gameSessionCreationFailed_e}
-    Post: Upon success, sends a confirmation message to the player that their gameState has been saved. Otherwise, sends a “gameSessionCreationFailed_e” message.
-    */
-
-    /*
-    Operation: Game::availableBootColors(Set{color})
-    Scope: Game; Player;
-    Messages: Player::{availableBootColors}
-    Post: Sends the player a set of boot colors available for the player to choose from.
-
-    Operation: Game::bootColorConfirmation(bootColor: color)
-    Scope: Player; Boot;
-    New: newBoot: Boot;
-    Messages: Player::{gameState; bootColorInvalid_e};
-    Post: Sends a new game state to the player that they are allocated a boot with color of their choice if their choice of color is available. If the chosen colour is taken, sends the player a message, which informs them to pick another boot color.
-
-    Operation: Game::displayFaceUpTokens(tokensToDisplay: Set{Token})
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayFaceUpTokens}
-    Post: Sends all face up tokens available for display to the GUI.
-
-    Operation: Game::isYourTurn(player: Player)
-    Scope: Player; Game; Auction;
-    Messages: Player::{gameState}
-    Post: Sends a new game state and notifies the player it is now their turn.
-
-    Operation: Game::displayFaceUpCards(cardsToDisplay: Set{Card})
-    Scope: GUI; Game; Card;
-    Messages: GUI::{displayFaceUpCard}
-    Post: Sends all face up cards available for display to the GUI.
-
-    Operation: Game::displayAvailableBoardMovements()
-    Scope: GUI; Game; Road; Card;
-    Messages: GUI::{displayAvailableBoardMovements}
-    Post: Prompts the player to select a card to sacrifice and highlights all available routes.
-
-    Operation: Game::promptForCardSacrifice(numToSacrifice: int)
-    Scope: GUI; Game; Card;
-    Messages: GUI::{promptForCardSacrifice}
-    Post: Sends a new game state to the player.
-
-    Operation: Game::displayBlockedRoutes()
-    Scope: GUI; Game; Road; Town; Card;
-    Messages: GUI::{displayBlockedRoutes}
-    Post: Highlight all blocked routes on the map.
-
-    Operation: Game::promptForObstacleToCrossByWitch()
-    Scope: GUI; Game; Road;
-    Messages: GUI::{displayBlockedRoutes}
-    Post: Highlight all blocked routes on the map.
-
-    Operation: Game::displayUnmarkedRoutes()
-    Scope: GUI, Game;
-    Messages: GUI::{displayUnmarkedRoutes}
-    Post: The effect of playTravelCard operation is to declare that the next step is to place a travel counter on the map. All unmarked routes will be highlighted.
-
-    Operation: Game::displayMarkedRoutes()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayMarkedRoutes}
-    Post: The effect of playObstacle operation is to declare that the next step is to place an obstacle on the map. All marked routes will be highlighted.
-
-    Operation: Game::displayMarkedWater()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{displayMarkedWater}
-    Post: The effect of playSeaMonster operation is to declare that the next step is to place a sea monster on the map. All marked water will be highlighted.
-
-    Operation: Game::promptForCounterSacrifice()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{promptForCounterSacrifice}
-    Post: The effect of playDoubleTransportSpell operation is to declare that the next step is to place a double transportation counter on the map. The player will be prompted for which counter they would like to sacrifice.
-
-    Operation: Game::promptForTwoCounterSwap()
-    Scope: Game; GUI; Road;
-    Messages: GUI::{promptForTwoCounterSwap}
-    Post: The effect of playExchangeSpell operation is to declare that the next step is to place an exchange spell on the map. Prompts the player to select 2 counters placed on the map and confirms the swap.
-
-    Operation: Game::displayRoundNumberAndStartingPlayer(roundNumber: int, player: Player)
-    Scope: Game, GUI
-    Messages: GUI::{displayFinalResults}
-    Post: Displays the current round number and the starting player for this round.
-
-    Operation: Game::displayFinalResults()
-    Scope: Game; GUI
-    Messages: GUI::{displayFinalResults}
-    Post: Displays the final tallies for each of the players in the lobby.
-
-    Operation: Game::displayGameWinner(player: Player)
-    Scope: Game, GUI
-    Messages: GUI::{displayGameWinner}
-    Post: Display the game winner to all players.
-
-    Operation: Game::gameState()
-    Scope: Game; Player;
-    Messages: Player::{gameState}
-    Post: Sends a new game state to the player.
-
-    Operation: Game::promptToKeepTransportationCounter()
-    Scope: GUI; Game; Token;
-    Messages: GUI::{promptToKeepTransportationCounter}
-    Post: Prompts which transportation counter the player would like to keep in their hand.
-
-    Operation: Game::displayLatestAuctionInfo(auction: Auction)
-    Scope: GUI; Auction; Token;
-    Messages: GUI::{displayLatestAuctionInfo}
-    Post: Displays the latest auction information to the player before they make their bid.
-
-    Operation: Game::displayBidWinner()
-    Scope: GUI; Auction; Token;
-    Messages: GUI::{displayBidWinner}
-    Post: Displays the bid winner.
-
-    Operation: Game::displayNoBidsMade()
-    Scope: GUI; Auction;
-    Messages: GUI::{displayNoBidsMade}
-    Post: If no players have made a bid on a particular auctioned counter, then display to all players that no players have made a bid.
-
+     * Operation: Game::availableBootColors(Set{color})
+     * Scope: Game; Player;
+     * Messages: Player::{availableBootColors}
+     * Post: Sends the player a set of boot colors available for the player to
+     * choose from.
+     * 
+     * Operation: Game::bootColorConfirmation(bootColor: color)
+     * Scope: Player; Boot;
+     * New: newBoot: Boot;
+     * Messages: Player::{gameState; bootColorInvalid_e};
+     * Post: Sends a new game state to the player that they are allocated a boot
+     * with color of their choice if their choice of color is available. If the
+     * chosen colour is taken, sends the player a message, which informs them to
+     * pick another boot color.
+     * 
+     * Operation: Game::displayFaceUpTokens(tokensToDisplay: Set{Token})
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayFaceUpTokens}
+     * Post: Sends all face up tokens available for display to the GUI.
+     * 
+     * Operation: Game::isYourTurn(player: Player)
+     * Scope: Player; Game; Auction;
+     * Messages: Player::{gameState}
+     * Post: Sends a new game state and notifies the player it is now their turn.
+     * 
+     * Operation: Game::displayFaceUpCards(cardsToDisplay: Set{Card})
+     * Scope: GUI; Game; Card;
+     * Messages: GUI::{displayFaceUpCard}
+     * Post: Sends all face up cards available for display to the GUI.
+     * 
+     * Operation: Game::displayAvailableBoardMovements()
+     * Scope: GUI; Game; Road; Card;
+     * Messages: GUI::{displayAvailableBoardMovements}
+     * Post: Prompts the player to select a card to sacrifice and highlights all
+     * available routes.
+     * 
+     * Operation: Game::promptForCardSacrifice(numToSacrifice: int)
+     * Scope: GUI; Game; Card;
+     * Messages: GUI::{promptForCardSacrifice}
+     * Post: Sends a new game state to the player.
+     * 
+     * Operation: Game::displayBlockedRoutes()
+     * Scope: GUI; Game; Road; Town; Card;
+     * Messages: GUI::{displayBlockedRoutes}
+     * Post: Highlight all blocked routes on the map.
+     * 
+     * Operation: Game::promptForObstacleToCrossByWitch()
+     * Scope: GUI; Game; Road;
+     * Messages: GUI::{displayBlockedRoutes}
+     * Post: Highlight all blocked routes on the map.
+     * 
+     * Operation: Game::displayUnmarkedRoutes()
+     * Scope: GUI, Game;
+     * Messages: GUI::{displayUnmarkedRoutes}
+     * Post: The effect of playTravelCard operation is to declare that the next step
+     * is to place a travel counter on the map. All unmarked routes will be
+     * highlighted.
+     * 
+     * Operation: Game::displayMarkedRoutes()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayMarkedRoutes}
+     * Post: The effect of playObstacle operation is to declare that the next step
+     * is to place an obstacle on the map. All marked routes will be highlighted.
+     * 
+     * Operation: Game::displayMarkedWater()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{displayMarkedWater}
+     * Post: The effect of playSeaMonster operation is to declare that the next step
+     * is to place a sea monster on the map. All marked water will be highlighted.
+     * 
+     * Operation: Game::promptForCounterSacrifice()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{promptForCounterSacrifice}
+     * Post: The effect of playDoubleTransportSpell operation is to declare that the
+     * next step is to place a double transportation counter on the map. The player
+     * will be prompted for which counter they would like to sacrifice.
+     * 
+     * Operation: Game::promptForTwoCounterSwap()
+     * Scope: Game; GUI; Road;
+     * Messages: GUI::{promptForTwoCounterSwap}
+     * Post: The effect of playExchangeSpell operation is to declare that the next
+     * step is to place an exchange spell on the map. Prompts the player to select 2
+     * counters placed on the map and confirms the swap.
+     * 
+     * Operation: Game::displayRoundNumberAndStartingPlayer(roundNumber: int,
+     * player: Player)
+     * Scope: Game, GUI
+     * Messages: GUI::{displayFinalResults}
+     * Post: Displays the current round number and the starting player for this
+     * round.
+     * 
+     * Operation: Game::displayFinalResults()
+     * Scope: Game; GUI
+     * Messages: GUI::{displayFinalResults}
+     * Post: Displays the final tallies for each of the players in the lobby.
+     * 
+     * Operation: Game::displayGameWinner(player: Player)
+     * Scope: Game, GUI
+     * Messages: GUI::{displayGameWinner}
+     * Post: Display the game winner to all players.
+     * 
+     * Operation: Game::gameState()
+     * Scope: Game; Player;
+     * Messages: Player::{gameState}
+     * Post: Sends a new game state to the player.
+     * 
+     * Operation: Game::promptToKeepTransportationCounter()
+     * Scope: GUI; Game; Token;
+     * Messages: GUI::{promptToKeepTransportationCounter}
+     * Post: Prompts which transportation counter the player would like to keep in
+     * their hand.
+     * 
+     * Operation: Game::displayLatestAuctionInfo(auction: Auction)
+     * Scope: GUI; Auction; Token;
+     * Messages: GUI::{displayLatestAuctionInfo}
+     * Post: Displays the latest auction information to the player before they make
+     * their bid.
+     * 
+     * Operation: Game::displayBidWinner()
+     * Scope: GUI; Auction; Token;
+     * Messages: GUI::{displayBidWinner}
+     * Post: Displays the bid winner.
+     * 
+     * Operation: Game::displayNoBidsMade()
+     * Scope: GUI; Auction;
+     * Messages: GUI::{displayNoBidsMade}
+     * Post: If no players have made a bid on a particular auctioned counter, then
+     * display to all players that no players have made a bid.
+     * 
      */
 
 }

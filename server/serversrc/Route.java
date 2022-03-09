@@ -2,281 +2,110 @@ package serversrc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 // import clientsrc.Player;
 // import clientsrc.Token;
 // import clientsrc.Town;
 
 public class Route {
-    
-    // route needs to have a starting town and an ending town 
-    // routes carry one transportation counter maximum, but don't need to have one 
-    
-    Town aStartingTown;
-    Town aEndTown;
-    TransportationCounter aCounter;       // TODO: there could be multiple tokens, list ?
-    // road or river
-    boolean isRiver = false;
+
+    // route needs to have a starting town and an ending town
+    // routes carry one transportation counter maximum, but don't need to have one
+
+    private List<Town> towns;
+    Token aToken; // TODO: there could be multiple tokens, list ?
     // upstream
     boolean isUpstream;
-    MapRegion aRegion;
-    // might be subject to change 
-    boolean hasObstacle;
+    private RouteType type;
 
-    Route(Town pStartingTown, Town pEndTown, MapRegion pRegion){ 
-        this.aStartingTown = pStartingTown;
-        this.aEndTown = pEndTown;
-        this.aCounter = null;
-        this.aRegion = pRegion;
-        this.hasObstacle = false;
+    Route(Town pStartingTown, Town pEndTown, RouteType rType) {
+        this.towns = new ArrayList<>();
+        this.towns.add(pStartingTown);
+        this.towns.add(pEndTown);
+        this.aToken = null;
+        this.type = rType;
     }
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    Route(Town pStartingTown, Town pEndTown, MapRegion pRegion, int n){
-        this.isRiver = true;
-        if(n == 1){
-            this.isUpstream = true;
-        }
-        else if(n == 0){
-            this.isUpstream = false;
-        }
-        // if n is not 1 or 0
-        else {
-            throw new IllegalArgumentException();
-        }
-        this.aStartingTown = pStartingTown;
-        this.aEndTown = pEndTown;
-        this.aCounter = null;
-        this.aRegion = pRegion;
-        this.hasObstacle = false;
-    }
-
-    public boolean getisRiver(){
-        return this.aRegion.equals(MapRegion.RIVER);
+    Route(Town pStartingTown, Town pEndTown, boolean upstream) {
+        this.towns = new ArrayList<>();
+        this.isUpstream = upstream;
+        this.towns.add(pStartingTown);
+        this.towns.add(pEndTown);
+        this.aToken = null;
+        this.type = RouteType.RIVER;
     }
 
     // sets Upstream with a boolean
-    public void setUpstream(boolean b){
+    public void setUpstream(boolean b) {
         isUpstream = b;
     }
 
-    public Town getSource(){
-        return this.aStartingTown;
+    public List<Town> getTowns() {
+        return this.towns;
     }
 
-    public Town getDest(){
-        return this.aEndTown;
+    public Town getSource() {
+        return towns.get(0);
+    }
+
+    public Town getDest() {
+        return towns.get(1);
     }
 
     /**
-     * Place a token on a valid route. 
+     * Place a token on a valid route.
      * 
      * Ensure that the route isn't already occupied and that the token exists
      * 
+     * Check that counter is already placed before adding Obstacle
+     * 
      * @param token
      */
-    public void placeToken(Player player, TransportationCounter pCounter) { 
-        assert pCounter != null;
-
-        if(this.aCounter == null) { 
-            throw new IllegalArgumentException();
-        } else { 
-            player.consumeToken(pCounter);
-            this.aCounter = pCounter;
-            
-        }
+    public void placeToken(Token token) {
+        assert token != null;
+        if (this.aToken != null) {
+            if (token.isObstacle()) {
+                ((Obstacle) token).setTokenOnPath(this.aToken);
+                this.aToken = token;
+            } else
+                throw new RuntimeException("Cannot add more than one travel counter to a route.");
+        } else if (!token.isObstacle()) {
+            this.aToken = token;
+        } else
+            throw new RuntimeException("Cannot add an obstacle without first placing a travel counter.");
     }
 
-    public void placeObstacle(Player player){
-        //remove obstacle from player's hand
-        // add obstacle to route
-        this.hasObstacle = true;
+    public void clearToken() {
+        this.aToken = null;
     }
 
-    public void clearToken() { 
-        this.aCounter = null;
+    /**
+     * 
+     * @param cardType
+     * @return cost to travel on path with a given CardType, assuming no obstacles
+     */
+    public int costWithCardType(CardType cardType) {
+        return cardType == CardType.RAFT && isUpstream ? CostCard.getCost(type.ordinal(), cardType.ordinal() + 1)
+                : CostCard.getCost(type.ordinal(), cardType.ordinal());
     }
 
-    // @pre should check if there's a counter on road first 
-    // (extra note, check region type is valid for the counter when placing counters
-    // so that means counter will be valid at this stage no matter the region)
-    public List<AbstractCard> getRequiredCards(Town currTown){
-        List<AbstractCard> output = new ArrayList<>();
-        // Card goldCard = new Card(CardType.GOLD);
-        // witch card ? don't think it goes here...
-        
-        // for river and lake
-        if (aRegion.equals(MapRegion.RIVER)){
-            Card raftCard = new Card(CardType.RAFT);
-            output.add(raftCard);
-            // check for upstream/downstream
-            if (currTown.getTownName().equalsIgnoreCase(this.aStartingTown.getTownName())){
-                if (isUpstream){
-                    // add a raft card
-                    output.add(raftCard);
-                }
-            }
-            else{
-                if (!isUpstream){
-                    output.add(raftCard);
-                }
-            }
+    /**
+     * @pre this.aToken != null
+     * @return cost to travel the path with correct cards, in current state
+     */
+    public int cost() {
+        assert aToken != null;
+        return aToken.cost();
+    }
+
+    public List<AbstractCard> getRequiredCards(Town town) {
+        List<AbstractCard> toReturn = new ArrayList<>();
+        for (int i = 0; i < this.cost(); i++) {
+            toReturn.add(new TravelCard(this.aToken.getTokenType()));
         }
-        else{
-            switch(this.aCounter.getCounterType()){
-
-                case CLOUD:
-                    Card cloudCard = new Card(CardType.CLOUD);
-                    // if there's an obstacle, add an extra one
-                    if(this.hasObstacle){
-                        output.add(cloudCard);
-                    }
-
-                    // check by region
-                    switch(aRegion){
-                        case MOUNTAIN:
-                            output.add(cloudCard);
-                            break;
-                        case PLAIN:
-                            output.add(cloudCard);
-                            output.add(cloudCard);
-                            break;
-                        case WOOD:
-                            output.add(cloudCard);
-                            output.add(cloudCard);
-                            break;
-                        default:
-                            break;
-                        
-                    }
-                    break;
-
-                case DRAGON:
-                    Card dragonCard = new Card(CardType.DRAGON);
-                    if(this.hasObstacle){
-                        output.add(dragonCard);
-                    }
-
-                    switch(aRegion){
-                        case DESERT:
-                            output.add(dragonCard);
-                            break;
-                        case MOUNTAIN:
-                            output.add(dragonCard);
-                            break;
-                        case PLAIN:
-                            output.add(dragonCard);
-                            break;
-                        case WOOD:
-                            output.add(dragonCard);
-                            output.add(dragonCard);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case ELFCYCLE:
-                    Card elfcyleCard = new Card(CardType.ELFCYCLE);
-                    if(this.hasObstacle){
-                        output.add(elfcyleCard);
-                    }
-
-                    switch(aRegion){
-                        case MOUNTAIN:
-                            output.add(elfcyleCard);
-                            output.add(elfcyleCard);
-                            break;
-                        case PLAIN:
-                            output.add(elfcyleCard);
-                            break;
-                        case WOOD:
-                            output.add(elfcyleCard);
-                            break;
-                        default:
-                            break;
-                        
-                    }
-                    break;
-                // TODO: for elfengold
-                case GOLD:
-
-                    break;
-
-                case PIG:
-                    Card pigCard = new Card(CardType.PIG);
-                    if(this.hasObstacle){
-                        output.add(pigCard);
-                    }
-
-                    switch(aRegion){
-                        case PLAIN:
-                            output.add(pigCard);
-                            break;
-                        case WOOD:
-                            output.add(pigCard);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case TROLL:
-                    Card trollCard = new Card(CardType.TROLL);
-                    if(this.hasObstacle){
-                        output.add(trollCard);
-                    }
-
-                    switch(aRegion){
-                        case DESERT:
-                            output.add(trollCard);
-                            output.add(trollCard);
-                            break;
-                        case MOUNTAIN:
-                            output.add(trollCard);
-                            output.add(trollCard);
-                            break;
-                        case PLAIN:
-                            output.add(trollCard);
-                            break;
-                        
-                        case WOOD:
-                            output.add(trollCard);
-                            output.add(trollCard);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case UNICORN:
-                    Card unicornCard = new Card(CardType.UNICORN);
-                    if(this.hasObstacle){
-                        output.add(unicornCard);
-                    }
-
-                    switch(aRegion){
-                        case DESERT:
-                            output.add(unicornCard);
-                            output.add(unicornCard);
-                            break;
-                        case MOUNTAIN:
-                            output.add(unicornCard);
-                            break;
-                        case WOOD:
-                            output.add(unicornCard);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                // case WITCH:
-                //     break;
-                default:
-                    break;
-
-            }
-        }
-        return output;
+        return toReturn;
     }
 }
