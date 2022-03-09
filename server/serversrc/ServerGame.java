@@ -14,10 +14,12 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.MinuetoImage;
 import org.minueto.window.MinuetoWindow;
 
+import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.TokenImage;
 import networksrc.ACKManager;
 import networksrc.Action;
+import networksrc.TokenSelectedAction;
 
 import java.util.*;
 
@@ -379,7 +381,6 @@ public class ServerGame {
 
             @Override
             public void execute() {
-                // TODO display faceup tokens
                 MinuetoWindow window = ClientMain.WINDOW;
                 for (Token t : faceUpCopy) {
                     // change these coords
@@ -394,7 +395,10 @@ public class ServerGame {
                                 .collect(Collectors.toList());
                         for (TokenImage t : imageList) {
                             if (t.hasCollidePoint(xClicked, yClicked)) {
-                                // inform server that user has selected t.getToken()
+                                // inform server that user has selected t
+                                ActionManager.getInstance()
+                                        .sendActionAndGetReply(new TokenSelectedAction(
+                                                ClientMain.currentSession.getSessionID(), t.getTokenName()));
                                 break;
                             }
                         }

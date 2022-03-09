@@ -84,4 +84,12 @@ public class TokenStack implements Iterable<Token> {
         // TODO
         return new TokenStack();
     }
+
+    public boolean contains(Object o) {
+        return aTokens.contains(o);
+    }
+
+    public boolean remove(Object o) {
+        return aTokens.remove(o);
+    }
 }

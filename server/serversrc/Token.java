@@ -15,7 +15,8 @@ public class Token {
     public Token(CardType pCT) {
         this.tokenType = pCT;
         try {
-            this.tokenImageFile = new TokenImage(this, "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
+            this.tokenImageFile = new TokenImage(this.tokenType.toString(),
+                    "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
@@ -54,5 +55,16 @@ public class Token {
 
     public TokenImage getTokenImage() {
         return this.tokenImageFile;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (!(o instanceof Token)) {
+            return false;
+        }
+        Token toCompare = (Token) o;
+        return this.tokenType == toCompare.tokenType;
     }
 }

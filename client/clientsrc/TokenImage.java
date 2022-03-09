@@ -9,7 +9,7 @@ import org.minueto.image.MinuetoImageFile;
 import serversrc.Token;
 
 public class TokenImage extends MinuetoImageFile implements HitBox {
-    private Token token;
+    private String tokenName;
     private int x;
     private int y;
 
@@ -22,15 +22,15 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public TokenImage(Token token, String url) throws MinuetoFileException {
+    public TokenImage(String tName, String url) throws MinuetoFileException {
         super(url);
-        this.token = token;
+        this.tokenName = tName;
         this.x = 0;
         this.y = 0;
     }
 
-    public Token getToken() {
-        return token;
+    public String getTokenName() {
+        return tokenName;
     }
 
     public void setPos(int x, int y) {
