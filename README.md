@@ -33,6 +33,7 @@ Installed:
 * maven 3.8.4
 
 ## How to send message through the network
+* Don't forget to pull the code in the server machine too :). Just ssh to the server, go to your branch and pull :)
 * Create a __Action.java class in networksrc. It implements Action.
 * The constructor needs to take a parameter String senderName and save it in a senderName field. You can add more fields but they need to be serializable objects
 * Implement isValid and execute. The network will call these on the server so only use classes/methods that are already in serversrc (very important!!! don't even import clientsrc)
@@ -58,10 +59,10 @@ ackManager.sendToSender(actionToSend, senderName);
 
 * Now you can send the message from client to server and wait for a reply:
 ``` 
-ACCOUNT_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
+ACTION_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
 ```
 
 * When it's not your turn, wait for messages from the server. This method will run until it's the player's turn again, then it will exit.
 ``` 
-ACCOUNT_MANAGER.waitForMessages();
+ACTION_MANAGER.waitForMessages();
 ```

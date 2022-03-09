@@ -450,7 +450,14 @@ public class Registrator {
         }
     }
 
+    // TEMPORARY LAUNCHSESSION UNTIL THE BUG IS RESOLVED:
+    // CONSEQUENCE: the available games screen will show launched games + LS won't know that the game is launched
     public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
+        // send to the server
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
+    }
+
+    /* public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
         // user token
         String token = userAskingToLaunch.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -472,7 +479,7 @@ public class Registrator {
             // send to the server
             ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
         }
-    }
+    } */
 
     /**
      * Helper function for availableGames(). Returns an arraylist of

@@ -1,4 +1,5 @@
 package clientsrc;
+
 // minueto
 import org.json.simple.JSONObject;
 import org.minueto.MinuetoColor;
@@ -379,31 +380,32 @@ public class ClientMain {
             // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
             // cycle to the next player
             /*
-            for (int i = 0; i < players.size(); i++) {
-
-                while (ServerGame.notClickingOnATown(x, y)) {
-                    for (Town t : ServerGame.getTowns()) {
-
-                        if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
-
-                            // set a variable to keep track of the town at that location
-                            Town townAtLoc = t;
-                            // move the boot to that town
-                            Player p = players.get(i);
-
-                            p.moveBoot(t);
-
-                            // draw the boot at a location
-                            // depending on the number of players in the lobby, designate an arrangement for
-                            // possible boot
-                            // slots around each city, will be populated by the specific boot each time
-
-                            // gui.window.draw( BOOT, LOCATION1, LOCATION2);
-                        }
-                    }
-                }
-            }
-            */
+             * for (int i = 0; i < players.size(); i++) {
+             * 
+             * while (ServerGame.notClickingOnATown(x, y)) {
+             * for (Town t : ServerGame.getTowns()) {
+             * 
+             * if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
+             * 
+             * // set a variable to keep track of the town at that location
+             * Town townAtLoc = t;
+             * // move the boot to that town
+             * Player p = players.get(i);
+             * 
+             * p.moveBoot(t);
+             * 
+             * // draw the boot at a location
+             * // depending on the number of players in the lobby, designate an arrangement
+             * for
+             * // possible boot
+             * // slots around each city, will be populated by the specific boot each time
+             * 
+             * // gui.window.draw( BOOT, LOCATION1, LOCATION2);
+             * }
+             * }
+             * }
+             * }
+             */
         }
 
         @Override
@@ -476,7 +478,8 @@ public class ClientMain {
     };
 
     /**
-     * This handles the keyboard input on the game creation page (the name input field)
+     * This handles the keyboard input on the game creation page (the name input
+     * field)
      */
     static MinuetoKeyboardHandler gameScreenKeyboardHandler = new MinuetoKeyboardHandler() {
         private boolean shift = false;
@@ -542,7 +545,7 @@ public class ClientMain {
             } else {
                 // disable text input
                 nameSel = false;
-                if (x >= 533 & x <= 580 && y >= 176 && y <=216) {
+                if (x >= 533 & x <= 580 && y >= 176 && y <= 216) {
                     // click on Mode dropdown
                     modeDropdownActive = !modeDropdownActive;
                     // close the dropdowns
@@ -553,7 +556,7 @@ public class ClientMain {
                     witchDropdownActive = false;
                 } else if (modeDropdownActive) {
                     // click on an option in the mode dropdown
-                    if (x >= 270 && x <= 575 && y >= 223 && y <=260) {
+                    if (x >= 270 && x <= 575 && y >= 223 && y <= 260) {
                         // click on Elfenland
                         modeSel = Mode.ELFENLAND;
                         // the number of rounds in elfenland is 3 or 4
@@ -579,7 +582,7 @@ public class ClientMain {
                         createGameBackground.draw(name, 178, 120);
                     }
                     modeDropdownActive = !modeDropdownActive;
-                } else if (x >= 186  && x <= 230 && y >= 232 && y <= 278) {
+                } else if (x >= 186 && x <= 230 && y >= 232 && y <= 278) {
                     // click on Size dropdown
                     sizeDropdownActive = !sizeDropdownActive;
                     // close the dropdowns
@@ -659,7 +662,7 @@ public class ClientMain {
                     if (x >= 376 && x <= 700 && y >= 423 && y <= 466) {
                         // click on No
                         townGoldOption = TownGoldOption.NO;
-                    } else if (x >= 376 && x <= 700 && y >= 446 &&  y <= 510) {
+                    } else if (x >= 376 && x <= 700 && y >= 446 && y <= 510) {
                         // click on Yes: default
                         townGoldOption = TownGoldOption.YESDEFAULT;
                     } else if (x >= 376 && x <= 700 && y >= 510 && y <= 546) {
@@ -682,7 +685,7 @@ public class ClientMain {
                         // click on No
                         witchSel = false;
                     } else if (x >= 169 && x <= 513 && y >= 535 && y <= 580) {
-                       // click on Yes
+                        // click on Yes
                         witchSel = true;
                     }
                     witchDropdownActive = false;
@@ -700,14 +703,15 @@ public class ClientMain {
                     boolean canCreate = true;
                     if (nameString.equals("")) {
                         // show error message when the name is empty
-                        MinuetoText nameIsEmpty = new MinuetoText("Please enter a name.", fontArial22Bold, MinuetoColor.RED);
+                        MinuetoText nameIsEmpty = new MinuetoText("Please enter a name.", fontArial22Bold,
+                                MinuetoColor.RED);
                         createGameBackground.draw(nameIsEmpty, 178, 120);
                         canCreate = false;
                     }
                     // END OF CHECK INPUTS
 
                     // CREATE NEW GAME HERE
-                    if (canCreate) { // if nameString  is not empty, create a new game
+                    if (canCreate) { // if nameString is not empty, create a new game
 
                         try {
                             if (modeSel.equals(Mode.ELFENLAND)) {
@@ -715,19 +719,21 @@ public class ClientMain {
                                 gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel, Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
                                 if (gameToJoin == null) {
                                     // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
+                                            MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
                                     ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
-                            } else if(modeSel.equals(Mode.ELFENGOLD)) {
+                            } else if (modeSel.equals(Mode.ELFENGOLD)) {
                                 // create an elfengold game
                                 gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
                                 if (gameToJoin == null) {
                                     // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
+                                            MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
@@ -973,7 +979,6 @@ public class ClientMain {
     private static long clipPos;
     private static boolean soundStarted = false;
 
-
     private static boolean nameSel = false;
     private static String nameString = "";
     private static int numberPlayers = 6;
@@ -1191,7 +1196,6 @@ public class ClientMain {
                     gui.window.draw(destinationTownNoText, 389, 310);
                 }
 
-
                 // display dropdowns
                 if (modeDropdownActive) {
                     gui.window.draw(modeDropdownRectangle, 268, 215);
@@ -1243,7 +1247,7 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
                 gui.window.draw(elfenlandImage, 0, 0);
-                
+
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
             }
