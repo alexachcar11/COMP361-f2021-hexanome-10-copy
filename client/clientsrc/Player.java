@@ -25,9 +25,9 @@ public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
     public Player(Color pColor, User pUser, Game currentGame) {
-        aBoot = new Boot(pColor, 577, 666, 291, 370);
+        aBoot = new Boot(pColor, 577, 666, 291, 370); 
 
-        // inTown = elvenhold;         // fix this
+        this.inTown = Game.getTownByName("Elvenhold");
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
@@ -216,6 +216,15 @@ public class Player {
     //     // ??? end player's turn ???
     //     return -1;
     // }
+
+    /**
+     * Sets the inTown parameter to Town t
+     * @param t
+     */
+    public void setTown(Town t) {
+        inTown = t;
+        t.addPlayer(this);
+    }
 
     public void moveBoot(Town t) { 
         // remove the player from the old town 
