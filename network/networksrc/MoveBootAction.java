@@ -78,7 +78,7 @@ public class MoveBootAction implements Action {
 
         // send an ACK to all clients in the game
         ACKManager ackManager = ACKManager.getInstance();
-        MoveBootACK actionToSend = new MoveBootACK(dstTown, playerWhoSent.getBootColor().name());
+        MoveBootACK actionToSend = new MoveBootACK(dstTown);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
     }
 }

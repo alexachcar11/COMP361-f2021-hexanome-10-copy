@@ -218,4 +218,14 @@ public class Game {
         return false;
     }
 
+    public Town getTownByName(String stringTown){
+        for (Town t: towns){
+            if (t.getTownName().equalsIgnoreCase(stringTown)){
+                return t;
+            }
+        }
+        // no town with such name
+        return null;
+    }
+
 }

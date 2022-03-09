@@ -240,7 +240,6 @@ public class ServerGame {
 
         this.faceDownTokenStack = new TokenStack(allTokens);
         this.aCardStack = new CardStack(faceDownCardPile);
-
     }
 
     public Town getTownByName(String townName){
@@ -338,6 +337,9 @@ public class ServerGame {
     // TODO: game ends and winner announced
     public void winner(Player winner){
         // ...
+
+        // should send an action...
+        System.out.println(winner.getName());;
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)

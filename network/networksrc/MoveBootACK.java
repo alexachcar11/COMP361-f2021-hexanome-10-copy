@@ -7,11 +7,10 @@ import clientsrc.*;
 public class MoveBootACK implements Action{
 
     private String newTown;
-    private String bootColor;
+    
 
-    public MoveBootACK(String newTown, String bootColor){
+    public MoveBootACK(String newTown){
         this.newTown = newTown;
-        this.bootColor = bootColor;
     }
     
     @Override
@@ -25,7 +24,9 @@ public class MoveBootACK implements Action{
         Player p = ClientMain.currentPlayer;
         Game g = ClientMain.currentGame;
         // TODO: call a method that updates GUI by changing the boot with bootColor to newTown
-        ClientMain.moveBoot(String bootColor, String toTown);
+        // get town by name
+        Town t = g.getTownByName(newTown);
+        p.moveBoot(t);
     }
     
 }
