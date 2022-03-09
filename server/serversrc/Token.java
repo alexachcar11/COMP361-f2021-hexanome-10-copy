@@ -11,9 +11,11 @@ public class Token {
     private final CardType tokenType;
     private Optional<Route> route = Optional.empty();
     private TokenImage tokenImageFile;
+    private boolean isFaceUp;
 
     public Token(CardType pCT) {
         this.tokenType = pCT;
+        this.isFaceUp = true;
         try {
             this.tokenImageFile = new TokenImage(this.tokenType.toString(),
                     "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
@@ -24,6 +26,18 @@ public class Token {
 
     public CardType getTokenType() {
         return tokenType;
+    }
+
+    public void resetRoute(){
+        this.route = Optional.empty();
+    }
+
+    public boolean getIsFaceUp(){
+        return this.isFaceUp;
+    }
+
+    public void setIsFaceUpTo(boolean bool){
+        this.isFaceUp = bool;
     }
 
     /**

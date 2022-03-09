@@ -436,12 +436,44 @@ public class ServerGame {
         }, currentPlayerName);
     }
 
+    // // drawing of additional transportation counter (specific counter)
+    // // @pre: tok should be inside faceUpTokenPile
+    // public void playerDrawCounter(Player p, Token tok){
+    //     // remove from list of face up tokens, remove it
+    //     this.faceUpTokenPile.remove(tok);
+    //     // replace it
+    //     this.faceUpTokenPile.add(faceDownTokenStack.pop());
+    //     // add to player's hand
+    //     p.addToken(tok);
+    // }
+
+    // // drawing random counter
+    // public void playerDrawRandomCounter(Player p){
+    //     p.addToken(this.faceDownTokenStack.pop());
+    // }
+
     // TODO: game ends and winner announced
     public void winner(Player winner){
         // ...
 
         // should send an action...
         System.out.println(winner.getName());;
+    }
+
+    // for planning travel routes phase (5)
+    public void playerPlaceCounter(Player p, Route r, Token tok){
+        // only one counter per road
+        if (r.hasCounter()){
+            // do something maybe send message to client
+            return;
+        }
+        else {
+            // remove token from player's hand
+            p.consumeToken(tok);
+            // add token to route r
+            tok.setRoute(r);
+            r.placeToken(tok);
+        }
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
@@ -506,7 +538,10 @@ public class ServerGame {
             Token tok = r.removeToken();
             // check if not null
             if (tok != null){
-                // check if it's face down
+                // check if it's face up ?
+                
+                // reset the route field in token
+                tok.resetRoute();
                 // add to the tokenStack
                 faceDownTokenStack.addToken(tok);
             }
