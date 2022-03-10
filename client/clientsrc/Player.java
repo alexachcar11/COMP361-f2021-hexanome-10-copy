@@ -130,6 +130,10 @@ public class Player {
         return tokensInHand;
     }
 
+    public void drawBoot() { 
+        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+    }
+
     /*
      * Operation: Player::startGame(gameSession: Session)
      * Scope: Player; Session;
@@ -305,6 +309,7 @@ public class Player {
 
         // add the player to the list of players located at the new town
         t.addPlayer(this);
+        drawBoot();
 
         // TODO: check if the player has traveled to the new town in the past already,
         // -> if yes, do nothing
