@@ -197,7 +197,7 @@ public class ActionManager {
             ClientMain.gui.window.draw(indicator, 88, 439);
 
             MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
-            // ClientMain.gui.window.draw(passTurnText, arg1, arg2);
+            ClientMain.gui.window.draw(passTurnText, 85, 600);
 
             List<TokenImage> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
             List<TravelCard> listOfCards = ClientMain.currentPlayer.getCardsInHand();

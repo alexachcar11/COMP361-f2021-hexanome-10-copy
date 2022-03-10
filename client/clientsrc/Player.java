@@ -310,7 +310,7 @@ public class Player {
 
         // add the player to the list of players located at the new town
         t.addPlayer(this);
-        drawBoot();
+        // drawBoot();
 
         // TODO: check if the player has traveled to the new town in the past already,
         // -> if yes, do nothing
