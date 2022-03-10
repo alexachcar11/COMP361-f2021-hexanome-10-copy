@@ -1,14 +1,16 @@
 package networksrc;
 
+import java.util.HashMap;
+
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
 
 public class DealTokenACK implements Action {
-    private String tokenString;
+    private HashMap<String, String> playerTokens;
 
-    public DealTokenACK(String tokenString) {
-        this.tokenString = tokenString;
+    public DealTokenACK(HashMap<String, String> playerTokens) {
+        this.playerTokens = playerTokens;
     }
 
     @Override
@@ -20,7 +22,9 @@ public class DealTokenACK implements Action {
     public void execute() {
         System.out.println("BEFORE PHASE TWO");
         try {
-            ClientMain.receivePhaseTwo(this.tokenString);
+            for (String playerName : this.playerTokens.keySet()) {
+                ClientMain.receivePhaseTwo(playerName, this.playerTokens.get(playerName));
+            }
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }

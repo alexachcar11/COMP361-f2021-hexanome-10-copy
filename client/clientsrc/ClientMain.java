@@ -1960,8 +1960,8 @@ public class ClientMain {
             p.addCardStringArray(cardArray);
     }
 
-    public static void receivePhaseTwo(String tokenString) throws MinuetoFileException {
-        currentPlayer.addTokenString(tokenString);
+    public static void receivePhaseTwo(String playerString, String tokenString) throws MinuetoFileException {
+        Player.getPlayerByName(playerString).addTokenString(tokenString);
     }
 
     public static void diaplayWinnerByString(String winner) {

@@ -398,8 +398,11 @@ public class ServerGame {
         for (Player p : players) {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
-            final String tokenString = tokenToAdd.getTokenType().toString();
-            ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(tokenString), this);
+        }
+        for (Player p : players) {
+            HashMap<String, String> playerTokens = new HashMap<>();
+            playerTokens.put(p.getName(), p.getTokensInHand().get(0).toString());
+            ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
         }
 
     }

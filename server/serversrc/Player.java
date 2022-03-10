@@ -58,6 +58,10 @@ public class Player {
         return null;
     }
 
+    public List<Token> getTokensInHand() {
+        return tokensInHand;
+    }
+
     public void passTurn(Player nextPlayer) {
         this.turnPassed = true;
         this.isTurn = false;
@@ -65,7 +69,7 @@ public class Player {
         nextPlayer.setTrueIsTurn();
     }
 
-    public void setTrueIsTurn(){
+    public void setTrueIsTurn() {
         this.isTurn = true;
     }
 
@@ -94,7 +98,6 @@ public class Player {
         }
         return true;
     }
-
 
     public ServerGame getCurrentGame() {
         return currentGame;
@@ -147,13 +150,12 @@ public class Player {
     }
 
     // returns list of tokens except obstacle from player's hand
-    public List<Token> removeAllTokens(){
+    public List<Token> removeAllTokens() {
         List<Token> output = new ArrayList<>();
-        for (Token tok: tokensInHand){
-            if (tok instanceof Obstacle){
+        for (Token tok : tokensInHand) {
+            if (tok instanceof Obstacle) {
                 continue;
-            }
-            else {
+            } else {
                 // add to output
                 output.add(tok);
                 // remove from player's hand
@@ -162,9 +164,6 @@ public class Player {
         }
         return output;
     }
-
-
-    
 
     /*
      * Operation: Player::drawFaceUpToken(token: Token, tStack: TokenStack)
@@ -432,13 +431,12 @@ public class Player {
 
     // remove the obstacle token from player's tokens hand
     public void removeObstacle() {
-        for (Token tok: tokensInHand){
-            if (tok instanceof Obstacle){
+        for (Token tok : tokensInHand) {
+            if (tok instanceof Obstacle) {
                 tokensInHand.remove(tok);
             }
         }
     }
-
 
     public int getNberCards() {
         return this.cardsInHand.size();
