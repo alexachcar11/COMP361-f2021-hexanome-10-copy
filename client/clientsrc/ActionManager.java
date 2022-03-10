@@ -13,6 +13,7 @@ import org.minueto.image.MinuetoRectangle;
 import org.minueto.image.MinuetoText;
 
 import networksrc.Action;
+import serversrc.CardType;
 import serversrc.Token;
 
 public class ActionManager {
@@ -329,7 +330,7 @@ public class ActionManager {
             // draw circle for the current turn
             MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
             ClientMain.gui.window.draw(roundNumCircle, 792, 562);
-            int roundNumber = 3;
+            int roundNumber = 1;
             if (roundNumber == 1) {
                 MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(firstRound, 806, 570);
@@ -364,7 +365,12 @@ public class ActionManager {
                 MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
             }
-
+            
+            //HARDCODED TOKEN ON THE MAP 
+            Token testToken = new Token(CardType.DRAGON);
+            MinuetoImage testTokImage = testToken.getSmallImage();
+            ClientMain.gui.window.draw(testTokImage, 368, 462);
+            
             for(Player p: players) { 
                 p.drawBoot();
             }

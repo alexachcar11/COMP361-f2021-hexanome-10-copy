@@ -1459,7 +1459,7 @@ public class ClientMain {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
             loadedClip = AudioSystem.getClip();
             loadedClip.open(audioIn);
-            // loadedClip.start();
+            loadedClip.start();
         } catch (Exception e) {
             throw new Error("Unable to play sound file");
         }
@@ -1477,7 +1477,7 @@ public class ClientMain {
      * Resumes the sound from a recorded clipPos
      */
     static void resumeSound() {
-        // loadedClip.setMicrosecondPosition(clipPos);
+        loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
     }
 
