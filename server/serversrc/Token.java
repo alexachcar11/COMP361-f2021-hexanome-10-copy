@@ -13,20 +13,25 @@ public class Token {
     private final CardType tokenType;
     private Optional<Route> route = Optional.empty();
     private TokenImage tokenImageFile;
-    private MinuetoImage mediumImage; 
+    private MinuetoImage mediumImage;
     private MinuetoImage smallImage;
     private String mediumAddress;
-    private String smallAddress; 
+    private String smallAddress;
 
     public Token(CardType pCT) {
         this.tokenType = pCT;
         try {
-            this.tokenImageFile = new TokenImage(this.tokenType.toString(),
-                    "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
-            mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
-            smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
-            mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
-            smallAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png";
+            if (this.tokenType == CardType.OBSTACLE) {
+                this.tokenImageFile = new TokenImage(this.tokenType.toString(),
+                        "images/elfenroads-sprites/M09medium.png");
+            } else {
+                this.tokenImageFile = new TokenImage(this.tokenType.toString(),
+                        "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
+                mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
+                smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
+                mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
+                smallAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png";
+            }
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
@@ -69,19 +74,19 @@ public class Token {
         return this.tokenType == toCompare.tokenType;
     }
 
-    public MinuetoImage getMediumImage() { 
+    public MinuetoImage getMediumImage() {
         return mediumImage;
     }
 
-    public MinuetoImage getSmallImage() { 
+    public MinuetoImage getSmallImage() {
         return smallImage;
     }
 
-    public String getMediumAddress() { 
+    public String getMediumAddress() {
         return mediumAddress;
     }
 
-    public String getSmallAddress() { 
+    public String getSmallAddress() {
         return smallAddress;
     }
 }
