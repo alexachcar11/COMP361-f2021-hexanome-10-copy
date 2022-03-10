@@ -182,8 +182,8 @@ public class ActionManager {
             List<Token> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
             List<TravelCard> listOfCards = ClientMain.currentPlayer.getCardsInHand();
 
-            // System.out.println("YOU HAVE " + listOfCards.size() + " CARDS!");
-            // System.out.println("YOU HAVE " + listOfTokens.size() + " TOKENS!");
+            System.out.println("YOU HAVE " + listOfCards.size() + " CARDS!");
+            System.out.println("YOU HAVE " + listOfTokens.size() + " TOKENS!");
 
             // organize tokens in inventory
             if(listOfTokens.size() == 1) { 
