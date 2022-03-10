@@ -108,6 +108,7 @@ public class Route {
         if (temp.isObstacle()) {
             temp = ((Obstacle) temp).getInnerToken();
         }
+        temp.resetRoute();
         this.aToken = null;
         return temp;
     }

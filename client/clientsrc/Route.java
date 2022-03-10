@@ -1,5 +1,7 @@
 package clientsrc;
 
+import java.util.ArrayList;
+
 // import serversrc.Player;
 // import serversrc.Token;
 // import serversrc.Town;
@@ -16,11 +18,13 @@ public class Route {
     boolean isRiver = false;
     // upstream
     boolean isUpstream;
+    private static ArrayList<Route> allRoutes = new ArrayList<>();
 
     Route(Town pStartingTown, Town pEndTown) {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
+        allRoutes.add(this);
     }
 
     // overload if it's a river
@@ -39,10 +43,15 @@ public class Route {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
+        allRoutes.add(this);
     }
 
     public boolean getisRiver() {
         return isRiver;
+    }
+
+    public static ArrayList<Route> getAllRoutes(){
+        return allRoutes;
     }
 
     // sets Upstream with a boolean

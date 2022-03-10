@@ -33,6 +33,7 @@ public class Game {
     private TownGoldOption townGoldOption;
     private static ArrayList<TravelCard> faceDownCardPile;
     private ArrayList<Card> faceUpCardPile;
+    private TownGraph aTownGraph;
     // private ArrayList<GoldCard> goldCardPile;
     // private Auction auction; not doing this now
 
@@ -169,6 +170,12 @@ public class Game {
         routes.add(kihromahDagamura);
         routes.add(grangorMahdavikia);
 
+        aTownGraph = new TownGraph();
+        aTownGraph.addEdges(routes);
+
+    }
+    public TownGraph getTownGraph(){
+        return this.aTownGraph;
     }
 
     /**
@@ -259,6 +266,14 @@ public class Game {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public void setPhase(int phase){
+        this.currentPhase = phase;
+    }
+
+    public int getCurrentPhase() {
+        return this.currentPhase;
     }
 
 }

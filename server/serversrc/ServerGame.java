@@ -65,6 +65,7 @@ public class ServerGame {
         this.gameID = gameID;
         this.startingPlayer = null;
         this.faceDownCardPile = new ArrayList<>();
+        this.currentPhase = 0;
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
@@ -266,11 +267,6 @@ public class ServerGame {
             // give player an obstacle
             Token aObstacle = new Obstacle();
             player.addToken(aObstacle);
-            // make first player as starting player (can be changed to get random player)
-            if (this.startingPlayer == null) {
-                this.startingPlayer = player;
-                // this.startingPlayer.setTurn(true);
-            }
 
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
@@ -344,6 +340,10 @@ public class ServerGame {
     }
 
     public void nextPlayer() {
+        // check if all players passed turn
+        if (didAllPlayersPassTurn()){
+            nextPhase();
+        }
         // change next player
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getIsTurn()) {
@@ -353,16 +353,52 @@ public class ServerGame {
                 } else {
                     players.get(i).passTurn(players.get(i + 1));
                 }
+
             }
         }
     }
 
     public void nextPhase() {
+        // make first player as starting player in server side only (can be changed to get random player)
+        if (this.startingPlayer == null) {
+            this.startingPlayer = players.get(0);
+            this.startingPlayer.setTurn(true);
+            //TODO: might need to send ACK to client or not 
+        }
+
+        // reset turn passed for all players
+        for (Player p: players){
+            p.resetTurnPassed();
+        }
+        
         // go to next round if current phase is 6
         if (currentPhase == 6) {
             currentPhase = 1;
         } else {
             this.currentPhase++;
+        }
+        // do the phase
+        switch(this.currentPhase){
+            case 1:
+                phaseOne();
+                break;
+            case 2:
+                phaseTwo();
+                break;
+            case 3:
+                // phaseThree();
+                nextPhase();
+                break;
+            case 4:
+                phaseFour();
+                break;
+            case 5:
+                // not done yet phaseFive();
+                nextPhase();
+                break;
+            case 6:
+                phaseSix();
+                break;
         }
     }
 
@@ -419,6 +455,7 @@ public class ServerGame {
 
             }, p.getName());
         }
+        nextPhase();
 
     }
 
@@ -475,6 +512,9 @@ public class ServerGame {
                 window.registerMouseHandler(tokenSelect, selectTokenQueue);
             }
         }, currentPlayerName);
+
+        // go next phase
+        nextPhase();
     }
 
     // // drawing of additional transportation counter (specific counter)
@@ -505,6 +545,30 @@ public class ServerGame {
     public void winner(Player winner) {
         // ...
         ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
+    }
+
+    public void phaseFour(){
+        while(true){
+            Player currentPlayer = getCurrentPlayer();
+            // server sends message ACK to client to get input
+            ACK_MANAGER.sendToSender(new PlaceCounterACK(), currentPlayer.getName());
+            // client sends back input to server
+
+            // we get a Token input
+            // we get a route input
+            // this done inside the Action class: playerPlaceCounter(currentPlayer, r, tok);
+
+            // breaks once all players pass turn
+            if (didAllPlayersPassTurn()){
+                break;
+            }
+            nextPlayer();
+        }
+        for (Player p:players){
+            p.resetTurnPassed();
+        }
+        nextPhase();
+
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
@@ -581,6 +645,10 @@ public class ServerGame {
         faceDownTokenStack.shuffle();
 
         // send ACK to client for update
+        // tell client to remove all tokens from player (tho technically player should be able to keep a token but not done)
+        // and tell client to remove tokens from map
+
+
     }
 
     // method that checks if all players passed turn, to know if we move on to next
