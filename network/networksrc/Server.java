@@ -77,6 +77,7 @@ public class Server implements NetworkNode {
                 return;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                return;
             }
         }
     }
