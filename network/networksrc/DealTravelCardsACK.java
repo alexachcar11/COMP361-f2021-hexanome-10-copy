@@ -4,6 +4,8 @@ import clientsrc.ClientMain;
 
 import java.util.ArrayList;
 
+import org.minueto.MinuetoFileException;
+
 public class DealTravelCardsACK implements Action{
 
     private String playerName;
@@ -20,7 +22,7 @@ public class DealTravelCardsACK implements Action{
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MinuetoFileException {
         System.out.println("BEFORE RECIEVE PHASEONE");
         ClientMain.recievePhaseOne(playerName, playerCards);
         System.out.println("AFTER RECIEVE PHASEONE");

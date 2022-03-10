@@ -918,7 +918,12 @@ public class ClientMain {
                             gui.window.draw(lobbyElfenlandBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
-                            ACTION_MANAGER.waitForPlayersAsCreator();
+                            try {
+                                ACTION_MANAGER.waitForPlayersAsCreator();
+                            } catch (MinuetoFileException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfenlandBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
@@ -926,7 +931,12 @@ public class ClientMain {
                             gui.window.draw(lobbyElfengoldBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
-                            ACTION_MANAGER.waitForPlayersAsCreator();
+                            try {
+                                ACTION_MANAGER.waitForPlayersAsCreator();
+                            } catch (MinuetoFileException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfengoldBackground.draw(startButton, 822, 580);
                         }
@@ -954,7 +964,12 @@ public class ClientMain {
                         gui.window.render();
 
                         // wait for other players (i.e wait for the game to launch)
-                        ACTION_MANAGER.waitForPlayers();
+                        try {
+                            ACTION_MANAGER.waitForPlayers();
+                        } catch (MinuetoFileException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
 
                 }
