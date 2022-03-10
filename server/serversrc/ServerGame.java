@@ -19,6 +19,7 @@ import clientsrc.TokenImage;
 import networksrc.ACKManager;
 import networksrc.Action;
 import networksrc.TokenSelectedAction;
+import networksrc.WinnerACK;
 
 import java.util.*;
 
@@ -270,6 +271,7 @@ public class ServerGame {
             // make first player as starting player (can be changed to get random player)
             if (this.startingPlayer == null){
                 this.startingPlayer = player;
+                this.startingPlayer.setTurn(true);
             }
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
@@ -452,21 +454,20 @@ public class ServerGame {
     //     p.addToken(this.faceDownTokenStack.pop());
     // }
 
-    // TODO: game ends and winner announced
-    public void winner(Player winner){
-        // ...
+    
 
-        // should send an action...
-        System.out.println(winner.getName());;
-    }
-
-    // for planning travel routes phase (5)
+    // for planning travel routes phase (4)
     public void playerPlaceCounter(Player p, Route r, Token tok){
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r
         // tok.setRoute(r); done inside r.placetoken
         r.placeToken(tok);
+    }
+
+    public void winner(Player winner) {
+        // ...
+        ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
