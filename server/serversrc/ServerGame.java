@@ -63,7 +63,6 @@ public class ServerGame {
         this.currentRound = 1;
         this.gameID = gameID;
         this.startingPlayer = null;
-            
         this.faceDownCardPile = new ArrayList<>();
 
         towns = new ArrayList<>();
@@ -320,7 +319,11 @@ public class ServerGame {
         return players;
     }
 
-    public Player getCurrentTurn() {
+    /**
+     * 
+     * @return Player object referencing the player with isTurn = true
+     */
+    public Player getCurrentPlayer() {
         for (Player p : this.players) {
             if (p.getIsTurn()) {
                 return p;
@@ -402,9 +405,9 @@ public class ServerGame {
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
-        Player currentTurn = this.getCurrentTurn();
-        String currentPlayerName = currentTurn.getName();
-        // String currentPlayerName = "testName";
+        Player currentPlayer = this.getCurrentPlayer();
+        // String currentPlayerName = currentTurn.getName();
+        String currentPlayerName = "testName";
         // anonymous action class
         ACK_MANAGER.sendToSender(new Action() {
 
@@ -455,23 +458,21 @@ public class ServerGame {
     // // drawing of additional transportation counter (specific counter)
     // // @pre: tok should be inside faceUpTokenPile
     // public void playerDrawCounter(Player p, Token tok){
-    //     // remove from list of face up tokens, remove it
-    //     this.faceUpTokenPile.remove(tok);
-    //     // replace it
-    //     this.faceUpTokenPile.add(faceDownTokenStack.pop());
-    //     // add to player's hand
-    //     p.addToken(tok);
+    // // remove from list of face up tokens, remove it
+    // this.faceUpTokenPile.remove(tok);
+    // // replace it
+    // this.faceUpTokenPile.add(faceDownTokenStack.pop());
+    // // add to player's hand
+    // p.addToken(tok);
     // }
 
     // // drawing random counter
     // public void playerDrawRandomCounter(Player p){
-    //     p.addToken(this.faceDownTokenStack.pop());
+    // p.addToken(this.faceDownTokenStack.pop());
     // }
 
-    
-
     // for planning travel routes phase (4)
-    public void playerPlaceCounter(Player p, Route r, Token tok){
+    public void playerPlaceCounter(Player p, Route r, Token tok) {
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r
@@ -488,7 +489,7 @@ public class ServerGame {
     // finish phase
     public void phaseSix() {
         // ending game...
-        if (currentRound == gameRoundsLimit){
+        if (currentRound == gameRoundsLimit) {
             // player with highest score wins
             // list of players with equal highest score
             List<Player> winningPlayers = new ArrayList<>();
@@ -546,9 +547,9 @@ public class ServerGame {
             // remove token delets obstacle from game basically
             Token tok = r.removeToken();
             // check if not null
-            if (tok != null){
+            if (tok != null) {
                 // check if it's face up ?
-                
+
                 // reset the route field in token
                 tok.resetRoute();
                 // add to the tokenStack

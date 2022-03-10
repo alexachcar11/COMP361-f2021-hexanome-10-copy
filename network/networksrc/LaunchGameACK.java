@@ -1,5 +1,6 @@
 package networksrc;
 
+import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.Player;
@@ -41,7 +42,7 @@ public class LaunchGameACK implements Action {
         // display board screen
         ClientMain.displayOriginalBoard();
         // modify game objects based on the game state received
-
+        ActionManager.getInstance().waitForPlayers();
         // display the new board
 
         System.out.println("LaunchGameACK received");
