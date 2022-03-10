@@ -270,6 +270,7 @@ public class ServerGame {
             // make first player as starting player (can be changed to get random player)
             if (this.startingPlayer == null) {
                 this.startingPlayer = player;
+                this.startingPlayer.setTrueIsTurn();
             }
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
@@ -319,7 +320,11 @@ public class ServerGame {
         return players;
     }
 
-    public Player getCurrentTurn() {
+    /**
+     * 
+     * @return Player object referencing the player with isTurn = true
+     */
+    public Player getCurrentPlayer() {
         for (Player p : this.players) {
             if (p.getIsTurn()) {
                 return p;
@@ -385,7 +390,7 @@ public class ServerGame {
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
-        Player currentTurn = this.getCurrentTurn();
+        Player currentPlayer = this.getCurrentPlayer();
         // String currentPlayerName = currentTurn.getName();
         String currentPlayerName = "testName";
         // anonymous action class
