@@ -1931,7 +1931,7 @@ public class ClientMain {
         }
     }
 
-    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) {
+    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) throws MinuetoFileException {
         currentPlayer.addCardStringArray(cardArray);
     }
 

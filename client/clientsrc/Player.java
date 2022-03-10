@@ -4,6 +4,7 @@ package clientsrc;
 
 import java.util.*;
 
+import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
 
 import serversrc.Token;
@@ -91,7 +92,7 @@ public class Player {
     //     return aBootAction;
     // }
 
-    public void addCardStringArray(ArrayList<String> cardArray){
+    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException{
         for (String cardString : cardArray){
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
