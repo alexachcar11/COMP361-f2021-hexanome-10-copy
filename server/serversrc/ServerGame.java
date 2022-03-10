@@ -415,8 +415,7 @@ public class ServerGame {
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
         Player currentPlayer = this.getCurrentPlayer();
-        // String currentPlayerName = currentTurn.getName();
-        String currentPlayerName = "testName";
+        String currentPlayerName = currentPlayer.getName();
         // anonymous action class
         ACK_MANAGER.sendToSender(new Action() {
 
