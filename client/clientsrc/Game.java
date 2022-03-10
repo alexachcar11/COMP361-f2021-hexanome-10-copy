@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private ArrayList<Player> players;
+    private static ArrayList<Player> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
     private ArrayList<Route> routes;
@@ -29,9 +29,9 @@ public class Game {
     private boolean witchEnabled;
     private Mode mode;
     private TownGoldOption townGoldOption;
-    private static ArrayList<Card> faceDownCardPile;
+    private static ArrayList<TravelCard> faceDownCardPile;
     private ArrayList<Card> faceUpCardPile;
-    private ArrayList<GoldCard> goldCardPile;
+    // private ArrayList<GoldCard> goldCardPile;
     //private Auction auction; not doing this now
 
 
@@ -173,6 +173,9 @@ public class Game {
     public void addPlayer(Player player) throws IndexOutOfBoundsException{
         if (players.size() <= numberOfPlayers) {
             players.add(player);
+            Town elvenhold = Game.getTownByName("Elvenhold");
+            elvenhold.addPlayer(player);
+            player.setTown(elvenhold);
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
@@ -207,6 +210,16 @@ public class Game {
         return towns;
     }
 
+    //GETTER: gets town in towns by name
+    public static Town getTownByName(String name) {
+        for (Town t : towns) {
+            if (t.getTownName().equals(name)) {
+                return t;
+                }
+            }
+        return null;
+    }
+
     public static boolean notClickingOnATown(int x, int y) {
         for(Town t: towns) {
 
@@ -218,18 +231,8 @@ public class Game {
         return false;
     }
 
-    public Town getTownByName(String stringTown){
-        for (Town t: towns){
-            if (t.getTownName().equalsIgnoreCase(stringTown)){
-                return t;
-            }
-        }
-        // no town with such name
-        return null;
-    }
-
-    public static Card getFaceDownCard(String cardString){
-        for (Card aCard : faceDownCardPile){
+    public static TravelCard getFaceDownCard(String cardString){
+        for (TravelCard aCard : faceDownCardPile){
             if (aCard.getName().equalsIgnoreCase(cardString)){
 
                 return aCard;
@@ -237,6 +240,10 @@ public class Game {
 
         }
         return null; // hopefully this never happens LOL
+    }
+
+    public ArrayList<Player> getPlayers() { 
+        return players;
     }
 
 }

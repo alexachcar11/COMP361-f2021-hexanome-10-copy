@@ -4,21 +4,23 @@ package clientsrc;
 
 import java.util.*;
 
-import networksrc.*;
+import org.minueto.image.MinuetoImageFile;
+
+import serversrc.Token;
 
 public class Player {
     boolean isTurn = false;
-    private Boot aBoot;
 
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
-    private Boot boot;
-    private List<Card> cardsInHand;
-    private List<TokenImage> tokensInHand;
+    private List<TravelCard> cardsInHand;
+    private List<Token> tokensInHand;
     private Town inTown;
 
+    private MinuetoImageFile bootImage;
+    private Color color;
+
     private String aName;
-    private Action aBootAction;
 
     // used in ActionManager
     private User aUser;
@@ -26,7 +28,6 @@ public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<Player>();
 
     public Player(Color pColor, User pUser, Game currentGame) {
-        aBoot = new Boot(pColor, 577, 666, 291, 370);
 
         // inTown = elvenhold; // fix this
         this.gold = 0;
@@ -34,8 +35,17 @@ public class Player {
         this.tokensInHand = new ArrayList<>();
         this.aUser = pUser;
         this.currentGame = currentGame;
+        this.color = pColor;
+        this.aName = pUser.getName();
+        try {
+            this.bootImage = new MinuetoImageFile(
+                    "images/böppels-and-boots/boot-" + pColor.toString().toLowerCase() + ".png");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // aBootAction = new BootAction(this);
+        allPlayers.add(this);
     }
 
     public static Player getPlayerByName(String name) {
@@ -67,29 +77,35 @@ public class Player {
         return isTurn;
     }
 
-    public int[] getCoords() {
-        return boot.getCoords();
-    }
-
     public GUI getGui() {
         return guiDisplayed;
     }
 
-    public void draw() {
-        int x = boot.getCoords()[0];
-        int y = boot.getCoords()[2];
-        guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
-    }
+    // public void draw() {
+    //     int x = boot.getCoords()[0];
+    //     int y = boot.getCoords()[2];
+    //     guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
+    // }
 
-    public Action getBootAction() {
-        return aBootAction;
-    }
+    // public Action getBootAction() {
+    //     return aBootAction;
+    // }
 
     public void addCardStringArray(ArrayList<String> cardArray){
         for (String cardString : cardArray){
-            this.cardsInHand.add(Game.getFaceDownCard(cardString));
+            cardsInHand.add(Game.getFaceDownCard(cardString));
         }
     }
+
+    public List<TravelCard> getCardsInHand() { 
+        return cardsInHand;
+    }
+
+    public List<Token> getTokensInHand() { 
+        return tokensInHand;
+    }
+
+
     /*
      * Operation: Player::startGame(gameSession: Session)
      * Scope: Player; Session;
@@ -243,6 +259,18 @@ public class Player {
     // // ??? end player's turn ???
     // return -1;
     // }
+    // // update inTown to the new Town
+    // inTown = toTown;
+
+    /**
+     * Sets the inTown parameter to Town t
+     * 
+     * @param t
+     */
+    public void setTown(Town t) {
+        inTown = t;
+        t.addPlayer(this);
+    }
 
     public void moveBoot(Town t) {
         // remove the player from the old town
@@ -253,6 +281,10 @@ public class Player {
 
         // add the player to the list of players located at the new town
         t.addPlayer(this);
+
+        // TODO: check if the player has traveled to the new town in the past already,
+        // -> if yes, do nothing
+        // -> if no, collect the town marker and remove the town marker from the town
 
         // note: actually GUI movement is all done inside of client main
     }

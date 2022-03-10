@@ -450,7 +450,14 @@ public class Registrator {
         }
     }
 
+    // TEMPORARY LAUNCHSESSION UNTIL THE BUG IS RESOLVED:
+    // CONSEQUENCE: the available games screen will show launched games + LS won't know that the game is launched
     public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
+        // send to the server
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
+    }
+
+    /* public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
         // user token
         String token = userAskingToLaunch.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -472,7 +479,7 @@ public class Registrator {
             // send to the server
             ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
         }
-    }
+    } */
 
     /**
      * Helper function for availableGames(). Returns an arraylist of
@@ -595,6 +602,7 @@ public class Registrator {
 
         try {
             JSONObject sessions = (JSONObject) jsonObject.get("sessions");
+
             sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
 
@@ -623,13 +631,13 @@ public class Registrator {
                     boolean launched = (boolean) sessionJSON.get("launched");
                     User creatorUser = new User(creatorName);
                     newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
-                    ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                    /* ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
                     for (String userName : listOfUsers) {
                         if (!userName.equals(creatorName)) {
                             User newUser = new User(userName);
                             newSession.addUser(newUser);
                         }
-                    }
+                    } */
                     newSession.setLaunched(launched);
                     // set as the game's active session
                     try {

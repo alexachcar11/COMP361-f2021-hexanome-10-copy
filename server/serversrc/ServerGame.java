@@ -20,7 +20,6 @@ import clientsrc.TokenImage;
 
 import java.util.*;
 
-
 public class ServerGame {
 
     private static final ACKManager ACK_MANAGER = ACKManager.getInstance();
@@ -48,7 +47,6 @@ public class ServerGame {
     private List<AbstractCard> disposedCardPile;
     private Player startingPlayer;
 
-
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
@@ -65,10 +63,12 @@ public class ServerGame {
         this.currentRound = 1;
         this.gameID = gameID;
         this.startingPlayer = null;
-    
+        this.faceDownCardPile = new ArrayList<>();
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
+        faceDownCardPile = new ArrayList<>();
+        faceUpCardPile = new ArrayList<>();
         disposedCardPile = new ArrayList<>();
 
         // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the
@@ -266,7 +266,7 @@ public class ServerGame {
             Token aObstacle = new Obstacle();
             player.addToken(aObstacle);
             // make first player as starting player (can be changed to get random player)
-            if (this.startingPlayer == null){
+            if (this.startingPlayer == null) {
                 this.startingPlayer = player;
                 this.startingPlayer.setTurn(true);
             }
@@ -318,7 +318,11 @@ public class ServerGame {
         return players;
     }
 
-    public Player getCurrentTurn() {
+    /**
+     * 
+     * @return Player object referencing the player with isTurn = true
+     */
+    public Player getCurrentPlayer() {
         for (Player p : this.players) {
             if (p.getIsTurn()) {
                 return p;
@@ -337,27 +341,25 @@ public class ServerGame {
         return gameID;
     }
 
-    public void nextPlayer(){
-        // change next player 
-        for (int i = 0; i<players.size(); i++){
-            if (players.get(i).getIsTurn()){
+    public void nextPlayer() {
+        // change next player
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getIsTurn()) {
                 // if it's last player in list, go back to start of list
-                if (i == players.size()-1){
+                if (i == players.size() - 1) {
                     players.get(i).passTurn(players.get(0));
-                }
-                else {
-                    players.get(i).passTurn(players.get(i+1));
+                } else {
+                    players.get(i).passTurn(players.get(i + 1));
                 }
             }
         }
     }
 
-    public void nextPhase(){
+    public void nextPhase() {
         // go to next round if current phase is 6
-        if (currentPhase == 6){
+        if (currentPhase == 6) {
             currentPhase = 1;
-        }
-        else{
+        } else {
             this.currentPhase++;
         }
     }
@@ -402,8 +404,9 @@ public class ServerGame {
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
-        Player currentTurn = this.getCurrentTurn();
-        String currentPlayerName = currentTurn.getName();
+        Player currentPlayer = this.getCurrentPlayer();
+        // String currentPlayerName = currentTurn.getName();
+        String currentPlayerName = "testName";
         // anonymous action class
         ACK_MANAGER.sendToSender(new Action() {
 
@@ -454,23 +457,21 @@ public class ServerGame {
     // // drawing of additional transportation counter (specific counter)
     // // @pre: tok should be inside faceUpTokenPile
     // public void playerDrawCounter(Player p, Token tok){
-    //     // remove from list of face up tokens, remove it
-    //     this.faceUpTokenPile.remove(tok);
-    //     // replace it
-    //     this.faceUpTokenPile.add(faceDownTokenStack.pop());
-    //     // add to player's hand
-    //     p.addToken(tok);
+    // // remove from list of face up tokens, remove it
+    // this.faceUpTokenPile.remove(tok);
+    // // replace it
+    // this.faceUpTokenPile.add(faceDownTokenStack.pop());
+    // // add to player's hand
+    // p.addToken(tok);
     // }
 
     // // drawing random counter
     // public void playerDrawRandomCounter(Player p){
-    //     p.addToken(this.faceDownTokenStack.pop());
+    // p.addToken(this.faceDownTokenStack.pop());
     // }
 
-    
-
     // for planning travel routes phase (4)
-    public void playerPlaceCounter(Player p, Route r, Token tok){
+    public void playerPlaceCounter(Player p, Route r, Token tok) {
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r
@@ -485,21 +486,22 @@ public class ServerGame {
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
     // finish phase
-    public void phaseSix(){
+    public void phaseSix() {
         // ending game...
-        if (currentRound == gameRoundsLimit){
+        if (currentRound == gameRoundsLimit) {
             // player with highest score wins
             // list of players with equal highest score
             List<Player> winningPlayers = new ArrayList<>();
             int highestScore = getHighestScore();
-            for (Player p: players){
-                if (p.getScore() == highestScore){
+            for (Player p : players) {
+                if (p.getScore() == highestScore) {
                     winningPlayers.add(p);
                 }
             }
-            
-            // if only one winning player vs multiple winning player, so the one with highest number of cards in hand wins
-            if (winningPlayers.size() == 1){
+
+            // if only one winning player vs multiple winning player, so the one with
+            // highest number of cards in hand wins
+            if (winningPlayers.size() == 1) {
                 // TODO player wins
                 winner(winningPlayers.get(0));
             }
@@ -508,8 +510,8 @@ public class ServerGame {
                 int highestNumberOfCards = 0;
                 Player playerWinner = null;
                 // find player with highest number of hands
-                for (Player p: winningPlayers){
-                    if(highestNumberOfCards<p.getNberCards()){
+                for (Player p : winningPlayers) {
+                    if (highestNumberOfCards < p.getNberCards()) {
                         highestNumberOfCards = p.getNberCards();
                         playerWinner = p;
                     }
@@ -524,14 +526,13 @@ public class ServerGame {
         // change starting player by index in list
         int startingPlayerIndex = players.indexOf(startingPlayer);
         // if starting player is last in list, go back to first player in list
-        if (startingPlayerIndex == players.size()-1){
+        if (startingPlayerIndex == players.size() - 1) {
             this.startingPlayer = players.get(0);
-        }
-        else {
-            this.startingPlayer = players.get(startingPlayerIndex+1);
+        } else {
+            this.startingPlayer = players.get(startingPlayerIndex + 1);
         }
         // each player turns in all their transportation counters
-        for (Player p: players){
+        for (Player p : players) {
             // TODO: player chooses to keep a token ?
 
             List<Token> removedTokens = p.removeAllTokens();
@@ -539,14 +540,15 @@ public class ServerGame {
             faceDownTokenStack.addTokens(removedTokens);
         }
 
-        // remove transportation counters from board (note this doesn't add the tokens that are face up (aka up for grabs during drawing counter phase))
-        for (Route r: routes){
+        // remove transportation counters from board (note this doesn't add the tokens
+        // that are face up (aka up for grabs during drawing counter phase))
+        for (Route r : routes) {
             // remove token delets obstacle from game basically
             Token tok = r.removeToken();
             // check if not null
-            if (tok != null){
+            if (tok != null) {
                 // check if it's face up ?
-                
+
                 // reset the route field in token
                 tok.resetRoute();
                 // add to the tokenStack
@@ -555,12 +557,12 @@ public class ServerGame {
         }
         faceDownTokenStack.shuffle();
 
-
         // send ACK to client for update
     }
 
-    // method that checks if all players passed turn, to know if we move on to next phase/round
-    public boolean didAllPlayersPassTurn(){
+    // method that checks if all players passed turn, to know if we move on to next
+    // phase/round
+    public boolean didAllPlayersPassTurn() {
         // checks if all players has turnPassed as true
         for (Player p : this.players) {
             // if one player doesn't have turnPassed as true, return false
@@ -572,10 +574,10 @@ public class ServerGame {
     }
 
     // gets highest score from all players
-    public int getHighestScore(){
+    public int getHighestScore() {
         int output = 0;
-        for (Player p: players){
-            if (output<p.getScore()){
+        for (Player p : players) {
+            if (output < p.getScore()) {
                 output = p.getScore();
             }
         }
@@ -643,7 +645,7 @@ public class ServerGame {
         }
         return null;
     }
-    
+
     /*
      * Operation: Game::loadGame(savedGame: Game)
      * Scope: Player;
