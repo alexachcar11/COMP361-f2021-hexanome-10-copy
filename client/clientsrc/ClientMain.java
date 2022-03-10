@@ -1355,7 +1355,37 @@ public class ClientMain {
         loadedClip.start();
     }
 
-    public static void displayWinner(String winnerName) {
+    public static void displayWinnerByString(String winnerName) throws MinuetoFileException {
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        MinuetoText winnerText = new MinuetoText(winnerName, font, MinuetoColor.WHITE);
+        User userWinner = User.getUserByName(winnerName);
+        Color colorWinner = userWinner.getColor();
+        MinuetoImage bootWinner = null;
+        if (colorWinner.equals(Color.BLACK)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-black.png/");
+        } else if (colorWinner.equals(Color.BLUE)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-blue.png/");
+        } else if (colorWinner.equals(Color.GREEN)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-green.png/");
+        } else if (colorWinner.equals(Color.YELLOW)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-yellow.png/");
+        } else if (colorWinner.equals(Color.RED)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-red.png/");
+        } else if (colorWinner.equals(Color.PURPLE)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-purple.png/");
+        }
+
+        if (winnerName.equals(currentUser.getName())) {
+            // winner
+            gui.window.draw(winnerScreen, 0, 0);
+        } else {
+            // loser
+            gui.window.draw(loserScreen, 0, 0);
+        }
+        gui.window.draw(bootWinner, 0, 0);
+        gui.window.draw(winnerText, 0, 0);
+
+        gui.window.render();
         
     }
 
