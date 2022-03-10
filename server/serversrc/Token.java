@@ -33,7 +33,7 @@ public class Token {
         }
     }
 
-    public static Token getTokenByString(String tokenName) {
+    public static Token getTokenByName(String tokenName) {
         for (CardType cT : CardType.values()) {
             if (cT.toString().equals(tokenName)) {
                 return new Token(cT);
