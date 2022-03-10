@@ -400,26 +400,13 @@ public class ServerGame {
         for (Player p : players) {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
-            final String tokenString = tokenToAdd.toString();
-            ACK_MANAGER.sendToSender(new Action() {
-
-                @Override
-                public boolean isValid() {
-                    return true;
-                }
-
-                @Override
-                public void execute() throws MinuetoFileException {
-                    System.out.println("BEFORE PHASE TWO");
-                    try {
-                        ClientMain.receivePhaseTwo(tokenString);
-                    } catch (MinuetoFileException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("AFTER PHASE TWO");
-                }
-
-            }, p.getName());
+        }
+        for (Player p : players) {
+            HashMap<String, List<String>> playerTokens = new HashMap<>();
+            List<String> tokenStrings = p.getTokensInHand().stream().map((token) -> token.toString())
+                    .collect(Collectors.toList());
+            playerTokens.put(p.getName(), tokenStrings);
+            ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
         }
 
     }

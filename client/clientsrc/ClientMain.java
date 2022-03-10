@@ -2008,8 +2008,8 @@ public class ClientMain {
             p.addCardStringArray(cardArray);
     }
 
-    public static void receivePhaseTwo(String tokenString) throws MinuetoFileException {
-        currentPlayer.addTokenString(tokenString);
+    public static void receivePhaseTwo(String playerString, List<String> tokenStrings) throws MinuetoFileException {
+        Player.getPlayerByName(playerString).addTokenStringList(tokenStrings);
     }
 
     public static void diaplayWinnerByString(String winner) {
