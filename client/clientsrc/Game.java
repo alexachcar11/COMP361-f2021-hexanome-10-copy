@@ -8,6 +8,8 @@ max 6 players
 
 import java.util.ArrayList;
 
+import org.minueto.MinuetoFileException;
+
 // import serversrc.Card;
 // import serversrc.GoldCard;
 // import serversrc.Mode;
@@ -233,15 +235,23 @@ public class Game {
         return false;
     }
 
-    public static TravelCard getFaceDownCard(String cardString){
-        for (TravelCard aCard : faceDownCardPile){
-            if (aCard.getName().equalsIgnoreCase(cardString)){
+    public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException{
+        // for (TravelCard aCard : faceDownCardPile){
+        //     if (aCard.getName().equalsIgnoreCase(cardString)){
 
-                return aCard;
+        //         return aCard;
+        //     }
+
+        // }
+        // return null; // hopefully this never happens LOL
+        for(CardType cT: CardType.values()) {
+            if(cT.name().equalsIgnoreCase(cardString)) { 
+                TravelCard finCard = new TravelCard(cT);
+                return finCard;
             }
-
         }
-        return null; // hopefully this never happens LOL
+        throw new IllegalArgumentException();
+        
     }
 
     public ArrayList<Player> getPlayers() { 
