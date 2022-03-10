@@ -175,6 +175,7 @@ public class Game {
             players.add(player);
             Town elvenhold = Game.getTownByName("Elvenhold");
             elvenhold.addPlayer(player);
+            player.setTown(elvenhold);
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }

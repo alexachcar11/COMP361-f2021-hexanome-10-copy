@@ -602,6 +602,7 @@ public class Registrator {
 
         try {
             JSONObject sessions = (JSONObject) jsonObject.get("sessions");
+
             sessions.keySet().forEach(sessionID -> {
                 JSONObject sessionJSON = (JSONObject) sessions.get(sessionID);
 
@@ -630,13 +631,13 @@ public class Registrator {
                     boolean launched = (boolean) sessionJSON.get("launched");
                     User creatorUser = new User(creatorName);
                     newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
-                    ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                    /* ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
                     for (String userName : listOfUsers) {
                         if (!userName.equals(creatorName)) {
                             User newUser = new User(userName);
                             newSession.addUser(newUser);
                         }
-                    }
+                    } */
                     newSession.setLaunched(launched);
                     // set as the game's active session
                     try {
