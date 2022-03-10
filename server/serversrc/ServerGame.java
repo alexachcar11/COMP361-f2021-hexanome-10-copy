@@ -52,6 +52,10 @@ public class ServerGame {
         this.mode = mode;
         this.townGoldOption = townGoldOption;
         this.currentRound = 1;
+        this.gameID = gameID;
+        //this.startingPlayer = null;
+            
+        this.faceDownCardPile = new ArrayList<>();
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
