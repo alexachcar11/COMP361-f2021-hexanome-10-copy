@@ -197,7 +197,7 @@ public class ActionManager {
             ClientMain.gui.window.draw(indicator, 88, 439);
 
             MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
-            ClientMain.gui.window.draw(passTurnText, 85, 600);
+            ClientMain.gui.window.draw(passTurnText, 35, 600);
 
             List<TokenImage> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
             List<TravelCard> listOfCards = ClientMain.currentPlayer.getCardsInHand();
@@ -351,7 +351,7 @@ public class ActionManager {
             int numberPlayers = players.size();
 
             for(int i = 0; i < numberPlayers; i++) { 
-                // Player opponent = players.get(i);
+                Player opponent = players.get(i);
                 int xName = 835;
                 int yName = 70 + (i * 92);
 
@@ -360,7 +360,7 @@ public class ActionManager {
                 MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
                 ClientMain.gui.window.draw(playerBackground, xName - 10, yName - 10);
                 
-                MinuetoText pName = new MinuetoText(players.get(0).getName(), ClientMain.fontArial20, MinuetoColor.BLACK);
+                MinuetoText pName = new MinuetoText(opponent.getName(), ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(pName, xName, yName);
                 MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
