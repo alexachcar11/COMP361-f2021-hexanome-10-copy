@@ -11,9 +11,7 @@ public class GUI {
         CREATELOBBY,
         CHOOSEBOOT,
         LOBBYELFENLAND,
-        LOBBYELFENLANDCREATOR,
         LOBBYELFENGOLD,
-        LOBBYELFENGOLDCREATOR,
         ELFENLAND,
         ELFENGOLD
     }

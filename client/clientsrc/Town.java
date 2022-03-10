@@ -30,6 +30,7 @@ public class Town {
      * @param minY bottom-most border of the town
      * @param maxY top-most border of the town
      */
+
     public Town(String townName, int minX, int maxX, int minY, int maxY) {
         this.townName = townName;
         this.minX = minX;
@@ -73,6 +74,7 @@ public class Town {
     public int getMinX() {
         return minX;
     }
+
 
     /**
      * GETTER : get the right-most border of the town

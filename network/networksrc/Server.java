@@ -59,7 +59,7 @@ public class Server implements NetworkNode {
     }
 
     private void listenToClient(ClientTuple pTuple) {
-        while(true) {
+        while (true) {
             try {
                 Action actionIn = (Action) pTuple.input().readObject();
                 if (actionIn.getClass().equals(GiveNameAction.class)) {
@@ -72,9 +72,12 @@ public class Server implements NetworkNode {
                 }
             } catch (IOException e) {
                 String host = pTuple.socket().getInetAddress().getHostName();
-                System.err.println("Couldn't get I/O for the connection to: " + host);
+                System.err
+                        .println("Couldn't get I/O for the connection to: " + host + ", or they disconnected.");
+                return;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                return;
             }
         }
     }

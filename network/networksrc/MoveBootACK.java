@@ -22,12 +22,19 @@ public class MoveBootACK implements Action {
     @Override
     public void execute() {
         System.out.println("MoveBootACK received");
+<<<<<<< HEAD
 
         // who moved their boot
         Player p = Player.getPlayerByName(playerThatMovedName);
 
         // move the boot
         Town t = Town.getTownByName(newTown);
+=======
+        Player p = ClientMain.currentPlayer;
+        // TODO: call a method that updates GUI by changing the boot with bootColor to newTown
+        // get town by name
+        Town t = Game.getTownByName(newTown);
+>>>>>>> origin/main
         p.moveBoot(t);
     }
 

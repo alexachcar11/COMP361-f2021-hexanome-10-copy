@@ -3,6 +3,8 @@ package serversrc;
 import java.util.Optional;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
+import org.minueto.image.MinuetoImageFile;
 
 import clientsrc.TokenImage;
 
@@ -11,14 +13,21 @@ public class Token {
     private final CardType tokenType;
     private Optional<Route> route = Optional.empty();
     private TokenImage tokenImageFile;
+    private MinuetoImage mediumImage;
+    private MinuetoImage smallImage;
+    private String mediumAddress;
+    private String smallAddress;
     private boolean isFaceUp;
 
     public Token(CardType pCT) {
         this.tokenType = pCT;
         this.isFaceUp = true;
         try {
-            this.tokenImageFile = new TokenImage(this.tokenType.toString(),
-                    "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
+            this.tokenImageFile = new TokenImage(this.tokenType);
+            mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
+            smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
+            mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
+            smallAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png";
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
@@ -28,15 +37,15 @@ public class Token {
         return tokenType;
     }
 
-    public void resetRoute(){
+    public void resetRoute() {
         this.route = Optional.empty();
     }
 
-    public boolean getIsFaceUp(){
+    public boolean getIsFaceUp() {
         return this.isFaceUp;
     }
 
-    public void setIsFaceUpTo(boolean bool){
+    public void setIsFaceUpTo(boolean bool) {
         this.isFaceUp = bool;
     }
 
@@ -71,5 +80,26 @@ public class Token {
         }
         Token toCompare = (Token) o;
         return this.tokenType == toCompare.tokenType;
+    }
+
+    public MinuetoImage getMediumImage() {
+        return mediumImage;
+    }
+
+    public MinuetoImage getSmallImage() {
+        return smallImage;
+    }
+
+    public String getMediumAddress() {
+        return mediumAddress;
+    }
+
+    public String getSmallAddress() {
+        return smallAddress;
+    }
+
+    @Override
+    public String toString() {
+        return this.tokenType.toString();
     }
 }

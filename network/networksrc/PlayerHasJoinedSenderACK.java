@@ -45,6 +45,7 @@ public class PlayerHasJoinedSenderACK implements Action{
         try {
             ClientMain.displayUsers();
             System.out.println("displaying users to the sender");
+            ClientMain.displayLobbyInfo();
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }

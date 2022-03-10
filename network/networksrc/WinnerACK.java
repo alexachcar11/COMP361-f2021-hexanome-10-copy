@@ -1,13 +1,17 @@
 package networksrc;
 
+
+import org.minueto.MinuetoColor;
+
 import clientsrc.ClientMain;
 
 public class WinnerACK implements Action{
 
     private String winnerName;
 
-    public WinnerACK(String name){
-        this.winnerName = name;
+    public WinnerACK(String winnerName) {
+        this.winnerName = winnerName;
+
     }
 
     @Override
@@ -17,7 +21,8 @@ public class WinnerACK implements Action{
 
     @Override
     public void execute() {
-        ClientMain.diaplayWinnerByString(this.winnerName);
+        // display winner
+        //ClientMain.displayWinnerByString(winnerName);
     }
-    
+
 }
