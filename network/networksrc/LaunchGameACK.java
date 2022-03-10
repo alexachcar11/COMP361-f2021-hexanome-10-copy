@@ -42,7 +42,7 @@ public class LaunchGameACK implements Action {
         // display board screen
         ClientMain.displayOriginalBoard();
         // modify game objects based on the game state received
-        ActionManager.getInstance().waitForPlayers();
+        ActionManager.getInstance().waitForMessages();
         // display the new board
 
         System.out.println("LaunchGameACK received");
