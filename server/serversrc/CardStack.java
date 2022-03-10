@@ -7,9 +7,9 @@ import java.util.List;
 
 // import clientsrc.Card;
 
-public class CardStack implements Iterable<Card>
+public class CardStack implements Iterable<AbstractCard>
 {
-    private final List<Card> aCards;
+    private final List<AbstractCard> aCards;
     
     //Creates an empty CardStack.
     public CardStack()
@@ -21,7 +21,7 @@ public class CardStack implements Iterable<Card>
      * 
      * @param pList The cards to initialize the stack with.
      */
-    public CardStack(List<Card> pList){
+    public CardStack(List<AbstractCard> pList){
         this();
         aCards.addAll(pList);
     }
@@ -39,7 +39,7 @@ public class CardStack implements Iterable<Card>
      * @return The card on top of the stack.
      * @pre !isEmpty()
      */
-    public Card pop()
+    public AbstractCard pop()
     {
         assert !isEmpty();
         return aCards.remove(aCards.size()-1);
@@ -50,7 +50,7 @@ public class CardStack implements Iterable<Card>
      * @return The card at the position indicated by pIndex
      * @pre pIndex >= 0 && pIndex < size();
      */
-    public Card peek(int pIndex)
+    public AbstractCard peek(int pIndex)
     {
         assert pIndex >= 0 && pIndex < size();
         return aCards.get(pIndex);
@@ -81,6 +81,10 @@ public class CardStack implements Iterable<Card>
     }
 
     @Override
-    public Iterator<Card> iterator() {return aCards.iterator();}
-    
+    public Iterator<AbstractCard> iterator() {return aCards.iterator();}
+
+    // add card to the card stack
+    public void addCard(AbstractCard c){
+        this.aCards.add(c);
+    }
 }

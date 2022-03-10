@@ -1,14 +1,20 @@
 package networksrc;
 
+import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.Player;
 import clientsrc.User;
 import clientsrc.Game;
 
-public class LaunchGameACK implements Action{
+import java.util.ArrayList;
+
+import org.minueto.MinuetoFileException;
+
+public class LaunchGameACK implements Action {
 
     // TODO: store the game state through a constructor
+    public LaunchGameACK() {}
 
     @Override
     public boolean isValid() {
@@ -17,7 +23,7 @@ public class LaunchGameACK implements Action{
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MinuetoFileException {
         // set the session to launched
         ClientMain.currentSession.launch();
 
@@ -37,8 +43,11 @@ public class LaunchGameACK implements Action{
         
         // display board screen
         ClientMain.displayOriginalBoard();
+        // modify game objects based on the game state received
+        ActionManager.getInstance().waitForMessages();
+        // display the new board
 
         System.out.println("LaunchGameACK received");
     }
-    
+
 }

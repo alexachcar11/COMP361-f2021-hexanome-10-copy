@@ -7,17 +7,23 @@ max 6 players
  */
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import networksrc.*;
+import org.minueto.MinuetoEventQueue;
+import org.minueto.MinuetoFileException;
+import org.minueto.handlers.MinuetoMouseHandler;
+import org.minueto.window.MinuetoWindow;
+
+import clientsrc.ActionManager;
+import clientsrc.ClientMain;
+import clientsrc.TokenImage;
+
 import java.util.*;
 
-// import clientsrc.Card;
-// import clientsrc.GoldCard;
-// import clientsrc.Mode;
-// import clientsrc.Player;
-// import clientsrc.Route;
-// import clientsrc.Town;
-// import clientsrc.TownGoldOption;
-
 public class ServerGame {
+
+    private static final ACKManager ACK_MANAGER = ACKManager.getInstance();
 
     private ArrayList<Player> players;
     private int numberOfPlayers;
@@ -30,13 +36,17 @@ public class ServerGame {
     public boolean witchEnabled;
     public Mode mode;
     public TownGoldOption townGoldOption;
-    public ArrayList<Card> faceDownCardPile;
-    public ArrayList<Card> faceUpCardPile;
+    public ArrayList<AbstractCard> faceDownCardPile;
+    public ArrayList<AbstractCard> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
     // public Auction auction; not doing this now
     public ArrayList<Token> faceUpTokenPile;
-    public TokenStack faceDownTokenPile;
+    public TokenStack faceDownTokenStack;
     private String gameID;
+    public TownGraph aTownGraph;
+    public CardStack aCardStack;
+    private List<AbstractCard> disposedCardPile;
+    private Player startingPlayer;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -53,12 +63,19 @@ public class ServerGame {
         this.townGoldOption = townGoldOption;
         this.currentRound = 1;
         this.gameID = gameID;
-        //this.startingPlayer = null;
-            
+
+        this.startingPlayer = null;
+
         this.faceDownCardPile = new ArrayList<>();
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
+        faceDownCardPile = new ArrayList<>();
+        faceUpCardPile = new ArrayList<>();
+        disposedCardPile = new ArrayList<>();
+
+        // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the
+        // mode
 
         // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
         // depending on the mode
@@ -107,45 +124,75 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
-        Route esselenWylhien = new Route(esselen, wylhien);
-        Route esselenYttar = new Route(esselen, yttar);
-        Route esselenParundia = new Route(esselen, parundia);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda);
-        Route WyhlienParundia = new Route(wylhien, parundia);
-        Route yttarParundia = new Route(yttar, parundia);
-        Route parundiaAlbaran = new Route(parundia, albaran);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia);
-        Route throtmanniTichih = new Route(thortmanni, tichih);
-        Route throtmanniFeodori = new Route(thortmanni, feodori);
-        Route kihromahDagamura = new Route(kihromah, dagamura);
-        Route albaranDagamura = new Route(albaran, dagamura);
-        Route dagamuraFeodori = new Route(dagamura, feodori);
-        Route yttarGrangor = new Route(yttar, grangor);
-        Route grangorMahdavikia = new Route(grangor, mahdavikia);
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya);
-        Route ixaraLapphalya = new Route(ixara, lapphalya);
-        Route ixaraDagamura = new Route(ixara, dagamura);
-        Route ixaraVirst = new Route(ixara, virst);
-        Route virstLapphalya = new Route(virst, lapphalya);
-        Route virstStrykhaven = new Route(virst, strykhaven);
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold);
-        Route beataStrykhaven = new Route(beata, strykhaven);
-        Route beataElvenhold = new Route(beata, elvenhold);
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven);
-        Route elvenholdRivinia = new Route(elvenhold, rivinia);
-        Route riviniaTichih = new Route(rivinia, tichih);
-        Route tichihErgeren = new Route(tichih, ergeren);
+        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN);
+        Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER); // river
+        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD);
+        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD);
+        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN);
+        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN);
+        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT);
+        Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE); // lake
+        Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE); // lake
+        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT);
+        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN);
+        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN);
+        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT);
+        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD);
+        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN);
+        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT);
+        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD);
+        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT);
+        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT);
+        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN);
+        Route yttarGrangor2 = new Route(yttar, grangor, RouteType.LAKE); // lake
+        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN);
+        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, RouteType.LAKE); // river
+        Route mahdavikiaIxara = new Route(mahdavikia, ixara, RouteType.RIVER); // river
+        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN);
+        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD);
+        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD);
+        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD);
+        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN);
+        Route ixaraVirst2 = new Route(ixara, virst, RouteType.RIVER); // river
+        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN);
+        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN);
+        Route virstStrykhaven2 = new Route(virst, strykhaven, RouteType.LAKE); // lake
+        Route virstElvenhold = new Route(virst, elvenhold, RouteType.LAKE); // lake
+        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN);
+        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN);
+        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN);
+        Route beataElvenhold2 = new Route(beata, elvenhold, RouteType.LAKE); // lake
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, RouteType.LAKE); // lake
+        Route elvenholdRivinia = new Route(rivinia, elvenhold, RouteType.RIVER); // river
+        Route riviniaTichih = new Route(tichih, rivinia, RouteType.RIVER); // river
+        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD);
+        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD);
+        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD);
+        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD);
+        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD);
+        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD);
 
+        routes.add(parundiaGrangor);
+        routes.add(WylhienAlbaran);
+        routes.add(feodoriAlbaran);
+        routes.add(feodoriLapphalya);
+        routes.add(lapphalyaRivinia);
+        routes.add(feodoriRivinia);
+        routes.add(elvenholdErgeren);
+        routes.add(beataElvenhold2);
+        routes.add(virstStrykhaven2);
+        routes.add(virstElvenhold);
+        routes.add(yttarGrangor2);
+        routes.add(grangorMahdavikia2);
+        routes.add(mahdavikiaIxara2);
+        routes.add(ixaraVirst2);
+        routes.add(esselenWylhien2);
         routes.add(virstLapphalya);
         routes.add(virstStrykhaven);
         routes.add(esselenParundia);
         routes.add(esselenYttar);
         routes.add(esselenWylhien);
-        routes.add(WyhlienParundia);
+        routes.add(WylhienParundia);
         routes.add(WylhienJaccaranda);
         routes.add(yttarGrangor);
         routes.add(yttarParundia);
@@ -173,24 +220,40 @@ public class ServerGame {
         routes.add(kihromahDagamura);
         routes.add(grangorMahdavikia);
 
+        // initialize town graph
+        this.aTownGraph = new TownGraph();
+        this.aTownGraph.addEdges(routes);
+        this.faceUpTokenPile = new ArrayList<>();
+
         // add all counters ingame to faceDownTokenPile
-        // first make list with all tokens:
         // depending on mode, tokens are different
-        List<Token> allTokens = new ArrayList<>();
-        // list of the counter types
         if (this.mode == Mode.ELFENLAND) {
             // create tokens and add to list
-            for (int j = 0; j < 6; j++) {
-                for (int i = 0; i < 8; i++) {
-                    Token tok = new Token(CardType.values()[j]);
-                    allTokens.add(tok);
-                }
-            }
+            this.faceDownTokenStack = TokenStack.getFullTokenStackEL();
         } else if (this.mode == Mode.ELFENGOLD) {
             // TODO
+            this.faceDownTokenStack = TokenStack.getFullTokenStackEG();
         }
 
-        this.faceDownTokenPile = new TokenStack(allTokens);
+        // initialize TravelCard objects
+        if (this.mode == Mode.ELFENLAND) {
+            //
+            for (int j = 0; j < 6; j++) {
+                for (int i = 0; i < 10; i++) {
+                    AbstractCard newCard = new TravelCard(CardType.values()[j]);
+                    faceDownCardPile.add(newCard);
+                }
+            }
+
+            // initialize raft cards
+            for (int i = 0; i < 12; i++) {
+                AbstractCard newCard = new TravelCard(CardType.RAFT);
+                faceDownCardPile.add(newCard);
+            }
+
+        }
+
+        this.aCardStack = new CardStack(faceDownCardPile);
     }
 
     /**
@@ -202,6 +265,15 @@ public class ServerGame {
     public void addPlayer(Player player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
+            // give player an obstacle
+            Token aObstacle = new Obstacle();
+            player.addToken(aObstacle);
+            // make first player as starting player (can be changed to get random player)
+            if (this.startingPlayer == null) {
+                this.startingPlayer = player;
+                // this.startingPlayer.setTurn(true);
+            }
+
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
@@ -232,7 +304,7 @@ public class ServerGame {
         return townGoldOption;
     }
 
-    public static ArrayList<Town> getTowns() { 
+    public static ArrayList<Town> getTowns() {
         return towns;
     }
 
@@ -250,6 +322,20 @@ public class ServerGame {
         return players;
     }
 
+    /**
+     * 
+     * @return Player object referencing the player with isTurn = true
+     */
+    public Player getCurrentPlayer() {
+        for (Player p : this.players) {
+            if (p.getIsTurn()) {
+                return p;
+            }
+        }
+        // no player's turn, shouldn't happen
+        return null;
+    }
+
     // TODO
     public void updateFaceUpToken(Token pToken) {
 
@@ -257,6 +343,332 @@ public class ServerGame {
 
     public String getGameID() {
         return gameID;
+    }
+
+    public void nextPlayer() {
+        // change next player
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getIsTurn()) {
+                // if it's last player in list, go back to start of list
+                if (i == players.size() - 1) {
+                    players.get(i).passTurn(players.get(0));
+                } else {
+                    players.get(i).passTurn(players.get(i + 1));
+                }
+            }
+        }
+    }
+
+    public void nextPhase() {
+        // go to next round if current phase is 6
+        if (currentPhase == 6) {
+            currentPhase = 1;
+        } else {
+            this.currentPhase++;
+        }
+    }
+
+    public void phaseOne() {
+        // shuffle
+        aCardStack.shuffle();
+
+        for (Player p : players) {
+
+            int numPlayerCards = p.getCards().size();
+            ArrayList<String> cardsAdded = new ArrayList<>(); // cards added to players
+
+            for (int i = 0; i < 8 - numPlayerCards; i++) {
+
+                AbstractCard card = aCardStack.pop();
+
+                String cardString = card.getCardType().name();
+
+                p.addCard(card); // add to player
+                cardsAdded.add(cardString); // add to string array
+
+            }
+
+            ACK_MANAGER.sendToSender(new DealTravelCardsACK(p.getName(), cardsAdded), p.getName());
+        }
+
+        nextPhase();
+    }
+
+    public void phaseTwo() {
+        faceDownTokenStack.shuffle();
+
+        for (Player p : players) {
+            Token tokenToAdd = faceDownTokenStack.pop();
+            p.addToken(tokenToAdd);
+            final String tokenString = tokenToAdd.toString();
+            ACK_MANAGER.sendToSender(new Action() {
+
+                @Override
+                public boolean isValid() {
+                    return true;
+                }
+
+                @Override
+                public void execute() throws MinuetoFileException {
+                    System.out.println("BEFORE PHASE TWO");
+                    try {
+                        ClientMain.receivePhaseTwo(tokenString);
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("AFTER PHASE TWO");
+                }
+
+            }, p.getName());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public void phaseThree() {
+        for (int i = 0; i < 5; i++)
+            faceUpTokenPile.add(faceDownTokenStack.pop());
+        final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
+        Player currentPlayer = this.getCurrentPlayer();
+        // String currentPlayerName = currentTurn.getName();
+        String currentPlayerName = "testName";
+        // anonymous action class
+        ACK_MANAGER.sendToSender(new Action() {
+
+            @Override
+            public boolean isValid() {
+                return true;
+            }
+
+            @Override
+            public void execute() {
+                MinuetoWindow window = ClientMain.WINDOW;
+                for (Token t : faceUpCopy) {
+                    // change these coords
+                    t.getTokenImage().setPos(200 + faceUpCopy.indexOf(t) * 20, 200);
+                    window.draw(t.getTokenImage(), t.getTokenImage().getX(), t.getTokenImage().getY());
+                }
+                MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
+
+                    @Override
+                    public void handleMousePress(int xClicked, int yClicked, int arg2) {
+                        List<TokenImage> imageList = faceUpCopy.stream().map((token) -> token.getTokenImage())
+                                .collect(Collectors.toList());
+                        for (TokenImage t : imageList) {
+                            if (t.hasCollidePoint(xClicked, yClicked)) {
+                                // inform server that user has selected t
+                                ActionManager.getInstance()
+                                        .sendActionAndGetReply(new TokenSelectedAction(
+                                                ClientMain.currentSession.getSessionID(), t.getTokenName()));
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void handleMouseRelease(int arg0, int arg1, int arg2) {
+                    }
+
+                    @Override
+                    public void handleMouseMove(int arg0, int arg1) {
+                    }
+                };
+                MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
+                window.registerMouseHandler(tokenSelect, selectTokenQueue);
+            }
+        }, currentPlayerName);
+    }
+
+    // // drawing of additional transportation counter (specific counter)
+    // // @pre: tok should be inside faceUpTokenPile
+    // public void playerDrawCounter(Player p, Token tok){
+    // // remove from list of face up tokens, remove it
+    // this.faceUpTokenPile.remove(tok);
+    // // replace it
+    // this.faceUpTokenPile.add(faceDownTokenStack.pop());
+    // // add to player's hand
+    // p.addToken(tok);
+    // }
+
+    // // drawing random counter
+    // public void playerDrawRandomCounter(Player p){
+    // p.addToken(this.faceDownTokenStack.pop());
+    // }
+
+    // for planning travel routes phase (4)
+    public void playerPlaceCounter(Player p, Route r, Token tok) {
+        // remove token from player's hand
+        p.consumeToken(tok);
+        // add token to route r
+        // tok.setRoute(r); done inside r.placetoken
+        r.placeToken(tok);
+    }
+
+    public void winner(Player winner) {
+        // ...
+        ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
+    }
+
+    // @pre we're in phase 6 (just finished phase 5 move boot)
+    // finish phase
+    public void phaseSix() {
+        // ending game...
+        if (currentRound == gameRoundsLimit) {
+            // player with highest score wins
+            // list of players with equal highest score
+            List<Player> winningPlayers = new ArrayList<>();
+            int highestScore = getHighestScore();
+            for (Player p : players) {
+                if (p.getScore() == highestScore) {
+                    winningPlayers.add(p);
+                }
+            }
+
+            // if only one winning player vs multiple winning player, so the one with
+            // highest number of cards in hand wins
+            if (winningPlayers.size() == 1) {
+                // TODO player wins
+                winner(winningPlayers.get(0));
+            }
+
+            else {
+                int highestNumberOfCards = 0;
+                Player playerWinner = null;
+                // find player with highest number of hands
+                for (Player p : winningPlayers) {
+                    if (highestNumberOfCards < p.getNberCards()) {
+                        highestNumberOfCards = p.getNberCards();
+                        playerWinner = p;
+                    }
+                }
+                winner(playerWinner);
+            }
+            return;
+        }
+
+        // update round
+        currentRound++;
+        // change starting player by index in list
+        int startingPlayerIndex = players.indexOf(startingPlayer);
+        // if starting player is last in list, go back to first player in list
+        if (startingPlayerIndex == players.size() - 1) {
+            this.startingPlayer = players.get(0);
+        } else {
+            this.startingPlayer = players.get(startingPlayerIndex + 1);
+        }
+        // each player turns in all their transportation counters
+        for (Player p : players) {
+            // TODO: player chooses to keep a token ?
+
+            List<Token> removedTokens = p.removeAllTokens();
+            // add these back to token stack
+            faceDownTokenStack.addTokens(removedTokens);
+        }
+
+        // remove transportation counters from board (note this doesn't add the tokens
+        // that are face up (aka up for grabs during drawing counter phase))
+        for (Route r : routes) {
+            // remove token delets obstacle from game basically
+            Token tok = r.removeToken();
+            // check if not null
+            if (tok != null) {
+                // check if it's face up ?
+
+                // reset the route field in token
+                tok.resetRoute();
+                // add to the tokenStack
+                faceDownTokenStack.addToken(tok);
+            }
+        }
+        faceDownTokenStack.shuffle();
+
+        // send ACK to client for update
+    }
+
+    // method that checks if all players passed turn, to know if we move on to next
+    // phase/round
+    public boolean didAllPlayersPassTurn() {
+        // checks if all players has turnPassed as true
+        for (Player p : this.players) {
+            // if one player doesn't have turnPassed as true, return false
+            if (!p.getTurnPassed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // gets highest score from all players
+    public int getHighestScore() {
+        int output = 0;
+        for (Player p : players) {
+            if (output < p.getScore()) {
+                output = p.getScore();
+            }
+        }
+        return output;
+    }
+
+    /*
+     * Notes for moving boot:
+     * - It's currently the move boot phase of the game (phase 5)
+     * - It's currently player's turn to move boot (Player.getIsTurn())
+     * - Player (from client) sends coordinate where they clicked
+     * - server receives coordinate (or receive route clicked ?)
+     * - server makes sure it's a valid coordinates
+     * - server checks wether or not that town is adjacent to player's town (is
+     * there a route) (send message to client if not valid)
+     *
+     * ^^^^^^^^^^^^^^^^^^^^^^^^^ (this part might not be necessary for m7)
+     * - server checks wether the player has cards required to move to that town
+     * - if it doesn't then return message to client
+     * - if it does then do the move and take away player's cards
+     * - send meesage to client to move boot (update state on all player's screens)
+     *
+     * ^^^^^^^^^^^^^^^^^^^^^^^^^
+     * - Player can move as many time as he wishes, (until no more moves available
+     * click on end turn)
+     * - goes to next player's turn
+     * - if everyone passed turn (keep track of this somehow) go to next phase of
+     * the game (not necessary for m7?)
+     */
+
+    // @pre: current phase == 5 and it's player's turn and town is adjacent
+    public void playerMovedBoot(Player p, Route r) {
+        // check if the route is valid (i.e. it's adjacent to player's town)
+        // if it's valid, move boot
+        if (r.getSource() == p.getTown() || r.getDest() == p.getTown()) {
+            // remove the cards from the player
+            p.getCards().removeAll(r.getRequiredCards(p.getTown()));
+            // get the town player's trying to go to
+            Town dstTown;
+            if (r.getSource() == p.getTown()) {
+                dstTown = r.getDest();
+            } else {
+                dstTown = r.getSource();
+            }
+            // update player's town location done in Player.moveBoot(Town t)
+            p.moveBoot(dstTown);
+            // update the town's player list is done in p.moveBoot(dstTown)
+
+        }
+    }
+
+    public int getCurrentPhase() {
+        return this.currentPhase;
+    }
+
+    public TownGraph getTownGraph() {
+        return this.aTownGraph;
+    }
+
+    public Town getTownByName(String townName) {
+        for (Town t : towns) {
+            if (t.getTownName().equalsIgnoreCase(townName)) {
+                return t;
+            }
+        }
+        return null;
     }
 
     /*

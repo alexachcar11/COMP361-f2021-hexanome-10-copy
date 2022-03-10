@@ -1,5 +1,6 @@
 package networksrc;
 
+
 import org.minueto.MinuetoColor;
 
 import clientsrc.ClientMain;
@@ -10,6 +11,7 @@ public class WinnerACK implements Action{
 
     public WinnerACK(String winnerName) {
         this.winnerName = winnerName;
+
     }
 
     @Override

@@ -6,5 +6,8 @@ public class Boot  {
 
     Color color;
 
+    public Color getColor(){
+        return this.color;
+    }
 
 }

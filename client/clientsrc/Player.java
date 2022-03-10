@@ -4,15 +4,18 @@ package clientsrc;
 
 import java.util.*;
 
+import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
+
+import serversrc.Token;
 
 public class Player {
     boolean isTurn = false;
 
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
-    private List<Card> cardsInHand;
-    private List<Token> tokensInHand;
+    private List<TravelCard> cardsInHand;
+    private List<TokenImage> tokensInHand;
     private Town inTown;
 
     private MinuetoImageFile bootImage;
@@ -27,7 +30,7 @@ public class Player {
 
     public Player(Color pColor, User pUser, Game currentGame) {
 
-        this.inTown = Game.getTownByName("Elvenhold");
+        // inTown = elvenhold; // fix this
         this.gold = 0;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
@@ -78,6 +81,35 @@ public class Player {
     public GUI getGui() {
         return guiDisplayed;
     }
+
+    // public void draw() {
+    // int x = boot.getCoords()[0];
+    // int y = boot.getCoords()[2];
+    // guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
+    // }
+
+    // public Action getBootAction() {
+    // return aBootAction;
+    // }
+
+    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+        for (String cardString : cardArray) {
+            cardsInHand.add(Game.getFaceDownCard(cardString));
+        }
+    }
+
+    public void addTokenString(String token) throws MinuetoFileException {
+        tokensInHand.add(TokenImage.getTokenImageByString(token));
+    }
+
+    public List<TravelCard> getCardsInHand() {
+        return cardsInHand;
+    }
+
+    public List<TokenImage> getTokensInHand() {
+        return tokensInHand;
+    }
+
     /*
      * Operation: Player::startGame(gameSession: Session)
      * Scope: Player; Session;
@@ -231,6 +263,8 @@ public class Player {
     // // ??? end player's turn ???
     // return -1;
     // }
+    // // update inTown to the new Town
+    // inTown = toTown;
 
     /**
      * Sets the inTown parameter to Town t
@@ -322,7 +356,7 @@ public class Player {
      * Post: Sends a new game state to the player.
      */
 
-    public void consumeToken(Token token) {
+    public void consumeToken(TokenImage token) {
         assert token != null;
 
         if (tokensInHand.contains(token)) {
