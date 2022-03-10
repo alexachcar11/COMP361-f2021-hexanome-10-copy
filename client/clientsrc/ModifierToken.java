@@ -20,8 +20,8 @@ public class ModifierToken extends TokenImage {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public ModifierToken(String tName, String url) throws MinuetoFileException {
-        super(tName, url);
+    public ModifierToken(serversrc.CardType cT) throws MinuetoFileException {
+        super(cT);
     }
 
     // get type of modifier

@@ -18,12 +18,14 @@ public class WinnerACK implements Action {
     @Override
     public void execute() {
         // display winner
-        /* try {
-            ClientMain.displayWinnerByString(winnerName);
-        } catch (MinuetoFileException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } */
+        /*
+         * try {
+         * ClientMain.displayWinnerByString(winnerName);
+         * } catch (MinuetoFileException e) {
+         * // TODO Auto-generated catch block
+         * e.printStackTrace();
+         * }
+         */
     }
 
 }

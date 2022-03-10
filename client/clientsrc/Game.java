@@ -34,13 +34,13 @@ public class Game {
     private static ArrayList<TravelCard> faceDownCardPile;
     private ArrayList<Card> faceUpCardPile;
     // private ArrayList<GoldCard> goldCardPile;
-    //private Auction auction; not doing this now
-
+    // private Auction auction; not doing this now
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public Game(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
+    public Game(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled,
+            Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
         this.faceDownCardPile = new ArrayList<>();
@@ -56,7 +56,8 @@ public class Game {
         towns = new ArrayList<>();
         routes = new ArrayList<>();
 
-        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
+        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
+        // depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);
@@ -171,10 +172,12 @@ public class Game {
     }
 
     /**
-     * Adds a player to the players arraylist. If the max number of players has already been reached, throw an error
+     * Adds a player to the players arraylist. If the max number of players has
+     * already been reached, throw an error
+     * 
      * @param player player to add to the game
      */
-    public void addPlayer(Player player) throws IndexOutOfBoundsException{
+    public void addPlayer(Player player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
             Town elvenhold = Game.getTownByName("Elvenhold");
@@ -185,7 +188,7 @@ public class Game {
         }
     }
 
-    //GETTER for number of players in the game instance
+    // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
@@ -214,18 +217,18 @@ public class Game {
         return towns;
     }
 
-    //GETTER: gets town in towns by name
+    // GETTER: gets town in towns by name
     public static Town getTownByName(String name) {
         for (Town t : towns) {
             if (t.getTownName().equals(name)) {
                 return t;
-                }
             }
+        }
         return null;
     }
 
     public static boolean notClickingOnATown(int x, int y) {
-        for(Town t: towns) {
+        for (Town t : towns) {
 
             if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
                 return false;
@@ -235,26 +238,26 @@ public class Game {
         return false;
     }
 
-    public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException{
+    public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException {
         // for (TravelCard aCard : faceDownCardPile){
-        //     if (aCard.getName().equalsIgnoreCase(cardString)){
+        // if (aCard.getName().equalsIgnoreCase(cardString)){
 
-        //         return aCard;
-        //     }
+        // return aCard;
+        // }
 
         // }
         // return null; // hopefully this never happens LOL
-        for(CardType cT: CardType.values()) {
-            if(cT.name().equalsIgnoreCase(cardString)) { 
+        for (CardType cT : CardType.values()) {
+            if (cT.name().equalsIgnoreCase(cardString)) {
                 TravelCard finCard = new TravelCard(cT);
                 return finCard;
             }
         }
         throw new IllegalArgumentException();
-        
+
     }
 
-    public ArrayList<Player> getPlayers() { 
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
