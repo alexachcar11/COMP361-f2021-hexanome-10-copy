@@ -88,7 +88,7 @@ public class LaunchGameAction implements Action {
 
         serverGame.phaseOne();
         serverGame.phaseTwo();
-        // serverGame.phaseThree();
+        serverGame.phaseThree();
     }
 
 }

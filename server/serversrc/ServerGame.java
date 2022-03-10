@@ -403,7 +403,7 @@ public class ServerGame {
             HashMap<String, List<String>> playerTokens = new HashMap<>();
             List<String> tokenStrings = p.getTokensInHand().stream().map((token) -> token.toString())
                     .collect(Collectors.toList());
-            playerTokens.put(p.getName(), p.getTokensInHand().get(0).getTokenType().toString());
+            playerTokens.put(p.getName(), tokenStrings);
             ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
         }
 
@@ -415,8 +415,7 @@ public class ServerGame {
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
         Player currentPlayer = this.getCurrentPlayer();
-        // String currentPlayerName = currentTurn.getName();
-        String currentPlayerName = "testName";
+        String currentPlayerName = currentPlayer.getName();
         // anonymous action class
         ACK_MANAGER.sendToSender(new Action() {
 

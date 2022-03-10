@@ -239,14 +239,6 @@ public class Game {
     }
 
     public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException {
-        // for (TravelCard aCard : faceDownCardPile){
-        // if (aCard.getName().equalsIgnoreCase(cardString)){
-
-        // return aCard;
-        // }
-
-        // }
-        // return null; // hopefully this never happens LOL
         for (CardType cT : CardType.values()) {
             if (cT.name().equalsIgnoreCase(cardString)) {
                 TravelCard finCard = new TravelCard(cT);
