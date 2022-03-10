@@ -39,7 +39,7 @@ public class Player {
         this.aName = pUser.getName();
         try {
             this.bootImage = new MinuetoImageFile(
-                    "images/böppels-and-boots/boot-" + pColor.toString().toLowerCase() + ".png");
+                    "images/boot" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
             e.printStackTrace();
         }
