@@ -21,10 +21,7 @@ public class DealTravelCardsACK implements Action{
 
     @Override
     public void execute() {
-
-
         ClientMain.recievePhaseOne(playerName, playerCards);
-
     }
 
 }

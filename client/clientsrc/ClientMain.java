@@ -1362,12 +1362,6 @@ public class ClientMain {
                 players.remove(currentPlayer);
                 // List<Player> listOfPlayers = players;
 
-                // for(Player p : listOfPlayers) { 
-                //     if(p == currentPlayer) { 
-                //     players.remove(p);
-                //     }
-                // }
-
                 gui.window.draw(elfenlandImage, 0, 0);
 
                 // draw Cards text
