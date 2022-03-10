@@ -73,8 +73,10 @@ public class Server implements NetworkNode {
             } catch (IOException e) {
                 String host = pTuple.socket().getInetAddress().getHostName();
                 System.err.println("Couldn't get I/O for the connection to: " + host);
+                return;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+                return;
             }
         }
     }
