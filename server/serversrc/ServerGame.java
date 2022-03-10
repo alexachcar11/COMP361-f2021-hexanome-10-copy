@@ -65,11 +65,8 @@ public class ServerGame {
         this.currentRound = 1;
         this.gameID = gameID;
         this.startingPlayer = null;
-<<<<<<< HEAD
             
         this.faceDownCardPile = new ArrayList<>();
-=======
->>>>>>> 2d23ab3f9dfbf625fce656c483dff9ef9e0e88be
 
         towns = new ArrayList<>();
         routes = new ArrayList<>();
