@@ -450,6 +450,8 @@ public class ServerGame {
         }
         ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(this.getTokenInventoryMap()), this);
 
+        nextPhase();
+
     }
 
     public void phaseThree() {
