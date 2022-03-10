@@ -1223,11 +1223,6 @@ public class ClientMain {
         loginScreenQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(loginScreenKeyboardHandler, loginScreenQueue);
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
-
-        // TODO: move this to where it belongs
-        // moveBootQueue = new MinuetoEventQueue();
-        // gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
-
         elfenlandQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenlandMouseHandler, elfenlandQueue);
 
