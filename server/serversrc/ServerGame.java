@@ -399,7 +399,7 @@ public class ServerGame {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
             final String tokenString = tokenToAdd.toString();
-            ACK_MANAGER.sendToSender(new Action() {
+            ACK_MANAGER.sentToAllPlayersInGame(new Action() {
 
                 @Override
                 public boolean isValid() {
@@ -417,7 +417,7 @@ public class ServerGame {
                     System.out.println("AFTER PHASE TWO");
                 }
 
-            }, p.getName());
+            }, this);
         }
 
     }
