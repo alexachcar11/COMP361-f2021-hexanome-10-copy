@@ -462,33 +462,18 @@ public class ServerGame {
 
     // for planning travel routes phase (5)
     public void playerPlaceCounter(Player p, Route r, Token tok){
-
-        // only one counter per road
-        if (r.hasCounter()){
-            // there's already a counter on route, so if tok is obstacle we can place it
-            if (tok instanceof Obstacle){
-                // TODO: place obstacle
-
-                return;
-            }
-            // do something maybe send message to client
-            return;
-        }
-        else {
-            
-            // remove token from player's hand
-            p.consumeToken(tok);
-            // add token to route r
-            tok.setRoute(r);
-            r.placeToken(tok);
-        }
+        // remove token from player's hand
+        p.consumeToken(tok);
+        // add token to route r
+        // tok.setRoute(r); done inside r.placetoken
+        r.placeToken(tok);
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
     // finish phase
     public void phaseSix(){
         // ending game...
-        if (currentPhase == gameRoundsLimit){
+        if (currentRound == gameRoundsLimit){
             // player with highest score wins
             // list of players with equal highest score
             List<Player> winningPlayers = new ArrayList<>();
