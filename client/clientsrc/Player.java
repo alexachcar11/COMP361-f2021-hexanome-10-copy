@@ -5,6 +5,7 @@ package clientsrc;
 import java.util.*;
 
 import networksrc.*;
+import serversrc.Token;
 
 public class Player {
     boolean isTurn = false;
@@ -14,8 +15,8 @@ public class Player {
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
     private Boot boot;
-    private List<Card> cardsInHand;
-    private List<TokenImage> tokensInHand;
+    private List<TravelCard> cardsInHand;
+    private List<Token> tokensInHand;
     private Town inTown;
 
     private String aName;
@@ -87,11 +88,21 @@ public class Player {
         return aBootAction;
     }
 
-    public void addCardStringArray(ArrayList<String> cardArray){
-        for (String cardString : cardArray){
-            this.cardsInHand.add(Game.getFaceDownCard(cardString));
-        }
+    // public void addCardStringArray(ArrayList<String> cardArray){
+    //     for (String cardString : cardArray){
+    //         this.cardsInHand.add(Game.getFaceDownCard(cardString));
+    //     }
+    // }
+
+    public List<TravelCard> getCardsInHand() { 
+        return cardsInHand;
     }
+
+    public List<Token> getTokensInHand() { 
+        return tokensInHand;
+    }
+
+
     /*
      * Operation: Player::startGame(gameSession: Session)
      * Scope: Player; Session;

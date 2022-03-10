@@ -1,12 +1,16 @@
 package clientsrc;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
 public class TokenImage extends MinuetoImageFile implements HitBox {
+    
     private String tokenName;
     private int x;
     private int y;
+    private MinuetoImage mediumImage;
+    private MinuetoImage smallImage;
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -22,6 +26,8 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
         this.tokenName = tName;
         this.x = 0;
         this.y = 0;
+        mediumImage = new MinuetoImageFile(url);
+        smallImage = new MinuetoImageFile(url);
     }
 
     public String getTokenName() {

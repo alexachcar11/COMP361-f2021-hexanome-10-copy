@@ -17,6 +17,7 @@ import networksrc.ChooseBootColorAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.TestAction;
+import serversrc.Token;
 
 import javax.imageio.ImageIO;
 
@@ -366,7 +367,7 @@ public class ClientMain {
             JLabel pic = new JLabel(new ImageIcon(tCard.getMediumAddress()));
             cardPanel.add(pic);
         }
-        for(TransportationCounter tCounter: p.getTokensInHand()) { 
+        for(Token tCounter: p.getTokensInHand()) { 
             JLabel pic = new JLabel(new ImageIcon(tCounter.getMediumAddress()));
             tokenPanel.add(pic);
         }        
@@ -1421,7 +1422,7 @@ public class ClientMain {
                 gui.window.draw(indicator, 536, 185);
                 gui.window.draw(indicator, 88, 439);
 
-                List<TransportationCounter> listOfTokens = currentPlayer.getTokensInHand();
+                List<Token> listOfTokens = currentPlayer.getTokensInHand();
                 List<TravelCard> listOfCards = currentPlayer.getCardsInHand();
 
                 // organize tokens in inventory
@@ -1936,11 +1937,11 @@ public class ClientMain {
         }
     }
 
-    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
-        for (Player p: players){
-            if (p.getName().equalsIgnoreCase(playerID)){
-                p.addCardStringArray(cardArray);
-            }
-        }
-    }
+    // public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
+    //     for (Player p: players){
+    //         if (p.getName().equalsIgnoreCase(playerID)){
+    //             p.addCardStringArray(cardArray);
+    //         }
+    //     }
+    // }
 }
