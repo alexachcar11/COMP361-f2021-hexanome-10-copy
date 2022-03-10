@@ -6,6 +6,7 @@ import clientsrc.ClientMain;
 import clientsrc.Player;
 import clientsrc.TokenImage;
 import clientsrc.Town;
+import clientsrc.Route;
 
 public class ConfirmPlaceCounterACK implements Action {
 
@@ -30,8 +31,9 @@ public class ConfirmPlaceCounterACK implements Action {
     public void execute() throws MinuetoFileException {
         // TODO Auto-generated method stub
         Player thePlayer = Player.getPlayerByName(senderName);
-        // thePlayer.consumeToken(TokenImage.getTokenByName(tok));
-
-        ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
+        thePlayer.setTurn(false);
+        TokenImage token = TokenImage.getTokenByName(tok);
+        Route r = ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
+        r.placeToken(thePlayer, token);
     }
 }

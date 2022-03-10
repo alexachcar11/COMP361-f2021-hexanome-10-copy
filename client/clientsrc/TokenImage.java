@@ -1,11 +1,16 @@
 package clientsrc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
 // make this implement serializable at some point
 public class TokenImage extends MinuetoImageFile implements HitBox {
+
+    public static List<TokenImage> allTokens = new ArrayList<>();
 
     private String tokenName;
     private int x;
@@ -29,6 +34,8 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
         this.y = 0;
         mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "medium.png");
         smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
+
+        allTokens.add(this);
     }
 
     public String getFileAdress() {
@@ -81,5 +88,15 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
 
     public String getName(){
         return this.tokenName;
+    }
+
+    public static TokenImage getTokenByName(String name){
+
+        for (TokenImage t: allTokens){
+            if (t.getName().equalsIgnoreCase(name)){
+                return t;
+            }
+        }
+        return null; // shouldn't happen if String name is valid
     }
 }
