@@ -1,8 +1,5 @@
 package networksrc;
 
-import org.minueto.MinuetoColor;
-import org.minueto.MinuetoFileException;
-
 import clientsrc.ClientMain;
 
 public class WinnerACK implements Action {
