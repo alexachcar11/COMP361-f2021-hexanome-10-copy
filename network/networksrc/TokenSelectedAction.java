@@ -24,7 +24,7 @@ public class TokenSelectedAction implements Action {
     @Override
     public boolean isValid() {
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
-        Token tokenToAdd = Token.getTokenByString(this.tokenString);
+        Token tokenToAdd = Token.getTokenByName(this.tokenString);
         return game.faceUpTokenPile.contains(tokenToAdd)
                 || game.faceDownTokenStack.contains(tokenToAdd);
     }
@@ -33,7 +33,7 @@ public class TokenSelectedAction implements Action {
     public void execute() {
         serversrc.Player player = Player.getPlayerByName(this.playerName);
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
-        Token tokenToAdd = Token.getTokenByString(this.tokenString);
+        Token tokenToAdd = Token.getTokenByName(this.tokenString);
         player.addToken(tokenToAdd);
         if (game.faceUpTokenPile.remove(tokenToAdd)) {
             game.faceUpTokenPile.add(game.faceDownTokenStack.pop());
