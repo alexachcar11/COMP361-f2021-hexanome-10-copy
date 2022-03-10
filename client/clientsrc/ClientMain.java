@@ -1577,11 +1577,9 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
-        for (Player p: players){
-            if (p.getName().equalsIgnoreCase(playerID)){
-                p.addCardStringArray(cardArray);
-            }
-        }
+        currentPlayer.addCardStringArray(cardArray);
+
+
     }
 
     public static void diaplayWinnerByString(String winner){

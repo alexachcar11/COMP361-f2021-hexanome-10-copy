@@ -9,6 +9,7 @@ max 6 players
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import networksrc.*;
 import org.minueto.MinuetoEventQueue;
 import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
@@ -16,10 +17,6 @@ import org.minueto.window.MinuetoWindow;
 import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.TokenImage;
-import networksrc.ACKManager;
-import networksrc.Action;
-import networksrc.TokenSelectedAction;
-import networksrc.WinnerACK;
 
 import java.util.*;
 
@@ -370,10 +367,26 @@ public class ServerGame {
         aCardStack.shuffle();
 
         for (Player p : players) {
-            for (int i = 0; i < 8; i++) {
-                p.addCard(aCardStack.pop());
+
+            int numPlayerCards = p.getCards().size();
+            ArrayList<String> cardsAdded = new ArrayList<>(); // cards added to players
+
+            for (int i = 0; i < 8 - numPlayerCards; i++) {
+
+                AbstractCard card = aCardStack.pop();
+
+                String cardString = card.getCardType().name();
+
+                p.addCard(card); //add to player
+                cardsAdded.add(cardString); // add to string array
+
+
             }
+
+            ACK_MANAGER.sendToSender(new DealTravelCardsACK(p.getName(),cardsAdded), p.getName());
         }
+
+        nextPhase();
     }
 
     public void phaseTwo() {
