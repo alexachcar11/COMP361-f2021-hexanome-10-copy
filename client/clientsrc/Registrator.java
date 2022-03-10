@@ -631,13 +631,8 @@ public class Registrator {
                     boolean launched = (boolean) sessionJSON.get("launched");
                     User creatorUser = new User(creatorName);
                     newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
-                    /* ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
-                    for (String userName : listOfUsers) {
-                        if (!userName.equals(creatorName)) {
-                            User newUser = new User(userName);
-                            newSession.addUser(newUser);
-                        }
-                    } */
+                    ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
+                    newSession.setCurrentNumberOfPlayers(listOfUsers.size());
                     newSession.setLaunched(launched);
                     // set as the game's active session
                     try {

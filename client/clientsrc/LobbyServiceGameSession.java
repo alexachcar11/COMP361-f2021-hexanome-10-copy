@@ -15,6 +15,7 @@ public class LobbyServiceGameSession{
     private LobbyServiceGame gameService;
     private String sessionID;
     private Game game;
+    private int numberOfPlayersCurrently;
 
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
@@ -74,7 +75,11 @@ public class LobbyServiceGameSession{
      * @return size of ArrayList<User>
      */
     public int getNumberOfUsersCurrently() {
-        return users.size();
+        return numberOfPlayersCurrently;
+    }
+
+    public void setCurrentNumberOfPlayers(int n) {
+        this.numberOfPlayersCurrently = n;
     }
 
     /**
