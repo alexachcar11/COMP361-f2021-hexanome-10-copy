@@ -398,7 +398,7 @@ public class ServerGame {
         for (Player p : players) {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
-            final String tokenString = tokenToAdd.toString();
+            final String tokenString = tokenToAdd.getTokenType().toString();
             ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(tokenString), this);
         }
 
