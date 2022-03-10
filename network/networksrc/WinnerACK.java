@@ -23,7 +23,7 @@ public class WinnerACK implements Action{
     public void execute() {
         // display winner
 
-        ClientMain.displayWinnerByString(winnerName);
+        //ClientMain.displayWinnerByString(winnerName);
 
     }
 
