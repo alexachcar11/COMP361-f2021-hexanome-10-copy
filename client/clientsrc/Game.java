@@ -41,6 +41,8 @@ public class Game {
     public Game(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
+        this.faceDownCardPile = new ArrayList<>();
+        this.faceUpCardPile = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
         this.gameRoundsLimit = gameRoundsLimit;
         this.destinationTownEnabled = destinationTownEnabled;
