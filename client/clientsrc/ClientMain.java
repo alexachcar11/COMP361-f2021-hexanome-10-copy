@@ -62,8 +62,8 @@ public class ClientMain {
     // make images
     static MinuetoImage elfenlandImage;
     static MinuetoImage elfengoldImage;
+
     // create a list of the players 
-    
     static List<Player> players;
     
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
@@ -1358,7 +1358,7 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
 
-                players = Game.getPlayers();
+                players = currentGame.getPlayers();
 
                 for(Player p : players) { 
                     if(p != currentPlayer) { 
