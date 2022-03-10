@@ -1583,4 +1583,8 @@ public class ClientMain {
             }
         }
     }
+
+    public static void diaplayWinnerByString(String winner){
+        // draw on GUI
+    }
 }
