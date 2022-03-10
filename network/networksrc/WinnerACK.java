@@ -1,5 +1,11 @@
 package networksrc;
 
+<<<<<<< Updated upstream
+=======
+import org.minueto.MinuetoColor;
+import org.minueto.MinuetoFileException;
+
+>>>>>>> Stashed changes
 import clientsrc.ClientMain;
 
 public class WinnerACK implements Action{
@@ -17,7 +23,13 @@ public class WinnerACK implements Action{
 
     @Override
     public void execute() {
-        ClientMain.diaplayWinnerByString(this.winnerName);
+        // display winner
+        try {
+            ClientMain.displayWinnerByString(winnerName);
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
 }
