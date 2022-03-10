@@ -112,6 +112,8 @@ public class ClientMain {
     static MinuetoText witchNoText;
     static MinuetoText witchYesText;
     static MinuetoRectangle nameTextField;
+    static MinuetoImage winnerScreen;
+    static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
     static int numberPlayers = 3;
@@ -1197,6 +1199,8 @@ public class ClientMain {
             townGoldYesRandText = new MinuetoText("Yes: random values", fontArial22Bold, MinuetoColor.BLACK);
             witchNoText = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
             witchYesText = new MinuetoText("Yes", fontArial22Bold, MinuetoColor.BLACK);
+            winnerScreen = new MinuetoImageFile("images/winner-screen.png");
+            loserScreen = new MinuetoImageFile("images/loser-screen.png");
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
@@ -1721,6 +1725,40 @@ public class ClientMain {
     static void resumeSound() {
         // loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
+    }
+
+    public static void displayWinnerByString(String winnerName) throws MinuetoFileException {
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        MinuetoText winnerText = new MinuetoText(winnerName, font, MinuetoColor.WHITE);
+        User userWinner = User.getUserByName(winnerName);
+        Color colorWinner = userWinner.getColor();
+        MinuetoImage bootWinner = null;
+        if (colorWinner.equals(Color.BLACK)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-black.png/");
+        } else if (colorWinner.equals(Color.BLUE)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-blue.png/");
+        } else if (colorWinner.equals(Color.GREEN)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-green.png/");
+        } else if (colorWinner.equals(Color.YELLOW)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-yellow.png/");
+        } else if (colorWinner.equals(Color.RED)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-red.png/");
+        } else if (colorWinner.equals(Color.PURPLE)) {
+            bootWinner = new MinuetoImageFile("images/choose-boot-purple.png/");
+        }
+
+        if (winnerName.equals(currentUser.getName())) {
+            // winner
+            gui.window.draw(winnerScreen, 0, 0);
+        } else {
+            // loser
+            gui.window.draw(loserScreen, 0, 0);
+        }
+        gui.window.draw(bootWinner, 0, 0);
+        gui.window.draw(winnerText, 0, 0);
+
+        gui.window.render();
+        
     }
 
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
