@@ -9,6 +9,7 @@ max 6 players
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import networksrc.*;
 import org.minueto.MinuetoEventQueue;
 import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
@@ -16,9 +17,6 @@ import org.minueto.window.MinuetoWindow;
 import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.TokenImage;
-import networksrc.ACKManager;
-import networksrc.Action;
-import networksrc.TokenSelectedAction;
 
 import java.util.*;
 
@@ -270,6 +268,7 @@ public class ServerGame {
             // make first player as starting player (can be changed to get random player)
             if (this.startingPlayer == null){
                 this.startingPlayer = player;
+                this.startingPlayer.setTurn(true);
             }
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
@@ -368,10 +367,26 @@ public class ServerGame {
         aCardStack.shuffle();
 
         for (Player p : players) {
-            for (int i = 0; i < 8; i++) {
-                p.addCard(aCardStack.pop());
+
+            int numPlayerCards = p.getCards().size();
+            ArrayList<String> cardsAdded = new ArrayList<>(); // cards added to players
+
+            for (int i = 0; i < 8 - numPlayerCards; i++) {
+
+                AbstractCard card = aCardStack.pop();
+
+                String cardString = card.getCardType().name();
+
+                p.addCard(card); //add to player
+                cardsAdded.add(cardString); // add to string array
+
+
             }
+
+            ACK_MANAGER.sendToSender(new DealTravelCardsACK(p.getName(),cardsAdded), p.getName());
         }
+
+        nextPhase();
     }
 
     public void phaseTwo() {
@@ -452,21 +467,20 @@ public class ServerGame {
     //     p.addToken(this.faceDownTokenStack.pop());
     // }
 
-    // TODO: game ends and winner announced
-    public void winner(Player winner){
-        // ...
+    
 
-        // should send an action...
-        System.out.println(winner.getName());;
-    }
-
-    // for planning travel routes phase (5)
+    // for planning travel routes phase (4)
     public void playerPlaceCounter(Player p, Route r, Token tok){
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r
         // tok.setRoute(r); done inside r.placetoken
         r.placeToken(tok);
+    }
+
+    public void winner(Player winner) {
+        // ...
+        ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
