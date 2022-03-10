@@ -14,6 +14,7 @@ public class Town {
     int minY;
     int maxY;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
+    private static ArrayList<Town> allTowns = new ArrayList<>();
 
     // keeps track of the player boots that are on the town
     ArrayList<Player> playersHere = new ArrayList<>();
@@ -35,6 +36,16 @@ public class Town {
         // if(Game.getNumberOfPlayers()) { 
 
         // }
+        allTowns.add(this);
+    }
+
+    public static Town getTownByName(String name) throws IllegalArgumentException{
+        for (Town t : allTowns) {
+            if (t.getTownName().equals(name)) {
+                return t;
+            }
+        }
+        throw new IllegalArgumentException("No such token");
     }
 
     /**
