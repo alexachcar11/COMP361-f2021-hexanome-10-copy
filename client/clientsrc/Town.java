@@ -19,6 +19,9 @@ public class Town {
     // keeps track of the player boots that are on the town
     ArrayList<Player> playersHere = new ArrayList<>();
 
+    // keeps track of all towns so we can search them by name
+    private static ArrayList<Town> allTowns = new ArrayList<>();
+
     /**
      * CONSTRUCTOR : Creates a Town object
      * @param townName town's name
@@ -37,6 +40,17 @@ public class Town {
         // if(Game.getNumberOfPlayers()) { 
 
         // }
+        allTowns.add(this);
+    }
+
+    public static Town getTownByName(String stringTown){
+        for (Town t: allTowns){
+            if (t.getTownName().equalsIgnoreCase(stringTown)){
+                return t;
+            }
+        }
+        // no town with such name
+        return null;
     }
 
     /**

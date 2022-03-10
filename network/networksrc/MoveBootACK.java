@@ -6,10 +6,12 @@ import clientsrc.*;
 public class MoveBootACK implements Action {
 
     private String newTown;
+    private String playerThatMovedName;
     
 
-    public MoveBootACK(String newTown){
+    public MoveBootACK(String newTown, String playerThatMovedName){
         this.newTown = newTown;
+        this.playerThatMovedName = playerThatMovedName;
     }
 
     @Override
