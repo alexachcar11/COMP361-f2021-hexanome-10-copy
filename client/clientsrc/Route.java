@@ -83,6 +83,13 @@ public class Route extends Image {
     }
 
     public void clearToken() {
+        // update token field
         this.aToken = null;
+        // update image
+        try {
+            this.setMImage(new MinuetoImageFile("images/black-square.png"));
+        } catch (MinuetoFileException e) {
+            e.printStackTrace();
+        }
     }
 }
