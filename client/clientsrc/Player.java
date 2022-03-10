@@ -3,10 +3,10 @@
 package clientsrc;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
-
-import serversrc.Token;
 
 public class Player {
     boolean isTurn = false;
@@ -14,7 +14,7 @@ public class Player {
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
     private List<TravelCard> cardsInHand;
-    private List<Token> tokensInHand;
+    private List<TokenImage> tokensInHand;
     private Town inTown;
 
     private MinuetoImageFile bootImage;
@@ -82,29 +82,53 @@ public class Player {
     }
 
     // public void draw() {
-    //     int x = boot.getCoords()[0];
-    //     int y = boot.getCoords()[2];
-    //     guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
+    // int x = boot.getCoords()[0];
+    // int y = boot.getCoords()[2];
+    // guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
     // }
 
     // public Action getBootAction() {
-    //     return aBootAction;
+    // return aBootAction;
     // }
 
-    public void addCardStringArray(ArrayList<String> cardArray){
-        for (String cardString : cardArray){
+    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+        for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
     }
 
-    public List<TravelCard> getCardsInHand() { 
+    public void addTokenString(String token) throws MinuetoFileException {
+        tokensInHand.add(TokenImage.getTokenImageByString(token));
+    }
+
+    /**
+     * adds TokenImages with names in tokenStrings to tokensInHand
+     * 
+     * @param tokenStrings
+     */
+    public void addTokenStringList(List<String> tokenStrings) {
+        List<TokenImage> tokenImages = tokenStrings.stream()
+                .map((tokenString) -> {
+                    try {
+                        return TokenImage.getTokenImageByString(tokenString);
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList());
+        tokensInHand.addAll(tokenImages);
+    }
+
+    public List<TravelCard> getCardsInHand() {
         return cardsInHand;
     }
 
-    public List<Token> getTokensInHand() { 
+    public List<TokenImage> getTokensInHand() {
         return tokensInHand;
     }
-
 
     /*
      * Operation: Player::startGame(gameSession: Session)

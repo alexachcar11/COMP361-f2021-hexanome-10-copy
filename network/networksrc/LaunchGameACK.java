@@ -1,12 +1,13 @@
 package networksrc;
 
+import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.Player;
 import clientsrc.User;
 import clientsrc.Game;
 
-import java.util.ArrayList;
+import org.minueto.MinuetoFileException;
 
 public class LaunchGameACK implements Action {
 
@@ -21,7 +22,7 @@ public class LaunchGameACK implements Action {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MinuetoFileException {
         // set the session to launched
         ClientMain.currentSession.launch();
 
@@ -41,16 +42,7 @@ public class LaunchGameACK implements Action {
         // display board screen
         ClientMain.displayOriginalBoard();
         // modify game objects based on the game state received
-        // TODO: iterate thru playerNames, index for loop --> use to iterate thru
-        // playerCards, give Players their cards :)
-        // for (int i = 0; i < playerNames.size(); i++){
-        // String playerID = playerNames.get(i);
-        // ArrayList<String> aPlayersCards = playerCards.get(i);
-
-        // ClientMain.recievePhaseOne(playerID, aPlayersCards);
-
-        // }
-
+        ActionManager.getInstance().waitForMessages();
         // display the new board
 
         System.out.println("LaunchGameACK received");

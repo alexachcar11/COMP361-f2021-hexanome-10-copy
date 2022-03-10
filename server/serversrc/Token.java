@@ -23,17 +23,11 @@ public class Token {
         this.tokenType = pCT;
         this.isFaceUp = true;
         try {
-            if (this.tokenType == CardType.OBSTACLE) {
-                this.tokenImageFile = new TokenImage(this.tokenType.toString(),
-                        "images/elfenroads-sprites/M09medium.png");
-            } else {
-                this.tokenImageFile = new TokenImage(this.tokenType.toString(),
-                        "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + ".png");
-                mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
-                smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
-                mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
-                smallAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png";
-            }
+            this.tokenImageFile = new TokenImage(this.tokenType);
+            mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
+            smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
+            mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
+            smallAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png";
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
@@ -43,15 +37,15 @@ public class Token {
         return tokenType;
     }
 
-    public void resetRoute(){
+    public void resetRoute() {
         this.route = Optional.empty();
     }
 
-    public boolean getIsFaceUp(){
+    public boolean getIsFaceUp() {
         return this.isFaceUp;
     }
 
-    public void setIsFaceUpTo(boolean bool){
+    public void setIsFaceUpTo(boolean bool) {
         this.isFaceUp = bool;
     }
 
@@ -102,5 +96,10 @@ public class Token {
 
     public String getSmallAddress() {
         return smallAddress;
+    }
+
+    @Override
+    public String toString() {
+        return this.tokenType.toString();
     }
 }
