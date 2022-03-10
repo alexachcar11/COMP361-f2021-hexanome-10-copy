@@ -15,7 +15,7 @@ public class Player {
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
     private List<TravelCard> cardsInHand;
-    private List<Token> tokensInHand;
+    private List<TokenImage> tokensInHand;
     private Town inTown;
 
     private MinuetoImageFile bootImage;
@@ -83,29 +83,32 @@ public class Player {
     }
 
     // public void draw() {
-    //     int x = boot.getCoords()[0];
-    //     int y = boot.getCoords()[2];
-    //     guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
+    // int x = boot.getCoords()[0];
+    // int y = boot.getCoords()[2];
+    // guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
     // }
 
     // public Action getBootAction() {
-    //     return aBootAction;
+    // return aBootAction;
     // }
 
-    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException{
-        for (String cardString : cardArray){
+    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+        for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
     }
 
-    public List<TravelCard> getCardsInHand() { 
+    public void addTokenString(String token) throws MinuetoFileException {
+        tokensInHand.add(TokenImage.getTokenImageByString(token));
+    }
+
+    public List<TravelCard> getCardsInHand() {
         return cardsInHand;
     }
 
-    public List<Token> getTokensInHand() { 
+    public List<TokenImage> getTokensInHand() {
         return tokensInHand;
     }
-
 
     /*
      * Operation: Player::startGame(gameSession: Session)

@@ -4,12 +4,14 @@ import clientsrc.ClientMain;
 
 import java.util.ArrayList;
 
-public class DealTravelCardsACK implements Action{
+import org.minueto.MinuetoFileException;
+
+public class DealTravelCardsACK implements Action {
 
     private String playerName;
     private ArrayList<String> playerCards;
 
-    public DealTravelCardsACK(String playerName, ArrayList<String> playerCards){
+    public DealTravelCardsACK(String playerName, ArrayList<String> playerCards) {
         this.playerName = playerName;
         this.playerCards = playerCards;
     }
@@ -22,7 +24,11 @@ public class DealTravelCardsACK implements Action{
     @Override
     public void execute() {
         System.out.println("BEFORE RECIEVE PHASEONE");
-        ClientMain.recievePhaseOne(playerName, playerCards);
+        try {
+            ClientMain.recievePhaseOne(playerName, playerCards);
+        } catch (MinuetoFileException e) {
+            e.printStackTrace();
+        }
         System.out.println("AFTER RECIEVE PHASEONE");
 
     }
