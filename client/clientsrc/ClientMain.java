@@ -63,7 +63,7 @@ public class ClientMain {
     static MinuetoImage elfenlandImage;
     static MinuetoImage elfengoldImage;
     // create a list of the players 
-    static ArrayList<Player> listOfPlayers = currentGame.getPlayers();
+    
     static List<Player> players;
     
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
@@ -114,6 +114,7 @@ public class ClientMain {
     static MinuetoRectangle nameTextField;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
+    static int numberPlayers = 6;
 
     public static final Registrator REGISTRATOR = Registrator.instance();
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
@@ -1079,7 +1080,6 @@ public class ClientMain {
 
     private static boolean nameSel = false;
     private static String nameString = "";
-    private static int numberPlayers = listOfPlayers.size();
     private static Mode modeSel = Mode.ELFENLAND;
     private static boolean destinationTownSel = false;
     private static int numRoundsSel = 3;
@@ -1174,12 +1174,13 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+            // players = Game.getPlayers();
 
-            for(Player p : players) { 
-                if(p != currentPlayer) { 
-                   players.add(p);
-                }
-            }
+            // for(Player p : players) { 
+            //     if(p != currentPlayer) { 
+            //        players.add(p);
+            //     }
+            // }
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1356,6 +1357,15 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+
+                players = Game.getPlayers();
+
+                for(Player p : players) { 
+                    if(p != currentPlayer) { 
+                    players.add(p);
+                    }
+                }
+
                 gui.window.draw(elfenlandImage, 0, 0);
 
                 // draw Cards text

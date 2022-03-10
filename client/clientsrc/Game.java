@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private ArrayList<Player> players;
+    private static ArrayList<Player> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
     private ArrayList<Route> routes;
@@ -242,7 +242,7 @@ public class Game {
         return null; // hopefully this never happens LOL
     }
 
-    public ArrayList<Player> getPlayers() { 
+    public static ArrayList<Player> getPlayers() { 
         return players;
     }
 
