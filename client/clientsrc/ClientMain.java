@@ -93,6 +93,8 @@ public class ClientMain {
     static MinuetoText witchNoText;
     static MinuetoText witchYesText;
     static MinuetoRectangle nameTextField;
+    static MinuetoImage winnerScreen;
+    static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
 
@@ -1070,6 +1072,8 @@ public class ClientMain {
             townGoldYesRandText = new MinuetoText("Yes: random values", fontArial22Bold, MinuetoColor.BLACK);
             witchNoText = new MinuetoText("No", fontArial22Bold, MinuetoColor.BLACK);
             witchYesText = new MinuetoText("Yes", fontArial22Bold, MinuetoColor.BLACK);
+            winnerScreen = new MinuetoImageFile("images/winner-screen.png");
+            loserScreen = new MinuetoImageFile("images/loser-screen.png");
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
