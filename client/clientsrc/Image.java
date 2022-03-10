@@ -107,4 +107,8 @@ public class Image {
     public MinuetoImage getMImage() {
         return image;
     }
+
+    public void setMImage(MinuetoImage image) {
+        this.image = image;
+    }
 }

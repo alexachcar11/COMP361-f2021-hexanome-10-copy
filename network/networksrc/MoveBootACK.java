@@ -6,10 +6,11 @@ import clientsrc.*;
 public class MoveBootACK implements Action {
 
     private String newTown;
-    
+    private String playerThatMovedName;
 
-    public MoveBootACK(String newTown){
+    public MoveBootACK(String newTown, String playerThatMovedName) {
         this.newTown = newTown;
+        this.playerThatMovedName = playerThatMovedName;
     }
 
     @Override
@@ -20,10 +21,12 @@ public class MoveBootACK implements Action {
     @Override
     public void execute() {
         System.out.println("MoveBootACK received");
-        Player p = ClientMain.currentPlayer;
-        // TODO: call a method that updates GUI by changing the boot with bootColor to newTown
-        // get town by name
-        Town t = Game.getTownByName(newTown);
+
+        // who moved their boot
+        Player p = Player.getPlayerByName(playerThatMovedName);
+
+        // move the boot
+        Town t = Town.getTownByName(newTown);
         p.moveBoot(t);
     }
 
