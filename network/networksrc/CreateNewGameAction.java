@@ -4,6 +4,7 @@ import serversrc.TownGoldOption;
 import serversrc.GameLobby;
 import serversrc.Mode;
 import serversrc.ServerGame;
+import serversrc.ServerUser;
 
 public class CreateNewGameAction implements Action{
 
@@ -76,6 +77,8 @@ public class CreateNewGameAction implements Action{
     public void execute() {
         ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
         GameLobby gameLobby = new GameLobby(gameID, serverGame);
+        ServerUser sUser = ServerUser.getServerUser(senderName);
+        gameLobby.addUser(sUser);
         // send ack to the sender only
         ACKManager ackManager = ACKManager.getInstance();
         CreateNewGameACK actionToSend = new CreateNewGameACK();

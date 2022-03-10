@@ -2,9 +2,10 @@ package clientsrc;
 import java.util.ArrayList;
 
 import networksrc.PlayerHasJoinedAction;
+import networksrc.UpdateUsersAction;
 
 // represents one active game session
-public class LobbyServiceGameSession implements Joinable{
+public class LobbyServiceGameSession{
 
     // fields
     private boolean launched;
@@ -13,6 +14,7 @@ public class LobbyServiceGameSession implements Joinable{
     private String creator;
     private LobbyServiceGame gameService;
     private String sessionID;
+    private Game game;
 
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
@@ -27,6 +29,7 @@ public class LobbyServiceGameSession implements Joinable{
         this.creator = creator.getName();
         this.gameService = gameService;
         this.sessionID = sessionID;
+        this.game = gameService.getGame();
     }
 
     /**
@@ -43,6 +46,11 @@ public class LobbyServiceGameSession implements Joinable{
      */
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    public void updateUsers() {
+        String senderName = ClientMain.currentUser.getName();
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID));
     }
 
     /**
@@ -129,6 +137,14 @@ public class LobbyServiceGameSession implements Joinable{
         this.launched = launched;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     /**
      * Checks whether this session can be launched by the LS (LS won't give an error).
      * A session is launchable when enough users have joined and all theses users are ready.
@@ -136,6 +152,11 @@ public class LobbyServiceGameSession implements Joinable{
      */
     public boolean isLaunchable() {
         // check there are enough users
+
+        return users.size() == gameService.getNumberOfUsers();
+
+
+        /* // check there are enough users
         if (users.size() != gameService.getNumberOfUsers()) {
             return false;
         }
@@ -148,17 +169,31 @@ public class LobbyServiceGameSession implements Joinable{
                 break;
             }
         }
-        return allReady;
+        return allReady; */
     }
 
     /**
      * The Registrator will make this user join this game session
      */
-    @Override
-    public LobbyServiceGameSession join() throws Exception {
+    public LobbyServiceGameSession join(Color pColor) throws Exception {
         Registrator.instance().joinGame(this, ClientMain.currentUser);
         ClientMain.currentSession = this;
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID));
+        // pColor into string format
+        String colorStr = null;
+        if (pColor.equals(Color.BLACK)) {
+            colorStr = "BLACK";
+        } else if (pColor.equals(Color.BLUE)) {
+            colorStr = "BLUE";
+        } else if (pColor.equals(Color.YELLOW)) {
+            colorStr = "YELLOW";
+        } else if (pColor.equals(Color.PURPLE)) {
+            colorStr = "PURPLE";
+        } else if (pColor.equals(Color.RED)) {
+            colorStr = "RED";
+        } else if (pColor.equals(Color.GREEN)) {
+            colorStr = "GREEN";
+        }
+        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
 
@@ -166,7 +201,6 @@ public class LobbyServiceGameSession implements Joinable{
      * Returns this session
      * @return this session
      */
-    @Override
     public LobbyServiceGameSession getActiveSession() {
         return this;
     }

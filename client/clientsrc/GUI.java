@@ -9,10 +9,9 @@ public class GUI {
         LOGIN,
         LOBBY,
         CREATELOBBY,
+        CHOOSEBOOT,
         LOBBYELFENLAND,
-        LOBBYELFENLANDCREATOR,
         LOBBYELFENGOLD,
-        LOBBYELFENGOLDCREATOR,
         ELFENLAND,
         ELFENGOLD
     }
