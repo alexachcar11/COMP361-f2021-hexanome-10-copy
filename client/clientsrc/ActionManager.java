@@ -365,6 +365,11 @@ public class ActionManager {
                 ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
             }
 
+            for(Player p: players) { 
+                p.drawBoot();
+            }
+            ClientMain.currentPlayer.drawBoot();
+
             // update gui
             ClientMain.gui.window.render();
         }

@@ -1004,13 +1004,13 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             
             // TODO Auto-generated method stub
-            for (Route r: Route.getAllRoutes()){
-                if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMaxY()){
-                    // pick route
-                    pickedRoute = r;
-                    break;
-                }
-            }
+            // for (Route r: Route.getAllRoutes()){
+            //     if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMaxY()){
+            //         // pick route
+            //         pickedRoute = r;
+            //         break;
+            //     }
+            // }
 
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550){
                 // pick tok
