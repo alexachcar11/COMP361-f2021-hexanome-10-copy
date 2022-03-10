@@ -269,8 +269,9 @@ public class ServerGame {
             // make first player as starting player (can be changed to get random player)
             if (this.startingPlayer == null) {
                 this.startingPlayer = player;
-                this.startingPlayer.setTurn(true);
+                // this.startingPlayer.setTurn(true);
             }
+
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }

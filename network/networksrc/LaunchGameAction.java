@@ -64,7 +64,7 @@ public class LaunchGameAction implements Action {
         }
 
         // distribute resources here
-        serverGame.phaseOne();
+        // serverGame.phaseOne();
 
         // notify all users in the lobby
         // TODO: LaunchGameACK will contain the game state
@@ -85,8 +85,10 @@ public class LaunchGameAction implements Action {
         } catch (IOException e) {
             System.err.println("IOException in LaunchGameAction.execute()");
         }
+
+        serverGame.phaseOne();
         serverGame.phaseTwo();
-        serverGame.phaseThree();
+        // serverGame.phaseThree();
     }
 
 }
