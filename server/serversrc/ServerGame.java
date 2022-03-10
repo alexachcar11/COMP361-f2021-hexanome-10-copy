@@ -399,25 +399,7 @@ public class ServerGame {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
             final String tokenString = tokenToAdd.toString();
-            ACK_MANAGER.sentToAllPlayersInGame(new Action() {
-
-                @Override
-                public boolean isValid() {
-                    return true;
-                }
-
-                @Override
-                public void execute() {
-                    System.out.println("BEFORE PHASE TWO");
-                    try {
-                        ClientMain.receivePhaseTwo(tokenString);
-                    } catch (MinuetoFileException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("AFTER PHASE TWO");
-                }
-
-            }, this);
+            ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(tokenString), this);
         }
 
     }
