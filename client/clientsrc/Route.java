@@ -1,10 +1,10 @@
 package clientsrc;
 
-// import serversrc.Player;
-// import serversrc.Token;
-// import serversrc.Town;
+import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
+import org.minueto.image.MinuetoImageFile;
 
-public class Route {
+public class Route extends Image {
 
     // route needs to have a starting town and an ending town
     // routes carry one transportation counter maximum, but don't need to have one
@@ -17,7 +17,8 @@ public class Route {
     // upstream
     boolean isUpstream;
 
-    Route(Town pStartingTown, Town pEndTown) {
+    public Route(Town pStartingTown, Town pEndTown, int minX, int maxX, int minY, int maxY, MinuetoImage image) throws MinuetoFileException {
+        super(minX, maxX, minY, maxY, new MinuetoImageFile("images/black-square.png"));
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
@@ -25,7 +26,8 @@ public class Route {
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    Route(Town pStartingTown, Town pEndTown, int n) {
+    public Route(Town pStartingTown, Town pEndTown, int n, int minX, int maxX, int minY, int maxY, MinuetoImage image) {
+        super(minX, maxX, minY, maxY, image);
         this.isRiver = true;
         if (n == 1) {
             this.isUpstream = true;
@@ -71,9 +73,12 @@ public class Route {
         if (this.aToken == null) {
             throw new IllegalArgumentException();
         } else {
+            // remove token from the players inventory
             player.consumeToken(token);
+            // update token field
             this.aToken = token;
-
+            // update image
+            this.setMImage(token);
         }
     }
 

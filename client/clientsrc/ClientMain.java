@@ -323,49 +323,11 @@ public class ClientMain {
     };
 
     static MinuetoMouseHandler moveBootMouseHandler = new MinuetoMouseHandler() {
-        int ind = 0; // index of players
-
         @Override
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x: " + x + ". This is y: " + y);
-            // for left click : move boot
-            /*
-             * if (button == 1) {
-             * players.get(ind).moveBoot(x, y);
-             * }
-             * // for right click : change next player
-             * else if (button == 3) {
-             * ind++;
-             * if (ind == players.size()) { ind = 0; } // reset index if we reached last
-             * player
-             * }
-             */
-
-            /*
-             * for (int i = 0; i < players.size(); i++) {
-             * // check for player's turn and if button is left click
-             * if (players.get(i).isTurn && button == 1) {
-             * players.get(i).moveBoot(x, y);
-             * break;
-             * }
-             * // if press right mouse button, change to next player
-             * if (button == 3) {
-             * // set isTurn to false for current player
-             * players.get(i).setTurn(false);
-             * 
-             * // if we reached last player, go back to first player
-             * if (i == players.size()-1) {
-             * players.get(0).setTurn(true);
-             * }
-             * else {
-             * // change isTurn to true for next player
-             * players.get(i + 1).setTurn(true);
-             * }
-             * break;
-             * }
-             * }
-             */
-
+            
+            // mute button
             if (x > 1000 && y > 740) {
                 if (soundOn) {
                     soundOn = false;
@@ -378,36 +340,6 @@ public class ClientMain {
                     gui.window.draw(soundOnButton, 1000, 745);
                 }
             }
-
-            // if we click on a town, move boot for the player (player.moveBoot(x,y)) and
-            // cycle to the next player
-            /*
-             * for (int i = 0; i < players.size(); i++) {
-             * 
-             * while (ServerGame.notClickingOnATown(x, y)) {
-             * for (Town t : ServerGame.getTowns()) {
-             * 
-             * if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
-             * 
-             * // set a variable to keep track of the town at that location
-             * Town townAtLoc = t;
-             * // move the boot to that town
-             * Player p = players.get(i);
-             * 
-             * p.moveBoot(t);
-             * 
-             * // draw the boot at a location
-             * // depending on the number of players in the lobby, designate an arrangement
-             * for
-             * // possible boot
-             * // slots around each city, will be populated by the specific boot each time
-             * 
-             * // gui.window.draw( BOOT, LOCATION1, LOCATION2);
-             * }
-             * }
-             * }
-             * }
-             */
         }
 
         @Override
@@ -1106,7 +1038,7 @@ public class ClientMain {
         gui.window.registerKeyboardHandler(loginScreenKeyboardHandler, loginScreenQueue);
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
 
-        // TODO: move this to where it belongs
+        // move boot mouse handler
         moveBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
 
@@ -1293,43 +1225,6 @@ public class ClientMain {
 
         // swing gui
     }
-
-    /*
-     * TODO: Owen
-     * 
-     * @pre: pNames is a list of filenames of the boot images
-     *
-     * @return: List of images corresponding to the filenames
-     */
-    /*
-     * private static List<MinuetoImage> getBootImages(List<String> pNames) {
-     * List<MinuetoImage> toReturn = new ArrayList<>();
-     * for (String name : pNames) {
-     * try {
-     * toReturn.add(new MinuetoImageFile(name)); // name is null, gives exception
-     * } catch (MinuetoFileException e) {
-     * System.out.println("Could not load image file " + name);
-     * e.printStackTrace();
-     * }
-     * }
-     * return toReturn;
-     * }
-     * 
-     * /* TODO: does this go in Image - Owen/Dijian?
-     * 
-     * @pre: pImages is a list of MinuetoImages which are boots
-     * 
-     * @post: contents of pImages are changed to be centered at starting town on
-     * game window, and rotated and sized properly
-     */
-    /*
-     * private static void configImages(List<MinuetoImage> pImages) {
-     * for (int i = 0; i < pImages.size(); i++) {
-     * pImages.set(i, pImages.get(i).rotate(-90));
-     * pImages.set(i, pImages.get(i).scale(.125, .125));
-     * }
-     * }
-     */
 
     /**
      * TODO: alex/dijian put a mute/unmute button
