@@ -401,7 +401,7 @@ public class ServerGame {
         }
         for (Player p : players) {
             HashMap<String, String> playerTokens = new HashMap<>();
-            playerTokens.put(p.getName(), p.getTokensInHand().get(0).toString());
+            playerTokens.put(p.getName(), p.getTokensInHand().get(0).getTokenType().toString());
             ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
         }
 
