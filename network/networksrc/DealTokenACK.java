@@ -1,15 +1,16 @@
 package networksrc;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
 
 public class DealTokenACK implements Action {
-    private HashMap<String, String> playerTokens;
+    private HashMap<String, List<String>> playerTokens;
 
-    public DealTokenACK(HashMap<String, String> playerTokens) {
+    public DealTokenACK(HashMap<String, List<String>> playerTokens) {
         this.playerTokens = playerTokens;
     }
 

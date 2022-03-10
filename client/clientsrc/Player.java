@@ -3,11 +3,10 @@
 package clientsrc;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
-
-import serversrc.Token;
 
 public class Player {
     boolean isTurn = false;
@@ -100,6 +99,27 @@ public class Player {
 
     public void addTokenString(String token) throws MinuetoFileException {
         tokensInHand.add(TokenImage.getTokenImageByString(token));
+    }
+
+    /**
+     * adds TokenImages with names in tokenStrings to tokensInHand
+     * 
+     * @param tokenStrings
+     */
+    public void addTokenStringList(List<String> tokenStrings) {
+        List<TokenImage> tokenImages = tokenStrings.stream()
+                .map((tokenString) -> {
+                    try {
+                        return TokenImage.getTokenImageByString(tokenString);
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList());
+        tokensInHand.addAll(tokenImages);
     }
 
     public List<TravelCard> getCardsInHand() {

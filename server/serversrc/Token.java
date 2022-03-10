@@ -97,4 +97,9 @@ public class Token {
     public String getSmallAddress() {
         return smallAddress;
     }
+
+    @Override
+    public String toString() {
+        return this.tokenType.toString();
+    }
 }
