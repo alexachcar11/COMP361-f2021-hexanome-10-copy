@@ -5,11 +5,11 @@ import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
 
-public class WinnerACK implements Action{
+public class WinnerACK implements Action {
 
     private String winnerName;
 
-    public WinnerACK(String name){
+    public WinnerACK(String name) {
         this.winnerName = name;
     }
 
@@ -22,11 +22,11 @@ public class WinnerACK implements Action{
     public void execute() {
         // display winner
         // try {
-        //     ClientMain.displayWinnerByString(winnerName);
+        // ClientMain.displayWinnerByString(winnerName);
         // } catch (MinuetoFileException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
         // }
     }
-    
+
 }
