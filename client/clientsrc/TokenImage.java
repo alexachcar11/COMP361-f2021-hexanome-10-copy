@@ -21,13 +21,13 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public TokenImage(CardType cT) throws MinuetoFileException {
-        super("images/elfenroads-sprites/M0" + (cT.ordinal() + 1) + "small.png");
-        this.tokenName = cT.toString();
+    public TokenImage(serversrc.CardType tokenType) throws MinuetoFileException {
+        super("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
+        this.tokenName = tokenType.toString();
         this.x = 0;
         this.y = 0;
-        mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (cT.ordinal() + 1) + "medium.png");
-        smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (cT.ordinal() + 1) + "small.png");
+        mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "medium.png");
+        smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
     }
 
     public String getFileAdress() {
@@ -61,7 +61,7 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
 
     public static TokenImage getTokenImageByString(String tokenString)
             throws MinuetoFileException, IllegalArgumentException {
-        for (CardType cT : CardType.values()) {
+        for (serversrc.CardType cT : serversrc.CardType.values()) {
             if (cT.toString().equals(tokenString)) {
                 return new TokenImage(cT);
             }

@@ -20,7 +20,7 @@ public class ModifierToken extends TokenImage {
      * @param maxY  top-most border of the image
      * @param image MinuetoImage to display
      */
-    public ModifierToken(CardType cT) throws MinuetoFileException {
+    public ModifierToken(serversrc.CardType cT) throws MinuetoFileException {
         super(cT);
     }
 
