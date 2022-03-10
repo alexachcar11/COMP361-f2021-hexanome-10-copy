@@ -324,8 +324,18 @@ public class ClientMain {
 
             // cover the last entry, draw password
             loginScreenImage.draw(whiteBoxImage, 160, 440);
+
+            // drawing "*" instead of showing password
+            String hiddenPassword = "";
+            for (int k = 0; k< passString.length(); k++){
+                hiddenPassword = hiddenPassword + "*";
+            }
+
+            // create MinuetoImage for hiddenPassword
+            MinuetoImage hiddenPasswordImage = new MinuetoText(hiddenPassword,fontArial20, MinuetoColor.BLACK);
+
             MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
-            loginScreenImage.draw(password, 200, 450);
+            loginScreenImage.draw(hiddenPasswordImage, 200, 450);
         }
 
         @Override
