@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.minueto.MinuetoColor;
+import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoCircle;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoRectangle;
@@ -37,8 +38,10 @@ public class ActionManager {
      * launchable.
      * When a message is received, execute it if it's valid, then wait for another
      * message.
+     * 
+     * @throws MinuetoFileException
      */
-    public void waitForPlayersAsCreator() {
+    public void waitForPlayersAsCreator() throws MinuetoFileException {
         // WAIT FOR PLAYERS
         ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
 
@@ -66,8 +69,10 @@ public class ActionManager {
      * launched.
      * When a message is received, execute it if it's valid, then wait for another
      * message.
+     * 
+     * @throws MinuetoFileException
      */
-    public void waitForPlayers() {
+    public void waitForPlayers() throws MinuetoFileException {
         // WAIT FOR PLAYERS
         ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
 
@@ -99,8 +104,10 @@ public class ActionManager {
      * turn.
      * When a message is received, execute it if it's valid, then wait for another
      * message.
+     * 
+     * @throws MinuetoFileException
      */
-    public void waitForMessages() {
+    public void waitForMessages() throws MinuetoFileException {
         // WAIT FOR A MESSAGE
         ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
         while (!ClientMain.currentPlayer.isTurn()) {

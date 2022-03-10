@@ -9,6 +9,8 @@ import clientsrc.Game;
 
 import java.util.ArrayList;
 
+import org.minueto.MinuetoFileException;
+
 public class LaunchGameACK implements Action {
 
     // TODO: store the game state through a constructor
@@ -21,7 +23,7 @@ public class LaunchGameACK implements Action {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MinuetoFileException {
         // set the session to launched
         ClientMain.currentSession.launch();
 
