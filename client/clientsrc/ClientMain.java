@@ -1359,10 +1359,11 @@ public class ClientMain {
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
 
                 players = currentGame.getPlayers();
+                List<Player> listOfPlayers = players;
 
-                for(Player p : players) { 
-                    if(p != currentPlayer) { 
-                    players.add(p);
+                for(Player p : listOfPlayers) { 
+                    if(p == currentPlayer) { 
+                    players.remove(p);
                     }
                 }
 
