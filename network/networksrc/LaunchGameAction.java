@@ -69,21 +69,7 @@ public class LaunchGameAction implements Action {
         // notify all users in the lobby
         // TODO: LaunchGameACK will contain the game state
 
-        ArrayList<String> sendPlayer = new ArrayList<>();
-        ArrayList<ArrayList<String>> travelCards = new ArrayList<>();
-
-        for (Player p : serverGame.getAllPlayers()) {
-            String name = p.getName();
-            sendPlayer.add(name);
-            ArrayList<String> cards = new ArrayList<String>();
-
-            List<AbstractCard> abstractCards = p.getCards();
-            for (AbstractCard c : abstractCards) {
-                cards.add(c.getCardType().toString());
-            }
-            travelCards.add(cards);
-        }
-        LaunchGameACK actionToSend = new LaunchGameACK(sendPlayer, travelCards);
+        LaunchGameACK actionToSend = new LaunchGameACK();
 
         try {
             Server serverInstance = Server.getInstance();

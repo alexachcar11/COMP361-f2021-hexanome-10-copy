@@ -61,10 +61,12 @@ public class Route {
             if (token.isObstacle()) {
                 ((Obstacle) token).setTokenOnPath(this.aToken);
                 this.aToken = token;
+                this.aToken.setRoute(this);
             } else
                 throw new RuntimeException("Cannot add more than one travel counter to a route.");
         } else if (!token.isObstacle()) {
             this.aToken = token;
+            this.aToken.setRoute(this);
         } else
             throw new RuntimeException("Cannot add an obstacle without first placing a travel counter.");
     }
@@ -302,7 +304,7 @@ public class Route {
         return startingTown == this.source && this.type == RouteType.RIVER;
     }
 
-    public boolean hasCounter(){
+    public boolean hasCounter() {
         return (!(this.aToken == null));
     }
 }
