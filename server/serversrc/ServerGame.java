@@ -19,6 +19,7 @@ import clientsrc.TokenImage;
 import networksrc.ACKManager;
 import networksrc.Action;
 import networksrc.TokenSelectedAction;
+import networksrc.WinnerACK;
 
 import java.util.*;
 
@@ -271,6 +272,7 @@ public class ServerGame {
             // make first player as starting player (can be changed to get random player)
             if (this.startingPlayer == null) {
                 this.startingPlayer = player;
+                this.startingPlayer.setTurn(true);
             }
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
@@ -436,20 +438,43 @@ public class ServerGame {
         }, currentPlayerName);
     }
 
-    // TODO: game ends and winner announced
+    // // drawing of additional transportation counter (specific counter)
+    // // @pre: tok should be inside faceUpTokenPile
+    // public void playerDrawCounter(Player p, Token tok){
+    //     // remove from list of face up tokens, remove it
+    //     this.faceUpTokenPile.remove(tok);
+    //     // replace it
+    //     this.faceUpTokenPile.add(faceDownTokenStack.pop());
+    //     // add to player's hand
+    //     p.addToken(tok);
+    // }
+
+    // // drawing random counter
+    // public void playerDrawRandomCounter(Player p){
+    //     p.addToken(this.faceDownTokenStack.pop());
+    // }
+
+    
+
+    // for planning travel routes phase (4)
+    public void playerPlaceCounter(Player p, Route r, Token tok){
+        // remove token from player's hand
+        p.consumeToken(tok);
+        // add token to route r
+        // tok.setRoute(r); done inside r.placetoken
+        r.placeToken(tok);
+    }
+
     public void winner(Player winner) {
         // ...
-
-        // should send an action...
-        System.out.println(winner.getName());
-        ;
+        ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
     // finish phase
     public void phaseSix() {
         // ending game...
-        if (currentPhase == gameRoundsLimit) {
+        if (currentRound == gameRoundsLimit){
             // player with highest score wins
             // list of players with equal highest score
             List<Player> winningPlayers = new ArrayList<>();
@@ -507,8 +532,11 @@ public class ServerGame {
             // remove token delets obstacle from game basically
             Token tok = r.removeToken();
             // check if not null
-            if (tok != null) {
-                // check if it's face down
+            if (tok != null){
+                // check if it's face up ?
+                
+                // reset the route field in token
+                tok.resetRoute();
                 // add to the tokenStack
                 faceDownTokenStack.addToken(tok);
             }

@@ -17,9 +17,11 @@ public class Token {
     private MinuetoImage smallImage;
     private String mediumAddress;
     private String smallAddress;
+    private boolean isFaceUp;
 
     public Token(CardType pCT) {
         this.tokenType = pCT;
+        this.isFaceUp = true;
         try {
             if (this.tokenType == CardType.OBSTACLE) {
                 this.tokenImageFile = new TokenImage(this.tokenType.toString(),
@@ -39,6 +41,18 @@ public class Token {
 
     public CardType getTokenType() {
         return tokenType;
+    }
+
+    public void resetRoute(){
+        this.route = Optional.empty();
+    }
+
+    public boolean getIsFaceUp(){
+        return this.isFaceUp;
+    }
+
+    public void setIsFaceUpTo(boolean bool){
+        this.isFaceUp = bool;
     }
 
     /**
