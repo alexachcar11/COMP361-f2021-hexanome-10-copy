@@ -1372,30 +1372,16 @@ public class ClientMain {
 
         for (String colorString : colors) {
             // get the image + enum
-            MinuetoImage boot;
-            Color c;
-            if (colorString.equals("BLUE")) {
-                boot = new MinuetoImageFile("images/choose-boot-blue.png");
-                c = Color.BLUE;
-            } else if (colorString.equals("BLACK")) {
-                boot = new MinuetoImageFile("images/choose-boot-black.png");
-                c = Color.BLACK;
-            } else if (colorString.equals("RED")) {
-                boot = new MinuetoImageFile("images/choose-boot-red.png");
-                c = Color.RED;
-            } else if (colorString.equals("YELLOW")) {
-                boot = new MinuetoImageFile("images/choose-boot-yellow.png");
-                c = Color.YELLOW;
-            } else if (colorString.equals("GREEN")) {
-                boot = new MinuetoImageFile("images/choose-boot-green.png");
-                c = Color.GREEN;
-            } else if (colorString.equals("PURPLE")) {
-                boot = new MinuetoImageFile("images/choose-boot-purple.png");
-                c = Color.PURPLE;
-            } else {
-                // just for the compiler
-                boot = null;
-                c = null;
+            MinuetoImage boot = new MinuetoImageFile("images/choose-boot-" + colorString.toLowerCase() + ".png");
+            Color c = null;
+            for (Color color : Color.values()) {
+                if (color.toString().equals(colorString)) {
+                    c = color;
+                    break;
+                }
+            }
+            if (c == null) {
+                throw new IllegalArgumentException(colorString + " does not match any colors");
             }
 
             // display the boot
@@ -1576,13 +1562,12 @@ public class ClientMain {
         }
     }
 
-    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray){
+    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) {
         currentPlayer.addCardStringArray(cardArray);
-
-
     }
 
-    public static void diaplayWinnerByString(String winner){
+
+    public static void diaplayWinnerByString(String winner) {
         // draw on GUI
     }
 }
