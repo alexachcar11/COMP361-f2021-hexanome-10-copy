@@ -1961,9 +1961,7 @@ public class ClientMain {
     }
 
     public static void receivePhaseTwo(String tokenString) throws MinuetoFileException {
-        for (Player p : currentGame.getPlayers()) {
-            p.addTokenString(tokenString);
-        }
+        currentPlayer.addTokenString(tokenString);
     }
 
     public static void diaplayWinnerByString(String winner) {

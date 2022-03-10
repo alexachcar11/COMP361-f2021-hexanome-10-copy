@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import networksrc.*;
 import org.minueto.MinuetoEventQueue;
+import org.minueto.MinuetoFileException;
 import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
 
@@ -380,13 +381,12 @@ public class ServerGame {
 
                 String cardString = card.getCardType().name();
 
-                p.addCard(card); //add to player
+                p.addCard(card); // add to player
                 cardsAdded.add(cardString); // add to string array
-
 
             }
 
-            ACK_MANAGER.sendToSender(new DealTravelCardsACK(p.getName(),cardsAdded), p.getName());
+            ACK_MANAGER.sendToSender(new DealTravelCardsACK(p.getName(), cardsAdded), p.getName());
         }
 
         nextPhase();
@@ -396,8 +396,30 @@ public class ServerGame {
         faceDownTokenStack.shuffle();
 
         for (Player p : players) {
-            p.addToken(faceDownTokenStack.pop());
+            Token tokenToAdd = faceDownTokenStack.pop();
+            p.addToken(tokenToAdd);
+            final String tokenString = tokenToAdd.toString();
+            ACK_MANAGER.sendToSender(new Action() {
+
+                @Override
+                public boolean isValid() {
+                    return true;
+                }
+
+                @Override
+                public void execute() throws MinuetoFileException {
+                    System.out.println("BEFORE PHASE TWO");
+                    try {
+                        ClientMain.receivePhaseTwo(tokenString);
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("AFTER PHASE TWO");
+                }
+
+            }, p.getName());
         }
+
     }
 
     @SuppressWarnings("unchecked")

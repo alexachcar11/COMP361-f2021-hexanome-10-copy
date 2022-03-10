@@ -30,7 +30,6 @@ public class DealTravelCardsACK implements Action {
             e.printStackTrace();
         }
         System.out.println("AFTER RECIEVE PHASEONE");
-
     }
 
 }
