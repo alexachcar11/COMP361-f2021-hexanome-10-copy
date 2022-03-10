@@ -4,7 +4,7 @@ import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-public class Route extends Image {
+public class Route {
 
     // route needs to have a starting town and an ending town
     // routes carry one transportation counter maximum, but don't need to have one
@@ -17,8 +17,7 @@ public class Route extends Image {
     // upstream
     boolean isUpstream;
 
-    public Route(Town pStartingTown, Town pEndTown, int minX, int maxX, int minY, int maxY, MinuetoImage image) throws MinuetoFileException {
-        super(minX, maxX, minY, maxY, new MinuetoImageFile("images/black-square.png"));
+    public Route(Town pStartingTown, Town pEndTown) {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
@@ -26,8 +25,7 @@ public class Route extends Image {
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    public Route(Town pStartingTown, Town pEndTown, int n, int minX, int maxX, int minY, int maxY, MinuetoImage image) {
-        super(minX, maxX, minY, maxY, image);
+    public Route(Town pStartingTown, Town pEndTown, int n) {
         this.isRiver = true;
         if (n == 1) {
             this.isUpstream = true;
@@ -77,19 +75,11 @@ public class Route extends Image {
             player.consumeToken(token);
             // update token field
             this.aToken = token;
-            // update image
-            this.setMImage(token);
         }
     }
 
     public void clearToken() {
         // update token field
         this.aToken = null;
-        // update image
-        try {
-            this.setMImage(new MinuetoImageFile("images/black-square.png"));
-        } catch (MinuetoFileException e) {
-            e.printStackTrace();
-        }
     }
 }
