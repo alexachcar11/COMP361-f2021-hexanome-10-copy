@@ -242,7 +242,7 @@ public class Game {
         return null; // hopefully this never happens LOL
     }
 
-    public static ArrayList<Player> getPlayers() { 
+    public ArrayList<Player> getPlayers() { 
         return players;
     }
 
