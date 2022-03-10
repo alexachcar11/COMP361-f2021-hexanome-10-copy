@@ -39,7 +39,7 @@ public class Player {
         this.aName = pUser.getName();
         try {
             this.bootImage = new MinuetoImageFile(
-                    "images/böppels-and-boots/boot-" + pColor.toString().toLowerCase() + ".png");
+                    "images/boot" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,6 +129,10 @@ public class Player {
 
     public List<TokenImage> getTokensInHand() {
         return tokensInHand;
+    }
+
+    public void drawBoot() { 
+        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
     /*
@@ -306,6 +310,7 @@ public class Player {
 
         // add the player to the list of players located at the new town
         t.addPlayer(this);
+        drawBoot();
 
         // TODO: check if the player has traveled to the new town in the past already,
         // -> if yes, do nothing

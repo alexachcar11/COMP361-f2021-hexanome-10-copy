@@ -78,4 +78,8 @@ public class TokenImage extends MinuetoImageFile implements HitBox {
         }
         throw new IllegalArgumentException(this.tokenName + " is not a valid type for a token.");
     }
+
+    public String getName(){
+        return this.tokenName;
+    }
 }

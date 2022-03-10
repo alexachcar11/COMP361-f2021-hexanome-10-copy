@@ -16,8 +16,9 @@ import org.minueto.window.MinuetoPanel;
 import networksrc.ChooseBootColorAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
+import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
-import serversrc.Token;
+// import serversrc.Token;
 
 import javax.imageio.ImageIO;
 
@@ -57,7 +58,7 @@ public class ClientMain {
 
     public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
-            elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue;
+            elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
     static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
     static MinuetoImage elfenlandImage;
@@ -1001,6 +1002,67 @@ public class ClientMain {
 
     };
 
+    // keep track of route and token
+    private static Route pickedRoute = null;
+    private static TokenImage pickedTok = null;
+    static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
+        @Override
+        public void handleMouseMove(int arg0, int arg1) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void handleMousePress(int x, int y, int button) {
+
+            // TODO Auto-generated method stub
+            // for (Route r: Route.getAllRoutes()){
+            // if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >=
+            // r.getMaxY()){
+            // // pick route
+            // pickedRoute = r;
+            // break;
+            // }
+            // }
+
+            if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
+                // pick tok
+                pickedTok = currentPlayer.getTokensInHand().get(1);
+
+                // Draw on Route
+                pickedRoute.placeToken(currentPlayer, pickedTok);
+                if (pickedRoute != null && pickedTok != null) {
+
+                    ActionManager.getInstance()
+                            .sendActionAndGetReply(new PlaceCounterAction(currentPlayer.getName(),
+                                    pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                    pickedTok.getName()));
+                }
+            }
+
+            if (x > 1000 && y > 740) {
+                // click on mute/unmute button
+                if (soundOn) {
+                    soundOn = false;
+                    pauseSound();
+                    gui.window.draw(soundOffButton, 1000, 745);
+
+                } else {
+                    soundOn = true;
+                    resumeSound();
+                    gui.window.draw(soundOnButton, 1000, 745);
+                }
+            }
+        }
+
+        @Override
+        public void handleMouseRelease(int arg0, int arg1, int arg2) {
+            // TODO Auto-generated method stub
+
+        }
+
+    };
+
     static MinuetoMouseHandler elfenLandLobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
@@ -1207,16 +1269,8 @@ public class ClientMain {
         loginScreenQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(loginScreenKeyboardHandler, loginScreenQueue);
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
-
-        // TODO: move this to where it belongs
-        // moveBootQueue = new MinuetoEventQueue();
-        // gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
-
         elfenlandQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenlandMouseHandler, elfenlandQueue);
-        // move boot mouse handler
-        moveBootQueue = new MinuetoEventQueue();
-        gui.window.registerMouseHandler(moveBootMouseHandler, moveBootQueue);
 
         // lobby screen mouse handler
         lobbyScreenQueue = new MinuetoEventQueue();
@@ -1236,6 +1290,10 @@ public class ClientMain {
         // mouse handler for elfenland lobby
         elfenlandLobbyQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenLandLobbyMouseHandler, elfenlandLobbyQueue);
+
+        // mouse handler for place counter
+        placeCounterQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(placeCounterMouseHandler, placeCounterQueue);
 
         int once = 1;
         // draw on the window
@@ -1360,6 +1418,12 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
+                    // mouseHandler to click on route
+                    while (placeCounterQueue.hasNext()) {
+                        placeCounterQueue.handle();
+                    }
+                }
 
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
