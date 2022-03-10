@@ -403,7 +403,7 @@ public class ServerGame {
             HashMap<String, List<String>> playerTokens = new HashMap<>();
             List<String> tokenStrings = p.getTokensInHand().stream().map((token) -> token.toString())
                     .collect(Collectors.toList());
-            playerTokens.put(p.getName(), p.getTokensInHand().get(0).getTokenType().toString());
+            playerTokens.put(p.getName(), tokenStrings);
             ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
         }
 

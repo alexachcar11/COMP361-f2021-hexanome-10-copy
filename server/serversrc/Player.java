@@ -45,7 +45,6 @@ public class Player {
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
         allPlayers.add(this);
-        tokensInHand.add(new Obstacle());
         // aBootAction = new BootAction(this);
     }
 
