@@ -301,4 +301,8 @@ public class Route {
     public boolean isUpstream(Town startingTown) {
         return startingTown == this.source && this.type == RouteType.RIVER;
     }
+
+    public boolean hasCounter(){
+        return (!(this.aToken == null));
+    }
 }
