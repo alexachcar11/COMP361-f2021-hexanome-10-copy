@@ -1559,12 +1559,13 @@ public class ClientMain {
                 }
             }
 
-            MinuetoText uReady;
+            /* MinuetoText uReady;
             if (ready) {
                 uReady = new MinuetoText("Ready", font, MinuetoColor.GREEN);
             } else {
                 uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
-            }
+            } 
+            background.draw(uReady, 475, 240 + counter * 50);*/
 
             background.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
@@ -1572,7 +1573,6 @@ public class ClientMain {
             } else {
                 background.draw(uColor, 290, 240 + counter * 50);
             }
-            background.draw(uReady, 475, 240 + counter * 50);
 
             counter++;
         }
