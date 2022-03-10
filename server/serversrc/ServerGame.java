@@ -407,7 +407,7 @@ public class ServerGame {
                 }
 
                 @Override
-                public void execute() throws MinuetoFileException {
+                public void execute() {
                     System.out.println("BEFORE PHASE TWO");
                     try {
                         ClientMain.receivePhaseTwo(tokenString);
