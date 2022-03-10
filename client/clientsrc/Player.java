@@ -119,6 +119,7 @@ public class Player {
                     return null;
                 })
                 .collect(Collectors.toList());
+        tokensInHand.clear();
         tokensInHand.addAll(tokenImages);
     }
 

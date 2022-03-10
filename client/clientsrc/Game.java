@@ -238,9 +238,7 @@ public class Game {
         return false;
     }
 
-    public static Card getFaceDownCard(String cardString) throws MinuetoFileException {
-        for (Card aCard : faceDownCardPile){
-            if (aCard.getName().equalsIgnoreCase(cardString)){
+    public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException {
         for (CardType cT : CardType.values()) {
             if (cT.name().equalsIgnoreCase(cardString)) {
                 TravelCard finCard = new TravelCard(cT);

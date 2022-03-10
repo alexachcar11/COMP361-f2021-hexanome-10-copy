@@ -4,6 +4,7 @@ import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
+// make this implement serializable at some point
 public class TokenImage extends MinuetoImageFile implements HitBox {
 
     private String tokenName;

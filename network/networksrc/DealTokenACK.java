@@ -24,7 +24,7 @@ public class DealTokenACK implements Action {
         System.out.println("BEFORE PHASE TWO");
         try {
             for (String playerName : this.playerTokens.keySet()) {
-                ClientMain.receivePhaseTwo(playerName, this.playerTokens.get(playerName));
+                ClientMain.receiveTokens(playerName, this.playerTokens.get(playerName));
             }
         } catch (MinuetoFileException e) {
             e.printStackTrace();

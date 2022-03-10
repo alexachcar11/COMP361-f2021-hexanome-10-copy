@@ -368,6 +368,16 @@ public class ServerGame {
         }
     }
 
+    public HashMap<String, List<String>> getTokenInventoryMap() {
+        HashMap<String, List<String>> playerTokens = new HashMap<>();
+        for (Player p : players) {
+            List<String> tokenStrings = p.getTokensInHand().stream().map((token) -> token.toString())
+                    .collect(Collectors.toList());
+            playerTokens.put(p.getName(), tokenStrings);
+        }
+        return playerTokens;
+    }
+
     public void phaseOne() {
         // shuffle
         aCardStack.shuffle();
@@ -401,25 +411,17 @@ public class ServerGame {
             Token tokenToAdd = faceDownTokenStack.pop();
             p.addToken(tokenToAdd);
         }
-        for (Player p : players) {
-            HashMap<String, List<String>> playerTokens = new HashMap<>();
-            List<String> tokenStrings = p.getTokensInHand().stream().map((token) -> token.toString())
-                    .collect(Collectors.toList());
-            playerTokens.put(p.getName(), tokenStrings);
-            ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(playerTokens), this);
-        }
+        ACK_MANAGER.sentToAllPlayersInGame(new DealTokenACK(this.getTokenInventoryMap()), this);
 
     }
 
-    @SuppressWarnings("unchecked")
     public void phaseThree() {
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
-        final List<Token> faceUpCopy = (ArrayList<Token>) faceUpTokenPile.clone();
-        Player currentPlayer = this.getCurrentPlayer();
-        // String currentPlayerName = currentTurn.getName();
-        String currentPlayerName = "testName";
-        // anonymous action class
+        final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
+                .collect(Collectors.toList());
+        final String currentPlayerName = this.getCurrentPlayer().getName();
+        // anonymous action class, displays tokens to client
         ACK_MANAGER.sendToSender(new Action() {
 
             @Override
@@ -430,18 +432,30 @@ public class ServerGame {
             @Override
             public void execute() {
                 MinuetoWindow window = ClientMain.WINDOW;
-                for (Token t : faceUpCopy) {
+                final List<TokenImage> tokenImages = faceUpCopy.stream().map((s) -> {
+                    try {
+                        return TokenImage.getTokenImageByString(s);
+                    } catch (MinuetoFileException e) {
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                        .collect(Collectors.toList());
+                int count = 0;
+                for (TokenImage tImage : tokenImages) {
                     // change these coords
-                    t.getTokenImage().setPos(200 + faceUpCopy.indexOf(t) * 20, 200);
-                    window.draw(t.getTokenImage(), t.getTokenImage().getX(), t.getTokenImage().getY());
+                    tImage.setPos(200 + count * 20, 200);
+                    window.draw(tImage, tImage.getX(), tImage.getY());
+                    count++;
                 }
+                // mouse handler for selecting token from face up tokens
                 MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
 
                     @Override
                     public void handleMousePress(int xClicked, int yClicked, int arg2) {
-                        List<TokenImage> imageList = faceUpCopy.stream().map((token) -> token.getTokenImage())
-                                .collect(Collectors.toList());
-                        for (TokenImage t : imageList) {
+                        for (TokenImage t : tokenImages) {
                             if (t.hasCollidePoint(xClicked, yClicked)) {
                                 // inform server that user has selected t
                                 ActionManager.getInstance()

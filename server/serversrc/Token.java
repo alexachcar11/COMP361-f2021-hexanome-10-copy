@@ -33,6 +33,15 @@ public class Token {
         }
     }
 
+    public static Token getTokenByString(String tokenName) {
+        for (CardType cT : CardType.values()) {
+            if (cT.toString().equals(tokenName)) {
+                return new Token(cT);
+            }
+        }
+        throw new IllegalArgumentException(tokenName + "is not a valid token type.");
+    }
+
     public CardType getTokenType() {
         return tokenType;
     }
