@@ -1355,6 +1355,10 @@ public class ClientMain {
         loadedClip.start();
     }
 
+    public static void displayWinner(String winnerName) {
+        
+    }
+
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
         int counter = 0; // how many colors are displayed so far
 
