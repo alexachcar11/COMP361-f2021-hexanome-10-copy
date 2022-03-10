@@ -10,12 +10,15 @@ import org.minueto.image.MinuetoImage;
 
 public abstract class Card{
 
-    // private String aName;
+    private String aName;
 
-    public Card() {
-        // name of card
-        // aName = name;
+    public Card(){ 
         
+    }
+
+    public Card(String name) {
+        // name of card
+        aName = name;
     }
 
     // @Override
@@ -36,7 +39,7 @@ public abstract class Card{
     //     return c.getName().equalsIgnoreCase(this.aName);
     // }
 
-    // private String getName(){
-    //     return this.aName;
-    // }
+    public String getName(){
+        return this.aName;
+    }
 }

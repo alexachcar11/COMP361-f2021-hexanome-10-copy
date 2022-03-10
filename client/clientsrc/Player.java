@@ -88,11 +88,11 @@ public class Player {
         return aBootAction;
     }
 
-    // public void addCardStringArray(ArrayList<String> cardArray){
-    //     for (String cardString : cardArray){
-    //         this.cardsInHand.add(Game.getFaceDownCard(cardString));
-    //     }
-    // }
+    public void addCardStringArray(ArrayList<String> cardArray){
+        for (String cardString : cardArray){
+            cardsInHand.add(Game.getFaceDownCard(cardString));
+        }
+    }
 
     public List<TravelCard> getCardsInHand() { 
         return cardsInHand;

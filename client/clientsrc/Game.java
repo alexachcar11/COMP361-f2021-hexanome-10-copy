@@ -29,9 +29,9 @@ public class Game {
     private boolean witchEnabled;
     private Mode mode;
     private TownGoldOption townGoldOption;
-    private static ArrayList<Card> faceDownCardPile;
+    private static ArrayList<TravelCard> faceDownCardPile;
     private ArrayList<Card> faceUpCardPile;
-    private ArrayList<GoldCard> goldCardPile;
+    // private ArrayList<GoldCard> goldCardPile;
     //private Auction auction; not doing this now
 
 
@@ -230,7 +230,16 @@ public class Game {
         return false;
     }
 
-    
+    public static TravelCard getFaceDownCard(String cardString){
+        for (TravelCard aCard : faceDownCardPile){
+            if (aCard.getName().equalsIgnoreCase(cardString)){
+
+                return aCard;
+            }
+
+        }
+        return null; // hopefully this never happens LOL
+    }
 
     public ArrayList<Player> getPlayers() { 
         return players;
