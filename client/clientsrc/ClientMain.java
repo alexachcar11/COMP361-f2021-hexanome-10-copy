@@ -137,8 +137,8 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
-                // gui.currentBackground = GUI.Screen.LOGIN;
-                gui.currentBackground = GUI.Screen.ELFENLAND;
+                gui.currentBackground = GUI.Screen.LOGIN;
+                // gui.currentBackground = GUI.Screen.ELFENLAND;
             }
 
             // click on Quit
