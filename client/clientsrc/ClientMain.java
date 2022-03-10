@@ -114,7 +114,7 @@ public class ClientMain {
     static MinuetoRectangle nameTextField;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
-    static int numberPlayers = 6;
+    static int numberPlayers = 3;
 
     public static final Registrator REGISTRATOR = Registrator.instance();
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
@@ -1579,7 +1579,6 @@ public class ClientMain {
                 }
                 
                 
-                numberPlayers = 6;
                 for(int i = 0; i < numberPlayers-1; i++) { 
                     // Player opponent = players.get(i);
                     int xName = 835;
