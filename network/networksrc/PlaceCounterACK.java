@@ -1,27 +1,24 @@
 package networksrc;
 
-import org.minueto.MinuetoFileException;
-
-import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.Player;
 
-public class PlaceCounterACK implements Action{
-    
+public class PlaceCounterACK implements Action {
 
-    public PlaceCounterACK(){
+    public PlaceCounterACK() {
 
     }
 
     @Override
-    // make sure not to click on edge cases (don't try to click on route with token on it already)
+    // make sure not to click on edge cases (don't try to click on route with token
+    // on it already)
     public boolean isValid() {
         return true;
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
-        
+    public void execute() {
+
         Player currentPlayer = ClientMain.currentPlayer;
         ClientMain.currentGame.setPhase(4);
 

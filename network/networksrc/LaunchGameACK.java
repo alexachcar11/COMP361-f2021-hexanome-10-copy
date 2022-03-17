@@ -22,7 +22,7 @@ public class LaunchGameACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         // set the session to launched
         ClientMain.currentSession.launch();
 
@@ -42,7 +42,11 @@ public class LaunchGameACK implements Action {
         // display board screen
         ClientMain.displayOriginalBoard();
         // modify game objects based on the game state received
-        ActionManager.getInstance().waitForMessages();
+        try {
+            ActionManager.getInstance().waitForMessages();
+        } catch (MinuetoFileException e) {
+            e.printStackTrace();
+        }
         // display the new board
 
         System.out.println("LaunchGameACK received");
