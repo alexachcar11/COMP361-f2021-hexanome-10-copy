@@ -584,10 +584,32 @@ public class ServerGame {
     public void phaseSix() {
         // ending game...
         if (currentRound == gameRoundsLimit) {
+            // initialize score in each player's field
+            for (Player p: players){
+                p.initScore();
+            }
+
             // player with highest score wins
             // list of players with equal highest score
             List<Player> winningPlayers = new ArrayList<>();
+
+            // if variant 2 dest town is enabled, set the scores according to rules of variant 2 for each player
+            if (destinationTownEnabled){
+
+                for (Player p: players){
+                    // find shortest path to their dest town and get int distance away (use dikstras algo)
+                    int distanceAway = aTownGraph.getDistanceAway(p.getTown(), p.getTargetTown());
+                    // reduce each player's score by it
+                    // should be zero if player already at target town
+                    // deducts score for each player
+                    p.deductScore(distanceAway);
+                }
+                
+
+            }
+
             int highestScore = getHighestScore();
+
             for (Player p : players) {
                 if (p.getScore() == highestScore) {
                     winningPlayers.add(p);
