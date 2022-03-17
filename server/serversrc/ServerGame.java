@@ -125,6 +125,9 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
+        // shuffle towns list
+        Collections.shuffle(towns); // to be used for destination town
+
         Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN);
         Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER); // river
         Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD);
