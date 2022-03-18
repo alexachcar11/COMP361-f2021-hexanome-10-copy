@@ -15,6 +15,7 @@ public class Town {
     int minY;
     int maxY;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
+    ArrayList<Player> playersThatPassed = new ArrayList<>();
 
     // keeps track of the player boots that are on the town
     ArrayList<Player> playersHere = new ArrayList<>();
@@ -107,7 +108,7 @@ public class Town {
      */
     public void addPlayer(Player player) { 
         playersHere.add(player);
-
+        playersThatPassed.add(player);
     }
 
     /**
@@ -133,6 +134,10 @@ public class Town {
         location[3] = getMaxY();
 
         return location;
+    }
+
+    public ArrayList<Player> getPlayersThatPassed() { 
+        return playersThatPassed;
     }
 
     // public boolean notClickingOnATown(int x, int y) { 

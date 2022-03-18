@@ -33,6 +33,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
 
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -401,6 +402,50 @@ public class ClientMain {
 
     }
 
+    static void openTownInformation(Town t) { 
+
+        JPanel townInformation = new JPanel(); 
+        townInformation.setLayout(new BoxLayout(townInformation, BoxLayout.Y_AXIS));
+
+        JPanel nameOfTown = new JPanel();
+        nameOfTown.setLayout(new BoxLayout(nameOfTown, BoxLayout.Y_AXIS));
+
+        JPanel playerBeen = new JPanel();
+        playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
+
+        String townName = t.getTownName();
+        JFrame townOverview = new JFrame(townName);
+
+        JLabel currentlyLookingAtText = new JLabel("You are currently looking at " + townName);
+        currentlyLookingAtText.setText("You are currently looking at " + townName);
+        
+        JLabel hasBeenText;
+
+        if(t.playersThatPassed.contains(currentPlayer)) { 
+            hasBeenText = new JLabel("You have been to this town already");
+            hasBeenText.setText("You have been to this town already");
+        } else { 
+            hasBeenText = new JLabel("You have not been to this town yet");
+            hasBeenText.setText("You have not been to this town yet");
+        }
+
+        nameOfTown.add(currentlyLookingAtText);
+        playerBeen.add(hasBeenText);
+
+        townInformation.add(Box.createVerticalStrut(30));
+        townInformation.add(nameOfTown);
+        townInformation.add(Box.createVerticalStrut(10));
+        townInformation.add(playerBeen);
+
+        townOverview.add(townInformation);
+        
+        townOverview.setLocation(300, 200);
+        townOverview.setSize(new Dimension(700, 300));
+
+        townOverview.setVisible(true);
+    
+    }
+
     static MinuetoMouseHandler elfenlandMouseHandler = new MinuetoMouseHandler() {
 
         // @Override
@@ -412,61 +457,81 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x: " + x + ". This is y: " + y);
 
-            // CLICKING ON THE OPPONENTS PROFILE
-            if (numberPlayers == 2) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
+            // if we left click
+            if(button == 1){
+                // CLICKING ON THE OPPONENTS PROFILE
+                if (numberPlayers == 2) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    }
+                } else if (numberPlayers == 3) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    }
+                } else if (numberPlayers == 4) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    }
+                } else if (numberPlayers == 5) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    } else if (x > 856 && x < 984 && y > 382 && y < 409) {
+                        // CLICKING ON PLAYER 4
+                        openPlayerInventory(players.get(3));
+                    }
+                } else if (numberPlayers == 6) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    } else if (x > 856 && x < 984 && y > 382 && y < 409) {
+                        // CLICKING ON PLAYER 4
+                        openPlayerInventory(players.get(3));
+                    } else if (x > 856 && x < 984 && y > 474 && y < 499) {
+                        // CLICKING ON PLAYER 5
+                        openPlayerInventory(players.get(4));
+                    }
                 }
-            } else if (numberPlayers == 3) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                }
-            } else if (numberPlayers == 4) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
-                }
-            } else if (numberPlayers == 5) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
-                } else if (x > 856 && x < 984 && y > 382 && y < 409) {
-                    // CLICKING ON PLAYER 4
-                    openPlayerInventory(players.get(3));
-                }
-            } else if (numberPlayers == 6) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
-                } else if (x > 856 && x < 984 && y > 382 && y < 409) {
-                    // CLICKING ON PLAYER 4
-                    openPlayerInventory(players.get(3));
-                } else if (x > 856 && x < 984 && y > 474 && y < 499) {
-                    // CLICKING ON PLAYER 5
-                    openPlayerInventory(players.get(4));
+            }
+
+            // if we right click 
+            if(button == 3) { 
+
+                // iterate over all towns 
+                for(Town t : Game.getTowns()) {
+                // we are clicking on a town 
+                    if(x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY() ) { 
+                        // temporary print statement to make sure we're clicking on a specific town
+                        System.out.println("Clicking on " + t.getTownName());
+
+                        // open a swing gui containing information about that town
+                        openTownInformation(t);
+                         
+                    }
                 }
             }
 
@@ -493,6 +558,7 @@ public class ClientMain {
         public void handleMouseMove(int x, int y) {
 
         }
+
     };
     static MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
