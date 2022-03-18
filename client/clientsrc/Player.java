@@ -16,6 +16,7 @@ public class Player {
     private List<TravelCard> cardsInHand;
     private List<TokenImage> tokensInHand;
     private Town inTown;
+    private Town targetDestinationTown = null;
 
     private MinuetoImageFile bootImage;
     private Color color;
@@ -59,6 +60,15 @@ public class Player {
 
     public String getName() {
         return aUser.getName();
+    }
+
+    public void setTargetDestinationTown(Town pTown){
+        this.targetDestinationTown = pTown;
+    }
+
+    // get TargetTown
+    public Town getTargetDestinationTown(){
+        return this.targetDestinationTown;
     }
 
     public Game getCurrentGame() {

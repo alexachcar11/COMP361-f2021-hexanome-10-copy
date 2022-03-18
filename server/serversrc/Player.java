@@ -21,6 +21,8 @@ public class Player {
     private Town inTown;
     private List<Town> townsPassed; // to keep track of score
     private Town targetTown; // destination town for variant
+    private int index = 0; // index of destination town in the shuffled list of towns
+    private int score;
 
     private String aName;
     private Action aBootAction;
@@ -41,6 +43,17 @@ public class Player {
         this.aName = pServerUser.getName();
         this.turnPassed = false;
 
+        // if the variant 1 is on, give player a random dest town.
+        if (currentGame.destinationTownEnabled){
+            // set target town
+            this.targetTown = ServerGame.getTowns().get(this.index);
+            // increment index
+            this.index++;
+
+            // update client on target town
+            ACKManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
+        }
+
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
@@ -55,6 +68,11 @@ public class Player {
             }
         }
         return null;
+    }
+
+    // returns destination town
+    public Town getTargetTown(){
+        return this.targetTown;
     }
 
     public List<Token> getTokensInHand() {
@@ -349,9 +367,17 @@ public class Player {
         }
     }
 
-    // gets the total score by seeing how many towns player has passed
+    public void initScore(){
+        this.score = this.townsPassed.size();
+    }
+
+    // gets the total score
     public int getScore() {
-        return this.townsPassed.size();
+        return this.score;
+    }
+
+    public void deductScore(int i){
+        this.score -= i;
     }
 
     /*
