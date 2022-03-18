@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
 public class Player {
@@ -69,6 +70,14 @@ public class Player {
     // get TargetTown
     public Town getTargetDestinationTown(){
         return this.targetDestinationTown;
+    }
+
+    public void drawTargetDestination() throws MinuetoFileException { 
+        Town targetTown = getTargetDestinationTown();
+
+        MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
+        ClientMain.gui.window.draw(destTownFlag, targetTown.getMaxX() + 8, targetTown.getMaxY() + 8);
+
     }
 
     public Game getCurrentGame() {
