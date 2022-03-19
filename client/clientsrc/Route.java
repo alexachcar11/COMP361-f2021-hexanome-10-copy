@@ -16,7 +16,7 @@ public class Route {
 
     Town aStartingTown;
     Town aEndTown;
-    TokenImage aToken; // TODO: there could be multiple tokens, list ?
+    TokenSprite aToken; // TODO: there could be multiple tokens, list ?
     // road or river
     boolean isRiver = false;
     // upstream
@@ -77,7 +77,7 @@ public class Route {
      * 
      * @param token
      */
-    public void placeToken(ClientPlayer player, TokenImage token) {
+    public void placeToken(ClientPlayer player, TokenSprite token) {
         assert token != null;
 
         if (this.aToken == null) {

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import org.minueto.MinuetoFileException;
 
+import serversrc.CardType;
+
 // import serversrc.Card;
 // import serversrc.GoldCard;
 // import serversrc.Mode;
@@ -31,8 +33,8 @@ public class Game {
     private boolean witchEnabled;
     private Mode mode;
     private TownGoldOption townGoldOption;
-    private static ArrayList<TravelCard> faceDownCardPile;
-    private ArrayList<Card> faceUpCardPile;
+    private static ArrayList<CardSprite> faceDownCardPile;
+    private ArrayList<CardSprite> faceUpCardPile;
     private TownGraph aTownGraph;
     // private ArrayList<GoldCard> goldCardPile;
     // private Auction auction; not doing this now
@@ -246,10 +248,10 @@ public class Game {
         return false;
     }
 
-    public static TravelCard getFaceDownCard(String cardString) throws MinuetoFileException {
+    public static CardSprite getFaceDownCard(String cardString) throws MinuetoFileException {
         for (CardType cT : CardType.values()) {
-            if (cT.name().equalsIgnoreCase(cardString)) {
-                TravelCard finCard = new TravelCard(cT);
+            if (cT.toString().equalsIgnoreCase(cardString)) {
+                CardSprite finCard = new CardSprite(cT);
                 return finCard;
             }
         }

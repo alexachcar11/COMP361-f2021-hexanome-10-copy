@@ -16,7 +16,7 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
 
 import clientsrc.ClientMain;
-import clientsrc.TokenImage;
+import clientsrc.TokenSprite;
 
 import java.util.*;
 
@@ -470,9 +470,9 @@ public class ServerGame {
             @Override
             public void execute() {
                 MinuetoWindow window = ClientMain.WINDOW;
-                final List<TokenImage> tokenImages = faceUpCopy.stream().map((s) -> {
+                final List<TokenSprite> tokenImages = faceUpCopy.stream().map((s) -> {
                     try {
-                        return TokenImage.getTokenImageByString(s);
+                        return TokenSprite.getTokenSpriteByString(s);
                     } catch (MinuetoFileException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
@@ -482,7 +482,7 @@ public class ServerGame {
                 })
                         .collect(Collectors.toList());
                 int count = 0;
-                for (TokenImage tImage : tokenImages) {
+                for (TokenSprite tImage : tokenImages) {
                     // change these coords
                     tImage.setPos(200 + count * 20, 200);
                     window.draw(tImage, tImage.getX(), tImage.getY());
@@ -493,7 +493,7 @@ public class ServerGame {
 
                     @Override
                     public void handleMousePress(int xClicked, int yClicked, int arg2) {
-                        for (TokenImage t : tokenImages) {
+                        for (TokenSprite t : tokenImages) {
                             if (t.hasCollidePoint(xClicked, yClicked)) {
                                 // inform server that user has selected t
                                 ActionManager.getInstance()

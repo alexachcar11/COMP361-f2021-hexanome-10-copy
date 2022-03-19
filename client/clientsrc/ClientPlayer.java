@@ -13,8 +13,8 @@ public class ClientPlayer {
 
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
-    private List<TravelCard> cardsInHand;
-    private List<TokenImage> tokensInHand;
+    private List<CardSprite> cardsInHand;
+    private List<TokenSprite> tokensInHand;
     private Town inTown;
 
     private MinuetoImageFile bootImage;
@@ -98,7 +98,7 @@ public class ClientPlayer {
     }
 
     public void addTokenString(String token) throws MinuetoFileException {
-        tokensInHand.add(TokenImage.getTokenImageByString(token));
+        tokensInHand.add(TokenSprite.getTokenSpriteByString(token));
     }
 
     /**
@@ -107,10 +107,10 @@ public class ClientPlayer {
      * @param tokenStrings
      */
     public void addTokenStringList(List<String> tokenStrings) {
-        List<TokenImage> tokenImages = tokenStrings.stream()
+        List<TokenSprite> tokenImages = tokenStrings.stream()
                 .map((tokenString) -> {
                     try {
-                        return TokenImage.getTokenImageByString(tokenString);
+                        return TokenSprite.getTokenSpriteByString(tokenString);
                     } catch (MinuetoFileException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
@@ -123,11 +123,11 @@ public class ClientPlayer {
         tokensInHand.addAll(tokenImages);
     }
 
-    public List<TravelCard> getCardsInHand() {
+    public List<CardSprite> getCardsInHand() {
         return cardsInHand;
     }
 
-    public List<TokenImage> getTokensInHand() {
+    public List<TokenSprite> getTokensInHand() {
         return tokensInHand;
     }
 
@@ -382,7 +382,7 @@ public class ClientPlayer {
      * Post: Sends a new game state to the player.
      */
 
-    public void consumeToken(TokenImage token) {
+    public void consumeToken(TokenSprite token) {
         assert token != null;
 
         if (tokensInHand.contains(token)) {

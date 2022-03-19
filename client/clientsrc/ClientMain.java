@@ -33,6 +33,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
+import java.awt.image.*;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -378,12 +379,16 @@ public class ClientMain {
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
 
-        for (TravelCard tCard : p.getCardsInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCard.getMediumAddress()));
+        for (CardSprite tCard : p.getCardsInHand()) {
+            ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
+            Image scaledImage = imageIcon.getImage()
+                    .getScaledInstance(72, 111, java.awt.Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(scaledImage);
+            JLabel pic = new JLabel(imageIcon);
             cardPanel.add(pic);
         }
-        for (TokenImage tCounterImage : p.getTokensInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAdress()));
+        for (TokenSprite tCounterImage : p.getTokensInHand()) {
+            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
             tokenPanel.add(pic);
         }
 
@@ -1005,7 +1010,7 @@ public class ClientMain {
 
     // keep track of route and token
     private static Route pickedRoute = null;
-    private static TokenImage pickedTok = null;
+    private static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMouseMove(int arg0, int arg1) {
@@ -1037,7 +1042,7 @@ public class ClientMain {
                     ActionManager.getInstance()
                             .sendActionAndGetReply(new PlaceCounterAction(currentPlayer.getName(),
                                     pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
-                                    pickedTok.getName()));
+                                    pickedTok.getTokenName()));
                 }
             }
 
