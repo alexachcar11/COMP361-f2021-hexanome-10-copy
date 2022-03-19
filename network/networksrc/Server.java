@@ -16,8 +16,6 @@ public class Server implements NetworkNode {
     public static final String LOCATION = "elfenland.simui.com";
     public static final int PORT = 13645;
     private static Server INSTANCE = new Server(PORT);
-    // thread for new clients requesting to connect
-    private Thread connectionRequestThread;
     // threads running I/O to a specific client
     private ArrayList<Thread> clientThreads;
 
@@ -31,24 +29,6 @@ public class Server implements NetworkNode {
             System.exit(-1);
         }
         this.clientThreads = new ArrayList<>();
-        this.connectionRequestThread = new Thread(() -> {
-            while (true) {
-                Socket clientSocket = null;
-                try {
-                    clientSocket = aSocket.accept();
-                } catch (IOException e) {
-                    System.err.println("Accept failed on port: " + PORT);
-                    e.printStackTrace();
-                }
-                if (clientSocket != null) {
-                    final ClientTuple tuple = new ClientTuple(clientSocket);
-                    aClientSockets.add(tuple);
-                    Thread clientThread = new Thread(() -> listenToClient(tuple));
-                    this.clientThreads.add(clientThread);
-                    clientThread.start();
-                }
-            }
-        });
     }
 
     public static Server getInstance() {
@@ -57,8 +37,24 @@ public class Server implements NetworkNode {
 
     @Override
     public void start() {
+        // in case threads were interrupted
         this.clientThreads.forEach((thread) -> thread.start());
-        this.connectionRequestThread.start();
+        while (true) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = aSocket.accept();
+            } catch (IOException e) {
+                System.err.println("Accept failed on port: " + PORT);
+                e.printStackTrace();
+            }
+            if (clientSocket != null) {
+                final ClientTuple tuple = new ClientTuple(clientSocket);
+                aClientSockets.add(tuple);
+                Thread clientThread = new Thread(() -> listenToClient(tuple));
+                this.clientThreads.add(clientThread);
+                clientThread.start();
+            }
+        }
     }
 
     private void listenToClient(ClientTuple pTuple) {
@@ -96,15 +92,6 @@ public class Server implements NetworkNode {
             }
         }
         return null;
-    }
-
-    /**
-     * interrupt connection thread and I/O threads
-     */
-    @Override
-    public void stop() {
-        this.connectionRequestThread.interrupt();
-        this.clientThreads.forEach((thread) -> thread.interrupt());
     }
 }
 
