@@ -133,7 +133,7 @@ class ClientTuple {
     void setName(String name) {
         System.out.println("setting name" + name);
         this.username = name;
-        System.out.println("creating a ServerUser for " + name);
-        new ServerUser(name);
+        /* System.out.println("creating a ServerUser for " + name);
+        new ServerUser(name); */
     }
 }

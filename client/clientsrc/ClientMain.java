@@ -13,14 +13,10 @@ import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
 import networksrc.ChooseBootColorAction;
+import networksrc.Client;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
-import networksrc.TestAction;
-
-// import serversrc.Color;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.TownGoldOption;
+import networksrc.LoginAction;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -34,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 public class ClientMain {
 
     // fields
+    public static Client currentClient;
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
     public static Game currentGame;
@@ -197,32 +194,35 @@ public class ClientMain {
                 }
 
                 else {
+                    // login
                     try {
-                        boolean userFound = false;
-                        for (Object user : REGISTRATOR.getAllUsers()) {
-                            if (((JSONObject) user).get("name").equals(userString)) {
-                                userFound = true;
-                            }
+                        if (currentClient == null) {
+                            // client-server connection
+                            Client client = new Client("elfenland.simui.com", 13645, userString);
+                            client.start();
+                            currentClient = client;
+                        } else if (clientNeedsNewName) {
+                            // here if the username provided does not exist
+                            // associate the client with a new name on the server
+                            currentClient.setName(userString);
                         }
-                        if (userFound) {
-                            // user exists, login
-                            System.out.println("User exists");
-                            currentUser = new User(userString, passString);
 
-                            // send a test action
-                            ACTION_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
-                        } else {
-                            // user doesn't exist. create and login
-                            User newUser = REGISTRATOR.createNewUser(userString, passString);
-                            System.out.println("New User");
-                            currentUser = newUser;
-                        }
+                        // NOTE: we skip the above if-else when the password provided is wrong
+            
+                        // send login info to the server
+                        ACTION_MANAGER.sendActionAndGetReply(new LoginAction(userString, passString));
+                        
+
+                        // NOTE: commented out the code to create a new user
+                        /* // user doesn't exist. create and login
+                        User newUser = REGISTRATOR.createNewUser(userString, passString);
+                        System.out.println("New User");
+                        currentUser = newUser; */
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
                     }
-                    displayAvailableGames();
-                    gui.currentBackground = GUI.Screen.LOBBY;
                 }
             }
 
@@ -974,6 +974,7 @@ public class ClientMain {
     private static boolean passWordSel = false;
     private static String userString = "";
     private static String passString = "";
+    public static boolean clientNeedsNewName = false;
 
     // for mute button
     private static boolean soundOn = true;
@@ -1559,12 +1560,13 @@ public class ClientMain {
                 }
             }
 
-            MinuetoText uReady;
+            /* MinuetoText uReady;
             if (ready) {
                 uReady = new MinuetoText("Ready", font, MinuetoColor.GREEN);
             } else {
                 uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
-            }
+            } 
+            background.draw(uReady, 475, 240 + counter * 50);*/
 
             background.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
@@ -1572,7 +1574,6 @@ public class ClientMain {
             } else {
                 background.draw(uColor, 290, 240 + counter * 50);
             }
-            background.draw(uReady, 475, 240 + counter * 50);
 
             counter++;
         }
@@ -1581,6 +1582,7 @@ public class ClientMain {
     }
 
     public static void displayAvailableGames() {
+        gui.currentBackground = GUI.Screen.LOBBY;
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
             ArrayList<LobbyServiceGame> availableGamesList = Registrator.getAvailableGames();
