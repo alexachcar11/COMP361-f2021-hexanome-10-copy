@@ -25,8 +25,7 @@ public class Registrator {
 
     private static final Registrator INSTANCE = new Registrator();  // SINGLETON
 
-    private String currentToken;    // registrator's token
-    private String refreshToken;    // registrator's refresh token
+    private JSONObject currentToken;    // registrator's token
 
     private static final String encoded = Base64.getEncoder()
             .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
@@ -78,7 +77,7 @@ public class Registrator {
      * @throws ParseException
      * @throws IllegalAccessException
      */
-    public String createToken(String username, String password) throws ParseException, IllegalAccessException {
+    public JSONObject createToken(String username, String password) throws ParseException, IllegalAccessException {
 
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username="
@@ -93,11 +92,7 @@ public class Registrator {
         }
 
         JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
-        String newToken = (String) token.get("access_token");
-        String newRefreshToken = (String) token.get("refresh_token");
-        currentToken = newToken.replace("+", "%2B");
-        refreshToken = newRefreshToken.replace("+", "%2B");
-        return currentToken;
+        return token;
     }
 
     /**
@@ -106,7 +101,10 @@ public class Registrator {
      * @throws ParseException
      * @return Refreshed token in String format
      */
-    public String refreshToken() throws ParseException {
+    public JSONObject refreshToken() throws ParseException {
+        String refreshToken = (String) currentToken.get("refresh_token");
+        refreshToken = refreshToken.replace("+", "%2B");
+
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
                         + refreshToken)
@@ -119,11 +117,7 @@ public class Registrator {
         }
 
         JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
-        String newToken = (String) token.get("access_token");
-        String newRefreshToken = (String) token.get("refresh_token");
-        currentToken = newToken.replace("+", "%2B");
-        refreshToken = newRefreshToken.replace("+", "%2B");
-        return refreshToken;
+        return token;
     }
 
     /**
@@ -138,7 +132,9 @@ public class Registrator {
      * @return current token in String format
      */
     public String getToken() {
-        return currentToken;
+        String token = (String) currentToken.get("access_token");
+        token = token.replace("+", "%2B");
+        return token;
     }
 
     /**

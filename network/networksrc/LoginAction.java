@@ -1,6 +1,7 @@
 package networksrc;
 
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import serversrc.Registrator;
 import serversrc.ServerUser;
@@ -45,10 +46,10 @@ public class LoginAction implements Action {
         try {
             Registrator REGISTRATOR = Registrator.instance();
             // create a token
-            String userToken = REGISTRATOR.createToken(username, password);
+            JSONObject token = REGISTRATOR.createToken(username, password);
 
             // create a ServerUser
-            new ServerUser(username, userToken);
+            new ServerUser(username, token);
 
             // send ACK to sender
             LoginACK action = new LoginACK(username, "success");

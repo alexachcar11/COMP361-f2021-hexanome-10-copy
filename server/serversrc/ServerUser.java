@@ -5,17 +5,19 @@ Represents one user from the moment the game is launched (they may not be a play
 
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
+
 public class ServerUser {
 
     // FIELDS
     private boolean ready;
     private Color color;
     private String username;
-    private String currentToken;
+    private JSONObject currentToken;
     private static ArrayList<ServerUser> allUsers = new ArrayList<ServerUser>();
 
     // CONSTRUCTOR
-    public ServerUser(String username, String currentToken) {
+    public ServerUser(String username, JSONObject currentToken) {
         this.username = username;
         this.currentToken = currentToken;
         allUsers.add(this);
@@ -39,7 +41,9 @@ public class ServerUser {
      * @return token in String format
      */
     public String getToken() {
-        return currentToken;
+        String token = (String) currentToken.get("access_token");
+        token = token.replace("+", "%B");
+        return token;
     }
 
     /**
