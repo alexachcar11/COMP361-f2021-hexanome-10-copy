@@ -10,6 +10,7 @@ public class LoginACK implements Action {
 
     public LoginACK(String username, String result) {
         this.username = username;
+        this.result = result;
     }
 
     @Override
