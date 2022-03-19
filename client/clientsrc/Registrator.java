@@ -171,8 +171,7 @@ public class Registrator {
             throw new IllegalArgumentException("Cannot create user: " + userName);
         } else {
             System.out.println("BODY" + jsonResponse.getBody());
-            // System.out.println(token);
-            return new User(userName, passWord);
+            return new User(userName);
         }
     }
 
