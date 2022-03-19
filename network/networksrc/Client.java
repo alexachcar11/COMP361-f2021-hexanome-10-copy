@@ -12,7 +12,12 @@ public class Client implements NetworkNode {
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private User aUser;
-    private Queue<Action> actionInQueue;
+    // queue for actions to be executed by the client
+    private final Queue<Action> actionInQueue;
+    // thread used to execute incoming actions
+    private final Thread executionThread;
+    // thread for listening to server and adding actions to queue
+    private final Thread listenThread;
 
     public Client(String pHost, int pPort, User pUser) {
         try {
@@ -30,6 +35,18 @@ public class Client implements NetworkNode {
         }
         this.aUser = pUser;
         this.actionInQueue = new LinkedList<>();
+        this.listenThread = new Thread(() -> this.listenToServer());
+        this.executionThread = new Thread(() -> {
+            while (true) {
+                if (!actionInQueue.isEmpty()) {
+                    Action toExecute = actionInQueue.poll();
+                    if (toExecute.isValid()) {
+                        toExecute.execute();
+                    }
+                }
+            }
+        });
+
     }
 
     /**
@@ -42,23 +59,17 @@ public class Client implements NetworkNode {
         try {
             aObjectOut.writeObject(new GiveNameAction(aUser.getName()));
             System.out.println("gave name" + aUser.getName());
-            // create thread for receiving actions from server
-            Thread listenThread = new Thread(() -> this.listenToServer());
-            listenThread.start();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        // busy wait for actions to enter queue
-        while (true) {
-            if (!actionInQueue.isEmpty()) {
-                actionInQueue.poll().execute();
-            }
-        }
+        this.executionThread.start();
+        this.listenThread.start();
     }
 
     /**
      * busy waits for actions to be received in socket
      * adds received actions to queue
+     * alternatively, could assign a thread to each action
      */
     private void listenToServer() {
         while (true) {
@@ -101,5 +112,11 @@ public class Client implements NetworkNode {
      */
     public ObjectInputStream getObjectInputStream() {
         return aObjectIn;
+    }
+
+    @Override
+    public void stop() {
+        this.listenThread.interrupt();
+        this.executionThread.interrupt();
     }
 }

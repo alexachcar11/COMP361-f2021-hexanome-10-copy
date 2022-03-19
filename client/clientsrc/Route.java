@@ -1,8 +1,5 @@
 package clientsrc;
 
-import org.minueto.MinuetoFileException;
-import org.minueto.image.MinuetoImage;
-import org.minueto.image.MinuetoImageFile;
 import java.util.ArrayList;
 
 // import serversrc.Player;
