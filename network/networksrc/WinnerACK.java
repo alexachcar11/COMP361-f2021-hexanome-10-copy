@@ -1,6 +1,7 @@
 package networksrc;
 
 import org.minueto.MinuetoColor;
+import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
 
@@ -20,7 +21,12 @@ public class WinnerACK implements Action{
     @Override
     public void execute() {
         // display winner
-        ClientMain.displayWinnerByString(winnerName);
+        try {
+            ClientMain.displayWinnerByString(winnerName);
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
