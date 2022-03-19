@@ -26,6 +26,7 @@ public class Registrator {
     private static final Registrator INSTANCE = new Registrator();  // SINGLETON
 
     private String currentToken;    // registrator's token
+    private String refreshToken;    // registrator's refresh token
 
     private static final String encoded = Base64.getEncoder()
             .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
@@ -56,7 +57,7 @@ public class Registrator {
             @Override
             public void run() {
                 try {
-                    currentToken = refreshToken(currentToken);
+                    currentToken = refreshToken();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -79,9 +80,6 @@ public class Registrator {
      */
     public String createToken(String username, String password) throws ParseException, IllegalAccessException {
 
-        username = username.replace("+", "%2B");
-        password = password.replace("+", "%2B");
-
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username="
                         + username
@@ -95,7 +93,11 @@ public class Registrator {
         }
 
         JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
-        return token.toString().replace("+", "%2B");
+        String newToken = (String) token.get("access_token");
+        String newRefreshToken = (String) token.get("refresh_token");
+        currentToken = newToken.replace("+", "%2B");
+        refreshToken = newRefreshToken.replace("+", "%2B");
+        return currentToken;
     }
 
     /**
@@ -104,10 +106,10 @@ public class Registrator {
      * @throws ParseException
      * @return Refreshed token in String format
      */
-    public String refreshToken(String existingToken) throws ParseException {
+    public String refreshToken() throws ParseException {
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
-                        + existingToken)
+                        + refreshToken)
                 .header("Authorization", "Basic " + encoded)
                 .asString();
 
@@ -116,8 +118,12 @@ public class Registrator {
             System.err.println("Error" + jsonResponse.getStatus() + ": cannot refresh token.");
         }
 
-        JSONObject refreshedToken = (JSONObject) parser.parse(jsonResponse.getBody());
-        return refreshedToken.toString().replace("+", "%2B");
+        JSONObject token = (JSONObject) parser.parse(jsonResponse.getBody());
+        String newToken = (String) token.get("access_token");
+        String newRefreshToken = (String) token.get("refresh_token");
+        currentToken = newToken.replace("+", "%2B");
+        refreshToken = newRefreshToken.replace("+", "%2B");
+        return refreshToken;
     }
 
     /**
