@@ -15,7 +15,6 @@ import org.minueto.MinuetoFileException;
 import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
 
-import clientsrc.ActionManager;
 import clientsrc.ClientMain;
 import clientsrc.TokenImage;
 
@@ -23,7 +22,7 @@ import java.util.*;
 
 public class ServerGame {
 
-    private static final ACKManager ACK_MANAGER = ACKManager.getInstance();
+    private static final ActionManager ACK_MANAGER = ActionManager.getInstance();
 
     private ArrayList<Player> players;
     private int numberOfPlayers;

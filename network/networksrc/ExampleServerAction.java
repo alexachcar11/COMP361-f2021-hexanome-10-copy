@@ -41,7 +41,7 @@ public class ExampleServerAction implements Action {
         // here you can do stuff with playerWhoSent and playersCurrentGame
 
         // send an ACK to all clients in the game
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         ExampleActionACK actionToSend = new ExampleActionACK(senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
 

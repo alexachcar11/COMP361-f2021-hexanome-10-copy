@@ -6,19 +6,20 @@ import serversrc.ServerGame;
 import serversrc.Token;
 import serversrc.Town;
 
-public class PlaceCounterAction implements Action{
+public class PlaceCounterAction implements Action {
 
     String senderName;
     String tok;
     String srcTown;
     String destTown;
 
-    public PlaceCounterAction(String sender,String src, String dest, String pTok){
+    public PlaceCounterAction(String sender, String src, String dest, String pTok) {
         this.tok = pTok;
         this.senderName = sender;
         this.srcTown = src;
         this.destTown = dest;
     }
+
     @Override
     public boolean isValid() {
         // TODO: not complete, requires more validity checks
@@ -38,10 +39,11 @@ public class PlaceCounterAction implements Action{
 
         playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
 
-        ACKManager ackManager = ACKManager.getInstance();
-        ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown, this.tok);
+        ActionManager ackManager = ActionManager.getInstance();
+        ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown,
+                this.tok);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
-        
+
     }
-    
+
 }

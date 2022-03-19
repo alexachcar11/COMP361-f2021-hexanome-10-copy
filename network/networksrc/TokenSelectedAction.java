@@ -41,7 +41,7 @@ public class TokenSelectedAction implements Action {
             game.faceDownTokenStack.remove(tokenToAdd);
         }
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
-        ACKManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
+        ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
     }
 
 }

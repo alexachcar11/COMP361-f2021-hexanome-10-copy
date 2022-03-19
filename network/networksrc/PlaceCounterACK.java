@@ -1,7 +1,7 @@
 package networksrc;
 
 import clientsrc.ClientMain;
-import clientsrc.Player;
+import clientsrc.ClientPlayer;
 
 public class PlaceCounterACK implements Action {
 
@@ -19,7 +19,7 @@ public class PlaceCounterACK implements Action {
     @Override
     public void execute() {
 
-        Player currentPlayer = ClientMain.currentPlayer;
+        ClientPlayer currentPlayer = ClientMain.currentPlayer;
         ClientMain.currentGame.setPhase(4);
 
         // last line

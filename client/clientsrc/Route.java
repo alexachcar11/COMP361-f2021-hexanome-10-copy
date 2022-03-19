@@ -53,7 +53,7 @@ public class Route {
         return isRiver;
     }
 
-    public static ArrayList<Route> getAllRoutes(){
+    public static ArrayList<Route> getAllRoutes() {
         return allRoutes;
     }
 
@@ -77,7 +77,7 @@ public class Route {
      * 
      * @param token
      */
-    public void placeToken(Player player, TokenImage token) {
+    public void placeToken(ClientPlayer player, TokenImage token) {
         assert token != null;
 
         if (this.aToken == null) {

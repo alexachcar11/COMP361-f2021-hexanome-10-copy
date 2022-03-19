@@ -8,7 +8,7 @@ import serversrc.ServerGame;
 import serversrc.ServerUser;
 import serversrc.TownGoldOption;
 
-public class GetGameInfoAction implements Action{
+public class GetGameInfoAction implements Action {
 
     private String senderName;
     private String gameID;
@@ -35,7 +35,7 @@ public class GetGameInfoAction implements Action{
         boolean witchEnabled = serverGame.witchEnabled;
         Mode mode = serverGame.getMode();
         TownGoldOption townGoldOption = serverGame.getTownGoldOption();
-        
+
         // convert custom objects into strings
 
         String modeString = null;
@@ -55,9 +55,10 @@ public class GetGameInfoAction implements Action{
         }
 
         // send ACK to sender
-        ACKManager ackManager = ACKManager.getInstance();
-        GetGameInfoACK actionToSend = new GetGameInfoACK(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, modeString, townGoldOptionString);
+        ActionManager ackManager = ActionManager.getInstance();
+        GetGameInfoACK actionToSend = new GetGameInfoACK(numberOfPlayers, gameRoundsLimit, destinationTownEnabled,
+                witchEnabled, modeString, townGoldOptionString);
         ackManager.sendToSender(actionToSend, senderName);
     }
-    
+
 }

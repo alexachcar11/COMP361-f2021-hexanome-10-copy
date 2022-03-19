@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImageFile;
 
-public class Player {
+public class ClientPlayer {
     boolean isTurn = false;
 
     private int gold;
@@ -25,9 +25,9 @@ public class Player {
     // used in ActionManager
     private User aUser;
     private Game currentGame;
-    private static ArrayList<Player> allPlayers = new ArrayList<Player>();
+    private static ArrayList<ClientPlayer> allPlayers = new ArrayList<ClientPlayer>();
 
-    public Player(Color pColor, User pUser, Game currentGame) {
+    public ClientPlayer(Color pColor, User pUser, Game currentGame) {
 
         // inTown = elvenhold; // fix this
         this.gold = 0;
@@ -48,8 +48,8 @@ public class Player {
         allPlayers.add(this);
     }
 
-    public static Player getPlayerByName(String name) {
-        for (Player p : allPlayers) {
+    public static ClientPlayer getPlayerByName(String name) {
+        for (ClientPlayer p : allPlayers) {
             if (p.getServerUser().getName().equals(name)) {
                 return p;
             }
@@ -131,7 +131,7 @@ public class Player {
         return tokensInHand;
     }
 
-    public void drawBoot() { 
+    public void drawBoot() {
         ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 

@@ -2,9 +2,6 @@ package networksrc;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import serversrc.*;
 
 public class LaunchGameAction implements Action {
@@ -85,7 +82,7 @@ public class LaunchGameAction implements Action {
         } catch (IOException e) {
             System.err.println("IOException in LaunchGameAction.execute()");
         }
-        
+
         serverGame.nextPhase();
     }
 

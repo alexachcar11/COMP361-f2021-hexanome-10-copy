@@ -20,7 +20,7 @@ import org.minueto.MinuetoFileException;
 
 public class Game {
 
-    private static ArrayList<Player> players;
+    private static ArrayList<ClientPlayer> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
     private ArrayList<Route> routes;
@@ -174,7 +174,8 @@ public class Game {
         aTownGraph.addEdges(routes);
 
     }
-    public TownGraph getTownGraph(){
+
+    public TownGraph getTownGraph() {
         return this.aTownGraph;
     }
 
@@ -184,7 +185,7 @@ public class Game {
      * 
      * @param player player to add to the game
      */
-    public void addPlayer(Player player) throws IndexOutOfBoundsException {
+    public void addPlayer(ClientPlayer player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
             Town elvenhold = Game.getTownByName("Elvenhold");
@@ -256,11 +257,11 @@ public class Game {
 
     }
 
-    public ArrayList<Player> getPlayers() {
+    public ArrayList<ClientPlayer> getPlayers() {
         return players;
     }
 
-    public void setPhase(int phase){
+    public void setPhase(int phase) {
         this.currentPhase = phase;
     }
 

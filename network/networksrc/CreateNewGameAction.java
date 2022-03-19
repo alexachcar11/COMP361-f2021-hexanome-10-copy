@@ -6,7 +6,7 @@ import serversrc.Mode;
 import serversrc.ServerGame;
 import serversrc.ServerUser;
 
-public class CreateNewGameAction implements Action{
+public class CreateNewGameAction implements Action {
 
     private String senderName;
     private String gameID;
@@ -17,12 +17,13 @@ public class CreateNewGameAction implements Action{
     private Mode mode;
     private TownGoldOption townGoldOption;
 
-    public CreateNewGameAction(String senderName, String gameID, int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
+    public CreateNewGameAction(String senderName, String gameID, int numberOfPlayers, int gameRoundsLimit,
+            boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
         this.senderName = senderName;
         this.gameID = gameID;
         this.numberOfPlayers = numberOfPlayers;
         this.gameRoundsLimit = gameRoundsLimit;
-        this. destinationTownEnabled = destinationTownEnabled;
+        this.destinationTownEnabled = destinationTownEnabled;
         this.witchEnabled = witchEnabled;
         if (mode.equals("elfenland")) {
             this.mode = Mode.ELFENLAND;
@@ -70,19 +71,20 @@ public class CreateNewGameAction implements Action{
     }
 
     /**
-     * Creates a ServerGame and GameLobby that are associated. 
+     * Creates a ServerGame and GameLobby that are associated.
      * Then sends an ACK to senderName.
      */
     @Override
     public void execute() {
-        ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
+        ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled,
+                mode, townGoldOption, gameID);
         GameLobby gameLobby = new GameLobby(gameID, serverGame);
         ServerUser sUser = ServerUser.getServerUser(senderName);
         gameLobby.addUser(sUser);
         // send ack to the sender only
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         CreateNewGameACK actionToSend = new CreateNewGameACK();
         ackManager.sendToSender(actionToSend, senderName);
     }
-    
+
 }

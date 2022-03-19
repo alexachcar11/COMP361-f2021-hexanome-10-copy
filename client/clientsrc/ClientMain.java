@@ -13,6 +13,7 @@ import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 import org.minueto.window.MinuetoPanel;
 
+import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
@@ -54,18 +55,18 @@ public class ClientMain {
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
     public static Game currentGame;
-    public static Player currentPlayer;
+    public static ClientPlayer currentPlayer;
 
     public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
-    static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
+    public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
-    static MinuetoImage elfenlandImage;
-    static MinuetoImage elfengoldImage;
+    public static MinuetoImage elfenlandImage;
+    public static MinuetoImage elfengoldImage;
 
     // create a list of the players
-    static List<Player> players;
+    static List<ClientPlayer> players;
 
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
@@ -89,7 +90,7 @@ public class ClientMain {
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
     public static MinuetoImage waitingForLaunch;
-    static MinuetoFont fontArial22Bold;
+    public static MinuetoFont fontArial22Bold;
     static MinuetoRectangle modeDropdownRectangle;
     static MinuetoRectangle destinationTownDropdownRectangle;
     static MinuetoRectangle sizeDropdownRectangle;
@@ -354,7 +355,7 @@ public class ClientMain {
         }
     };
 
-    static void openPlayerInventory(Player p) {
+    static void openPlayerInventory(ClientPlayer p) {
 
         JPanel inventory = new JPanel();
         inventory.setLayout(new BoxLayout(inventory, BoxLayout.Y_AXIS));
@@ -1758,12 +1759,12 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) throws MinuetoFileException {
-        for (Player p : currentGame.getPlayers())
+        for (ClientPlayer p : currentGame.getPlayers())
             p.addCardStringArray(cardArray);
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
-        Player.getPlayerByName(playerString).addTokenStringList(tokenStrings);
+        ClientPlayer.getPlayerByName(playerString).addTokenStringList(tokenStrings);
     }
 
     public static void diaplayWinnerByString(String winner) {
