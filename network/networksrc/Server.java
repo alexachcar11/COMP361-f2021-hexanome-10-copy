@@ -37,19 +37,13 @@ public class Server implements NetworkNode {
                 try {
                     clientSocket = aSocket.accept();
                 } catch (IOException e) {
-                    System.err.println("Accept failed: 13645");
+                    System.err.println("Accept failed on port: " + PORT);
                     e.printStackTrace();
                 }
                 if (clientSocket != null) {
                     final ClientTuple tuple = new ClientTuple(clientSocket);
-                    aClientSockets.add(tuple); // allows use in inner class
-                    Thread clientThread = new Thread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            listenToClient(tuple);
-                        }
-                    });
+                    aClientSockets.add(tuple);
+                    Thread clientThread = new Thread(() -> listenToClient(tuple));
                     this.clientThreads.add(clientThread);
                     clientThread.start();
                 }
