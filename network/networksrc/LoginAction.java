@@ -7,8 +7,6 @@ import serversrc.ServerUser;
 
 public class LoginAction implements Action {
 
-    private Registrator REGISTRATOR = Registrator.instance();
-
     private String username;
     private String password;
 
@@ -30,6 +28,7 @@ public class LoginAction implements Action {
         }
 
         // check that the user exists
+        Registrator REGISTRATOR = Registrator.instance();
         if (!REGISTRATOR.userExists(username)) {
             LoginACK action = new LoginACK(username, "user-dne");
             ACKManager.getInstance().sendToSender(action, username);
@@ -44,7 +43,7 @@ public class LoginAction implements Action {
         
         
         try {
-
+            Registrator REGISTRATOR = Registrator.instance();
             // create a token
             String userToken = REGISTRATOR.createToken(username, password);
 
