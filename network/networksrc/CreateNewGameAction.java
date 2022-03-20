@@ -1,42 +1,34 @@
 package networksrc;
 
 import serversrc.TownGoldOption;
+
+import org.json.simple.parser.ParseException;
 import serversrc.GameLobby;
 import serversrc.Mode;
 import serversrc.ServerGame;
+import serversrc.ServerMain;
 import serversrc.ServerUser;
 
 public class CreateNewGameAction implements Action {
 
     private String senderName;
-    private String gameID;
+    private String displayName;
     private int numberOfPlayers;
     private int gameRoundsLimit;
     private boolean destinationTownEnabled;
     private boolean witchEnabled;
-    private Mode mode;
-    private TownGoldOption townGoldOption;
+    private String stringMode;
+    private String stringTownGoldOption;
 
-    public CreateNewGameAction(String senderName, String gameID, int numberOfPlayers, int gameRoundsLimit,
-            boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
+    public CreateNewGameAction(String senderName, String displayName, int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
         this.senderName = senderName;
-        this.gameID = gameID;
+        this.displayName = displayName;
         this.numberOfPlayers = numberOfPlayers;
         this.gameRoundsLimit = gameRoundsLimit;
         this.destinationTownEnabled = destinationTownEnabled;
         this.witchEnabled = witchEnabled;
-        if (mode.equals("elfenland")) {
-            this.mode = Mode.ELFENLAND;
-        } else if (mode.equals("elfengold")) {
-            this.mode = Mode.ELFENGOLD;
-        }
-        if (townGoldOption.equals("no")) {
-            this.townGoldOption = TownGoldOption.NO;
-        } else if (townGoldOption.equals("yes-default")) {
-            this.townGoldOption.equals(TownGoldOption.YESDEFAULT);
-        } else if (townGoldOption.equals("yes-random")) {
-            this.townGoldOption = TownGoldOption.YESRANDOM;
-        }
+        this.stringMode = mode;
+        this.stringTownGoldOption = townGoldOption;
     }
 
     /**
@@ -45,7 +37,7 @@ public class CreateNewGameAction implements Action {
     @Override
     public boolean isValid() {
         // if elfenland
-        if (mode.equals(Mode.ELFENLAND)) {
+        if (stringMode.equals("elfenland")) {
             if (gameRoundsLimit != 3 && gameRoundsLimit != 4) {
                 System.err.println("Elfenland must have 3 or 4 rounds. It currently has " + gameRoundsLimit);
                 return false;
@@ -54,13 +46,13 @@ public class CreateNewGameAction implements Action {
                 System.err.println("Elfenland cannot have a witch.");
                 return false;
             }
-            if (!townGoldOption.equals(TownGoldOption.NO)) {
+            if (!stringTownGoldOption.equals("no")) {
                 System.err.println("Elfenland cannot have a town gold option");
                 return false;
             }
         }
 
-        if (mode.equals(Mode.ELFENGOLD)) {
+        if (stringMode.equals("elfengold")) {
             if (gameRoundsLimit != 6) {
                 System.err.println("Elfengold must have 6 rounds. It currently has " + gameRoundsLimit);
                 return false;
@@ -71,20 +63,62 @@ public class CreateNewGameAction implements Action {
     }
 
     /**
-     * Creates a ServerGame and GameLobby that are associated.
-     * Then sends an ACK to senderName.
+     * Registers a game service and session on LS.
+     * Upon failure: sends a failure message to the sender
+     * Upon success: creates a ServerGame and GameLobby that are associated then sends an ACK to senderName.
      */
     @Override
     public void execute() {
-        ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled,
-                mode, townGoldOption, gameID);
-        GameLobby gameLobby = new GameLobby(gameID, serverGame);
-        ServerUser sUser = ServerUser.getServerUser(senderName);
-        gameLobby.addUser(sUser);
-        // send ack to the sender only
-        ActionManager ackManager = ActionManager.getInstance();
-        CreateNewGameACK actionToSend = new CreateNewGameACK();
-        ackManager.sendToSender(actionToSend, senderName);
+        
+        try {
+            // parse mode 
+            Mode mode = null;
+            if (stringMode.equals("elfenland")) {
+                mode = Mode.ELFENLAND;
+            } else if (stringMode.equals("elfengold")) {
+                mode = Mode.ELFENGOLD;
+            }
+
+            // parse town gold option
+            TownGoldOption townGoldOption = null;
+            if (stringTownGoldOption.equals("no")) {
+                townGoldOption = TownGoldOption.NO;
+            } else if (stringTownGoldOption.equals("yes-default")) {
+                townGoldOption = (TownGoldOption.YESDEFAULT);
+            } else if (stringTownGoldOption.equals("yes-random")) {
+                townGoldOption = TownGoldOption.YESRANDOM;
+            }
+            
+            // get the creator's ServerUser
+            ServerUser creator = ServerUser.getServerUser(senderName);
+
+            // create game service + session on LS
+            String gameID = ServerMain.REGISTRATOR.createGame(creator, displayName, numberOfPlayers, gameRoundsLimit, mode, witchEnabled, destinationTownEnabled, townGoldOption);
+            if (gameID == null) {
+                // LS gameservice or session failed
+                // send ack to the sender only
+                ActionManager ackManager = ActionManager.getInstance();
+                CreateNewGameACK actionToSend = new CreateNewGameACK(); // this constructor represents a failure
+                ackManager.sendToSender(actionToSend, senderName);
+            } else {
+                // success!
+                // add server side logic
+                ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
+                GameLobby gameLobby = new GameLobby(gameID, serverGame, displayName, creator);
+                ServerUser sUser = ServerUser.getServerUser(senderName);
+                gameLobby.addUser(sUser);
+                // send ack to the sender only
+                ActionManager ackManager = ActionManager.getInstance();
+                CreateNewGameACK actionToSend = new CreateNewGameACK(displayName, gameID, numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTownGoldOption);
+                ackManager.sendToSender(actionToSend, senderName);
+            }
+            
+        } catch (ParseException e) {
+            // TODO : fill this?
+            e.printStackTrace();
+        }
+
+        
     }
 
 }

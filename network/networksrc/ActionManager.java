@@ -37,8 +37,8 @@ public class ActionManager {
      */
     public void waitForPlayersAsCreator() throws MinuetoFileException {
         // WAIT FOR PLAYERS
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
-
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
+        
         // wait until launched
         while (!ClientMain.currentSession.isLaunchable()) {
             Action actionIn = null;
@@ -68,8 +68,8 @@ public class ActionManager {
      */
     public void waitForPlayers() throws MinuetoFileException {
         // WAIT FOR PLAYERS
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
-
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
+        
         // wait until launched
         while (!ClientMain.currentSession.isLaunched()) {
             Action actionIn = null;
@@ -101,6 +101,26 @@ public class ActionManager {
      * 
      * @throws MinuetoFileException
      */
+    public void waitForMessages() {
+        // WAIT FOR A MESSAGE
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
+        while (!ClientMain.currentPlayer.isTurn()) {
+            Action actionIn = null;
+            try {
+                actionIn = (Action) in.readObject();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+            if (actionIn != null) {
+                // MESSAGE RECEIVED
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
+            }   
+            // update gui
+            ClientMain.gui.window.render();
+        }
+    }
 
     /**
      * Sends the action to the Server and waits for a reply. When the reply is
@@ -112,11 +132,11 @@ public class ActionManager {
     public Action sendActionAndGetReply(Action action) {
         try {
             // SEND TEST
-            ObjectOutputStream out = ClientMain.currentUser.getClient().getObjectOutputStream();
+            ObjectOutputStream out = ClientMain.currentClient.getObjectOutputStream();
             out.writeObject(action);
 
             // WAIT FOR REPLY
-            ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+            ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
             boolean noAnswer = true;
             while (noAnswer) {
                 Action actionIn = null;
