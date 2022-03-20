@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import serversrc.ServerUser;
-
 import java.lang.Thread;
 
 public class Server implements NetworkNode {

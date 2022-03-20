@@ -68,7 +68,7 @@ public class LaunchGameAction implements Action{
 
             // create 1 Player per ServerUser in the GameLobby
             for (ServerUser sUser : gameLobby.getAllUsers()) {
-                Player newPlayer = new Player(sUser, serverGame);
+                new Player(sUser, serverGame);
             }
             
             // notify all users in the lobby

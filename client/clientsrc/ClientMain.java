@@ -1,7 +1,6 @@
 package clientsrc;
 
 // minueto
-import org.json.simple.JSONObject;
 import org.minueto.MinuetoColor;
 import org.minueto.MinuetoEventQueue;
 import org.minueto.MinuetoFileException;
@@ -24,7 +23,6 @@ import networksrc.LoginAction;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.Action;
 
 import java.io.File;
 import java.util.AbstractMap;
@@ -437,7 +435,7 @@ public class ClientMain {
                 displayAvailableGames();
             } else {
                 // click on a Join button
-                for (AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> coords : joinButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> coords : joinButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
@@ -869,7 +867,7 @@ public class ClientMain {
                 }
             } else {
                 // Click on a Color
-                for (AbstractMap.SimpleEntry<ImmutableList, Color> coords : colorButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, Color> coords : colorButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
@@ -1003,10 +1001,10 @@ public class ClientMain {
     private static LobbyServiceGameSession gameToJoin;
 
     // for lobbyMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
 
     // for chooseBootMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Color>> colorButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, Color>> colorButtonCoordinates = new ArrayList<>();
     private static Color colorChosen;
 
     // ******************************************MAIN CODE STARTS
@@ -1448,7 +1446,7 @@ public class ClientMain {
             Integer maxY = 410;
             Integer minY = 300;
             ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-            AbstractMap.SimpleEntry<ImmutableList, Color> entry = new AbstractMap.SimpleEntry<>(
+            AbstractMap.SimpleEntry<ImmutableList<Integer>, Color> entry = new AbstractMap.SimpleEntry<>(
                     listOfCoordinates, c);
             colorButtonCoordinates.add(entry);
             
@@ -1673,7 +1671,7 @@ public class ClientMain {
                     Integer maxY = 245 + (pageCounter * 50);
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
+                    AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 

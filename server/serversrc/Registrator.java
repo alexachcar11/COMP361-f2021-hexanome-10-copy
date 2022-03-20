@@ -3,25 +3,11 @@ package serversrc;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import clientsrc.Game;
-
 import org.json.simple.JSONArray;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-import networksrc.CreateNewGameAction;
-import networksrc.GetGameInfoACK;
-import networksrc.GetGameInfoAction;
-import networksrc.LaunchGameAction;
 import unirest.shaded.com.google.gson.Gson;
 
 public class Registrator {
@@ -68,6 +54,10 @@ public class Registrator {
         }, 590 * 1000, 590 * 1000);
     }
 
+    /**
+     * Returns the singleton instance of Registrator
+     * @return
+     */
     public static Registrator instance() {
         return INSTANCE;
     }
