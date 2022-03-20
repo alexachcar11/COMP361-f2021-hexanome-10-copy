@@ -235,5 +235,86 @@ public class Registrator {
         }
     }
 
+    public String createGame(ServerUser creator, String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
+                                       boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
+
+        HttpResponse<String> jsonToken = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
+                .header("Authorization", "Basic " + encoded)
+                .asString();
+
+        JSONObject token = (JSONObject) parser.parse(jsonToken.getBody());
+
+        String name = displayName.replace(" ", "");
+        String location = "http://127.0.0.1:4243/" + name;
+
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("location", location);
+        fields.put("maxSessionPlayers", numberOfPlayers);
+        fields.put("minSessionPlayers", numberOfPlayers);
+        fields.put("name", name);
+        fields.put("displayName", displayName);
+        fields.put("webSupport", "false");
+
+        String tokenString = (String) token.get("access_token");
+        tokenString = tokenString.replace("+", "%2B");
+
+        // lobby service location url
+        String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
+                + tokenString;
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .put(lobbyServiceURL)
+                .header("Authorization", "Basic " + encoded)
+                .header("Content-Type", "application/json")
+                .body(GSON.toJson(fields)).asString();
+
+        String gameID = null;
+
+        // verify response
+        if (jsonResponse.getStatus() == 400) {
+            System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
+        } else if (jsonResponse.getStatus() != 200) {
+            System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
+        } else {
+            // success -> create a game session
+            gameID = this.createGameSession(name, creator, "");
+        }
+        return gameID;
+    }
+
+    public String createGameSession(String name, ServerUser creator, String saveGameID) {
+        // API request
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("creator", creator.getName());
+        fields.put("game", name);
+        fields.put("savegame", saveGameID);
+
+        // user token
+        String token = creator.getToken().replace("+", "%2B");
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/api/sessions/?access_token="
+                        + token)
+                .header("Content-Type", "application/json")
+                .body(new Gson().toJson(fields)).asString();
+
+
+        String id = null;
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
+        } else {
+            // success !
+            // get the session ID
+            id = jsonResponse.getBody();
+        }
+        return id;
+    }
+
     
 }

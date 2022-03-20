@@ -8,11 +8,11 @@ import networksrc.UpdateUsersAction;
 public class LobbyServiceGameSession{
 
     // fields
+    private String displayName;
     private boolean launched;
     private ArrayList<User> users = new ArrayList<>();
     private String saveGameID;
     private String creator;
-    private LobbyServiceGame gameService;
     private String sessionID;
     private Game game;
     private int numberOfPlayersCurrently;
@@ -24,13 +24,12 @@ public class LobbyServiceGameSession{
      * @param gameService gameservice for which this session belongs to
      * @param sessionID sessionID on the LS
      */
-    public LobbyServiceGameSession(String saveGameID, User creator, LobbyServiceGame gameService, String sessionID) {
+    public LobbyServiceGameSession(String saveGameID, Game game, User creator, String sessionID) {
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
-        this.gameService = gameService;
         this.sessionID = sessionID;
-        this.game = gameService.getGame();
+        this.game = game;
     }
 
     /**
@@ -71,6 +70,14 @@ public class LobbyServiceGameSession{
     }
 
     /**
+     * GETTER: retrieves the display name of the session
+     * @return displayName
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
      * GETTER: returns the number of users that have currently joined the game
      * @return size of ArrayList<User>
      */
@@ -78,6 +85,10 @@ public class LobbyServiceGameSession{
         return numberOfPlayersCurrently;
     }
 
+    /**
+     * Set the current number of players to n
+     * @param n total number of players currently registered in this session
+     */
     public void setCurrentNumberOfPlayers(int n) {
         this.numberOfPlayersCurrently = n;
     }
@@ -96,14 +107,6 @@ public class LobbyServiceGameSession{
      */
     public String getCreator() {
         return creator;
-    }
-
-    /**
-     * GETTER: returns the LobbyServiceGame associated with this session.
-     * @return the LobbyServiceGame from which this session was started
-     */
-    public LobbyServiceGame getGameService() {
-        return gameService;
     }
 
     /**
@@ -158,7 +161,7 @@ public class LobbyServiceGameSession{
     public boolean isLaunchable() {
         // check there are enough users
 
-        return users.size() == gameService.getNumberOfUsers();
+        return users.size() == game.getNumberOfPlayers();
 
 
         /* // check there are enough users

@@ -6,15 +6,9 @@ package clientsrc;
 
 import java.util.ArrayList;
 
-import networksrc.PlayerHasJoinedAction;
-
-// import serversrc.Mode;
-// import serversrc.TownGoldOption;
-
 public class LobbyServiceGame {
 
     // FIELDS
-    // lobby service relate
     private String name;
     private String displayName;
     private String location;

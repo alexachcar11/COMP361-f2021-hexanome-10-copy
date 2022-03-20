@@ -14,6 +14,7 @@ import org.minueto.window.MinuetoWindow;
 
 import networksrc.ChooseBootColorAction;
 import networksrc.Client;
+import networksrc.CreateNewGameAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.LoginAction;
@@ -717,20 +718,22 @@ public class ClientMain {
 
                         try {
                             if (modeSel.equals(Mode.ELFENLAND)) {
-                                // create an elfenland game
-                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel, Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
-                                if (gameToJoin == null) {
-                                    // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
-                                            MinuetoColor.RED);
-                                    createGameBackground.draw(nameIsTaken, 178, 120);
-                                } else {
-                                    // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
-                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
-                                }
+                                // send request to the server to create an elfenland game
+                                CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(), nameString, numberPlayers, numRoundsSel, destinationTownSel, false, "elfenland", "no");
+                                ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
                             } else if (modeSel.equals(Mode.ELFENGOLD)) {
-                                // create an elfengold game
+                                // send request to the server to create an elfengold game
+                                String townGoldOptionString = null;
+                                if (townGoldOption.equals(TownGoldOption.NO)) {
+                                    townGoldOptionString = "no";
+                                } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
+                                    townGoldOptionString = "yes-default";
+                                } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
+                                    townGoldOptionString = "yes-random";
+                                }
+                                CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(), nameString, numberPlayers, 6, destinationTownSel, witchSel, "elfengold", townGoldOptionString);
+                                ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
+
                                 gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
                                 if (gameToJoin == null) {
                                     // show error message because the game already exists
@@ -738,6 +741,7 @@ public class ClientMain {
                                             MinuetoColor.RED);
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
+                                    // success !
                                     // get available boot colors
                                     ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
@@ -1391,6 +1395,8 @@ public class ClientMain {
     }
 
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
+        gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+
         int counter = 0; // how many colors are displayed so far
 
         System.out.println(colors.toString());
@@ -1440,6 +1446,14 @@ public class ClientMain {
         }
     }
 
+    /**
+     * Display an error message saying that the game name is already taken (on gama creation screen)
+     */
+    public static void displayNameTaken() {
+        MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+        createGameBackground.draw(nameIsTaken, 178, 120);
+    }
+
     public static void displayOriginalBoard() {
         // display background depending on the mode
         Mode currentMode = currentGame.getMode();
@@ -1452,8 +1466,7 @@ public class ClientMain {
 
     public static void displayLobbyInfo() {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
-        LobbyServiceGame lsGame = currentSession.getGameService();
-        String name = lsGame.getDisplayName();
+        String name = currentSession.getDisplayName();
         MinuetoText nameText = new MinuetoText(name, font, MinuetoColor.BLACK);
         Game game = currentSession.getGame();
         Mode currentMode = game.getMode();
@@ -1609,10 +1622,10 @@ public class ClientMain {
             // display available game sessions (i.e. games with a creator)
             for (LobbyServiceGameSession gs : availableSessionsList) {
                 if (!gs.isLaunched()) { // only show unlaunched sessions
-                    String gsName = gs.getGameService().getDisplayName();
+                    String gsName = gs.getDisplayName();
                     String gsCreator = gs.getCreator();
                     String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
-                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfUsers());
+                    String gsMaxPlayerNumber = String.valueOf(gs.getGame().getNumberOfPlayers());
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
                     MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
