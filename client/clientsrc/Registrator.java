@@ -457,29 +457,6 @@ public class Registrator {
         ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
     }
 
-    /* public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
-        // user token
-        String token = userAskingToLaunch.getToken().replace("+", "%2B");
-        System.out.println(token);
-
-        // build request
-        HttpResponse<String> jsonResponse = Unirest
-                .post("http://elfenland.simui.com:4242/api/sessions/" + sessionToLaunch.getSessionID()
-                        + "?access_token="
-                        + token)
-                .asString();
-
-        System.out.println(jsonResponse.getBody());
-
-        // verify response
-        if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
-        } else {
-            System.out.println("launched successfully on the LS");
-            // send to the server
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
-        }
-    } */
 
     /**
      * Helper function for availableGames(). Returns an arraylist of

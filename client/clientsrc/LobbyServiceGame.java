@@ -128,11 +128,5 @@ public class LobbyServiceGame {
     /**
      * The Registrator will make this user join this game service by creating a session.
      */
-    /* public LobbyServiceGameSession join() throws Exception {
-        LobbyServiceGameSession newSessionCreated = Registrator.instance().createGameSession(this, ClientMain.currentUser, "");
-        this.activeSession = newSessionCreated;
-        ClientMain.currentSession = newSessionCreated;
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), newSessionCreated.getSessionID()));
-        return newSessionCreated;
-    } */
+
 }

@@ -135,9 +135,4 @@ public class Town {
         return location;
     }
 
-    // public boolean notClickingOnATown(int x, int y) { 
-    //     for(Town t : ServerGame.getTowns()) { 
-
-    //     }
-    // }
 }
