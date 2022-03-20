@@ -49,6 +49,7 @@ public class GetAvailableSessionsACK implements Action {
                 // game does not exist on the client yet
 
                 // retrieve info
+                String name = names.get(i);
                 int currentNbPlayers = numberPlayersCurrently.get(i);
                 int nbPlayers = numberPlayers.get(i);
                 int nbRounds = numberRounds.get(i);
@@ -78,7 +79,7 @@ public class GetAvailableSessionsACK implements Action {
                 User creator = new User(creatorName);
             
                 // create new LobbyServiceGameSession
-                LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, creator, gameID);
+                LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, creator, gameID, name);
                 newSession.setCurrentNumberOfPlayers(currentNbPlayers);
             } else {
                 // game already exists on the client

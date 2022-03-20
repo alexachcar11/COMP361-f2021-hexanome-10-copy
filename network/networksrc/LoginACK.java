@@ -22,7 +22,8 @@ public class LoginACK implements Action {
     public void execute() {
         if (result.equals("success")) {
             // create a new User
-            new User(username);
+            User newUser = new User(username);
+            ClientMain.currentUser = newUser;
             // gui updates
             ClientMain.displayAvailableGames();
         } else if (result.equals("user-dne")) {

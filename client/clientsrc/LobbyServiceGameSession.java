@@ -19,18 +19,20 @@ public class LobbyServiceGameSession{
     private static ArrayList<LobbyServiceGameSession> allSessions = new ArrayList<>();
 
     /**
-     * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
-     * @param saveGameID savegameID to load. If there is none, put ""
-     * @param creator User of the creator of the game
-     * @param gameService gameservice for which this session belongs to
-     * @param sessionID sessionID on the LS
+     * CONSTRUCTOR
+     * @param saveGameID save game id or "" if there is none
+     * @param game associated game
+     * @param creator creator of the session
+     * @param sessionID session ID as seen on LS
+     * @param name display name of the session on LS
      */
-    public LobbyServiceGameSession(String saveGameID, Game game, User creator, String sessionID) {
+    public LobbyServiceGameSession(String saveGameID, Game game, User creator, String sessionID, String name) {
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
         this.sessionID = sessionID;
         this.game = game;
+        this.displayName = name;
         allSessions.add(this);
     }
 
