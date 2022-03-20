@@ -14,6 +14,7 @@ public class LaunchGameAction implements Action{
 
     private String senderName;
     private String gameID;
+    ServerGame serverGame;
 
     public LaunchGameAction(String senderName, String gameID) {
         this.senderName = senderName;
