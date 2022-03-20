@@ -339,6 +339,27 @@ public class Registrator {
         return id;
     }
 
+    public void joinGame(String sessionID, ServerUser userJoining) throws Exception {
+        // user token
+        String token = userJoining.getToken().replace("+", "%2B");
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://127.0.0.1:4242/api/sessions/" + sessionID + "/players/"
+                        + userJoining.getName() + "?access_token="
+                        + token)
+                .asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
+            throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
+        }
+    }
+
     // TODO
     public void leaveGame(String sessionID, ServerUser userLeaving) {
         // user token
