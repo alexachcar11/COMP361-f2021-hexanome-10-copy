@@ -216,7 +216,6 @@ public class LobbyServiceGameSession{
      * The Registrator will make this user join this game session
      */
     public LobbyServiceGameSession join(Color pColor) throws Exception {
-        Registrator.instance().joinGame(this, ClientMain.currentUser);
         ClientMain.currentSession = this;
         // pColor into string format
         String colorStr = null;

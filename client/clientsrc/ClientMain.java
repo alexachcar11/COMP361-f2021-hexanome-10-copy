@@ -100,7 +100,6 @@ public class ClientMain {
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
 
-    public static final Registrator REGISTRATOR = Registrator.instance();
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
     // TODO: place this somewhere else configImages(bootImages);
