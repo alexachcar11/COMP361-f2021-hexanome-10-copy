@@ -16,6 +16,7 @@ public class LobbyServiceGameSession{
     private String sessionID;
     private Game game;
     private int numberOfPlayersCurrently;
+    private static ArrayList<LobbyServiceGameSession> allSessions = new ArrayList<>();
 
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
@@ -30,6 +31,35 @@ public class LobbyServiceGameSession{
         this.creator = creator.getName();
         this.sessionID = sessionID;
         this.game = game;
+        allSessions.add(this);
+    }
+
+    /**
+     * Retrieves a LobbyServiceGameSession by ID
+     * @param sessionID sessionID to search
+     * @return  LobbyServiceGameSession or null if not found
+     */
+    public static LobbyServiceGameSession getSessionByName(String name) {
+        for (LobbyServiceGameSession s : allSessions) {
+            if (s.getDisplayName().equals(name)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves all available sessions (i.e. unlaunched)
+     * @return ArrayList<LobbyServiceGameSession> that are not launched
+     */
+    public static ArrayList<LobbyServiceGameSession> getAvailableSession() {
+        ArrayList<LobbyServiceGameSession> list = new ArrayList<>();
+        for (LobbyServiceGameSession s : allSessions) {
+            if (!s.isLaunched()) {
+                list.add(s);
+            }
+        }
+        return list;
     }
 
     /**

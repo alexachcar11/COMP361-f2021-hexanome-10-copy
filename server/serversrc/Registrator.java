@@ -3,6 +3,9 @@ package serversrc;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import clientsrc.Game;
+
 import org.json.simple.JSONArray;
 
 import java.io.BufferedReader;
@@ -235,6 +238,19 @@ public class Registrator {
         }
     }
 
+    /**
+     * Sends a request to LS to create a new game service.
+     * @param creator ServerUser that send the request
+     * @param displayName display name of the game (i.e name chosen by the creator)
+     * @param numberOfPlayers total number of players
+     * @param numberOfRounds number of rounds to play
+     * @param mode elfenland or elfengold
+     * @param witchEnabled are we playing with the witch variant
+     * @param destinationTownEnabled are we playing with destination towns
+     * @param townGoldOption are we playing with town gold
+     * @return gameID of the session created
+     * @throws ParseException
+     */
     public String createGame(ServerUser creator, String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
                                        boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
@@ -284,6 +300,13 @@ public class Registrator {
         return gameID;
     }
 
+    /**
+     * Sends a LS request to create a new game session.
+     * @param name name of the game service(NOT display name)
+     * @param creator creator's username
+     * @param saveGameID save game ID or "" if there is none
+     * @return gameID
+     */
     public String createGameSession(String name, ServerUser creator, String saveGameID) {
         // API request
         Map<String, Object> fields = new HashMap<>();
@@ -316,5 +339,50 @@ public class Registrator {
         return id;
     }
 
-    
+    // TODO
+    public void leaveGame(String sessionID, ServerUser userLeaving) {
+        // user token
+        String token = userLeaving.getToken().replace("+", "%2B");
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .delete("http://127.0.0.1:4242/api/sessions/" + sessionID + "/players/"
+                        + userLeaving.getName() + "?access_token="
+                        + token)
+                .asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not leave game");
+        } else {
+            //sessionToLeave.removeUser(userLeaving);
+            // TODO: notify all users that a player has left
+        }
+    }
+
+    // TODO
+    public void deleteSession(String sessionID, ServerUser userAskingToDelete) {
+        // user token
+        String token = userAskingToDelete.getToken().replace("+", "%2B");
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .delete("http://127.0.0.1:4242/api/sessions/" + sessionID
+                        + "?access_token="
+                        + token)
+                .asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            System.err.println("Error" + jsonResponse.getStatus() + ": could not delete game session");
+        } else {
+            System.out.println("deleted successfully");
+        }
+    }
 }

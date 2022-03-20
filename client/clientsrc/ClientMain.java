@@ -17,11 +17,14 @@ import networksrc.Client;
 import networksrc.CreateNewGameAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
+import networksrc.GetAvailableSessionsAction;
 import networksrc.LoginAction;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.Action;
+
 import java.io.File;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -1147,7 +1150,6 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                gui.window.draw(lobbyBackground, 0, 0);
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
                 }
@@ -1360,6 +1362,11 @@ public class ClientMain {
         loadedClip.start();
     }
 
+    /**
+     * Displays the winner's name and their boot color
+     * @param winnerName winner's username
+     * @throws MinuetoFileException if an image file is not found
+     */
     public static void displayWinnerByString(String winnerName) throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         MinuetoText winnerText = new MinuetoText(winnerName, font, MinuetoColor.WHITE);
@@ -1394,6 +1401,11 @@ public class ClientMain {
         
     }
 
+    /**
+     * Display boot colors
+     * @param colors available colors to display
+     * @throws MinuetoFileException when an image file is not found
+     */
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
         gui.currentBackground = GUI.Screen.CHOOSEBOOT;
 
@@ -1464,6 +1476,9 @@ public class ClientMain {
         }
     }
 
+    /**
+     * Display a game lobby's information (settings + name)
+     */
     public static void displayLobbyInfo() {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         String name = currentSession.getDisplayName();
@@ -1518,6 +1533,10 @@ public class ClientMain {
         
     }
 
+    /**
+     * Displays all users registered in a game session
+     * @throws MinuetoFileException
+     */
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         ArrayList<User> users = currentSession.getUsers();
@@ -1594,24 +1613,34 @@ public class ClientMain {
         gui.window.draw(background, 0, 0);
     }
 
+    /**
+     * Displays all available game sessions (NOT game services)
+     * If there are no sessions, then display a message saying so.
+     */
     public static void displayAvailableGames() {
-        gui.currentBackground = GUI.Screen.LOBBY;
+        // retrieve info on the server
+        GetAvailableSessionsAction action = new GetAvailableSessionsAction(currentUser.getName());
+        ACTION_MANAGER.sendActionAndGetReply(action);
+
+        // reset buttons
+        joinButtonCoordinates.clear();
+
+        // display
+        gui.window.draw(lobbyBackground, 0, 0);
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
-            ArrayList<LobbyServiceGame> availableGamesList = Registrator.getAvailableGames();
-            ArrayList<LobbyServiceGameSession> availableSessionsList = Registrator.getAvailableSessions();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = LobbyServiceGameSession.getAvailableSession();
 
-            int nbAvailableGameServices = availableGamesList.size();
+            // display a message when no sessions are available to join
             int nbAvailableGameSessions = availableSessionsList.size();
-
-            if (nbAvailableGameSessions == 0 && nbAvailableGameServices == 0) {
+            if (nbAvailableGameSessions == 0) {
                 MinuetoText noneAvailableText = new MinuetoText(
                         "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
                 lobbyBackground.draw(noneAvailableText, 200, 340);
             }
 
             // display next button
-            if (nbAvailableGameServices + nbAvailableGameSessions > 9) {
+            if (nbAvailableGameSessions > 9) {
                 MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
                 lobbyBackground.draw(nextButton, 700, 676);
             }

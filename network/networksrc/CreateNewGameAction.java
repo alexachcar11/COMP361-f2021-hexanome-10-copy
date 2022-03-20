@@ -104,7 +104,7 @@ public class CreateNewGameAction implements Action{
                 // success!
                 // add server side logic
                 ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
-                GameLobby gameLobby = new GameLobby(gameID, serverGame);
+                GameLobby gameLobby = new GameLobby(gameID, serverGame, displayName, creator);
                 ServerUser sUser = ServerUser.getServerUser(senderName);
                 gameLobby.addUser(sUser);
                 // send ack to the sender only
