@@ -339,6 +339,12 @@ public class Registrator {
         return id;
     }
 
+    /**
+     * Sends a request to LS for a user to join a session
+     * @param sessionID session ID of the session to join
+     * @param userJoining ServerUser that wants to join
+     * @throws Exception when the request is rejected
+     */
     public void joinGame(String sessionID, ServerUser userJoining) throws Exception {
         // user token
         String token = userJoining.getToken().replace("+", "%2B");
@@ -405,5 +411,31 @@ public class Registrator {
         } else {
             System.out.println("deleted successfully");
         }
+    }
+
+    /**
+     * Send an LS request to launch a session
+     * @param sessionID session ID to launch
+     * @param userAskingToLaunch user that send the request
+     * @throws Exception if the request was rejected
+     */
+    public void launchSession(String sessionID, ServerUser userAskingToLaunch) throws Exception {
+        // user token
+        String token = userAskingToLaunch.getToken().replace("+", "%2B");
+        System.out.println(token);
+
+        // build request
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/api/sessions/" + sessionID
+                        + "?access_token="
+                        + token)
+                .asString();
+
+        System.out.println(jsonResponse.getBody());
+
+        // verify response
+        if (jsonResponse.getStatus() != 200) {
+            throw new Exception("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
+        } 
     }
 }

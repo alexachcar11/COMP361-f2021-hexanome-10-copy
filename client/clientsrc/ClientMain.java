@@ -18,6 +18,7 @@ import networksrc.CreateNewGameAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.GetAvailableSessionsAction;
+import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
 
 import javax.sound.sampled.AudioInputStream;
@@ -940,8 +941,8 @@ public class ClientMain {
             } else {
                 // for the creator
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
-                    // click on Launch button -> launch the session
-                    REGISTRATOR.launchSession(currentSession, currentUser);
+                    // send to the server
+                    ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
                 }
             }
 
