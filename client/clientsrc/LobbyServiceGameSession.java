@@ -236,12 +236,4 @@ public class LobbyServiceGameSession{
         ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
-
-    /**
-     * Returns this session
-     * @return this session
-     */
-    public LobbyServiceGameSession getActiveSession() {
-        return this;
-    }
 }

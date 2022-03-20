@@ -82,7 +82,7 @@ public class CreateNewGameACK implements Action{
             User currentUser = ClientMain.currentUser;
         
             // create new LobbyServiceGameSession
-            LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, currentUser, gameID);
+            LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, currentUser, gameID, displayName);
 
             // set as current session
             ClientMain.currentSession = newSession;

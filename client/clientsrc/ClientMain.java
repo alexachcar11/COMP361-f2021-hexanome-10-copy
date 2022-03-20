@@ -736,19 +736,6 @@ public class ClientMain {
                                 }
                                 CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(), nameString, numberPlayers, 6, destinationTownSel, witchSel, "elfengold", townGoldOptionString);
                                 ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
-
-                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD, witchSel, destinationTownSel, townGoldOption);
-                                if (gameToJoin == null) {
-                                    // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
-                                            MinuetoColor.RED);
-                                    createGameBackground.draw(nameIsTaken, 178, 120);
-                                } else {
-                                    // success !
-                                    // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), currentSession.getSessionID()));
-                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
-                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -849,22 +836,32 @@ public class ClientMain {
                         try {
                             // join the game
                             gameToJoin.join(colorChosen);
-                            currentSession = gameToJoin.getActiveSession();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
+                        // display game info
+                        displayLobbyInfo();
                         
-                        // change backgrounds
-                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                        gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                        Game game = currentSession.getGame();
+                        Mode currentMode = game.getMode();
+                        // switch backgrounds depending on the game mode
+                        if (currentMode.equals(Mode.ELFENLAND)) {
+                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                            gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                            gui.window.render();
+                            lobbyElfenlandBackground.draw(startButton, 822, 580);
+                        } else if (currentMode.equals(Mode.ELFENGOLD)) {
+                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                            gui.window.draw(lobbyElfengoldBackground, 0, 0);
+                            gui.window.render();
+                        }
+
                         // show wait for launch image
                         if (ClientMain.currentSession.isLaunchable()) {
                             ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
                         }
-                        // display game info
-                        displayLobbyInfo();
-                        gui.window.render();
-
+                        
                         // wait for other players (i.e wait for the game to launch)
                         ACTION_MANAGER.waitForPlayers();
                     }
