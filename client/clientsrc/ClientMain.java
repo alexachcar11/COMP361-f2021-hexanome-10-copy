@@ -1557,8 +1557,8 @@ public class ClientMain {
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(passTurnText, 42, 600);
 
-                List<TokenImage> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
-                List<TravelCard> listOfCards = ClientMain.currentPlayer.getCardsInHand();
+                List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+                List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
 
                 System.out.println("YOU HAVE " + listOfCards.size() + " CARDS!");
                 System.out.println("YOU HAVE " + listOfTokens.size() + " TOKENS!");
@@ -1709,7 +1709,7 @@ public class ClientMain {
                 int numberPlayers = players.size();
 
                 for(int i = 0; i < numberPlayers; i++) { 
-                    Player opponent = players.get(i);
+                    ClientPlayer opponent = players.get(i);
                     int xName = 835;
                     int yName = 70 + (i * 92);
 
@@ -1729,7 +1729,7 @@ public class ClientMain {
                 // MinuetoImage testTokImage = testToken.getSmallImage();
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
                 
-                for(Player p: players) { 
+                for(ClientPlayer p: players) { 
                     p.drawBoot();
                 }
                 ClientMain.currentPlayer.drawBoot();

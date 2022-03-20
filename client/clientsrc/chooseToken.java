@@ -15,10 +15,10 @@ import java.awt.event.*;
 
 public class chooseToken {
     
-    private ArrayList<TokenImage> listOfAvailableTokens = new ArrayList<>(); 
-    private Player player;     
+    private ArrayList<TokenSprite> listOfAvailableTokens = new ArrayList<>(); 
+    private ClientPlayer player;     
 
-    public chooseToken(Player p, ArrayList<TokenImage> tokensToChooseFrom) throws MinuetoFileException { 
+    public chooseToken(ClientPlayer p, ArrayList<TokenSprite> tokensToChooseFrom) throws MinuetoFileException { 
 
         player = p;
         listOfAvailableTokens = tokensToChooseFrom;
@@ -47,31 +47,31 @@ public class chooseToken {
         // ADD IMAGES FOR THE DIFFERENT TOKEN OPTIONS 
 
         // first token 
-        String address1 = listOfAvailableTokens.get(0).getFileAdress();
+        String address1 = listOfAvailableTokens.get(0).getFileAddress();
         JLabel picOfToken1 = new JLabel(new ImageIcon(address1));
         JButton picButton1 = new JButton();
         picButton1.add(picOfToken1);
 
         // second token 
-        String address2 = listOfAvailableTokens.get(0).getFileAdress();
+        String address2 = listOfAvailableTokens.get(0).getFileAddress();
         JLabel picOfToken2 = new JLabel(new ImageIcon(address2));
         JButton picButton2 = new JButton();
         picButton2.add(picOfToken2);
     
         // second token 
-        String address3 = listOfAvailableTokens.get(0).getFileAdress();
+        String address3 = listOfAvailableTokens.get(0).getFileAddress();
         JLabel picOfToken3 = new JLabel(new ImageIcon(address3));
         JButton picButton3 = new JButton();
         picButton2.add(picOfToken3);
 
         // second token 
-        String address4 = listOfAvailableTokens.get(0).getFileAdress();
+        String address4 = listOfAvailableTokens.get(0).getFileAddress();
         JLabel picOfToken4 = new JLabel(new ImageIcon(address4));
         JButton picButton4 = new JButton();
         picButton4.add(picOfToken4);
 
         // second token 
-        String address5 = listOfAvailableTokens.get(0).getFileAdress();
+        String address5 = listOfAvailableTokens.get(0).getFileAddress();
         JLabel picOfToken5 = new JLabel(new ImageIcon(address5));
         JButton picButton5 = new JButton();
         picButton5.add(picOfToken5);
@@ -109,7 +109,7 @@ public class chooseToken {
                                 
                 // If the user clicks on the token, add the token the inventory of the player and close the window
                 try {
-                    player.addTokenString(listOfAvailableTokens.get(0).getName());
+                    player.addTokenString(listOfAvailableTokens.get(0).getTokenName());
                     tokenPanelOverview.dispose();
                 } catch (MinuetoFileException e) {
                     // TODO Auto-generated catch block
@@ -126,7 +126,7 @@ public class chooseToken {
                                 
                 // If the user clicks on the token, add the token the inventory of the player and close the window
                 try {
-                    player.addTokenString(listOfAvailableTokens.get(1).getName());
+                    player.addTokenString(listOfAvailableTokens.get(1).getTokenName());
                     tokenPanelOverview.dispose();
                 } catch (MinuetoFileException e) {
                     // TODO Auto-generated catch block
@@ -143,7 +143,7 @@ public class chooseToken {
                                 
                 // If the user clicks on the token, add the token the inventory of the player and close the window
                 try {
-                    player.addTokenString(listOfAvailableTokens.get(2).getName());
+                    player.addTokenString(listOfAvailableTokens.get(2).getTokenName());
                     tokenPanelOverview.dispose();
                 } catch (MinuetoFileException e) {
                     // TODO Auto-generated catch block
@@ -160,7 +160,7 @@ public class chooseToken {
                                 
                 // If the user clicks on the token, add the token the inventory of the player and close the window
                 try {
-                    player.addTokenString(listOfAvailableTokens.get(3).getName());
+                    player.addTokenString(listOfAvailableTokens.get(3).getTokenName());
                     tokenPanelOverview.dispose();
                 } catch (MinuetoFileException e) {
                     // TODO Auto-generated catch block
@@ -177,7 +177,7 @@ public class chooseToken {
                                 
                 // If the user clicks on the token, add the token the inventory of the player and close the window
                 try {
-                    player.addTokenString(listOfAvailableTokens.get(4).getName());
+                    player.addTokenString(listOfAvailableTokens.get(4).getTokenName());
                     tokenPanelOverview.dispose();
                 } catch (MinuetoFileException e) {
                     // TODO Auto-generated catch block
