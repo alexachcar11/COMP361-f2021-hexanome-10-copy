@@ -1,26 +1,18 @@
-package clientsrc;
+package networksrc;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 
-
-import org.minueto.MinuetoColor;
 import org.minueto.MinuetoFileException;
-import org.minueto.image.MinuetoCircle;
-import org.minueto.image.MinuetoImage;
-import org.minueto.image.MinuetoRectangle;
-import org.minueto.image.MinuetoText;
-
-import networksrc.Action;
-import serversrc.CardType;
-import serversrc.Token;
+import clientsrc.ClientMain;
+import serversrc.Player;
+import serversrc.ServerGame;
 
 public class ActionManager {
 
     // singleton
     private static ActionManager INSTANCE = new ActionManager();
-    List<Player> players;
 
     private ActionManager() {
 
@@ -109,26 +101,6 @@ public class ActionManager {
      * 
      * @throws MinuetoFileException
      */
-    public void waitForMessages() throws MinuetoFileException {
-        // WAIT FOR A MESSAGE
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
-        while (!ClientMain.currentPlayer.isTurn()) {
-            Action actionIn = null;
-            try {
-                actionIn = (Action) in.readObject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (actionIn != null) {
-                // MESSAGE RECEIVED
-                if (actionIn.isValid()) {
-                    actionIn.execute();
-                }
-            }
-
-        }
-
-    }
 
     /**
      * Sends the action to the Server and waits for a reply. When the reply is
@@ -164,4 +136,48 @@ public class ActionManager {
         return null;
     }
 
+    /**
+     * Send an action to senderName.
+     * 
+     * @param action     action to send (most likely an ACK)
+     * @param senderName name of the user that should receive the action
+     */
+    public void sendToSender(Action action, String senderName) {
+        try {
+            // get the senderName's socket
+            Server serverInstance = Server.getInstance();
+            ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(senderName);
+            // get the socket's output stream
+            ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+            // send
+            objectOutputStream.writeObject(action);
+        } catch (IOException e) {
+            System.err.println("IOException in sendToSender().");
+        }
+    }
+
+    /**
+     * Send an actino to all players in the specified game.
+     * 
+     * @param action action to send
+     * @param game   game in which the players are
+     */
+    public void sentToAllPlayersInGame(Action action, ServerGame game) {
+        try {
+            Server serverInstance = Server.getInstance();
+            for (Player p : game.getAllPlayers()) {
+                String playersName = p.getName();
+                // get the player's socket
+                ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(playersName);
+                // get the socket's output stream (don't forget to import
+                // java.io.ObjectOutputStream;)
+                ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+                // send the acknowledgment
+                objectOutputStream.writeObject(action);
+            }
+        } catch (IOException e) {
+            System.err.println("IOException in sendToAllPlayersInGame().");
+            e.printStackTrace();
+        }
+    }
 }

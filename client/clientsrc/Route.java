@@ -1,8 +1,5 @@
 package clientsrc;
 
-import org.minueto.MinuetoFileException;
-import org.minueto.image.MinuetoImage;
-import org.minueto.image.MinuetoImageFile;
 import java.util.ArrayList;
 
 // import serversrc.Player;
@@ -16,7 +13,7 @@ public class Route {
 
     Town aStartingTown;
     Town aEndTown;
-    TokenImage aToken; // TODO: there could be multiple tokens, list ?
+    TokenSprite aToken; // TODO: there could be multiple tokens, list ?
     // road or river
     boolean isRiver = false;
     // upstream
@@ -53,7 +50,7 @@ public class Route {
         return isRiver;
     }
 
-    public static ArrayList<Route> getAllRoutes(){
+    public static ArrayList<Route> getAllRoutes() {
         return allRoutes;
     }
 
@@ -77,7 +74,7 @@ public class Route {
      * 
      * @param token
      */
-    public void placeToken(Player player, TokenImage token) {
+    public void placeToken(ClientPlayer player, TokenSprite token) {
         assert token != null;
 
         if (this.aToken == null) {

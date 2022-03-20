@@ -18,9 +18,9 @@ public class TestAction implements Action {
         // server has received the message
         System.out.println("The network is working!!!");
         // send an ACK to the sender
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         TestActionACK actionToSend = new TestActionACK();
         ackManager.sendToSender(actionToSend, senderName);
-        
+
     }
 }

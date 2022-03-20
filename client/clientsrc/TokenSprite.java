@@ -1,0 +1,71 @@
+package clientsrc;
+
+import org.minueto.MinuetoFileException;
+import serversrc.CardType;
+
+// make this implement serializable at some point
+public class TokenSprite extends AbstractSprite {
+
+    private CardType tokenType;
+
+    /**
+     * CONSTRUCTOR : Creates a Hitbox object.
+     *
+     * @param minX  left-most border of the image
+     * @param maxX  right-most border of the image
+     * @param minY  bottom-most border of the image
+     * @param maxY  top-most border of the image
+     * @param image MinuetoImage to display
+     */
+    public TokenSprite(CardType tokenType) throws MinuetoFileException {
+        super("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
+        this.tokenType = tokenType;
+        this.x = 0;
+        this.y = 0;
+    }
+
+    /**
+     * 
+     * @return file location of image as a string
+     */
+    @Override
+    public String getFileAddress() {
+        CardType cT = this.getTokenType();
+        return "images/elfenroads-sprites/M0" + (cT.ordinal() + 1) + "small.png";
+    }
+
+    /**
+     * 
+     * @return returns the name of the token, which is the same as the CardType it
+     *         represents as a string
+     */
+    @Override
+    public String getTokenName() {
+        return tokenType.toString();
+    }
+
+    /**
+     * 
+     * @param tokenString
+     * @return new tokenImage representing CardType matching tokenString
+     * @throws MinuetoFileException
+     * @throws IllegalArgumentException if tokenString does not match a CardType
+     */
+    public static TokenSprite getTokenSpriteByString(String tokenString)
+            throws MinuetoFileException, IllegalArgumentException {
+        for (CardType cT : CardType.values()) {
+            if (cT.toString().equals(tokenString)) {
+                return new TokenSprite(cT);
+            }
+        }
+        throw new IllegalArgumentException(tokenString + " is not a valid type for a token.");
+    }
+
+    /**
+     * 
+     * @return associated CardType
+     */
+    public CardType getTokenType() {
+        return this.tokenType;
+    }
+}

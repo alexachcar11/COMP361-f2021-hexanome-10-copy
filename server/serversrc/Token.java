@@ -6,13 +6,13 @@ import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-import clientsrc.TokenImage;
+import clientsrc.TokenSprite;
 
 public class Token {
     // type of counter
     private final CardType tokenType;
     private Optional<Route> route = Optional.empty();
-    private TokenImage tokenImageFile;
+    private TokenSprite tokenImageFile;
     private MinuetoImage mediumImage;
     private MinuetoImage smallImage;
     private String mediumAddress;
@@ -23,7 +23,7 @@ public class Token {
         this.tokenType = pCT;
         this.isFaceUp = true;
         try {
-            this.tokenImageFile = new TokenImage(this.tokenType);
+            this.tokenImageFile = new TokenSprite(this.tokenType);
             mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png");
             smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "small.png");
             mediumAddress = "images/elfenroads-sprites/M0" + (pCT.ordinal() + 1) + "medium.png";
@@ -76,7 +76,7 @@ public class Token {
         return false;
     }
 
-    public TokenImage getTokenImage() {
+    public TokenSprite getTokenImage() {
         return this.tokenImageFile;
     }
 

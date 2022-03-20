@@ -16,6 +16,8 @@ public class Server implements NetworkNode {
     public static final String LOCATION = "elfenland.simui.com";
     public static final int PORT = 13645;
     private static Server INSTANCE = new Server(PORT);
+    // threads running I/O to a specific client
+    private ArrayList<Thread> clientThreads;
 
     private Server(int pPort) {
         try {
@@ -26,33 +28,30 @@ public class Server implements NetworkNode {
             e.printStackTrace();
             System.exit(-1);
         }
+        this.clientThreads = new ArrayList<>();
     }
 
     public static Server getInstance() {
         return INSTANCE;
     }
 
-    // create a thread to do this, in ServerMain
     @Override
     public void start() {
+        // in case threads were interrupted
+        this.clientThreads.forEach((thread) -> thread.start());
         while (true) {
             Socket clientSocket = null;
             try {
                 clientSocket = aSocket.accept();
             } catch (IOException e) {
-                System.err.println("Accept failed: 13645");
+                System.err.println("Accept failed on port: " + PORT);
                 e.printStackTrace();
             }
             if (clientSocket != null) {
                 final ClientTuple tuple = new ClientTuple(clientSocket);
-                aClientSockets.add(tuple); // allows use in inner class
-                Thread clientThread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        listenToClient(tuple);
-                    }
-                });
+                aClientSockets.add(tuple);
+                Thread clientThread = new Thread(() -> listenToClient(tuple));
+                this.clientThreads.add(clientThread);
                 clientThread.start();
             }
         }

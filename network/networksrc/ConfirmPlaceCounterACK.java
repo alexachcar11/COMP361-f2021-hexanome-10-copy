@@ -1,10 +1,7 @@
 package networksrc;
 
-import org.minueto.MinuetoFileException;
-
 import clientsrc.ClientMain;
-import clientsrc.Player;
-import clientsrc.TokenImage;
+import clientsrc.ClientPlayer;
 import clientsrc.Town;
 
 public class ConfirmPlaceCounterACK implements Action {
@@ -27,9 +24,9 @@ public class ConfirmPlaceCounterACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         // TODO Auto-generated method stub
-        Player thePlayer = Player.getPlayerByName(senderName);
+        ClientPlayer thePlayer = ClientPlayer.getPlayerByName(senderName);
         // thePlayer.consumeToken(TokenImage.getTokenByName(tok));
 
         ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));

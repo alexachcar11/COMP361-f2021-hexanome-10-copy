@@ -1,4 +1,5 @@
 package clientsrc;
+
 /* This class contains all info relevant to the game window*/
 import org.minueto.window.MinuetoWindow;
 
@@ -16,7 +17,7 @@ public class GUI {
         ELFENGOLD
     }
 
-    MinuetoWindow window;
+    public MinuetoWindow window;
     Screen currentBackground;
 
     GUI(MinuetoWindow window, Screen currentBackground) {
