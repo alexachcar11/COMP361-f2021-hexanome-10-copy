@@ -12,7 +12,6 @@ public class Client implements NetworkNode {
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private User aUser;
-    private boolean running;
     // queue for actions to be executed by the client
     private final Queue<Action> actionInQueue;
     // thread used to execute incoming actions
@@ -34,12 +33,11 @@ public class Client implements NetworkNode {
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
         }
-        this.running = true;
         this.aUser = pUser;
         this.actionInQueue = new LinkedList<>();
         this.listenThread = new Thread(() -> this.listenToServer());
         this.executionThread = new Thread(() -> {
-            while (this.running) {
+            while (true) {
                 if (!actionInQueue.isEmpty()) {
                     Action toExecute = actionInQueue.poll();
                     if (toExecute.isValid()) {
@@ -74,7 +72,7 @@ public class Client implements NetworkNode {
      * alternatively, could assign a thread to each action
      */
     private void listenToServer() {
-        while (running) {
+        while (true) {
             Action actionIn = null;
             try {
                 actionIn = (Action) aObjectIn.readObject();
