@@ -57,6 +57,9 @@ public class Client implements NetworkNode {
      */
     @Override
     public void start() {
+        
+        this.executionThread.start();
+        this.listenThread.start();
         // notify the server of this client's username
         try {
             aObjectOut.writeObject(new GiveNameAction(name));
@@ -64,8 +67,6 @@ public class Client implements NetworkNode {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        this.executionThread.start();
-        this.listenThread.start();
     }
 
     /**
