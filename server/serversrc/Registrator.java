@@ -96,7 +96,7 @@ public class Registrator {
      */
     public JSONObject refreshToken() throws ParseException {
         String refreshToken = (String) currentToken.get("refresh_token");
-        refreshToken = refreshToken.replace("+", "%2B");
+        refreshToken = refreshToken.replace("%", "%25").replace("+", "%2B");
 
         HttpResponse<String> jsonResponse = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
@@ -126,7 +126,7 @@ public class Registrator {
      */
     public String getToken() {
         String token = (String) currentToken.get("access_token");
-        token = token.replace("+", "%2B");
+        token = token.replace("%", "%25").replace("+", "%2B");
         return token;
     }
 
@@ -138,11 +138,11 @@ public class Registrator {
      */
     public JSONObject getUser(String userName) throws ParseException {
 
-        userName = userName.replace("+", "%2B");
+        userName = userName.replace("%", "%25").replace("+", "%2B");
 
         HttpResponse<String> jsonResponse = Unirest
                 .get("http://127.0.0.1:4242/api/users/" + userName + "?access_token="
-                        + this.getToken().replace("+", "%2B"))
+                        + this.getToken().replace("%", "%25").replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
         if (jsonResponse.getStatus() != 200) {
@@ -161,7 +161,7 @@ public class Registrator {
     public JSONArray getAllUsers() throws ParseException {
 
         HttpResponse<String> jsonResponse = Unirest
-                .get("http://127.0.0.1:4242/api/users?access_token=" + this.getToken().replace("+", "%2B"))
+                .get("http://127.0.0.1:4242/api/users?access_token=" + this.getToken().replace("%", "%25").replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded).asString();
 
         if (jsonResponse.getStatus() != 200) {
@@ -210,12 +210,12 @@ public class Registrator {
         String encoded = Base64.getEncoder()
                 .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
 
-        userName = userName.replace("+", "%2B");
-        passWord = passWord.replace("+", "%2B");
+        userName = userName.replace("%", "%25").replace("+", "%2B");
+        passWord = passWord.replace("%", "%25").replace("+", "%2B");
 
         HttpResponse<String> jsonResponse = Unirest
                 .put("http://127.0.0.1:4242/api/users/" + userName + "?access_token="
-                        + this.getToken().replace("+", "%2B"))
+                        + this.getToken().replace("%", "%25").replace("+", "%2B"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .body(GSON.toJson(fields)).asString();
@@ -263,7 +263,7 @@ public class Registrator {
         fields.put("webSupport", "false");
 
         String tokenString = (String) token.get("access_token");
-        tokenString = tokenString.replace("+", "%2B");
+        tokenString = tokenString.replace("%", "%25").replace("+", "%2B");
 
         // lobby service location url
         String lobbyServiceURL = "http://127.0.0.1:4242/api/gameservices/" + name + "?access_token="
@@ -305,7 +305,7 @@ public class Registrator {
         fields.put("savegame", saveGameID);
 
         // user token
-        String token = creator.getToken().replace("+", "%2B");
+        String token = creator.getToken().replace("%", "%25").replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -337,7 +337,7 @@ public class Registrator {
      */
     public void joinGame(String sessionID, ServerUser userJoining) throws Exception {
         // user token
-        String token = userJoining.getToken().replace("+", "%2B");
+        String token = userJoining.getToken().replace("%", "%25").replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -359,7 +359,7 @@ public class Registrator {
     // TODO
     public void leaveGame(String sessionID, ServerUser userLeaving) {
         // user token
-        String token = userLeaving.getToken().replace("+", "%2B");
+        String token = userLeaving.getToken().replace("%", "%25").replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -383,7 +383,7 @@ public class Registrator {
     // TODO
     public void deleteSession(String sessionID, ServerUser userAskingToDelete) {
         // user token
-        String token = userAskingToDelete.getToken().replace("+", "%2B");
+        String token = userAskingToDelete.getToken().replace("%", "%25").replace("+", "%2B");
         System.out.println(token);
 
         // build request
@@ -411,7 +411,7 @@ public class Registrator {
      */
     public void launchSession(String sessionID, ServerUser userAskingToLaunch) throws Exception {
         // user token
-        String token = userAskingToLaunch.getToken().replace("+", "%2B");
+        String token = userAskingToLaunch.getToken().replace("%", "%25").replace("+", "%2B");
         System.out.println(token);
 
         // build request
