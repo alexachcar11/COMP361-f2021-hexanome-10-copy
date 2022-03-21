@@ -81,7 +81,7 @@ public class GetAvailableSessionsAction implements Action{
 
         // send to sender
         GetAvailableSessionsACK action = new GetAvailableSessionsACK(names, numberPlayersCurrently, numberPlayers, numberRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption, creatorNames, gameIDs);
-        ACKManager.getInstance().sendToSender(action, senderName);
+        ActionManager.getInstance().sendToSender(action, senderName);
     }
     
 }

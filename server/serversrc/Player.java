@@ -51,7 +51,7 @@ public class Player {
             this.index++;
 
             // update client on target town
-            ACKManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
+            ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
         }
 
         this.aServerUser = pServerUser;
