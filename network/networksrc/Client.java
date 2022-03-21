@@ -57,7 +57,7 @@ public class Client implements NetworkNode {
      */
     @Override
     public void start() {
-        
+
         this.executionThread.start();
         this.listenThread.start();
         // notify the server of this client's username
@@ -77,14 +77,16 @@ public class Client implements NetworkNode {
     private void listenToServer() {
         while (running) {
             Action actionIn = null;
+            String toPrint = null;
             try {
-                actionIn = (Action) aObjectIn.readObject();
+                toPrint = (String) aObjectIn.readObject();
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
             }
-            if (actionIn != null) {
-                this.actionInQueue.add(actionIn);
-            }
+            // if (actionIn != null) {
+            // this.actionInQueue.add(actionIn);
+            // }
+            System.out.println(toPrint);
         }
     }
 
@@ -120,6 +122,7 @@ public class Client implements NetworkNode {
     /**
      * Sets a new name of this client.
      * The server is notified.
+     * 
      * @param newName new name associated with the client
      */
     public void setName(String newName) {
