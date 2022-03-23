@@ -1,11 +1,12 @@
 package clientsrc;
+
 import java.util.ArrayList;
 
 import networksrc.PlayerHasJoinedAction;
 import networksrc.UpdateUsersAction;
 
 // represents one active game session
-public class LobbyServiceGameSession{
+public class LobbyServiceGameSession {
 
     // fields
     private boolean launched;
@@ -18,10 +19,11 @@ public class LobbyServiceGameSession{
 
     /**
      * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
-     * @param saveGameID savegameID to load. If there is none, put ""
-     * @param creator User of the creator of the game
+     * 
+     * @param saveGameID  savegameID to load. If there is none, put ""
+     * @param creator     User of the creator of the game
      * @param gameService gameservice for which this session belongs to
-     * @param sessionID sessionID on the LS
+     * @param sessionID   sessionID on the LS
      */
     public LobbyServiceGameSession(String saveGameID, User creator, LobbyServiceGame gameService, String sessionID) {
         this.launched = false;
@@ -34,6 +36,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the value of launched
+     * 
      * @return true if the session has been launched, false otherwise
      */
     public boolean isLaunched() {
@@ -42,6 +45,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the list of users that have joined the session
+     * 
      * @return ArrayList<User>
      */
     public ArrayList<User> getUsers() {
@@ -50,11 +54,12 @@ public class LobbyServiceGameSession{
 
     public void updateUsers() {
         String senderName = ClientMain.currentUser.getName();
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID));
+        ClientMain.ACTION_MANAGER.sendAction(new UpdateUsersAction(senderName, sessionID));
     }
 
     /**
      * Indicates if the username is in this game session.
+     * 
      * @param userName user to check
      * @return true if the username is in the session, false otherwise
      */
@@ -71,6 +76,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the number of users that have currently joined the game
+     * 
      * @return size of ArrayList<User>
      */
     public int getNumberOfUsersCurrently() {
@@ -79,6 +85,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the save game id
+     * 
      * @return save game id. "" if the game has no save id yet
      */
     public String getSaveGameID() {
@@ -87,6 +94,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: Retunrs the username of the creator of the game
+     * 
      * @return usersname of user that is the creator
      */
     public String getCreator() {
@@ -95,6 +103,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the LobbyServiceGame associated with this session.
+     * 
      * @return the LobbyServiceGame from which this session was started
      */
     public LobbyServiceGame getGameService() {
@@ -103,6 +112,7 @@ public class LobbyServiceGameSession{
 
     /**
      * Returns the session ID that is on the LS
+     * 
      * @return session ID
      */
     public String getSessionID() {
@@ -111,6 +121,7 @@ public class LobbyServiceGameSession{
 
     /**
      * Add a User to the list of users in this session
+     * 
      * @param user user that is being added
      */
     public void addUser(User user) {
@@ -119,6 +130,7 @@ public class LobbyServiceGameSession{
 
     /**
      * Remove a User from the list of users in this session
+     * 
      * @param user user to remove
      */
     public void removeUser(User user) {
@@ -146,30 +158,35 @@ public class LobbyServiceGameSession{
     }
 
     /**
-     * Checks whether this session can be launched by the LS (LS won't give an error).
-     * A session is launchable when enough users have joined and all theses users are ready.
-     * @return true if the session is launchable (LS won't give an error), false otherwise
+     * Checks whether this session can be launched by the LS (LS won't give an
+     * error).
+     * A session is launchable when enough users have joined and all theses users
+     * are ready.
+     * 
+     * @return true if the session is launchable (LS won't give an error), false
+     *         otherwise
      */
     public boolean isLaunchable() {
         // check there are enough users
 
         return users.size() == gameService.getNumberOfUsers();
 
-
-        /* // check there are enough users
-        if (users.size() != gameService.getNumberOfUsers()) {
-            return false;
-        }
-
-        // check all users are ready
-        boolean allReady = true;
-        for (User u : this.users) {
-            if (!u.isReady()) {
-                allReady = false;
-                break;
-            }
-        }
-        return allReady; */
+        /*
+         * // check there are enough users
+         * if (users.size() != gameService.getNumberOfUsers()) {
+         * return false;
+         * }
+         * 
+         * // check all users are ready
+         * boolean allReady = true;
+         * for (User u : this.users) {
+         * if (!u.isReady()) {
+         * allReady = false;
+         * break;
+         * }
+         * }
+         * return allReady;
+         */
     }
 
     /**
@@ -193,12 +210,14 @@ public class LobbyServiceGameSession{
         } else if (pColor.equals(Color.GREEN)) {
             colorStr = "GREEN";
         }
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
+        ClientMain.ACTION_MANAGER
+                .sendAction(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
 
     /**
      * Returns this session
+     * 
      * @return this session
      */
     public LobbyServiceGameSession getActiveSession() {

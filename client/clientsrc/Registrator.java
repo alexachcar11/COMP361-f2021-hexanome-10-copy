@@ -227,7 +227,7 @@ public class Registrator {
      *                               false otherwise
      */
     public LobbyServiceGameSession createGame(String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-                                       boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
+            boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
                 .post("http://elfenland.simui.com:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
@@ -361,10 +361,11 @@ public class Registrator {
             if (mode.equals(Mode.ELFENLAND)) {
                 stringMode = "elfenland";
             } else if (mode.equals(Mode.ELFENGOLD)) {
-                stringMode = "elfengold"; 
+                stringMode = "elfengold";
             }
-            CreateNewGameAction createNewGameAction = new CreateNewGameAction(senderName, id, numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTown);
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(createNewGameAction);
+            CreateNewGameAction createNewGameAction = new CreateNewGameAction(senderName, id, numberOfPlayers,
+                    gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTown);
+            ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
             return lsgs;
         }
     }
@@ -390,7 +391,8 @@ public class Registrator {
         } else {
             System.out.println("successful join on LS side");
             // ask the server for game info
-            GetGameInfoACK info = (GetGameInfoACK) ClientMain.ACTION_MANAGER.sendActionAndGetReply(new GetGameInfoAction(userJoining.getName(), gameSessionToJoin.getSessionID()));
+            GetGameInfoACK info = (GetGameInfoACK) ClientMain.ACTION_MANAGER
+                    .sendAction(new GetGameInfoAction(userJoining.getName(), gameSessionToJoin.getSessionID()));
             int numberOfPlayers = info.getNumberOfPlayers();
             int numberOfRounds = info.getNumberOfRounds();
             boolean destinationTownEnabled = info.isDestinationTownEnabled();
@@ -398,7 +400,8 @@ public class Registrator {
             Mode mode = info.getMode();
             TownGoldOption townGoldOption = info.getTownGoldOption();
             // create a new Game object
-            Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+            Game newGame = new Game(numberOfPlayers, numberOfRounds, destinationTownEnabled, witchEnabled, mode,
+                    townGoldOption);
             gameSessionToJoin.setGame(newGame);
             // set a currentGame
             ClientMain.currentGame = newGame;
@@ -451,35 +454,44 @@ public class Registrator {
     }
 
     // TEMPORARY LAUNCHSESSION UNTIL THE BUG IS RESOLVED:
-    // CONSEQUENCE: the available games screen will show launched games + LS won't know that the game is launched
+    // CONSEQUENCE: the available games screen will show launched games + LS won't
+    // know that the game is launched
     public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
         // send to the server
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
+        ClientMain.ACTION_MANAGER
+                .sendAction(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
     }
 
-    /* public void launchSession(LobbyServiceGameSession sessionToLaunch, User userAskingToLaunch) {
-        // user token
-        String token = userAskingToLaunch.getToken().replace("+", "%2B");
-        System.out.println(token);
-
-        // build request
-        HttpResponse<String> jsonResponse = Unirest
-                .post("http://elfenland.simui.com:4242/api/sessions/" + sessionToLaunch.getSessionID()
-                        + "?access_token="
-                        + token)
-                .asString();
-
-        System.out.println(jsonResponse.getBody());
-
-        // verify response
-        if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
-        } else {
-            System.out.println("launched successfully on the LS");
-            // send to the server
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new LaunchGameAction(userAskingToLaunch.getName(), sessionToLaunch.getSessionID()));
-        }
-    } */
+    /*
+     * public void launchSession(LobbyServiceGameSession sessionToLaunch, User
+     * userAskingToLaunch) {
+     * // user token
+     * String token = userAskingToLaunch.getToken().replace("+", "%2B");
+     * System.out.println(token);
+     * 
+     * // build request
+     * HttpResponse<String> jsonResponse = Unirest
+     * .post("http://elfenland.simui.com:4242/api/sessions/" +
+     * sessionToLaunch.getSessionID()
+     * + "?access_token="
+     * + token)
+     * .asString();
+     * 
+     * System.out.println(jsonResponse.getBody());
+     * 
+     * // verify response
+     * if (jsonResponse.getStatus() != 200) {
+     * System.err.println("Error" + jsonResponse.getStatus() +
+     * jsonResponse.getBody());
+     * } else {
+     * System.out.println("launched successfully on the LS");
+     * // send to the server
+     * ClientMain.ACTION_MANAGER.sendActionAndGetReply(new
+     * LaunchGameAction(userAskingToLaunch.getName(),
+     * sessionToLaunch.getSessionID()));
+     * }
+     * }
+     */
 
     /**
      * Helper function for availableGames(). Returns an arraylist of
@@ -631,13 +643,16 @@ public class Registrator {
                     boolean launched = (boolean) sessionJSON.get("launched");
                     User creatorUser = new User(creatorName);
                     newSession = new LobbyServiceGameSession(saveGameID, creatorUser, relatedGame, (String) sessionID);
-                    /* ArrayList<String> listOfUsers = (ArrayList<String>) sessionJSON.get("players");
-                    for (String userName : listOfUsers) {
-                        if (!userName.equals(creatorName)) {
-                            User newUser = new User(userName);
-                            newSession.addUser(newUser);
-                        }
-                    } */
+                    /*
+                     * ArrayList<String> listOfUsers = (ArrayList<String>)
+                     * sessionJSON.get("players");
+                     * for (String userName : listOfUsers) {
+                     * if (!userName.equals(creatorName)) {
+                     * User newUser = new User(userName);
+                     * newSession.addUser(newUser);
+                     * }
+                     * }
+                     */
                     newSession.setLaunched(launched);
                     // set as the game's active session
                     try {

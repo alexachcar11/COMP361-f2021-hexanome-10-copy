@@ -234,7 +234,7 @@ public class ClientMain {
                             currentUser = new User(userString, passString);
 
                             // send a test action
-                            ACTION_MANAGER.sendActionAndGetReply(new TestAction());
+                            ACTION_MANAGER.sendAction(new TestAction());
                         } else {
                             // user doesn't exist. create and login
                             User newUser = REGISTRATOR.createNewUser(userString, passString);
@@ -524,7 +524,7 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
-                            ACTION_MANAGER.sendActionAndGetReply(
+                            ACTION_MANAGER.sendAction(
                                     new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                             currentSession = gameToJoin;
                             gui.currentBackground = GUI.Screen.CHOOSEBOOT;
@@ -809,7 +809,7 @@ public class ClientMain {
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
+                                    ACTION_MANAGER.sendAction(new GetAvailableColorsAction(
                                             currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
@@ -824,7 +824,7 @@ public class ClientMain {
                                     createGameBackground.draw(nameIsTaken, 178, 120);
                                 } else {
                                     // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
+                                    ACTION_MANAGER.sendAction(new GetAvailableColorsAction(
                                             currentUser.getName(), currentSession.getSessionID()));
                                     gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                                 }
@@ -890,7 +890,7 @@ public class ClientMain {
                             String senderName = currentUser.getName();
                             String color = colorChosen.name();
                             String gameID = currentSession.getSessionID();
-                            ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID));
+                            ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
                             // display users
                             displayUsers();
                             System.out.println("displaying users as a creator");
@@ -1040,7 +1040,7 @@ public class ClientMain {
                 if (pickedRoute != null && pickedTok != null) {
 
                     ActionManager.getInstance()
-                            .sendActionAndGetReply(new PlaceCounterAction(currentPlayer.getName(),
+                            .sendAction(new PlaceCounterAction(currentPlayer.getName(),
                                     pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
                                     pickedTok.getTokenName()));
                 }
