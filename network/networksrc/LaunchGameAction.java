@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import serversrc.GameLobby;
 import serversrc.Player;
 import serversrc.ServerGame;
+import serversrc.ServerMain;
 import serversrc.ServerUser;
 
 public class LaunchGameAction implements Action{
@@ -56,32 +57,40 @@ public class LaunchGameAction implements Action{
 
     @Override
     public void execute() {
-        GameLobby gameLobby = GameLobby.getGameLobby(gameID);
-        ServerGame serverGame = gameLobby.getServerGame();
-
-        // create 1 Player per ServerUser in the GameLobby
-        for (ServerUser sUser : gameLobby.getAllUsers()) {
-            Player newPlayer = new Player(sUser, serverGame);
-        }
-
-        // distribute resources here
-        
-        // notify all users in the lobby
-        // TODO: LaunchGameACK will contain the game state
-        LaunchGameACK actionToSend = new LaunchGameACK();
         try {
-            Server serverInstance = Server.getInstance();
-            for (ServerUser serverUser : gameLobby.getAllUsers()) {
-                String username = serverUser.getName();
-                // get the user's socket
-                ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
-                // get the socket's output stream 
-                ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-                // send the acknowledgment
-                objectOutputStream.writeObject(actionToSend);
+            // send request to LS
+            ServerUser userAskingToLaunch = ServerUser.getServerUser(senderName);
+            ServerMain.REGISTRATOR.launchSession(gameID, userAskingToLaunch);
+
+            // server logic
+            GameLobby gameLobby = GameLobby.getGameLobby(gameID);
+            ServerGame serverGame = gameLobby.getServerGame();
+
+            // create 1 Player per ServerUser in the GameLobby
+            for (ServerUser sUser : gameLobby.getAllUsers()) {
+                new Player(sUser, serverGame);
             }
-        } catch (IOException e) { 
-            System.err.println("IOException in LaunchGameAction.execute()");
+            
+            // notify all users in the lobby
+            LaunchGameACK actionToSend = new LaunchGameACK();
+            try {
+                Server serverInstance = Server.getInstance();
+                for (ServerUser serverUser : gameLobby.getAllUsers()) {
+                    String username = serverUser.getName();
+                    // get the user's socket
+                    ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
+                    // get the socket's output stream 
+                    ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+                    // send the acknowledgment
+                    objectOutputStream.writeObject(actionToSend);
+                }
+            } catch (IOException e) { 
+                System.err.println("IOException in LaunchGameAction.execute()");
+            }
+
+        } catch (Exception e1) {
+            // TODO: fail to launch on LS
+            e1.printStackTrace();
         }
     }
     

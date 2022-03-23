@@ -8,29 +8,60 @@ import networksrc.UpdateUsersAction;
 public class LobbyServiceGameSession{
 
     // fields
+    private String displayName;
     private boolean launched;
     private ArrayList<User> users = new ArrayList<>();
     private String saveGameID;
     private String creator;
-    private LobbyServiceGame gameService;
     private String sessionID;
     private Game game;
     private int numberOfPlayersCurrently;
+    private static ArrayList<LobbyServiceGameSession> allSessions = new ArrayList<>();
 
     /**
-     * CONSTRUCTOR: creates a new LobbyServiceGameSession instance
-     * @param saveGameID savegameID to load. If there is none, put ""
-     * @param creator User of the creator of the game
-     * @param gameService gameservice for which this session belongs to
-     * @param sessionID sessionID on the LS
+     * CONSTRUCTOR
+     * @param saveGameID save game id or "" if there is none
+     * @param game associated game
+     * @param creator creator of the session
+     * @param sessionID session ID as seen on LS
+     * @param name display name of the session on LS
      */
-    public LobbyServiceGameSession(String saveGameID, User creator, LobbyServiceGame gameService, String sessionID) {
+    public LobbyServiceGameSession(String saveGameID, Game game, User creator, String sessionID, String name) {
         this.launched = false;
         this.saveGameID = saveGameID;
         this.creator = creator.getName();
-        this.gameService = gameService;
         this.sessionID = sessionID;
-        this.game = gameService.getGame();
+        this.game = game;
+        this.displayName = name;
+        allSessions.add(this);
+    }
+
+    /**
+     * Retrieves a LobbyServiceGameSession by ID
+     * @param sessionID sessionID to search
+     * @return  LobbyServiceGameSession or null if not found
+     */
+    public static LobbyServiceGameSession getSessionByName(String name) {
+        for (LobbyServiceGameSession s : allSessions) {
+            if (s.getDisplayName().equals(name)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves all available sessions (i.e. unlaunched)
+     * @return ArrayList<LobbyServiceGameSession> that are not launched
+     */
+    public static ArrayList<LobbyServiceGameSession> getAvailableSession() {
+        ArrayList<LobbyServiceGameSession> list = new ArrayList<>();
+        for (LobbyServiceGameSession s : allSessions) {
+            if (!s.isLaunched()) {
+                list.add(s);
+            }
+        }
+        return list;
     }
 
     /**
@@ -71,6 +102,14 @@ public class LobbyServiceGameSession{
     }
 
     /**
+     * GETTER: retrieves the display name of the session
+     * @return displayName
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
      * GETTER: returns the number of users that have currently joined the game
      * @return size of ArrayList<User>
      */
@@ -78,6 +117,10 @@ public class LobbyServiceGameSession{
         return numberOfPlayersCurrently;
     }
 
+    /**
+     * Set the current number of players to n
+     * @param n total number of players currently registered in this session
+     */
     public void setCurrentNumberOfPlayers(int n) {
         this.numberOfPlayersCurrently = n;
     }
@@ -96,14 +139,6 @@ public class LobbyServiceGameSession{
      */
     public String getCreator() {
         return creator;
-    }
-
-    /**
-     * GETTER: returns the LobbyServiceGame associated with this session.
-     * @return the LobbyServiceGame from which this session was started
-     */
-    public LobbyServiceGame getGameService() {
-        return gameService;
     }
 
     /**
@@ -158,7 +193,7 @@ public class LobbyServiceGameSession{
     public boolean isLaunchable() {
         // check there are enough users
 
-        return users.size() == gameService.getNumberOfUsers();
+        return users.size() == game.getNumberOfPlayers();
 
 
         /* // check there are enough users
@@ -181,7 +216,6 @@ public class LobbyServiceGameSession{
      * The Registrator will make this user join this game session
      */
     public LobbyServiceGameSession join(Color pColor) throws Exception {
-        Registrator.instance().joinGame(this, ClientMain.currentUser);
         ClientMain.currentSession = this;
         // pColor into string format
         String colorStr = null;
@@ -199,14 +233,6 @@ public class LobbyServiceGameSession{
             colorStr = "GREEN";
         }
         ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
-        return this;
-    }
-
-    /**
-     * Returns this session
-     * @return this session
-     */
-    public LobbyServiceGameSession getActiveSession() {
         return this;
     }
 }

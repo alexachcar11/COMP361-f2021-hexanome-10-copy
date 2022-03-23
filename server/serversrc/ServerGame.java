@@ -9,14 +9,6 @@ max 6 players
 import java.util.ArrayList;
 import java.util.*;
 
-// import clientsrc.Card;
-// import clientsrc.GoldCard;
-// import clientsrc.Mode;
-// import clientsrc.Player;
-// import clientsrc.Route;
-// import clientsrc.Town;
-// import clientsrc.TownGoldOption;
-
 public class ServerGame {
 
     private ArrayList<Player> players;

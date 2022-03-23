@@ -1,11 +1,8 @@
 package networksrc;
 
-import java.util.ArrayList;
-
 import serversrc.GameLobby;
 import serversrc.Mode;
 import serversrc.ServerGame;
-import serversrc.ServerUser;
 import serversrc.TownGoldOption;
 
 public class GetGameInfoAction implements Action{

@@ -27,7 +27,7 @@ public class ActionManager {
      */
     public void waitForPlayersAsCreator() {
         // WAIT FOR PLAYERS
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
         
         // wait until launched
         while (!ClientMain.currentSession.isLaunchable()) {
@@ -54,7 +54,7 @@ public class ActionManager {
      */
     public void waitForPlayers() {
         // WAIT FOR PLAYERS
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
         
         // wait until launched
         while (!ClientMain.currentSession.isLaunched()) {
@@ -85,7 +85,7 @@ public class ActionManager {
      */
     public void waitForMessages() {
         // WAIT FOR A MESSAGE
-        ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+        ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
         while (!ClientMain.currentPlayer.isTurn()) {
             Action actionIn = null;
             try {
@@ -111,11 +111,11 @@ public class ActionManager {
     public Action sendActionAndGetReply(Action action) {
         try {
             // SEND TEST
-            ObjectOutputStream out = ClientMain.currentUser.getClient().getObjectOutputStream();
+            ObjectOutputStream out = ClientMain.currentClient.getObjectOutputStream();
             out.writeObject(action);
 
             // WAIT FOR REPLY
-            ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
+            ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
             boolean noAnswer = true;
             while (noAnswer) {
                 Action actionIn = null;
