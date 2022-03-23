@@ -1704,23 +1704,28 @@ public class ClientMain {
                 // draw circle for the current turn
                 MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
                 ClientMain.gui.window.draw(roundNumCircle, 792, 562);
+
+                // can be optimized a bit for less code 
                 int roundNumber = 1;
-                if (roundNumber == 1) {
-                    MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(firstRound, 806, 570);
-                } else if (roundNumber == 2) {
-                    MinuetoText secondRound = new MinuetoText("2", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(secondRound, 806, 570);
-                } else if (roundNumber == 3) {
-                    MinuetoText thirdRound = new MinuetoText("3", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(thirdRound, 806, 570);
-                } else if (roundNumber == 4) {
-                    MinuetoText fourthRound = new MinuetoText("4", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(fourthRound, 806, 570);
-                } else if (roundNumber == 5) {
-                    MinuetoText fifthRound = new MinuetoText("5", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(fifthRound, 806, 570);
-                }
+                // if (roundNumber == 1) {
+                //     MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                //     ClientMain.gui.window.draw(firstRound, 806, 570);
+                // } else if (roundNumber == 2) {
+                //     MinuetoText secondRound = new MinuetoText("2", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                //     ClientMain.gui.window.draw(secondRound, 806, 570);
+                // } else if (roundNumber == 3) {
+                //     MinuetoText thirdRound = new MinuetoText("3", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                //     ClientMain.gui.window.draw(thirdRound, 806, 570);
+                // } else if (roundNumber == 4) {
+                //     MinuetoText fourthRound = new MinuetoText("4", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                //     ClientMain.gui.window.draw(fourthRound, 806, 570);
+                // } else if (roundNumber == 5) {
+                //     MinuetoText fifthRound = new MinuetoText("5", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                //     ClientMain.gui.window.draw(fifthRound, 806, 570);
+                // }
+
+                MinuetoText roundNumberText = new MinuetoText(String.valueOf(roundNumber), ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
                 MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true); 
                 ClientMain.gui.window.draw(goldValueCircle, 792, 542); 
