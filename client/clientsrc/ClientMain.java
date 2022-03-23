@@ -375,6 +375,9 @@ public class ClientMain {
         JPanel tokenPanel = new JPanel();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
 
+        JPanel goldPanel = new JPanel();
+        goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
+
         // can substitute 'Opponent's' for the actual name of the opponent
         String playerName = p.getName();
         JFrame opponentFrame = new JFrame(playerName + "'s Inventory");
@@ -384,8 +387,11 @@ public class ClientMain {
         travelCardText.setText("Travel Cards:     ");
         tokenText.setText("Tokens:     ");
 
+        JLabel goldText = new JLabel(playerName + " has " + p.getGoldAmount() + " gold.");
+
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
+        goldPanel.add(goldText);
 
         for (CardSprite tCard : p.getCardsInHand()) {
             ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
@@ -404,6 +410,8 @@ public class ClientMain {
         inventory.add(cardPanel);
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(tokenPanel);
+        inventory.add(Box.createVerticalStrut(10));
+        inventory.add(goldPanel);
 
         opponentFrame.add(inventory);
 
@@ -426,6 +434,9 @@ public class ClientMain {
         JPanel playerBeen = new JPanel();
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
+        JPanel goldVal = new JPanel();
+        goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
+
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
 
@@ -442,13 +453,19 @@ public class ClientMain {
             hasBeenText.setText("You have not been to this town yet");
         }
 
+        JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue()); 
+        goldValueText.setText("This town has a gold value of " + t.getGoldValue());
+        
         nameOfTown.add(currentlyLookingAtText);
         playerBeen.add(hasBeenText);
+        goldVal.add(goldValueText);
 
         townInformation.add(Box.createVerticalStrut(30));
         townInformation.add(nameOfTown);
         townInformation.add(Box.createVerticalStrut(10));
         townInformation.add(playerBeen);
+        townInformation.add(Box.createVerticalStrut(10));
+        townInformation.add(goldVal);
 
         townOverview.add(townInformation);
         
