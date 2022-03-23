@@ -160,6 +160,7 @@ public class ClientPlayer {
     }
 
     public void drawBoot() {
+        this.incrementGold(inTown.getGoldValue());
         ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
