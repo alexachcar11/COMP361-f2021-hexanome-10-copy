@@ -2,8 +2,6 @@ package networksrc;
 
 import java.io.*;
 import java.net.*;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import clientsrc.User;
 
@@ -12,12 +10,6 @@ public class Client implements NetworkNode {
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private User aUser;
-    // queue for actions to be executed by the client
-    private final Queue<Action> actionInQueue;
-    // thread used to execute incoming actions
-    private final Thread executionThread;
-    // thread for listening to server and adding actions to queue
-    private final Thread listenThread;
 
     public Client(String pHost, int pPort, User pUser) {
         try {
@@ -34,19 +26,6 @@ public class Client implements NetworkNode {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
         }
         this.aUser = pUser;
-        this.actionInQueue = new LinkedList<>();
-        this.listenThread = new Thread(() -> this.listenToServer());
-        this.executionThread = new Thread(() -> {
-            while (true) {
-                if (!actionInQueue.isEmpty()) {
-                    Action toExecute = actionInQueue.poll();
-                    if (toExecute.isValid()) {
-                        toExecute.execute();
-                    }
-                }
-            }
-        });
-
     }
 
     /**
@@ -62,8 +41,7 @@ public class Client implements NetworkNode {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        this.executionThread.start();
-        this.listenThread.start();
+        this.listenToServer();
     }
 
     /**
@@ -80,7 +58,7 @@ public class Client implements NetworkNode {
                 e.printStackTrace();
             }
             if (actionIn != null) {
-                this.actionInQueue.add(actionIn);
+                actionIn.execute();
             }
         }
     }

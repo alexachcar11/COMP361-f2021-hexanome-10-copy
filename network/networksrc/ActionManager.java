@@ -109,27 +109,12 @@ public class ActionManager {
      * @param action action to send to the user. Don't forget to set senderName in
      *               the action parameters.
      */
-    public Action sendActionAndGetReply(Action action) {
+    public Action sendAction(Action action) {
         try {
             // SEND TEST
             ObjectOutputStream out = ClientMain.currentUser.getClient().getObjectOutputStream();
             out.writeObject(action);
 
-            // WAIT FOR REPLY
-            ObjectInputStream in = ClientMain.currentUser.getClient().getObjectInputStream();
-            boolean noAnswer = true;
-            while (noAnswer) {
-                Action actionIn = null;
-                actionIn = (Action) in.readObject();
-                if (actionIn != null) {
-                    // REPLY RECEIVED
-                    if (actionIn.isValid()) {
-                        actionIn.execute();
-                    }
-                    noAnswer = false;
-                    return actionIn;
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

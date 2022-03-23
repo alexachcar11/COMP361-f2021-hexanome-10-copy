@@ -234,7 +234,7 @@ public class ClientMain {
                             currentUser = new User(userString, passString);
 
                             // send a test action
-                            ACTION_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
+                            ACTION_MANAGER.sendActionAndGetReply(new TestAction());
                         } else {
                             // user doesn't exist. create and login
                             User newUser = REGISTRATOR.createNewUser(userString, passString);
