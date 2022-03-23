@@ -70,6 +70,9 @@ public class MoveBootAction implements Action {
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
 
+        // increase the amount of gold that the player has based on how much gold the town is worth 
+        playerWhoSent.incrementGold(dTown.getGoldValue());
+
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
         // here you can do stuff with playerWhoSent and playersCurrentGame

@@ -61,6 +61,10 @@ public class Player {
         // aBootAction = new BootAction(this);
     }
 
+    public void incrementGold(int townGoldValue) { 
+        this.gold += townGoldValue;
+    }
+
     public static Player getPlayerByName(String name) {
         for (Player p : allPlayers) {
             if (p.getServerUser().getName().equals(name)) {

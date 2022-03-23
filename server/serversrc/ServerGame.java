@@ -80,27 +80,27 @@ public class ServerGame {
         // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
         // depending on the mode
 
-        Town esselen = new Town("Esselen", 38, 103, 99, 152);
-        Town yttar = new Town("Yttar", 35, 98, 222, 274);
-        Town wylhien = new Town("Wylhien", 187, 234, 30, 75);
-        Town parundia = new Town("Parundia", 172, 241, 172, 227);
-        Town jaccaranda = new Town("Jaccaranda", 312, 381, 61, 119);
-        Town albaran = new Town("AlBaran", 280, 343, 227, 283);
-        Town thortmanni = new Town("Throtmanni", 451, 518, 129, 188);
-        Town rivinia = new Town("Rivinia", 555, 621, 205, 256);
-        Town tichih = new Town("Tichih", 604, 662, 79, 135);
-        Town ergeren = new Town("ErgEren", 716, 776, 210, 259);
-        Town grangor = new Town("Grangor", 49, 112, 366, 411);
-        Town mahdavikia = new Town("MahDavikia", 57, 136, 482, 533);
-        Town kihromah = new Town("Kihromah", 164, 223, 314, 367);
-        Town ixara = new Town("Ixara", 257, 322, 489, 534);
-        Town dagamura = new Town("DagAmura", 281, 339, 345, 394);
-        Town lapphalya = new Town("Lapphalya", 415, 482, 383, 437);
-        Town feodori = new Town("Feodori", 411, 472, 259, 317);
-        Town virst = new Town("Virst", 478, 536, 491, 541);
-        Town elvenhold = new Town("Elvenhold", 577, 666, 291, 370);
-        Town beata = new Town("Beata", 724, 779, 407, 456);
-        Town strykhaven = new Town("Strkhaven", 616, 679, 463, 502);
+        Town esselen = new Town("Esselen", 38, 103, 99, 152, 4);
+        Town yttar = new Town("Yttar", 35, 98, 222, 274, 4);
+        Town wylhien = new Town("Wylhien", 187, 234, 30, 75, 3);
+        Town parundia = new Town("Parundia", 172, 241, 172, 227, 4);
+        Town jaccaranda = new Town("Jaccaranda", 312, 381, 61, 119, 5);
+        Town albaran = new Town("AlBaran", 280, 343, 227, 283, 7);
+        Town thortmanni = new Town("Throtmanni", 451, 518, 129, 188, 3);
+        Town rivinia = new Town("Rivinia", 555, 621, 205, 256, 3);
+        Town tichih = new Town("Tichih", 604, 662, 79, 135, 3);
+        Town ergeren = new Town("ErgEren", 716, 776, 210, 259, 5);
+        Town grangor = new Town("Grangor", 49, 112, 366, 411, 5);
+        Town mahdavikia = new Town("MahDavikia", 57, 136, 482, 533, 5);
+        Town kihromah = new Town("Kihromah", 164, 223, 314, 367, 6);
+        Town ixara = new Town("Ixara", 257, 322, 489, 534, 3);
+        Town dagamura = new Town("DagAmura", 281, 339, 345, 394, 4);
+        Town lapphalya = new Town("Lapphalya", 415, 482, 383, 437, 2);
+        Town feodori = new Town("Feodori", 411, 472, 259, 317, 4);
+        Town virst = new Town("Virst", 478, 536, 491, 541, 3);
+        Town elvenhold = new Town("Elvenhold", 577, 666, 291, 370, 0);
+        Town beata = new Town("Beata", 724, 779, 407, 456, 2);
+        Town strykhaven = new Town("Strkhaven", 616, 679, 463, 502, 4);
 
         towns.add(esselen);
         towns.add(yttar);
