@@ -54,11 +54,11 @@ public class Client implements NetworkNode {
             Action actionIn = null;
             try {
                 actionIn = (Action) aObjectIn.readObject();
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
-            }
-            if (actionIn != null) {
-                actionIn.execute();
             }
         }
     }
