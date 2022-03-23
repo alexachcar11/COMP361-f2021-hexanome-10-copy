@@ -22,6 +22,8 @@ public class Town {
 
     // keeps track of all towns so we can search them by name
     private static ArrayList<Town> allTowns = new ArrayList<>();
+    private int goldValue; 
+
 
     /**
      * CONSTRUCTOR : Creates a Town object
@@ -40,6 +42,7 @@ public class Town {
         this.minY = minY;
         this.maxY = maxY;
         // if(Game.getNumberOfPlayers()) {
+        this.goldValue = goldValue;
 
         // }
         allTowns.add(this);
@@ -145,8 +148,13 @@ public class Town {
         return location;
     }
 
+
     public ArrayList<ClientPlayer> getPlayersThatPassed() { 
         return playersThatPassed;
+    }
+
+    public int getGoldValue(){ 
+        return this.goldValue;
     }
 
     // public boolean notClickingOnATown(int x, int y) { 

@@ -3,6 +3,7 @@
 package clientsrc;
 
 import java.util.*;
+import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
@@ -94,6 +95,14 @@ public class ClientPlayer {
 
     public boolean isTurn() {
         return isTurn;
+    }
+
+    public void incrementGold(int townGoldValue) { 
+        this.gold += townGoldValue;
+    }
+
+    public int getGoldAmount() { 
+        return this.gold;
     }
 
     public GUI getGui() {
