@@ -8,6 +8,10 @@ max 6 players
 
 import java.util.ArrayList;
 
+import org.minueto.MinuetoFileException;
+
+import serversrc.CardType;
+
 // import serversrc.Card;
 // import serversrc.GoldCard;
 // import serversrc.Mode;
@@ -18,7 +22,7 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private ArrayList<Player> players;
+    private static ArrayList<ClientPlayer> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
     private ArrayList<Route> routes;
@@ -29,18 +33,21 @@ public class Game {
     private boolean witchEnabled;
     private Mode mode;
     private TownGoldOption townGoldOption;
-    private ArrayList<Card> faceDownCardPile;
-    private ArrayList<Card> faceUpCardPile;
-    private ArrayList<GoldCard> goldCardPile;
-    //private Auction auction; not doing this now
-
+    private static ArrayList<CardSprite> faceDownCardPile;
+    private ArrayList<CardSprite> faceUpCardPile;
+    private TownGraph aTownGraph;
+    // private ArrayList<GoldCard> goldCardPile;
+    // private Auction auction; not doing this now
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
      */
-    public Game(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, Mode mode, TownGoldOption townGoldOption) {
+    public Game(int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled,
+            Mode mode, TownGoldOption townGoldOption) {
 
         this.players = new ArrayList<>();
+        this.faceDownCardPile = new ArrayList<>();
+        this.faceUpCardPile = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
         this.gameRoundsLimit = gameRoundsLimit;
         this.destinationTownEnabled = destinationTownEnabled;
@@ -52,7 +59,8 @@ public class Game {
         towns = new ArrayList<>();
         routes = new ArrayList<>();
 
-        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction depending on the mode
+        // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
+        // depending on the mode
 
         Town esselen = new Town("Esselen", 38, 103, 99, 152);
         Town yttar = new Town("Yttar", 35, 98, 222, 274);
@@ -164,13 +172,22 @@ public class Game {
         routes.add(kihromahDagamura);
         routes.add(grangorMahdavikia);
 
+        aTownGraph = new TownGraph();
+        aTownGraph.addEdges(routes);
+
+    }
+
+    public TownGraph getTownGraph() {
+        return this.aTownGraph;
     }
 
     /**
-     * Adds a player to the players arraylist. If the max number of players has already been reached, throw an error
+     * Adds a player to the players arraylist. If the max number of players has
+     * already been reached, throw an error
+     * 
      * @param player player to add to the game
      */
-    public void addPlayer(Player player) throws IndexOutOfBoundsException{
+    public void addPlayer(ClientPlayer player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
             Town elvenhold = Game.getTownByName("Elvenhold");
@@ -181,7 +198,7 @@ public class Game {
         }
     }
 
-    //GETTER for number of players in the game instance
+    // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
@@ -210,18 +227,18 @@ public class Game {
         return towns;
     }
 
-    //GETTER: gets town in towns by name
+    // GETTER: gets town in towns by name
     public static Town getTownByName(String name) {
         for (Town t : towns) {
             if (t.getTownName().equals(name)) {
                 return t;
-                }
             }
+        }
         return null;
     }
 
     public static boolean notClickingOnATown(int x, int y) {
-        for(Town t: towns) {
+        for (Town t : towns) {
 
             if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
                 return false;
@@ -229,6 +246,29 @@ public class Game {
         }
 
         return false;
+    }
+
+    public static CardSprite getFaceDownCard(String cardString) throws MinuetoFileException {
+        for (CardType cT : CardType.values()) {
+            if (cT.toString().equalsIgnoreCase(cardString)) {
+                CardSprite finCard = new CardSprite(cT);
+                return finCard;
+            }
+        }
+        throw new IllegalArgumentException();
+
+    }
+
+    public ArrayList<ClientPlayer> getPlayers() {
+        return players;
+    }
+
+    public void setPhase(int phase) {
+        this.currentPhase = phase;
+    }
+
+    public int getCurrentPhase() {
+        return this.currentPhase;
     }
 
 }

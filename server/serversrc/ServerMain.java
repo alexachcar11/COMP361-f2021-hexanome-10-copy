@@ -8,7 +8,6 @@ public class ServerMain {
     public static Registrator REGISTRATOR = Registrator.instance();
 
     public static void main(String[] args) {
-        Thread serverThread = new Thread(() -> SERVER.start());
-        serverThread.start();
+        SERVER.start();
     }
 }

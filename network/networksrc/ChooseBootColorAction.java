@@ -16,7 +16,6 @@ public class ChooseBootColorAction implements Action {
         this.gameID = gameID;
     }
 
-
     @Override
     public boolean isValid() {
         // null checks
@@ -71,12 +70,12 @@ public class ChooseBootColorAction implements Action {
             sUser.setColor(Color.YELLOW);
         } else if (color.equals("PURPLE")) {
             sUser.setColor(Color.PURPLE);
-        } 
+        }
 
         // send ack to the sender only
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         ChooseBootColorACK actionToSend = new ChooseBootColorACK(color);
         ackManager.sendToSender(actionToSend, senderName);
     }
-    
+
 }

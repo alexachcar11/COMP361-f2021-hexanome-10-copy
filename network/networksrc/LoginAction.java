@@ -1,6 +1,5 @@
 package networksrc;
 
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import serversrc.Registrator;
@@ -32,7 +31,7 @@ public class LoginAction implements Action {
         Registrator REGISTRATOR = Registrator.instance();
         if (!REGISTRATOR.userExists(username)) {
             LoginACK action = new LoginACK(username, "user-dne");
-            ACKManager.getInstance().sendToSender(action, username);
+            ActionManager.getInstance().sendToSender(action, username);
             return false;
         }
 
@@ -41,8 +40,7 @@ public class LoginAction implements Action {
 
     @Override
     public void execute() {
-        
-        
+
         try {
             Registrator REGISTRATOR = Registrator.instance();
             // create a token
@@ -53,17 +51,16 @@ public class LoginAction implements Action {
 
             // send ACK to sender
             LoginACK action = new LoginACK(username, "success");
-            ACKManager.getInstance().sendToSender(action, username);
+            ActionManager.getInstance().sendToSender(action, username);
 
         } catch (IllegalAccessException e) {
             LoginACK action = new LoginACK(username, "wrong-pw");
-            ACKManager.getInstance().sendToSender(action, username);
+            ActionManager.getInstance().sendToSender(action, username);
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        
     }
-    
+
 }
