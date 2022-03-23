@@ -1722,6 +1722,11 @@ public class ClientMain {
                     ClientMain.gui.window.draw(fifthRound, 806, 570);
                 }
 
+                MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true); 
+                ClientMain.gui.window.draw(goldValueCircle, 792, 542); 
+                MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), ClientMain.fontArial20, MinuetoColor.BLACK);
+                ClientMain.gui.window.draw(goldAmnt, 806, 550);
+
                 int numberPlayers = players.size();
 
                 for(int i = 0; i < numberPlayers; i++) { 
