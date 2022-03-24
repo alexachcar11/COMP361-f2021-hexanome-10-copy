@@ -1,5 +1,8 @@
 package networksrc;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import clientsrc.ClientMain;
 import clientsrc.Game;
 import clientsrc.LobbyServiceGame;
@@ -94,9 +97,18 @@ public class CreateNewGameACK implements Action {
             ClientMain.currentSession.addUser(ClientMain.currentUser);
 
             // get available boot colors
-            ClientMain.ACTION_MANAGER
-                    .sendActionAndGetResponse(
-                            new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
+            try {
+                ClientMain.ACTION_MANAGER
+                        .sendAction(
+                                new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
+                ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
+                Action ack = (Action) in.readObject();
+                if (ack.isValid()) {
+                    ack.execute();
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
     }

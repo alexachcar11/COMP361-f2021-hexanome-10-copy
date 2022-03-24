@@ -66,6 +66,7 @@ public class ClientMain {
     public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
+    static List<MinuetoEventQueue> handlerQueues = new ArrayList<>();
     public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
     public static MinuetoImage elfenlandImage;
@@ -228,7 +229,7 @@ public class ClientMain {
                     // login
                     try {
                         currentClient.setName(userString);
-                        ACTION_MANAGER.sendActionAndGetResponse(new LoginAction(userString, passString));
+                        ACTION_MANAGER.sendAction(new LoginAction(userString, passString));
 
                         // NOTE: commented out the code to create a new user
 
@@ -518,7 +519,7 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
-                            ACTION_MANAGER.sendActionAndGetResponse(
+                            ACTION_MANAGER.sendAction(
                                     new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                             currentSession = gameToJoin;
                             gui.currentBackground = GUI.Screen.CHOOSEBOOT;
@@ -797,7 +798,7 @@ public class ClientMain {
                                 CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
                                         nameString, numberPlayers, numRoundsSel, destinationTownSel, false, "elfenland",
                                         "no");
-                                ClientMain.ACTION_MANAGER.sendActionAndGetResponse(createNewGameAction);
+                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
                             } else if (modeSel.equals(Mode.ELFENGOLD)) {
                                 // send request to the server to create an elfengold game
                                 String townGoldOptionString = null;
@@ -811,7 +812,7 @@ public class ClientMain {
                                 CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
                                         nameString, numberPlayers, 6, destinationTownSel, witchSel, "elfengold",
                                         townGoldOptionString);
-                                ClientMain.ACTION_MANAGER.sendActionAndGetResponse(createNewGameAction);
+                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -875,13 +876,13 @@ public class ClientMain {
                             String color = colorChosen.name();
                             String gameID = currentSession.getSessionID();
                             ACTION_MANAGER
-                                    .sendActionAndGetResponse(new ChooseBootColorAction(senderName, color, gameID));
+                                    .sendAction(new ChooseBootColorAction(senderName, color, gameID));
                             // display users
                             displayUsers();
                             System.out.println("displaying users as a creator");
                             // display game info
                             displayLobbyInfo();
-                        } catch (MinuetoFileException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
 
@@ -1029,10 +1030,14 @@ public class ClientMain {
                 pickedRoute.placeToken(currentPlayer, pickedTok);
                 if (pickedRoute != null && pickedTok != null) {
 
-                    ActionManager.getInstance()
-                            .sendActionAndGetResponse(new PlaceCounterAction(currentPlayer.getName(),
-                                    pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
-                                    pickedTok.getTokenName()));
+                    try {
+                        ActionManager.getInstance()
+                                .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                                        pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                        pickedTok.getTokenName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -1090,9 +1095,13 @@ public class ClientMain {
                 // for the creator
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
                     // send to the server
-                    ClientMain.ACTION_MANAGER
-                            .sendActionAndGetResponse(
-                                    new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
+                    try {
+                        ClientMain.ACTION_MANAGER
+                                .sendAction(
+                                        new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -1263,21 +1272,26 @@ public class ClientMain {
         // create entry screen mouse handler
         entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(entryScreenMouseHandler, entryScreenQueue);
+        handlerQueues.add(entryScreenQueue);
 
         // create login screen keyboard handler
         loginScreenQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(loginScreenKeyboardHandler, loginScreenQueue);
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
+        handlerQueues.add(loginScreenQueue);
         elfenlandQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenlandMouseHandler, elfenlandQueue);
+        handlerQueues.add(elfenlandQueue);
 
         // lobby screen mouse handler
         lobbyScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(lobbyMouseHandler, lobbyScreenQueue);
+        handlerQueues.add(lobbyScreenQueue);
 
         // create game screen keyboard handler
         createGameQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(gameScreenKeyboardHandler, createGameQueue);
+        handlerQueues.add(createGameQueue);
 
         // create game screen mouse handler
         gui.window.registerMouseHandler(gameScreenMouseHandler, createGameQueue);
@@ -1285,14 +1299,17 @@ public class ClientMain {
         // mouse handler for choose boot
         chooseBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(chooseBootMouseHandler, chooseBootQueue);
+        handlerQueues.add(chooseBootQueue);
 
         // mouse handler for elfenland lobby
         elfenlandLobbyQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenLandLobbyMouseHandler, elfenlandLobbyQueue);
+        handlerQueues.add(elfenlandLobbyQueue);
 
         // mouse handler for place counter
         placeCounterQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(placeCounterMouseHandler, placeCounterQueue);
+        handlerQueues.add(placeCounterQueue);
 
         int once = 1;
         // draw on the window
@@ -1587,7 +1604,11 @@ public class ClientMain {
     public static void displayAvailableGames() {
         // retrieve info on the server
         GetAvailableSessionsAction action = new GetAvailableSessionsAction(currentUser.getName());
-        ACTION_MANAGER.sendActionAndGetResponse(action);
+        try {
+            ACTION_MANAGER.sendAction(action);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
         // reset buttons
         joinButtonCoordinates.clear();

@@ -1,5 +1,7 @@
 package clientsrc;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import networksrc.PlayerHasJoinedAction;
@@ -88,7 +90,12 @@ public class LobbyServiceGameSession {
 
     public void updateUsers() {
         String senderName = ClientMain.currentUser.getName();
-        ClientMain.ACTION_MANAGER.sendActionAndGetResponse(new UpdateUsersAction(senderName, sessionID));
+        try {
+            ClientMain.ACTION_MANAGER.sendAction(new UpdateUsersAction(senderName, sessionID));
+            ClientMain.currentClient.receiveAction();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -253,7 +260,7 @@ public class LobbyServiceGameSession {
             colorStr = "GREEN";
         }
         ClientMain.ACTION_MANAGER
-                .sendActionAndGetResponse(
+                .sendAction(
                         new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
