@@ -129,11 +129,15 @@ public class ActionManager {
      * @param action action to send to the user. Don't forget to set senderName in
      *               the action parameters.
      */
-    public Action sendAction(Action action) {
+    public Action sendActionAndGetResponse(Action action) {
         try {
-            // SEND TEST
             ObjectOutputStream out = ClientMain.currentClient.getObjectOutputStream();
             out.writeObject(action);
+            ObjectInputStream in = ClientMain.currentClient.getObjectInputStream();
+            Action toExecute = (Action) in.readObject();
+            if (toExecute.isValid()) {
+                toExecute.execute();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

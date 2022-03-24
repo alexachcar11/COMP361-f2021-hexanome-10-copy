@@ -14,7 +14,6 @@ import org.minueto.window.MinuetoPanel;
 
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
-import networksrc.Client;
 import networksrc.CreateNewGameAction;
 //import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
@@ -22,6 +21,7 @@ import networksrc.GetAvailableSessionsAction;
 import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
 import networksrc.PlaceCounterAction;
+import networksrc.Server;
 import networksrc.TestAction;
 // import serversrc.Token;
 
@@ -78,20 +78,20 @@ public class ClientMain {
     static MinuetoImage playScreenImage;
     static MinuetoImage loginScreenImage;
     static MinuetoImage whiteBoxImage;
-    private static MinuetoImage lobbyBackground;
+    static MinuetoImage lobbyBackground;
     static MinuetoImage createGameBackground;
     static MinuetoImage createGameBackgroundElfengold;
     static MinuetoImage elfenlandSelected;
     static MinuetoImage elfenGoldSelected;
-    private static MinuetoImage chooseBootBackground;
-    private static MinuetoImage redBoppel;
-    private static MinuetoImage blueBoppel;
-    private static MinuetoImage greenBoppel;
-    private static MinuetoImage blackBoppel;
-    private static MinuetoImage yellowBoppel;
-    private static MinuetoImage purpleBoppel;
-    private static MinuetoImage lobbyElfenlandBackground;
-    private static MinuetoImage lobbyElfengoldBackground;
+    static MinuetoImage chooseBootBackground;
+    static MinuetoImage redBoppel;
+    static MinuetoImage blueBoppel;
+    static MinuetoImage greenBoppel;
+    static MinuetoImage blackBoppel;
+    static MinuetoImage yellowBoppel;
+    static MinuetoImage purpleBoppel;
+    static MinuetoImage lobbyElfenlandBackground;
+    static MinuetoImage lobbyElfengoldBackground;
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
@@ -227,29 +227,19 @@ public class ClientMain {
                 else {
                     // login
                     try {
-                        if (currentClient == null) {
-                            // client-server connection
-                            Client client = new Client("elfenland.simui.com", 13645, userString);
-                            client.start();
-                            currentClient = client;
-                        } else if (clientNeedsNewName) {
+                        if (clientNeedsNewName) {
                             // here if the username provided does not exist
                             // associate the client with a new name on the server
                             currentClient.setName(userString);
                         }
-
-                        // NOTE: we skip the above if-else when the password provided is wrong
-
-                        // send login info to the server
-                        ACTION_MANAGER.sendAction(new LoginAction(userString, passString));
+                        ACTION_MANAGER.sendActionAndGetResponse(new LoginAction(userString, passString));
 
                         // NOTE: commented out the code to create a new user
-                        /*
-                         * // user doesn't exist. create and login
-                         * User newUser = REGISTRATOR.createNewUser(userString, passString);
-                         * System.out.println("New User");
-                         * currentUser = newUser;
-                         */
+
+                        // user doesn't exist. create and login
+                        // User newUser = REGISTRATOR.createNewUser(userString, passString);
+                        // System.out.println("New User");
+                        // currentUser = newUser;
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -532,7 +522,7 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
-                            ACTION_MANAGER.sendAction(
+                            ACTION_MANAGER.sendActionAndGetResponse(
                                     new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                             currentSession = gameToJoin;
                             gui.currentBackground = GUI.Screen.CHOOSEBOOT;
@@ -811,7 +801,7 @@ public class ClientMain {
                                 CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
                                         nameString, numberPlayers, numRoundsSel, destinationTownSel, false, "elfenland",
                                         "no");
-                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
+                                ClientMain.ACTION_MANAGER.sendActionAndGetResponse(createNewGameAction);
                             } else if (modeSel.equals(Mode.ELFENGOLD)) {
                                 // send request to the server to create an elfengold game
                                 String townGoldOptionString = null;
@@ -825,7 +815,7 @@ public class ClientMain {
                                 CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
                                         nameString, numberPlayers, 6, destinationTownSel, witchSel, "elfengold",
                                         townGoldOptionString);
-                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
+                                ClientMain.ACTION_MANAGER.sendActionAndGetResponse(createNewGameAction);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -888,7 +878,8 @@ public class ClientMain {
                             String senderName = currentUser.getName();
                             String color = colorChosen.name();
                             String gameID = currentSession.getSessionID();
-                            ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
+                            ACTION_MANAGER
+                                    .sendActionAndGetResponse(new ChooseBootColorAction(senderName, color, gameID));
                             // display users
                             displayUsers();
                             System.out.println("displaying users as a creator");
@@ -1012,8 +1003,8 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
-    private static TokenSprite pickedTok = null;
+    static Route pickedRoute = null;
+    static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMouseMove(int arg0, int arg1) {
@@ -1043,7 +1034,7 @@ public class ClientMain {
                 if (pickedRoute != null && pickedTok != null) {
 
                     ActionManager.getInstance()
-                            .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                            .sendActionAndGetResponse(new PlaceCounterAction(currentPlayer.getName(),
                                     pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
                                     pickedTok.getTokenName()));
                 }
@@ -1104,7 +1095,8 @@ public class ClientMain {
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
                     // send to the server
                     ClientMain.ACTION_MANAGER
-                            .sendAction(new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
+                            .sendActionAndGetResponse(
+                                    new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
                 }
             }
 
@@ -1137,42 +1129,42 @@ public class ClientMain {
     };
 
     // for login screen queue
-    private static boolean userNameSel = false;
-    private static boolean passWordSel = false;
-    private static String userString = "";
-    private static String passString = "";
+    static boolean userNameSel = false;
+    static boolean passWordSel = false;
+    static String userString = "";
+    static String passString = "";
     public static boolean clientNeedsNewName = false;
 
     // for mute button
-    private static boolean soundOn = true;
-    private static Clip loadedClip;
-    private static long clipPos;
-    private static boolean soundStarted = false;
+    static boolean soundOn = true;
+    static Clip loadedClip;
+    static long clipPos;
+    static boolean soundStarted = false;
 
-    private static boolean nameSel = false;
-    private static String nameString = "";
-    private static Mode modeSel = Mode.ELFENLAND;
-    private static boolean destinationTownSel = false;
-    private static int numRoundsSel = 3;
-    private static TownGoldOption townGoldOption = TownGoldOption.NO;
-    private static boolean witchSel = false;
-    private static boolean modeDropdownActive = false;
-    private static boolean sizeDropdownActive = false;
-    private static boolean destinationDropdownActive = false;
-    private static boolean roundsDropdownActive = false;
-    private static boolean witchDropdownActive = false;
-    private static boolean townGoldDropdownActive = false;
-    private static LobbyServiceGameSession gameToJoin;
+    static boolean nameSel = false;
+    static String nameString = "";
+    static Mode modeSel = Mode.ELFENLAND;
+    static boolean destinationTownSel = false;
+    static int numRoundsSel = 3;
+    static TownGoldOption townGoldOption = TownGoldOption.NO;
+    static boolean witchSel = false;
+    static boolean modeDropdownActive = false;
+    static boolean sizeDropdownActive = false;
+    static boolean destinationDropdownActive = false;
+    static boolean roundsDropdownActive = false;
+    static boolean witchDropdownActive = false;
+    static boolean townGoldDropdownActive = false;
+    static LobbyServiceGameSession gameToJoin;
 
     // create window that will contain our game - stays in Main (or not lol)
     public static final MinuetoWindow WINDOW = new MinuetoFrame(1024, 768, true);;
 
     // for lobbyMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
+    static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
 
     // for chooseBootMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, Color>> colorButtonCoordinates = new ArrayList<>();
-    private static Color colorChosen;
+    static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, Color>> colorButtonCoordinates = new ArrayList<>();
+    static Color colorChosen;
 
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
@@ -1308,152 +1300,9 @@ public class ClientMain {
 
         int once = 1;
         // draw on the window
-        while (true) {
-            if (gui.currentBackground == GUI.Screen.MENU) {
-                gui.window.draw(playScreenImage, 0, 0);
-                while (entryScreenQueue.hasNext()) {
-                    entryScreenQueue.handle();
-                }
-            } else if (gui.currentBackground == GUI.Screen.LOGIN) {
-                gui.window.draw(loginScreenImage, 0, 0);
-                while (loginScreenQueue.hasNext()) {
-                    loginScreenQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                gui.window.draw(lobbyBackground, 0, 0);
-                while (lobbyScreenQueue.hasNext()) {
-                    lobbyScreenQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
-                gui.window.draw(createGameBackground, 0, 0);
-                while (createGameQueue.hasNext()) {
-                    createGameQueue.handle();
-                }
-
-                // display current Mode
-                if (modeSel.equals(Mode.ELFENLAND)) {
-                    gui.window.draw(modeElfenlandText, 285, 180);
-                    // display current rounds option
-                    if (numRoundsSel == 3) {
-                        gui.window.draw(rounds3Text, 384, 388);
-                    } else if (numRoundsSel == 4) {
-                        gui.window.draw(rounds4Text, 384, 388);
-                    }
-                } else if (modeSel.equals(Mode.ELFENGOLD)) {
-                    gui.window.draw(modeElfengoldText, 285, 180);
-                    // display current Town Gold option
-                    if (townGoldOption.equals(TownGoldOption.NO)) {
-                        gui.window.draw(townGoldNoText, 388, 389);
-                    } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
-                        gui.window.draw(townGoldYesText, 388, 389);
-                    } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
-                        gui.window.draw(townGoldYesRandText, 388, 389);
-                    }
-                    // display current Witch option
-                    if (witchSel) {
-                        gui.window.draw(witchYesText, 178, 458);
-                    } else {
-                        gui.window.draw(witchNoText, 178, 458);
-                    }
-                }
-
-                // display current size
-                if (numberPlayers == 2) {
-                    gui.window.draw(size2Text, 152, 240);
-                } else if (numberPlayers == 3) {
-                    gui.window.draw(size3Text, 152, 240);
-                } else if (numberPlayers == 4) {
-                    gui.window.draw(size4Text, 152, 240);
-                } else if (numberPlayers == 5) {
-                    gui.window.draw(size5Text, 152, 240);
-                } else if (numberPlayers == 6) {
-                    gui.window.draw(size6Text, 152, 240);
-                }
-
-                // display current destination option
-                if (destinationTownSel) {
-                    gui.window.draw(destinationTownYesText, 389, 310);
-                } else {
-                    gui.window.draw(destinationTownNoText, 389, 310);
-                }
-
-                // display dropdowns
-                if (modeDropdownActive) {
-                    gui.window.draw(modeDropdownRectangle, 268, 215);
-                    gui.window.draw(modeElfenlandText, 285, 231);
-                    gui.window.draw(modeElfengoldText, 285, 273);
-                } else if (sizeDropdownActive) {
-                    gui.window.draw(sizeDropdownRectangle, 142, 275);
-                    gui.window.draw(size2Text, 152, 300);
-                    gui.window.draw(size3Text, 152, 342);
-                    gui.window.draw(size4Text, 152, 384);
-                    gui.window.draw(size5Text, 152, 426);
-                    gui.window.draw(size6Text, 152, 468);
-                } else if (destinationDropdownActive) {
-                    gui.window.draw(destinationTownDropdownRectangle, 376, 347);
-                    gui.window.draw(destinationTownNoText, 389, 359);
-                    gui.window.draw(destinationTownYesText, 389, 400);
-                } else if (roundsDropdownActive) {
-                    gui.window.draw(roundsDropdownRectangle, 375, 418);
-                    gui.window.draw(rounds3Text, 384, 435);
-                    gui.window.draw(rounds4Text, 384, 477);
-                } else if (townGoldDropdownActive) {
-                    gui.window.draw(townGoldDropdownRectangle, 375, 418);
-                    gui.window.draw(townGoldNoText, 388, 433);
-                    gui.window.draw(townGoldYesText, 388, 475);
-                    gui.window.draw(townGoldYesRandText, 388, 517);
-                } else if (witchDropdownActive) {
-                    gui.window.draw(witchDropdownRectangle, 168, 487);
-                    gui.window.draw(witchNoText, 178, 500);
-                    gui.window.draw(witchYesText, 178, 542);
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.CHOOSEBOOT) {
-                gui.window.draw(chooseBootBackground, 0, 0);
-                while (chooseBootQueue.hasNext()) {
-                    chooseBootQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
-                gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                while (elfenlandLobbyQueue.hasNext()) {
-                    elfenlandLobbyQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
-                gui.window.draw(lobbyElfengoldBackground, 0, 0);
-                while (elfenlandLobbyQueue.hasNext()) {
-                    elfenlandLobbyQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
-                    // mouseHandler to click on route
-                    while (placeCounterQueue.hasNext()) {
-                        placeCounterQueue.handle();
-                    }
-                }
-
-                while (elfenlandQueue.hasNext()) {
-                    elfenlandQueue.handle();
-                }
-
-            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
-                gui.window.draw(elfengoldImage, 0, 0);
-            }
-
-            // Add a button in the bottom right to pause the music
-            if (soundOn) {
-                gui.window.draw(soundOffButton, 1000, 745);
-            } else {
-                gui.window.draw(soundOnButton, 1000, 745);
-            }
-
-            WINDOW.render();
-            Thread.yield();
-        }
+        Client client = new Client(Server.LOCATION, Server.PORT, userString);
+        currentClient = client;
+        client.start();
 
         // swing gui
     }
@@ -1742,7 +1591,7 @@ public class ClientMain {
     public static void displayAvailableGames() {
         // retrieve info on the server
         GetAvailableSessionsAction action = new GetAvailableSessionsAction(currentUser.getName());
-        ACTION_MANAGER.sendAction(action);
+        ACTION_MANAGER.sendActionAndGetResponse(action);
 
         // reset buttons
         joinButtonCoordinates.clear();

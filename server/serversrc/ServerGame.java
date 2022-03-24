@@ -497,7 +497,7 @@ public class ServerGame {
                             if (t.hasCollidePoint(xClicked, yClicked)) {
                                 // inform server that user has selected t
                                 ActionManager.getInstance()
-                                        .sendAction(new TokenSelectedAction(
+                                        .sendActionAndGetResponse(new TokenSelectedAction(
                                                 ClientMain.currentSession.getSessionID(), t.getTokenName()));
                                 break;
                             }

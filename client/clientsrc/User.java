@@ -6,8 +6,6 @@ package clientsrc;
 
 import java.util.ArrayList;
 
-import networksrc.Client;
-
 public class User {
 
     // FIELDS
@@ -31,10 +29,9 @@ public class User {
         return null;
     }
 
-
-
     /**
      * GETTER: returns the user's name as seen on LS
+     * 
      * @return User.name
      */
     public String getName() {
@@ -50,6 +47,7 @@ public class User {
 
     /**
      * GETTER: returns user.ready
+     * 
      * @return true if the user is ready to play, false otherwise.
      */
     public boolean isReady() {
@@ -66,6 +64,7 @@ public class User {
 
     /**
      * Return this user's client (for the network stuff)
+     * 
      * @return client
      */
     public Client getClient() {

@@ -5,7 +5,6 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
 import org.minueto.window.*;
 
-import networksrc.Client;
 import networksrc.Server;
 
 import java.io.IOException;

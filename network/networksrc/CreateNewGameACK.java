@@ -95,7 +95,8 @@ public class CreateNewGameACK implements Action {
 
             // get available boot colors
             ClientMain.ACTION_MANAGER
-                    .sendAction(new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
+                    .sendActionAndGetResponse(
+                            new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
         }
 
     }

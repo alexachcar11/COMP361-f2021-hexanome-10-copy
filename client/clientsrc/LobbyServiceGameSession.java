@@ -88,7 +88,7 @@ public class LobbyServiceGameSession {
 
     public void updateUsers() {
         String senderName = ClientMain.currentUser.getName();
-        ClientMain.ACTION_MANAGER.sendAction(new UpdateUsersAction(senderName, sessionID));
+        ClientMain.ACTION_MANAGER.sendActionAndGetResponse(new UpdateUsersAction(senderName, sessionID));
     }
 
     /**
@@ -253,7 +253,8 @@ public class LobbyServiceGameSession {
             colorStr = "GREEN";
         }
         ClientMain.ACTION_MANAGER
-                .sendAction(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
+                .sendActionAndGetResponse(
+                        new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
 }
