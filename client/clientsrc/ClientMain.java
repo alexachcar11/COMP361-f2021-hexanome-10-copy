@@ -227,11 +227,7 @@ public class ClientMain {
                 else {
                     // login
                     try {
-                        if (clientNeedsNewName) {
-                            // here if the username provided does not exist
-                            // associate the client with a new name on the server
-                            currentClient.setName(userString);
-                        }
+                        currentClient.setName(userString);
                         ACTION_MANAGER.sendActionAndGetResponse(new LoginAction(userString, passString));
 
                         // NOTE: commented out the code to create a new user

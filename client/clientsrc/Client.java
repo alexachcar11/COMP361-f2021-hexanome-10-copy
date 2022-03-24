@@ -40,7 +40,7 @@ public class Client implements NetworkNode {
         // notify the server of this client's username
         try {
             aObjectOut.writeObject(new GiveNameAction(name));
-            System.out.println("gave name" + name);
+            System.out.println("Client create at address: " + this.aSocket.getInetAddress().getHostName());
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -250,7 +250,7 @@ public class Client implements NetworkNode {
         // notify the server of this client's username
         try {
             aObjectOut.writeObject(new GiveNameAction(newName));
-            System.out.println("gave name" + newName);
+            System.out.println("gave name " + newName);
             this.name = newName;
         } catch (IOException e1) {
             e1.printStackTrace();
