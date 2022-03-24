@@ -6,6 +6,7 @@ min 2 players
 max 6 players
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -496,9 +497,13 @@ public class ServerGame {
                         for (TokenSprite t : tokenImages) {
                             if (t.hasCollidePoint(xClicked, yClicked)) {
                                 // inform server that user has selected t
-                                ActionManager.getInstance()
-                                        .sendActionAndGetResponse(new TokenSelectedAction(
-                                                ClientMain.currentSession.getSessionID(), t.getTokenName()));
+                                try {
+                                    ActionManager.getInstance()
+                                            .sendAction(new TokenSelectedAction(
+                                                    ClientMain.currentSession.getSessionID(), t.getTokenName()));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
                             }
                         }
