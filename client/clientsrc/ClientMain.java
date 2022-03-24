@@ -51,6 +51,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -66,7 +67,7 @@ public class ClientMain {
     public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
-    static List<MinuetoEventQueue> handlerQueues = new ArrayList<>();
+    static HashMap<GUI.Screen, MinuetoEventQueue> handlerQueues = new HashMap<>();
     public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
     public static MinuetoImage elfenlandImage;
@@ -1272,26 +1273,26 @@ public class ClientMain {
         // create entry screen mouse handler
         entryScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(entryScreenMouseHandler, entryScreenQueue);
-        handlerQueues.add(entryScreenQueue);
+        handlerQueues.put(GUI.Screen.MENU, entryScreenQueue);
 
         // create login screen keyboard handler
         loginScreenQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(loginScreenKeyboardHandler, loginScreenQueue);
         gui.window.registerMouseHandler(loginScreenMouseHandler, loginScreenQueue);
-        handlerQueues.add(loginScreenQueue);
+        handlerQueues.put(GUI.Screen.LOGIN, loginScreenQueue);
         elfenlandQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenlandMouseHandler, elfenlandQueue);
-        handlerQueues.add(elfenlandQueue);
+        handlerQueues.put(GUI.Screen.ELFENLAND, elfenlandQueue);
 
         // lobby screen mouse handler
         lobbyScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(lobbyMouseHandler, lobbyScreenQueue);
-        handlerQueues.add(lobbyScreenQueue);
+        handlerQueues.put(GUI.Screen.LOBBY, lobbyScreenQueue);
 
         // create game screen keyboard handler
         createGameQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(gameScreenKeyboardHandler, createGameQueue);
-        handlerQueues.add(createGameQueue);
+        handlerQueues.put(GUI.Screen.CREATELOBBY, createGameQueue);
 
         // create game screen mouse handler
         gui.window.registerMouseHandler(gameScreenMouseHandler, createGameQueue);
@@ -1299,19 +1300,17 @@ public class ClientMain {
         // mouse handler for choose boot
         chooseBootQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(chooseBootMouseHandler, chooseBootQueue);
-        handlerQueues.add(chooseBootQueue);
+        handlerQueues.put(GUI.Screen.CHOOSEBOOT, chooseBootQueue);
 
         // mouse handler for elfenland lobby
         elfenlandLobbyQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(elfenLandLobbyMouseHandler, elfenlandLobbyQueue);
-        handlerQueues.add(elfenlandLobbyQueue);
+        handlerQueues.put(GUI.Screen.LOBBYELFENLAND, elfenlandLobbyQueue);
 
         // mouse handler for place counter
         placeCounterQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(placeCounterMouseHandler, placeCounterQueue);
-        handlerQueues.add(placeCounterQueue);
 
-        int once = 1;
         // draw on the window
         Client client = new Client(Server.LOCATION, Server.PORT, userString);
         currentClient = client;
