@@ -7,9 +7,9 @@ import java.util.Queue;
 
 import org.junit.*;
 
+import clientsrc.Client;
 import clientsrc.User;
 import networksrc.Action;
-import networksrc.Client;
 import networksrc.Server;
 
 public class ClientThreadTest {
