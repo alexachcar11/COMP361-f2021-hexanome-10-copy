@@ -92,8 +92,7 @@ public class LobbyServiceGameSession {
         String senderName = ClientMain.currentUser.getName();
         try {
             ClientMain.ACTION_MANAGER.sendAction(new UpdateUsersAction(senderName, sessionID));
-            ClientMain.currentClient.receiveAction();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

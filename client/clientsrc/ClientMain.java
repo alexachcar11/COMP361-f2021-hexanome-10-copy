@@ -1311,12 +1311,22 @@ public class ClientMain {
         placeCounterQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(placeCounterMouseHandler, placeCounterQueue);
 
-        // draw on the window
         Client client = new Client(Server.LOCATION, Server.PORT, userString);
         currentClient = client;
         client.start();
 
-        // swing gui
+        while (true) {
+            ClientMain.WINDOW.draw(ClientMain.playScreenImage, 0, 0);
+            MinuetoEventQueue queue = ClientMain.handlerQueues.get(ClientMain.gui.currentBackground);
+            while (queue.hasNext()) {
+                if (!ClientMain.handlerQueues.get(ClientMain.gui.currentBackground).equals(queue)) {
+                    break;
+                }
+                // this should deal with switching screens
+                queue.handle();
+            }
+            ClientMain.WINDOW.render();
+        }
     }
 
     /**
