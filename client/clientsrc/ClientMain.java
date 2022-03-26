@@ -202,12 +202,6 @@ public class ClientMain {
 
             // CLICK ON THE LOGIN BOX AREA
             if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
-
-                // TODO: Check if the username exists in the list of usernames
-                // if it exists -> check if password matches -
-                // if password matches --> send to availableGamesScreen
-                // else --> send red text to reflect outcome
-                // if it doesn't exist -> send red text to reflect outcome
                 if (passString.length() == 0 || userString.length() == 0) {
 
                     if (passString.length() == 0) {
@@ -1751,7 +1745,7 @@ public class ClientMain {
         gui.currentBackground = GUI.Screen.LOBBY;
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
-            ArrayList<LobbyServiceGameSession> availableSessionsList = LobbyServiceGameSession.getAvailableSession();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = LobbyServiceGameSession.getAvailableSessions();
 
             // display a message when no sessions are available to join
             int nbAvailableGameSessions = availableSessionsList.size();

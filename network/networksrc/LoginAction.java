@@ -30,7 +30,7 @@ public class LoginAction implements Action {
         // check that the user exists
         Registrator REGISTRATOR = Registrator.instance();
         if (!REGISTRATOR.userExists(username)) {
-            LoginACK action = new LoginACK(username, "user-dne");
+            LoginACK action = new LoginACK(username, "invalid-credentials");
             ActionManager.getInstance().sendToSender(action, username);
             return false;
         }
@@ -54,7 +54,7 @@ public class LoginAction implements Action {
             ActionManager.getInstance().sendToSender(action, username);
 
         } catch (IllegalAccessException e) {
-            LoginACK action = new LoginACK(username, "wrong-pw");
+            LoginACK action = new LoginACK(username, "invalid-credentials");
             ActionManager.getInstance().sendToSender(action, username);
             e.printStackTrace();
         } catch (ParseException e) {
