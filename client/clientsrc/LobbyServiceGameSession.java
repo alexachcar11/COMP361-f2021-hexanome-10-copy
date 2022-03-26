@@ -58,7 +58,7 @@ public class LobbyServiceGameSession {
      * 
      * @return ArrayList<LobbyServiceGameSession> that are not launched
      */
-    public static ArrayList<LobbyServiceGameSession> getAvailableSession() {
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() {
         ArrayList<LobbyServiceGameSession> list = new ArrayList<>();
         for (LobbyServiceGameSession s : allSessions) {
             if (!s.isLaunched()) {
@@ -169,6 +169,7 @@ public class LobbyServiceGameSession {
      */
     public void addUser(User user) {
         this.users.add(user);
+        numberOfPlayersCurrently += 1;
     }
 
     /**
@@ -178,6 +179,7 @@ public class LobbyServiceGameSession {
      */
     public void removeUser(User user) {
         this.users.remove(user);
+        numberOfPlayersCurrently -= 1;
         user.toggleReady();
     }
 
