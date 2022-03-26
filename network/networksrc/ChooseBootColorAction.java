@@ -47,7 +47,10 @@ public class ChooseBootColorAction implements Action {
         for (ServerUser user : gameLobby.getAllUsers()) {
             Color colorTaken = user.getColor();
             if (colorTaken != null && color.equals(colorTaken.name())) {
-                System.err.println("ChooseBootColorAction: the color is already taken");
+                // send ack to the sender only
+                ActionManager ackManager = ActionManager.getInstance();
+                ChooseBootColorACK actionToSend = new ChooseBootColorACK(color, "already-taken");
+                ackManager.sendToSender(actionToSend, senderName);
                 return false;
             }
         }
@@ -74,7 +77,7 @@ public class ChooseBootColorAction implements Action {
 
         // send ack to the sender only
         ActionManager ackManager = ActionManager.getInstance();
-        ChooseBootColorACK actionToSend = new ChooseBootColorACK(color);
+        ChooseBootColorACK actionToSend = new ChooseBootColorACK(color, "success");
         ackManager.sendToSender(actionToSend, senderName);
     }
 

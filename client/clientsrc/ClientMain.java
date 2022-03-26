@@ -16,7 +16,6 @@ import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
 import networksrc.Client;
 import networksrc.CreateNewGameAction;
-//import networksrc.ChooseBootColorAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.GetAvailableSessionsAction;
 import networksrc.LaunchGameAction;
@@ -526,10 +525,9 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
+                            currentSession = gameToJoin;
                             ACTION_MANAGER.sendAction(
                                     new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
-                            currentSession = gameToJoin;
-                            gui.currentBackground = GUI.Screen.CHOOSEBOOT;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -868,29 +866,18 @@ public class ClientMain {
                 // check that a color was chosen
                 if (colorChosen == null) {
                     // print error message
-                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold,
-                            MinuetoColor.RED);
-                    chooseBootBackground.draw(errorText, 378, 526);
+                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
+                    gui.window.draw(errorText, 378, 526);
                 } else {
-
-                    // TODO: add elfengold options
-
                     if (currentUser.getName().equals(currentSession.getCreator())) {
                         // creator
-                        try {
-                            // send action to the server
-                            String senderName = currentUser.getName();
-                            String color = colorChosen.name();
-                            String gameID = currentSession.getSessionID();
-                            ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
-                            // display users
-                            displayUsers();
-                            System.out.println("displaying users as a creator");
-                            // display game info
-                            displayLobbyInfo();
-                        } catch (MinuetoFileException e) {
-                            e.printStackTrace();
-                        }
+
+                        // send action to the server
+                        String senderName = currentUser.getName();
+                        String color = colorChosen.name();
+                        String gameID = currentSession.getSessionID();
+                        ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
+
 
                         Game game = currentSession.getGame();
                         Mode currentMode = game.getMode();
@@ -1533,7 +1520,9 @@ public class ClientMain {
      * @throws MinuetoFileException when an image file is not found
      */
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
+
         gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+        gui.window.draw(chooseBootBackground, 0, 0);
 
         int counter = 0; // how many colors are displayed so far
 
@@ -1554,7 +1543,7 @@ public class ClientMain {
             }
 
             // display the boot
-            chooseBootBackground.draw(boot, 75 + counter * 150, 300);
+            gui.window.draw(boot, 75 + counter * 150, 300);
 
             // keep track of the button location
             Integer maxX = 150 + (counter * 150);

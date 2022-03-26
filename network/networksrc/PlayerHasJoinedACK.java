@@ -42,10 +42,11 @@ public class PlayerHasJoinedACK implements Action {
             newUser.setColor(Color.PURPLE);
         } 
 
-        // display
+        // display users
         try {
             ClientMain.displayUsers();
         } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
