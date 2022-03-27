@@ -1551,10 +1551,14 @@ public class ClientMain {
     }
 
     /**
-     * Display an error message saying that the game name is already taken (on gama
-     * creation screen)
+     * Display an error message saying that the game name is already taken (on game creation screen)
      */
     public static void displayNameTaken() {
+        // reset name to empty
+        nameString = "";
+        // cover the last entry
+        createGameBackground.draw(nameTextField, 168, 101);
+        // display error message
         MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
         createGameBackground.draw(nameIsTaken, 178, 120);
     }
