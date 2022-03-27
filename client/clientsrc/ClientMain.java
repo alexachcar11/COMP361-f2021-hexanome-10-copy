@@ -1392,7 +1392,6 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.CHOOSEBOOT) {
-                gui.window.draw(chooseBootBackground, 0, 0);
                 while (chooseBootQueue.hasNext()) {
                     chooseBootQueue.handle();
                 }
