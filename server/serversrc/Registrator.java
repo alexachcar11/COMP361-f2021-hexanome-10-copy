@@ -410,7 +410,9 @@ public class Registrator {
      * @throws Exception if the request was rejected
      */
     public void launchSession(String sessionID, ServerUser userAskingToLaunch) throws Exception {
-        // user token
+        
+
+        /* // user token
         String token = userAskingToLaunch.getToken().replace("+", "%2B");
         System.out.println(token);
 
@@ -426,6 +428,6 @@ public class Registrator {
         // verify response
         if (jsonResponse.getStatus() != 200) {
             throw new Exception("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
-        } 
+        }  */
     }
 }
