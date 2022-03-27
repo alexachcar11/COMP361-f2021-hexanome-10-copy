@@ -150,18 +150,8 @@ public class Player {
 
     // returns list of tokens except obstacle from player's hand
     public List<Token> removeAllTokens() {
-        List<Token> output = new ArrayList<>();
-        for (Token tok : tokensInHand) {
-            if (tok instanceof Obstacle) {
-                continue;
-            } else {
-                // add to output
-                output.add(tok);
-                // remove from player's hand
-                tokensInHand.remove(tok);
-            }
-        }
-        return output;
+        this.tokensInHand.remove(new Obstacle());
+        return this.tokensInHand;
     }
 
     /*
