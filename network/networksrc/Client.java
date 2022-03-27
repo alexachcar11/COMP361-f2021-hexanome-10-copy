@@ -3,13 +3,12 @@ package networksrc;
 import java.io.*;
 import java.net.*;
 
-import clientsrc.User;
-
 public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
     private String name;
+    private Thread listenThread;
 
     public Client(String pHost, int pPort, String userString) {
         try {
@@ -21,6 +20,7 @@ public class Client implements NetworkNode {
             aObjectIn = new ObjectInputStream(aIn);
             System.out.println("Client created at host: " + pHost + ", and port: " + pPort);
             this.name = userString;
+            this.listenThread = new Thread(() -> listenToServer());
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + pHost);
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class Client implements NetworkNode {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        this.listenToServer();
+        this.listenThread.start();
     }
 
     /**
