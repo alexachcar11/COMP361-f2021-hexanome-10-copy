@@ -42,7 +42,7 @@ public class ServerUser {
      */
     public String getToken() {
         String token = (String) currentToken.get("access_token");
-        token = token.replace("+", "%B");
+        token = token.replace("+", "%2B");
         return token;
     }
 
