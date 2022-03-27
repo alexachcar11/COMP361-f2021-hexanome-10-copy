@@ -32,12 +32,15 @@ public class LoginACK implements Action {
         } else if (result.equals("invalid-credentials")) {
             // the next attempt to login will reset the Client name
             ClientMain.clientNeedsNewName = true;
+            // reset user/pass to empty 
+            ClientMain.userString = "";
+            ClientMain.passString = "";
             // display error message to the user
             String invalidText = "Invalid Credentials";
             MinuetoText usernameFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
-            ClientMain.gui.window.draw(usernameFailed, 200, 360);
+            ClientMain.loginScreenImage.draw(usernameFailed, 200, 360);
             MinuetoText passwordFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
-            ClientMain.gui.window.draw(passwordFailed, 200, 450);
+            ClientMain.loginScreenImage.draw(passwordFailed, 200, 450);
         }
         
     }

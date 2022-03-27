@@ -75,8 +75,8 @@ public class ClientMain {
 
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
-    static MinuetoImage loginScreenImage;
-    static MinuetoImage whiteBoxImage;
+    public static MinuetoImage loginScreenImage;
+    public static MinuetoImage whiteBoxImage;
     private static MinuetoImage lobbyBackground;
     static MinuetoImage createGameBackground;
     static MinuetoImage createGameBackgroundElfengold;
@@ -324,8 +324,6 @@ public class ClientMain {
 
             // create MinuetoImage for hiddenPassword
             MinuetoImage hiddenPasswordImage = new MinuetoText(hiddenPassword, fontArial20, MinuetoColor.BLACK);
-
-            MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
             loginScreenImage.draw(hiddenPasswordImage, 200, 450);
         }
 
@@ -1060,8 +1058,8 @@ public class ClientMain {
     // for login screen queue
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
-    private static String userString = "";
-    private static String passString = "";
+    public static String userString = "";
+    public static String passString = "";
     public static boolean clientNeedsNewName = false;
 
     // for mute button
