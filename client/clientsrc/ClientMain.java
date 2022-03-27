@@ -961,17 +961,17 @@ public class ClientMain {
                         System.out.println("chose: " + colorChosen);
                         // display a boppel on the confirm button
                         if (colorChosen.equals(Color.BLACK)) {
-                            chooseBootBackground.draw(blackBoppel, 640, 691);
+                            gui.window.draw(blackBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.BLUE)) {
-                            chooseBootBackground.draw(blueBoppel, 640, 691);
+                            gui.window.draw(blueBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.YELLOW)) {
-                            chooseBootBackground.draw(yellowBoppel, 640, 691);
+                            gui.window.draw(yellowBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.GREEN)) {
-                            chooseBootBackground.draw(greenBoppel, 640, 691);
+                            gui.window.draw(greenBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.PURPLE)) {
-                            chooseBootBackground.draw(purpleBoppel, 640, 691);
+                            gui.window.draw(purpleBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.RED)) {
-                            chooseBootBackground.draw(redBoppel, 640, 691);
+                            gui.window.draw(redBoppel, 640, 691);
                         }
                     }
                 }
