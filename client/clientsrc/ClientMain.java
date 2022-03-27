@@ -127,27 +127,12 @@ public class ClientMain {
 
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
-    // TODO: place this somewhere else configImages(bootImages);
-    /*
-     * in the Boot class
-     * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
-     * image files
-     * 
-     * List<String> bootFileNames = new ArrayList<>();
-     * // add file names of boot images to the bootFiles list
-     * for (File file : bootDir.listFiles()) {
-     * if (file.getName().startsWith("boot-"))
-     * bootFileNames.add("images/böppels-and-boots/" + file.getName());
-     * }
-     */
-
     static MinuetoMouseHandler entryScreenMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
                 gui.currentBackground = GUI.Screen.LOGIN;
-                // gui.currentBackground = GUI.Screen.ELFENLAND;
             }
 
             // click on Quit
@@ -1374,6 +1359,7 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+                gui.window.draw(elfenlandImage, 0, 0);
                 if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
                     // mouseHandler to click on route
                     while (placeCounterQueue.hasNext()) {
