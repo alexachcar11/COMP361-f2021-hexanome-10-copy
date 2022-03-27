@@ -866,7 +866,8 @@ public class ClientMain {
                 // check that a color was chosen
                 if (colorChosen == null) {
                     // print error message
-                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold, MinuetoColor.RED);
+                    MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold,
+                            MinuetoColor.RED);
                     gui.window.draw(errorText, 378, 526);
                 } else {
                     if (currentUser.getName().equals(currentSession.getCreator())) {
@@ -878,7 +879,6 @@ public class ClientMain {
                         String gameID = currentSession.getSessionID();
                         ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
 
-
                         Game game = currentSession.getGame();
                         Mode currentMode = game.getMode();
                         // switch backgrounds depending on the game mode
@@ -887,25 +887,18 @@ public class ClientMain {
                             gui.window.draw(lobbyElfenlandBackground, 0, 0);
                             gui.window.render();
                             // wait for enough players to join
-                            try {
-                                ACTION_MANAGER.waitForPlayersAsCreator();
-                            } catch (MinuetoFileException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+                            // try {
+                            // ACTION_MANAGER.waitForPlayersAsCreator();
+                            // } catch (MinuetoFileException e) {
+                            // // TODO Auto-generated catch block
+                            // e.printStackTrace();
+                            // }
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfenlandBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
                             gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
                             gui.window.draw(lobbyElfengoldBackground, 0, 0);
                             gui.window.render();
-                            // wait for enough players to join
-                            try {
-                                ACTION_MANAGER.waitForPlayersAsCreator();
-                            } catch (MinuetoFileException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfengoldBackground.draw(startButton, 822, 580);
                         }
@@ -938,9 +931,6 @@ public class ClientMain {
                             if (ClientMain.currentSession.isLaunchable()) {
                                 ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
                             }
-
-                            // wait for other players (i.e wait for the game to launch)
-                            ACTION_MANAGER.waitForPlayers();
 
                         } catch (Exception e) {
                             e.printStackTrace();
