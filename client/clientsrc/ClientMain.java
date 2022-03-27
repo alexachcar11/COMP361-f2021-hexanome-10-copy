@@ -284,11 +284,54 @@ public class ClientMain {
         public void handleKeyPress(int i) {
             // press on enter key takes you to the next screen
             if (i == MinuetoKeyboard.KEY_ENTER) {
-                // TODO: owen add login verification here
+                if (passString.length() == 0 || userString.length() == 0) {
 
-                // switch to lobby screen if login ok
-                displayAvailableGames();
-                gui.currentBackground = GUI.Screen.LOBBY;
+                    if (passString.length() == 0) {
+                        // no password
+                        String passFail = "Please enter a password";
+                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(passwordFailed, 200, 450);
+                    }
+                    if (userString.length() == 0) {
+                        // no username
+                        String usernameFail = "Please enter a username";
+                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(usernameFailed, 200, 360);
+                    }
+                }
+
+                else {
+                    // login
+                    try {
+                        if (currentClient == null) {
+                            // client-server connection
+                            Client client = new Client("elfenland.simui.com", 13645, userString);
+                            client.start();
+                            currentClient = client;
+                        } else if (clientNeedsNewName) {
+                            // here if the username provided does not exist
+                            // associate the client with a new name on the server
+                            currentClient.setName(userString);
+                        }
+
+                        // NOTE: we skip the above if-else when the password provided is wrong
+
+                        // send login info to the server
+                        ACTION_MANAGER.sendAction(new LoginAction(userString, passString));
+
+                        // NOTE: commented out the code to create a new user
+                        /*
+                         * // user doesn't exist. create and login
+                         * User newUser = REGISTRATOR.createNewUser(userString, passString);
+                         * System.out.println("New User");
+                         * currentUser = newUser;
+                         */
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error: failed to login a user.");
+                    }
+                }
             }
             // TAB used to switch boxes
             else if (i == 9 && userNameSel) {
