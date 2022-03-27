@@ -38,9 +38,12 @@ public class LoginACK implements Action {
             // display error message to the user
             String invalidText = "Invalid Credentials";
             MinuetoText usernameFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
+            ClientMain.loginScreenImage.draw(ClientMain.whiteBoxImage, 160, 350);
             ClientMain.loginScreenImage.draw(usernameFailed, 200, 360);
             MinuetoText passwordFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
             ClientMain.loginScreenImage.draw(passwordFailed, 200, 450);
+            ClientMain.loginScreenImage.draw(ClientMain.whiteBoxImage, 160, 440);
+
         }
         
     }
