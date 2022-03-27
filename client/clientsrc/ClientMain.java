@@ -886,13 +886,6 @@ public class ClientMain {
                             gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                             gui.window.draw(lobbyElfenlandBackground, 0, 0);
                             gui.window.render();
-                            // wait for enough players to join
-                            // try {
-                            // ACTION_MANAGER.waitForPlayersAsCreator();
-                            // } catch (MinuetoFileException e) {
-                            // // TODO Auto-generated catch block
-                            // e.printStackTrace();
-                            // }
                             // we arrive here if the session is launchable: then display the launch button
                             lobbyElfenlandBackground.draw(startButton, 822, 580);
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
