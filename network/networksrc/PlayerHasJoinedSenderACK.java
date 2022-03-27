@@ -24,7 +24,7 @@ public class PlayerHasJoinedSenderACK implements Action{
     @Override
     public void execute() {
         // add the player to LobbyServiceGameSession
-        User existing = User.getUserByName(joinerName);
+        User existing = ClientMain.currentUser;
         ClientMain.currentSession.addUser(existing);
 
         // set current game
