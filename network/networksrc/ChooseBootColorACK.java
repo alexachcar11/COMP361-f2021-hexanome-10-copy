@@ -14,6 +14,7 @@ public class ChooseBootColorACK implements Action {
 
     public ChooseBootColorACK(String color, String result) {
         this.color = color;
+        this.result = result;
     }
 
     @Override
