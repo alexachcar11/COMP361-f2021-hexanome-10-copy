@@ -893,14 +893,16 @@ public class ClientMain {
                             // // TODO Auto-generated catch block
                             // e.printStackTrace();
                             // }
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfenlandBackground.draw(startButton, 822, 580);
+                            if (currentSession.isLaunchable()) {
+                                lobbyElfenlandBackground.draw(startButton, 822, 580);
+                            }
                         } else if (currentMode.equals(Mode.ELFENGOLD)) {
                             gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
                             gui.window.draw(lobbyElfengoldBackground, 0, 0);
                             gui.window.render();
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfengoldBackground.draw(startButton, 822, 580);
+                            if (currentSession.isLaunchable()) {
+                                lobbyElfenlandBackground.draw(startButton, 822, 580);
+                            }
                         }
 
                     } else {
