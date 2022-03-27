@@ -878,24 +878,6 @@ public class ClientMain {
                         String color = colorChosen.name();
                         String gameID = currentSession.getSessionID();
                         ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
-
-                        Game game = currentSession.getGame();
-                        Mode currentMode = game.getMode();
-                        // switch backgrounds depending on the game mode
-                        if (currentMode.equals(Mode.ELFENLAND)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                            gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                            gui.window.render();
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfenlandBackground.draw(startButton, 822, 580);
-                        } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                            gui.window.draw(lobbyElfengoldBackground, 0, 0);
-                            gui.window.render();
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfengoldBackground.draw(startButton, 822, 580);
-                        }
-
                     } else {
                         // not the creator
 
@@ -903,32 +885,22 @@ public class ClientMain {
                             // join the game
                             gameToJoin.join(colorChosen);
 
-                            // display game info
-                            displayLobbyInfo();
-
-                            Game game = currentSession.getGame();
-                            Mode currentMode = game.getMode();
-                            // switch backgrounds depending on the game mode
-                            if (currentMode.equals(Mode.ELFENLAND)) {
-                                gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                                gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                                gui.window.render();
-                                lobbyElfenlandBackground.draw(startButton, 822, 580);
-                            } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                                gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                                gui.window.draw(lobbyElfengoldBackground, 0, 0);
-                                gui.window.render();
-                            }
-
-                            // show wait for launch image
-                            if (ClientMain.currentSession.isLaunchable()) {
-                                ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
-                            }
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+                    Game game = currentSession.getGame();
+                    Mode currentMode = game.getMode();
+                    // switch backgrounds depending on the game mode
+                    if (currentMode.equals(Mode.ELFENLAND)) {
+                        gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
+                        gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                    } else if (currentMode.equals(Mode.ELFENGOLD)) {
+                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                        gui.window.draw(lobbyElfengoldBackground, 0, 0);
+                    }
+                    // display game info
+                    displayLobbyInfo();
                 }
             } else {
                 // Click on a Color
@@ -1381,12 +1353,22 @@ public class ClientMain {
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    if (currentUser.getName().equals(currentSession.getCreator())) {
+                        lobbyElfenlandBackground.draw(startButton, 822, 580);
+                    } else {
+                        ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
+                    }
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    lobbyElfengoldBackground.draw(startButton, 822, 580);
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
