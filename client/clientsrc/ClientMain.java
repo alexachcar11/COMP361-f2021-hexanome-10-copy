@@ -63,7 +63,7 @@ public class ClientMain {
     public static ClientPlayer currentPlayer;
 
     public static GUI gui;
-    static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
+    static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,savedGamesScreenQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
     public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
@@ -78,6 +78,7 @@ public class ClientMain {
     public static MinuetoImage loginScreenImage;
     public static MinuetoImage whiteBoxImage;
     private static MinuetoImage lobbyBackground;
+    private static MinuetoImage saveGameBackground;
     static MinuetoImage createGameBackground;
     static MinuetoImage createGameBackgroundElfengold;
     static MinuetoImage elfenlandSelected;
@@ -527,6 +528,68 @@ public class ClientMain {
 
         }
     };
+
+    static MinuetoMouseHandler savedGamesMouseHandler = new MinuetoMouseHandler() {
+        @Override
+        public void handleMousePress(int x, int y, int button) {
+
+            System.out.println("x:" + x + " y:" + y);
+
+            if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
+                // click on Back to Open Lobbies button
+                displayAvailableGames();
+            } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
+                // click on the Refresh button
+                displaySavedGames();
+            } else {
+                // click on a Join button
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> coords : savedGameButtonCoordinates) {
+                    int maxX = (int) coords.getKey().get(0);
+                    int minX = (int) coords.getKey().get(1);
+                    int maxY = (int) coords.getKey().get(2);
+                    int minY = (int) coords.getKey().get(3);
+
+                    // TODO: fix this
+                    /* if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                        gameToJoin = coords.getValue();
+                        try {
+                            // get available boot colors
+                            currentSession = gameToJoin;
+                            ACTION_MANAGER.sendAction(
+                                    new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } */
+                }
+            }
+
+            if (x > 1000 && y > 740) {
+                // click on mute/unmute button
+                if (soundOn) {
+                    soundOn = false;
+                    pauseSound();
+                    gui.window.draw(soundOffButton, 1000, 745);
+
+                } else {
+                    soundOn = true;
+                    resumeSound();
+                    gui.window.draw(soundOnButton, 1000, 745);
+                }
+            }
+        }
+
+        @Override
+        public void handleMouseRelease(int x, int y, int button) {
+            // do nothing
+        }
+
+        @Override
+        public void handleMouseMove(int x, int y) {
+            // do nothing
+        }
+    };
+
     static MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
@@ -534,8 +597,11 @@ public class ClientMain {
             System.out.println("x:" + x + " y:" + y);
 
             if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
-                // click on Create New Game button
+                // click on Create New Lobby button
                 gui.currentBackground = GUI.Screen.CREATELOBBY;
+            } else if (x<=0) {
+                // click on Load Game button
+                displaySavedGames();
             } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
                 // click on the Refresh button
                 displayAvailableGames();
@@ -1131,6 +1197,9 @@ public class ClientMain {
     // for lobbyMouseHandler
     private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
 
+    // for savedGamesMouseHandler
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> savedGameButtonCoordinates = new ArrayList<>();
+
     // for chooseBootMouseHandler
     private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, Color>> colorButtonCoordinates = new ArrayList<>();
     private static Color colorChosen;
@@ -1173,6 +1242,8 @@ public class ClientMain {
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
             startButton = new MinuetoImageFile("images/blue-launch-button.png");
             waitingForLaunch = new MinuetoImageFile("images/waiting-for-launch.png");
+            // saved game
+            saveGameBackground = new MinuetoImageFile("images/saved-games.png");
             // Create Game
             createGameBackground = new MinuetoImageFile("images/create-game-elfenland.png");
             createGameBackgroundElfengold = new MinuetoImageFile("images/create-game-elfengold.png");
@@ -1248,6 +1319,10 @@ public class ClientMain {
         lobbyScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(lobbyMouseHandler, lobbyScreenQueue);
 
+        // saved game screen mouse handler
+        savedGamesScreenQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(savedGamesMouseHandler, savedGamesScreenQueue);
+
         // create game screen keyboard handler
         createGameQueue = new MinuetoEventQueue();
         gui.window.registerKeyboardHandler(gameScreenKeyboardHandler, createGameQueue);
@@ -1284,6 +1359,11 @@ public class ClientMain {
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
+                }
+
+            } else if (gui.currentBackground == GUI.Screen.SAVEDGAMES) {
+                while (savedGamesScreenQueue.hasNext()) {
+                    savedGamesScreenQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
@@ -1785,6 +1865,20 @@ public class ClientMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void displaySavedGames() {
+        // TODO: retrieve info on the server
+
+        // TODO: reset buttons
+
+        // display
+        gui.window.draw(saveGameBackground, 0, 0);
+        gui.currentBackground = GUI.Screen.SAVEDGAMES;
+        
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+        
+        // TODO: display all saved games and keep track of the Join button location
     }
 
     public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) throws MinuetoFileException {
