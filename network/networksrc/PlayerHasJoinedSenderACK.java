@@ -48,15 +48,6 @@ public class PlayerHasJoinedSenderACK implements Action{
         // get other users' colors from the server
         ClientMain.currentSession.updateUsers();
 
-        // display users
-        try {
-            ClientMain.displayUsers();
-        } catch (MinuetoFileException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        // display game info
-        ClientMain.displayLobbyInfo();
         
     }
     

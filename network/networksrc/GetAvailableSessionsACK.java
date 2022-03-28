@@ -80,6 +80,7 @@ public class GetAvailableSessionsACK implements Action {
             
                 // create new LobbyServiceGameSession
                 LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, creator, gameID, name);
+                newSession.addUser(creator);
                 newSession.setCurrentNumberOfPlayers(currentNbPlayers);
             } else {
                 // game already exists on the client
