@@ -90,6 +90,10 @@ public class Route {
         }
     }
 
+    public void setToken(TokenImage pToken){
+        this.aToken = pToken;
+    }
+
     public void clearToken() {
         // update token field
         this.aToken = null;

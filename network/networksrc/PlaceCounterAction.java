@@ -21,7 +21,33 @@ public class PlaceCounterAction implements Action{
     }
     @Override
     public boolean isValid() {
-        // TODO: not complete, requires more validity checks
+        // check if it's player's turn
+        Player playerWhoSent = Player.getPlayerByName(senderName);
+        ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
+        Town s = Town.getTownByName(srcTown);
+        Town d = Town.getTownByName(destTown);
+        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
+        Token t = Token.getTokenByName(tok);
+        if (!playerWhoSent.getIsTurn()){
+            return false;
+        }
+        // check if it's phase 4 for placing counters
+        // TODO: might need modification for elfengold
+        if (playerWhoSent.getCurrentGame().getCurrentPhase() != 4){
+            return false;
+        }
+        // check if there's already a token on road
+        if (rou.hasCounter()){
+            // if we're trying to place an obstacle
+            // return true if there's no obstacle yet
+            if (!rou.hasObstacle() && this.tok.equalsIgnoreCase("OBSTACLE")){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        // player should have the token in hand
         return true;
     }
 
@@ -39,6 +65,7 @@ public class PlaceCounterAction implements Action{
         playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
 
         ACKManager ackManager = ACKManager.getInstance();
+        ackManager.sendToSender(new ConfirmPlaceCounterSingleACK(this.tok), this.senderName);
         ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown, this.tok);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
         

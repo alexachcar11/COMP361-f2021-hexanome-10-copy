@@ -39,7 +39,8 @@ public class ServerGame {
     public ArrayList<AbstractCard> faceDownCardPile;
     public ArrayList<AbstractCard> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
-    // public Auction auction; not doing this now
+    public Auction auction = new Auction();
+    public ArrayList<Token> auctionTokenList;
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenStack;
     private String gameID;
@@ -345,10 +346,6 @@ public class ServerGame {
     }
 
     public void nextPlayer() {
-        // check if all players passed turn
-        if (didAllPlayersPassTurn()) {
-            nextPhase();
-        }
         // change next player
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getIsTurn()) {
@@ -360,6 +357,10 @@ public class ServerGame {
                 }
 
             }
+        }
+        // check if all players passed turn
+        if (didAllPlayersPassTurn()) {
+            nextPhase();
         }
     }
 
@@ -555,28 +556,49 @@ public class ServerGame {
         ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
 
-    public void phaseFour() {
-        while (true) {
-            Player currentPlayer = getCurrentPlayer();
-            // server sends message ACK to client to get input
-            ACK_MANAGER.sendToSender(new PlaceCounterACK(), currentPlayer.getName());
-            // client sends back input to server
+// old version of phaseFour
+    // public void phaseFour() {
+    //     while (true) {
+    //         // breaks once all players pass turn
+    //         if (didAllPlayersPassTurn()) {
+    //             break;
+    //         }
+    //         Player currentPlayer = getCurrentPlayer();
+    //         // server sends message ACK to client to get input
+    //         ACK_MANAGER.sendToSender(new PlaceCounterACK(), currentPlayer.getName());
+    //         // client sends back input to server
 
-            // we get a Token input
-            // we get a route input
-            // this done inside the Action class: playerPlaceCounter(currentPlayer, r, tok);
+    //         // we get a Token input
+    //         // we get a route input
+    //         // this done inside the Action class: playerPlaceCounter(currentPlayer, r, tok);
 
-            // breaks once all players pass turn
-            if (didAllPlayersPassTurn()) {
-                break;
-            }
-            nextPlayer();
+    //         // calls nextPlayer() in the PassTurnAction
+    //     }
+    //     for (Player p : players) {
+    //         p.resetTurnPassed();
+    //     }
+    //     nextPhase();
+    // }
+
+    // new version of phaseFour
+    // pre: currentPhase should be 4 right now
+    public void phaseFour(){
+        // server sends message ACK to client to let it know if the phase
+        ACK_MANAGER.sentToAllPlayersInGame(new PlaceCounterACK(), this);
+    }
+
+    // TODO: auction phase and the helper functions/messages
+    public void auctionPhase(){
+        // set current phase: this.currentPhase = ...;
+        // get a list of tokens with size 2 times the amount of players
+        // TODO: player can pass or bid
+        // initialize auctionTokenList
+        this.auctionTokenList = new ArrayList<>();
+        for (int i = 0; i<(players.size()*2); i++){
+            this.auctionTokenList.add(faceDownTokenStack.pop());
         }
-        for (Player p : players) {
-            p.resetTurnPassed();
-        }
-        nextPhase();
-
+        // set auction'd token
+        this.auction.setToken(auctionTokenList.remove(0));
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)

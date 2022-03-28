@@ -37,7 +37,8 @@ public class Player {
         aBoot = new Boot();
 
         // inTown = elvenhold; // fix this
-        this.gold = 0;
+        // start with 12 gold for elfengold
+        this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aName = pServerUser.getName();
@@ -73,6 +74,14 @@ public class Player {
     // returns destination town
     public Town getTargetTown(){
         return this.targetTown;
+    }
+
+    public void deductGold(int golds){
+        this.gold -= golds;
+    }
+
+    public int getGold(){
+        return this.gold;
     }
 
     public List<Token> getTokensInHand() {

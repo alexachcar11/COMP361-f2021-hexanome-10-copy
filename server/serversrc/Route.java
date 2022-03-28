@@ -308,4 +308,8 @@ public class Route {
     public boolean hasCounter() {
         return (!(this.aToken == null));
     }
+
+    public boolean hasObstacle(){
+        return this.aToken.isObstacle();
+    }
 }
