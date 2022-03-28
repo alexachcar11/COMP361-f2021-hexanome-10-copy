@@ -6,12 +6,16 @@ min 2 players
 max 6 players
  */
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 
 import networksrc.*;
+import unirest.shaded.com.google.gson.Gson;
+
 import org.minueto.MinuetoEventQueue;
 import org.minueto.MinuetoFileException;
 import org.minueto.handlers.MinuetoMouseHandler;
@@ -23,6 +27,7 @@ import clientsrc.TokenSprite;
 public class ServerGame {
 
     private static final ActionManager ACK_MANAGER = ActionManager.getInstance();
+    private static final Gson GSON = new Gson();
 
     private ArrayList<Player> players;
     private int numberOfPlayers;
@@ -739,6 +744,15 @@ public class ServerGame {
             }
         }
         return null;
+    }
+
+    public String getJSON() {
+        Field[] fields = ServerGame.class.getDeclaredFields();
+        List<Field> fieldsList = Arrays.asList(fields);
+        // fields must be accessible for Gson to work
+        fieldsList.forEach((field) -> field.setAccessible(true));
+        String jsonGame = GSON.toJson(this);
+        return jsonGame;
     }
 
     /*

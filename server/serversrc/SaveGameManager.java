@@ -35,6 +35,7 @@ public class SaveGameManager {
                 e.printStackTrace();
             }
         }
+        // String jsonGame = game.getJSON();
         String jsonGame = GSON.toJson(gameData);
         boolean status = false;
         try {
