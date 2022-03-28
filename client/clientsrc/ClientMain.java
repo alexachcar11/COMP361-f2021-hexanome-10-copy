@@ -852,7 +852,6 @@ public class ClientMain {
                 } else if (x >= 335 && x <= 690 && y <= 760 && y >= 695) {
                     // click on the Return to Open Lobbies button
                     displayAvailableGames();
-                    gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (x > 1000 && y > 740) {
                     // click on mute/unmute button
@@ -1283,7 +1282,6 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                gui.window.draw(lobbyBackground, 0, 0);
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
                 }
@@ -1726,6 +1724,7 @@ public class ClientMain {
         joinButtonCoordinates.clear();
 
         // display
+        gui.window.draw(lobbyBackground, 0, 0);
         gui.currentBackground = GUI.Screen.LOBBY;
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
@@ -1734,15 +1733,14 @@ public class ClientMain {
             // display a message when no sessions are available to join
             int nbAvailableGameSessions = availableSessionsList.size();
             if (nbAvailableGameSessions == 0) {
-                MinuetoText noneAvailableText = new MinuetoText(
-                        "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
-                lobbyBackground.draw(noneAvailableText, 200, 340);
+                MinuetoText noneAvailableText = new MinuetoText("There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
+                gui.window.draw(noneAvailableText, 200, 340);
             }
 
             // display next button
             if (nbAvailableGameSessions > 9) {
                 MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
-                lobbyBackground.draw(nextButton, 700, 676);
+                gui.window.draw(nextButton, 700, 676);
             }
 
             int totalCounter = 0; // how many games are displayed so far
@@ -1763,11 +1761,11 @@ public class ClientMain {
                     MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
                     MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                    lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
-                    lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
+                    gui.window.draw(displayName, 65, 215 + (pageCounter * 50));
+                    gui.window.draw(creator, 350, 215 + (pageCounter * 50));
+                    gui.window.draw(size, 655, 215 + (pageCounter * 50));
+                    gui.window.draw(joinButton, 835, 210 + (pageCounter * 50));
+                    gui.window.draw(joinText, 855, 215 + (pageCounter * 50));
 
                     // keep track of the button location
                     Integer maxX = 935;
