@@ -9,6 +9,7 @@ public class GUI {
         MENU,
         LOGIN,
         LOBBY,
+        SAVEDGAMES,
         CREATELOBBY,
         CHOOSEBOOT,
         LOBBYELFENLAND,

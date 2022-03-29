@@ -2,6 +2,8 @@ package networksrc;
 
 import java.util.ArrayList;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.ClientMain;
 import clientsrc.Color;
 import clientsrc.User;
@@ -52,6 +54,15 @@ public class UpdateUsersACK implements Action{
                 }
             }
         }
+        // display users
+        try {
+            ClientMain.displayUsers();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        // display game info
+        ClientMain.displayLobbyInfo();
     }
     
 }

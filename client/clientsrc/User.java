@@ -20,6 +20,7 @@ public class User {
     // CONSTRUCTOR
     public User(String name) {
         this.name = name;
+        allUsers.add(this);
     }
 
     public static User getUserByName(String name) {
