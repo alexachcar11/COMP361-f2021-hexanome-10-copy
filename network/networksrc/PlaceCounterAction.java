@@ -21,6 +21,9 @@ public class PlaceCounterAction implements Action{
     }
     @Override
     public boolean isValid() {
+        if (this.tok == null){
+            return false;
+        }
         // check if it's player's turn
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
