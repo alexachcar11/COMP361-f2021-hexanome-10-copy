@@ -1,11 +1,12 @@
 package clientsrc;
+
 import java.util.ArrayList;
 
 import networksrc.PlayerHasJoinedAction;
 import networksrc.UpdateUsersAction;
 
 // represents one active game session
-public class LobbyServiceGameSession{
+public class LobbyServiceGameSession {
 
     // fields
     private String displayName;
@@ -20,11 +21,12 @@ public class LobbyServiceGameSession{
 
     /**
      * CONSTRUCTOR
+     * 
      * @param saveGameID save game id or "" if there is none
-     * @param game associated game
-     * @param creator creator of the session
-     * @param sessionID session ID as seen on LS
-     * @param name display name of the session on LS
+     * @param game       associated game
+     * @param creator    creator of the session
+     * @param sessionID  session ID as seen on LS
+     * @param name       display name of the session on LS
      */
     public LobbyServiceGameSession(String saveGameID, Game game, User creator, String sessionID, String name) {
         this.launched = false;
@@ -38,8 +40,9 @@ public class LobbyServiceGameSession{
 
     /**
      * Retrieves a LobbyServiceGameSession by ID
+     * 
      * @param sessionID sessionID to search
-     * @return  LobbyServiceGameSession or null if not found
+     * @return LobbyServiceGameSession or null if not found
      */
     public static LobbyServiceGameSession getSessionByName(String name) {
         for (LobbyServiceGameSession s : allSessions) {
@@ -52,9 +55,10 @@ public class LobbyServiceGameSession{
 
     /**
      * Retrieves all available sessions (i.e. unlaunched)
+     * 
      * @return ArrayList<LobbyServiceGameSession> that are not launched
      */
-    public static ArrayList<LobbyServiceGameSession> getAvailableSession() {
+    public static ArrayList<LobbyServiceGameSession> getAvailableSessions() {
         ArrayList<LobbyServiceGameSession> list = new ArrayList<>();
         for (LobbyServiceGameSession s : allSessions) {
             if (!s.isLaunched()) {
@@ -66,6 +70,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the value of launched
+     * 
      * @return true if the session has been launched, false otherwise
      */
     public boolean isLaunched() {
@@ -74,6 +79,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the list of users that have joined the session
+     * 
      * @return ArrayList<User>
      */
     public ArrayList<User> getUsers() {
@@ -82,11 +88,12 @@ public class LobbyServiceGameSession{
 
     public void updateUsers() {
         String senderName = ClientMain.currentUser.getName();
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new UpdateUsersAction(senderName, sessionID));
+        ClientMain.ACTION_MANAGER.sendAction(new UpdateUsersAction(senderName, sessionID));
     }
 
     /**
      * Indicates if the username is in this game session.
+     * 
      * @param userName user to check
      * @return true if the username is in the session, false otherwise
      */
@@ -103,6 +110,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: retrieves the display name of the session
+     * 
      * @return displayName
      */
     public String getDisplayName() {
@@ -111,6 +119,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the number of users that have currently joined the game
+     * 
      * @return size of ArrayList<User>
      */
     public int getNumberOfUsersCurrently() {
@@ -119,6 +128,7 @@ public class LobbyServiceGameSession{
 
     /**
      * Set the current number of players to n
+     * 
      * @param n total number of players currently registered in this session
      */
     public void setCurrentNumberOfPlayers(int n) {
@@ -127,6 +137,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: returns the save game id
+     * 
      * @return save game id. "" if the game has no save id yet
      */
     public String getSaveGameID() {
@@ -135,6 +146,7 @@ public class LobbyServiceGameSession{
 
     /**
      * GETTER: Retunrs the username of the creator of the game
+     * 
      * @return usersname of user that is the creator
      */
     public String getCreator() {
@@ -143,6 +155,7 @@ public class LobbyServiceGameSession{
 
     /**
      * Returns the session ID that is on the LS
+     * 
      * @return session ID
      */
     public String getSessionID() {
@@ -151,18 +164,22 @@ public class LobbyServiceGameSession{
 
     /**
      * Add a User to the list of users in this session
+     * 
      * @param user user that is being added
      */
     public void addUser(User user) {
         this.users.add(user);
+        numberOfPlayersCurrently += 1;
     }
 
     /**
      * Remove a User from the list of users in this session
+     * 
      * @param user user to remove
      */
     public void removeUser(User user) {
         this.users.remove(user);
+        numberOfPlayersCurrently -= 1;
         user.toggleReady();
     }
 
@@ -186,30 +203,35 @@ public class LobbyServiceGameSession{
     }
 
     /**
-     * Checks whether this session can be launched by the LS (LS won't give an error).
-     * A session is launchable when enough users have joined and all theses users are ready.
-     * @return true if the session is launchable (LS won't give an error), false otherwise
+     * Checks whether this session can be launched by the LS (LS won't give an
+     * error).
+     * A session is launchable when enough users have joined and all theses users
+     * are ready.
+     * 
+     * @return true if the session is launchable (LS won't give an error), false
+     *         otherwise
      */
     public boolean isLaunchable() {
         // check there are enough users
 
         return users.size() == game.getNumberOfPlayers();
 
-
-        /* // check there are enough users
-        if (users.size() != gameService.getNumberOfUsers()) {
-            return false;
-        }
-
-        // check all users are ready
-        boolean allReady = true;
-        for (User u : this.users) {
-            if (!u.isReady()) {
-                allReady = false;
-                break;
-            }
-        }
-        return allReady; */
+        /*
+         * // check there are enough users
+         * if (users.size() != gameService.getNumberOfUsers()) {
+         * return false;
+         * }
+         * 
+         * // check all users are ready
+         * boolean allReady = true;
+         * for (User u : this.users) {
+         * if (!u.isReady()) {
+         * allReady = false;
+         * break;
+         * }
+         * }
+         * return allReady;
+         */
     }
 
     /**
@@ -232,7 +254,8 @@ public class LobbyServiceGameSession{
         } else if (pColor.equals(Color.GREEN)) {
             colorStr = "GREEN";
         }
-        ClientMain.ACTION_MANAGER.sendActionAndGetReply(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
+        ClientMain.ACTION_MANAGER
+                .sendAction(new PlayerHasJoinedAction(ClientMain.currentUser.getName(), sessionID, colorStr));
         return this;
     }
 }

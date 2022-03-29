@@ -1,5 +1,8 @@
 package networksrc;
 
+import org.minueto.MinuetoColor;
+import org.minueto.image.MinuetoText;
+
 import clientsrc.ClientMain;
 import clientsrc.User;
 
@@ -26,12 +29,20 @@ public class LoginACK implements Action {
             ClientMain.currentUser = newUser;
             // gui updates
             ClientMain.displayAvailableGames();
-        } else if (result.equals("user-dne")) {
+        } else if (result.equals("invalid-credentials")) {
             // the next attempt to login will reset the Client name
             ClientMain.clientNeedsNewName = true;
-            // TODO : display user does not exist message on screen
-        } else if (result.equals("wrong-pw")) {
-            // TODO : display error message on screen
+            // reset user/pass to empty 
+            ClientMain.userString = "";
+            ClientMain.passString = "";
+            // display error message to the user
+            String invalidText = "Invalid Credentials";
+            MinuetoText usernameFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
+            ClientMain.loginScreenImage.draw(ClientMain.whiteBoxImage, 160, 350);
+            ClientMain.loginScreenImage.draw(usernameFailed, 200, 360);
+            MinuetoText passwordFailed = new MinuetoText(invalidText, ClientMain.fontArial20, MinuetoColor.RED);
+            ClientMain.loginScreenImage.draw(ClientMain.whiteBoxImage, 160, 440);
+            ClientMain.loginScreenImage.draw(passwordFailed, 200, 450);
         }
         
     }

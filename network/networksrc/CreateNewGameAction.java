@@ -20,7 +20,8 @@ public class CreateNewGameAction implements Action {
     private String stringMode;
     private String stringTownGoldOption;
 
-    public CreateNewGameAction(String senderName, String displayName, int numberOfPlayers, int gameRoundsLimit, boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
+    public CreateNewGameAction(String senderName, String displayName, int numberOfPlayers, int gameRoundsLimit,
+            boolean destinationTownEnabled, boolean witchEnabled, String mode, String townGoldOption) {
         this.senderName = senderName;
         this.displayName = displayName;
         this.numberOfPlayers = numberOfPlayers;
@@ -65,13 +66,14 @@ public class CreateNewGameAction implements Action {
     /**
      * Registers a game service and session on LS.
      * Upon failure: sends a failure message to the sender
-     * Upon success: creates a ServerGame and GameLobby that are associated then sends an ACK to senderName.
+     * Upon success: creates a ServerGame and GameLobby that are associated then
+     * sends an ACK to senderName.
      */
     @Override
     public void execute() {
-        
+
         try {
-            // parse mode 
+            // parse mode
             Mode mode = null;
             if (stringMode.equals("elfenland")) {
                 mode = Mode.ELFENLAND;
@@ -88,12 +90,13 @@ public class CreateNewGameAction implements Action {
             } else if (stringTownGoldOption.equals("yes-random")) {
                 townGoldOption = TownGoldOption.YESRANDOM;
             }
-            
+
             // get the creator's ServerUser
             ServerUser creator = ServerUser.getServerUser(senderName);
 
             // create game service + session on LS
-            String gameID = ServerMain.REGISTRATOR.createGame(creator, displayName, numberOfPlayers, gameRoundsLimit, mode, witchEnabled, destinationTownEnabled, townGoldOption);
+            String gameID = ServerMain.REGISTRATOR.createGame(creator, displayName, numberOfPlayers, gameRoundsLimit,
+                    mode, witchEnabled, destinationTownEnabled, townGoldOption);
             if (gameID == null) {
                 // LS gameservice or session failed
                 // send ack to the sender only
@@ -103,22 +106,23 @@ public class CreateNewGameAction implements Action {
             } else {
                 // success!
                 // add server side logic
-                ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, mode, townGoldOption, gameID);
+                ServerGame serverGame = new ServerGame(numberOfPlayers, gameRoundsLimit, destinationTownEnabled,
+                        witchEnabled, mode, townGoldOption, gameID);
                 GameLobby gameLobby = new GameLobby(gameID, serverGame, displayName, creator);
                 ServerUser sUser = ServerUser.getServerUser(senderName);
                 gameLobby.addUser(sUser);
                 // send ack to the sender only
                 ActionManager ackManager = ActionManager.getInstance();
-                CreateNewGameACK actionToSend = new CreateNewGameACK(displayName, gameID, numberOfPlayers, gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTownGoldOption);
+                CreateNewGameACK actionToSend = new CreateNewGameACK(displayName, gameID, numberOfPlayers,
+                        gameRoundsLimit, destinationTownEnabled, witchEnabled, stringMode, stringTownGoldOption);
                 ackManager.sendToSender(actionToSend, senderName);
             }
-            
+
         } catch (ParseException e) {
             // TODO : fill this?
             e.printStackTrace();
         }
 
-        
     }
 
 }

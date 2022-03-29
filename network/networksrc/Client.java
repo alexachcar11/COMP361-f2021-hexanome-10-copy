@@ -2,24 +2,15 @@ package networksrc;
 
 import java.io.*;
 import java.net.*;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Client implements NetworkNode {
     private Socket aSocket;
     private ObjectOutputStream aObjectOut;
     private ObjectInputStream aObjectIn;
-    // private User aUser;
-    private boolean running;
-    // queue for actions to be executed by the client
-    private final Queue<Action> actionInQueue;
-    // thread used to execute incoming actions
-    private final Thread executionThread;
-    // thread for listening to server and adding actions to queue
-    private final Thread listenThread;
     private String name;
+    private Thread listenThread;
 
-    public Client(String pHost, int pPort, String username) {
+    public Client(String pHost, int pPort, String userString) {
         try {
             aSocket = new Socket(pHost, pPort);
             System.out.println("Client is connected!");
@@ -28,27 +19,13 @@ public class Client implements NetworkNode {
             aObjectOut = new ObjectOutputStream(aOut);
             aObjectIn = new ObjectInputStream(aIn);
             System.out.println("Client created at host: " + pHost + ", and port: " + pPort);
-            this.name = username;
+            this.name = userString;
+            this.listenThread = new Thread(() -> listenToServer());
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + pHost);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to: " + pHost);
         }
-        this.running = true;
-        // this.aUser = pUser;
-        this.actionInQueue = new LinkedList<>();
-        this.listenThread = new Thread(() -> this.listenToServer());
-        this.executionThread = new Thread(() -> {
-            while (this.running) {
-                if (!actionInQueue.isEmpty()) {
-                    Action toExecute = actionInQueue.poll();
-                    if (toExecute.isValid()) {
-                        toExecute.execute();
-                    }
-                }
-            }
-        });
-
     }
 
     /**
@@ -67,6 +44,7 @@ public class Client implements NetworkNode {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        this.listenThread.start();
     }
 
     /**
@@ -75,18 +53,17 @@ public class Client implements NetworkNode {
      * alternatively, could assign a thread to each action
      */
     private void listenToServer() {
-        while (running) {
+        while (true) {
             Action actionIn = null;
             String toPrint = null;
             try {
-                toPrint = (String) aObjectIn.readObject();
+                actionIn = (Action) aObjectIn.readObject();
+                if (actionIn.isValid()) {
+                    actionIn.execute();
+                }
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
             }
-            // if (actionIn != null) {
-            // this.actionInQueue.add(actionIn);
-            // }
-            System.out.println(toPrint);
         }
     }
 

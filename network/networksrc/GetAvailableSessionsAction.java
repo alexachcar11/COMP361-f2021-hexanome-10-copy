@@ -8,7 +8,7 @@ import serversrc.ServerGame;
 import serversrc.ServerUser;
 import serversrc.TownGoldOption;
 
-public class GetAvailableSessionsAction implements Action{
+public class GetAvailableSessionsAction implements Action {
 
     private String senderName;
 
@@ -37,7 +37,7 @@ public class GetAvailableSessionsAction implements Action{
         ArrayList<String> creatorNames = new ArrayList<>();
         ArrayList<String> gameIDs = new ArrayList<>();
 
-        for (GameLobby gl: availableLobbies) {
+        for (GameLobby gl : availableLobbies) {
             // get relevant info
             ServerGame serverGame = gl.getServerGame();
             String name = gl.getName();
@@ -61,11 +61,11 @@ public class GetAvailableSessionsAction implements Action{
                 townGold = "YES-DEFAULT";
             } else if (town.equals(TownGoldOption.YESRANDOM)) {
                 townGold = "YES-RANDOM";
-            } 
+            }
             ServerUser creatorUser = gl.getCreator();
             String creatorName = creatorUser.getName();
             String gameID = gl.getGameID();
-            
+
             // store info
             names.add(name);
             numberPlayersCurrently.add(currentPlayers);
@@ -80,8 +80,9 @@ public class GetAvailableSessionsAction implements Action{
         }
 
         // send to sender
-        GetAvailableSessionsACK action = new GetAvailableSessionsACK(names, numberPlayersCurrently, numberPlayers, numberRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption, creatorNames, gameIDs);
+        GetAvailableSessionsACK action = new GetAvailableSessionsACK(names, numberPlayersCurrently, numberPlayers,
+                numberRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption, creatorNames, gameIDs);
         ActionManager.getInstance().sendToSender(action, senderName);
     }
-    
+
 }

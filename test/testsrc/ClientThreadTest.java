@@ -22,7 +22,7 @@ public class ClientThreadTest {
     public void oneActionToClient() throws NoSuchFieldException, SecurityException,
             InterruptedException {
         User testUser = new User("owen");
-        Client testClient = new Client(Server.LOCATION, Server.PORT, testUser);
+        Client testClient = new Client(Server.LOCATION, Server.PORT, testUser.getName());
         testClient.start();
         Field actionQueue = Client.class.getDeclaredField("actionInQueue");
         actionQueue.setAccessible(true);
@@ -53,7 +53,7 @@ public class ClientThreadTest {
     @SuppressWarnings("unchecked")
     public void twoActionsToClient() throws NoSuchFieldException, SecurityException, InterruptedException {
         User testUser = new User("owen");
-        Client testClient = new Client(Server.LOCATION, Server.PORT, testUser);
+        Client testClient = new Client(Server.LOCATION, Server.PORT, testUser.getName());
         testClient.start();
         Field actionQueue = Client.class.getDeclaredField("actionInQueue");
         actionQueue.setAccessible(true);

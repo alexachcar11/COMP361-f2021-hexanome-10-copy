@@ -8,7 +8,7 @@ import clientsrc.Mode;
 import clientsrc.TownGoldOption;
 import clientsrc.User;
 
-public class CreateNewGameACK implements Action{
+public class CreateNewGameACK implements Action {
 
     private String displayName;
     private String gameID;
@@ -24,7 +24,8 @@ public class CreateNewGameACK implements Action{
         this.gameID = null;
     }
 
-    public CreateNewGameACK(String displayName, String gameID, int numberPlayers, int numberRounds, boolean destinationTownEnabled, boolean witchEnabled, String stringMode, String stringTownGoldOption) {
+    public CreateNewGameACK(String displayName, String gameID, int numberPlayers, int numberRounds,
+            boolean destinationTownEnabled, boolean witchEnabled, String stringMode, String stringTownGoldOption) {
         this.displayName = displayName;
         this.gameID = gameID;
         this.numberPlayers = numberPlayers;
@@ -54,7 +55,7 @@ public class CreateNewGameACK implements Action{
             // server succesfully created a new game
             System.out.println("CreateNewGameACK received: successfully created a new game");
 
-            // parse mode 
+            // parse mode
             Mode mode = null;
             if (stringMode.equals("elfenland")) {
                 mode = Mode.ELFENLAND;
@@ -73,16 +74,18 @@ public class CreateNewGameACK implements Action{
             }
 
             // create a new Game object
-            Game newGame = new Game(numberPlayers, numberRounds, destinationTownEnabled, witchEnabled, mode, townGoldOption);
+            Game newGame = new Game(numberPlayers, numberRounds, destinationTownEnabled, witchEnabled, mode,
+                    townGoldOption);
 
             // set as currentgame
             ClientMain.currentGame = newGame;
 
             // get creator
             User currentUser = ClientMain.currentUser;
-        
+
             // create new LobbyServiceGameSession
-            LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, currentUser, gameID, displayName);
+            LobbyServiceGameSession newSession = new LobbyServiceGameSession("", newGame, currentUser, gameID,
+                    displayName);
 
             // set as current session
             ClientMain.currentSession = newSession;
@@ -91,12 +94,10 @@ public class CreateNewGameACK implements Action{
             ClientMain.currentSession.addUser(ClientMain.currentUser);
 
             // get available boot colors
-            ClientMain.ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
+            ClientMain.ACTION_MANAGER
+                    .sendAction(new GetAvailableColorsAction(currentUser.getName(), newSession.getSessionID()));
         }
- 
-        
 
-        
     }
-    
+
 }

@@ -24,7 +24,6 @@ public class WinnerACK implements Action {
         try {
             ClientMain.displayWinnerByString(winnerName);
         } catch (MinuetoFileException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

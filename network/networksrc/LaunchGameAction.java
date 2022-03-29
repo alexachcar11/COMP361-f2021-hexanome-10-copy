@@ -10,7 +10,7 @@ import serversrc.ServerGame;
 import serversrc.ServerMain;
 import serversrc.ServerUser;
 
-public class LaunchGameAction implements Action{
+public class LaunchGameAction implements Action {
 
     private String senderName;
     private String gameID;
@@ -59,6 +59,7 @@ public class LaunchGameAction implements Action{
 
     @Override
     public void execute() {
+        ServerGame serverGame = null;
         try {
             // send request to LS
             ServerUser userAskingToLaunch = ServerUser.getServerUser(senderName);
@@ -66,13 +67,13 @@ public class LaunchGameAction implements Action{
 
             // server logic
             GameLobby gameLobby = GameLobby.getGameLobby(gameID);
-            ServerGame serverGame = gameLobby.getServerGame();
+            serverGame = gameLobby.getServerGame();
 
             // create 1 Player per ServerUser in the GameLobby
             for (ServerUser sUser : gameLobby.getAllUsers()) {
                 new Player(sUser, serverGame);
             }
-            
+
             // notify all users in the lobby
             LaunchGameACK actionToSend = new LaunchGameACK();
             try {
@@ -81,21 +82,23 @@ public class LaunchGameAction implements Action{
                     String username = serverUser.getName();
                     // get the user's socket
                     ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
-                    // get the socket's output stream 
+                    // get the socket's output stream
                     ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
                     // send the acknowledgment
                     objectOutputStream.writeObject(actionToSend);
                 }
-            } catch (IOException e) { 
+            } catch (IOException e) {
                 System.err.println("IOException in LaunchGameAction.execute()");
             }
-
+            serverGame.nextPhase();
+        } catch (NullPointerException e) {
+            System.err.println("Could not create a server game.");
+            e.printStackTrace();
         } catch (Exception e1) {
             // TODO: fail to launch on LS
             e1.printStackTrace();
         }
 
-        serverGame.nextPhase();
     }
 
 }
