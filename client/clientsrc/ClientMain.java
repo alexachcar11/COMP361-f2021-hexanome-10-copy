@@ -1440,6 +1440,7 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
+                gui.window.draw(lobbyBackground, 0, 0);
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
                 }
@@ -2416,8 +2417,8 @@ public class ClientMain {
         joinButtonCoordinates.clear();
 
         // display
-        gui.window.draw(lobbyBackground, 0, 0);
         gui.currentBackground = GUI.Screen.LOBBY;
+        gui.window.draw(lobbyBackground, 0, 0);
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
             ArrayList<LobbyServiceGameSession> availableSessionsList = LobbyServiceGameSession.getAvailableSessions();
