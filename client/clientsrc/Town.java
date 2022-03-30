@@ -157,6 +157,10 @@ public class Town {
         return this.goldValue;
     }
 
+    public void setGoldValue(int value) { 
+        this.goldValue = value;
+    }
+
     // public boolean notClickingOnATown(int x, int y) { 
     //     for(Town t : ServerGame.getTowns()) { 
 
