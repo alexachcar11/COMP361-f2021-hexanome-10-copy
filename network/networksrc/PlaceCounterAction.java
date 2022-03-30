@@ -69,10 +69,14 @@ public class PlaceCounterAction implements Action {
         playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
 
         ActionManager ackManager = ActionManager.getInstance();
+
         // consume token on client side
+        ackManager.sendToSender(new ConfirmPlaceCounterSingleACK(this.tok), this.senderName);
         
         ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown,
                 this.tok);
+                
+        // let everyone else know of the new state
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
 
     }

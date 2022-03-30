@@ -36,6 +36,8 @@ public class Game {
     private static ArrayList<CardSprite> faceDownCardPile;
     private ArrayList<CardSprite> faceUpCardPile;
     private TownGraph aTownGraph;
+    private TokenSprite auctionToken = null;
+    private int auctionBid = 0;
     // private ArrayList<GoldCard> goldCardPile;
     // private Auction auction; not doing this now
 
@@ -175,6 +177,10 @@ public class Game {
         aTownGraph = new TownGraph();
         aTownGraph.addEdges(routes);
 
+    }
+
+    public void setAuctionToken(TokenSprite pTok){
+        this.auctionToken = pTok;
     }
 
     public TownGraph getTownGraph() {

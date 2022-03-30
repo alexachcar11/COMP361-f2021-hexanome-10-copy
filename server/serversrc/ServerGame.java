@@ -39,7 +39,7 @@ public class ServerGame {
     public ArrayList<AbstractCard> faceDownCardPile;
     public ArrayList<AbstractCard> faceUpCardPile;
     public ArrayList<GoldCard> goldCardPile;
-    public Auction auction = new Auction();
+    public Auction auction;
     public ArrayList<Token> auctionTokenList;
     public ArrayList<Token> faceUpTokenPile;
     public TokenStack faceDownTokenStack;
@@ -346,20 +346,62 @@ public class ServerGame {
     }
 
     public void nextPlayer() {
-        // change next player
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getIsTurn()) {
-                // if it's last player in list, go back to start of list
-                if (i == players.size() - 1) {
-                    players.get(i).passTurn(players.get(0));
-                } else {
-                    players.get(i).passTurn(players.get(i + 1));
+        // if we're in auction phase
+        if (currentPhase == 10){
+            // if current player is last player, remove him from biddersList
+            if (auction.getBiddersList().size() == 1){
+                auction.getBiddersList().remove(0);
+            }
+            // if everyone else passed last player needs to pass too
+            if (auction.getBiddersList().isEmpty()){
+                // everyone passed
+                // note that we give the token to the player inside getWinner();
+                Player winner = auction.getWinner();
+                // returns null because no one bid
+                if(winner==null){
+                    // return token to face down token stack
+                    Token t = auction.getToken();
+                    this.faceDownTokenStack.addToken(t);
                 }
-
+                // send to Client the winner
+                else {
+                    ACK_MANAGER.sendToSender(new AuctionWinnerACK(auction.getToken().toString()), winner.getName());
+                }
+                // end of auction
+                if (auctionTokenList.isEmpty()){
+                    nextPhase();
+                    return;
+                }
+                // otherwise prepare next token to be auctioned
+                else {
+                    auction.setToken(auctionTokenList.remove(0));
+                    // send Action ACK to all players 
+                    ACK_MANAGER.sentToAllPlayersInGame(new AuctionACK(this.auction.getToken().toString()), this);
+                    // reset auction biddersList
+                    auction.setBiddersList(players);
+                }
+            }
+            // last passed player: LastPassedPlayer and it's index : indLastPassedPlayer
+            // go to next player in the biddersList
+            this.auction.getLastPassedPlayer().passTurn(this.auction.getBiddersList().get(auction.getIndLastPassedPlayer()));
+            
+        }
+        // change next player
+        else {
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).getIsTurn()) {
+                    // if it's last player in list, go back to start of list
+                    if (i == players.size() - 1) {
+                        players.get(i).passTurn(players.get(0));
+                    } else {
+                        players.get(i).passTurn(players.get(i + 1));
+                    }
+                    break;
+                }
             }
         }
-        // check if all players passed turn
-        if (didAllPlayersPassTurn()) {
+        // can't be in auction phase
+        if (didAllPlayersPassTurn() && currentPhase != 10) {
             nextPhase();
         }
     }
@@ -587,11 +629,16 @@ public class ServerGame {
         ACK_MANAGER.sentToAllPlayersInGame(new PlaceCounterACK(), this);
     }
 
+    public Auction getAuction(){
+        return this.auction;
+    }
+
     // TODO: auction phase and the helper functions/messages
     public void auctionPhase(){
-        // set current phase: this.currentPhase = ...;
+        this.auction = new Auction(players);
+        // set current phase: this.currentPhase = 10; or it's done before this ?
         // get a list of tokens with size 2 times the amount of players
-        // TODO: player can pass or bid
+        // TODO: player can pass or bid in Action network classes AuctionBidAction and PassTurnAction
         // initialize auctionTokenList
         this.auctionTokenList = new ArrayList<>();
         for (int i = 0; i<(players.size()*2); i++){
@@ -599,6 +646,8 @@ public class ServerGame {
         }
         // set auction'd token
         this.auction.setToken(auctionTokenList.remove(0));
+        // sends ACK to client letting them know of the token to be auctioned
+        ACK_MANAGER.sentToAllPlayersInGame(new AuctionACK(this.auction.getToken().toString()), this);
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)

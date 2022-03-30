@@ -20,6 +20,10 @@ public class PassTurnAction implements Action {
     public void execute() {
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
+        if (playersCurrentGame.getCurrentPhase()==10){
+            playersCurrentGame.getAuction().setLastPassedPlayer(playerWhoSent);
+            playersCurrentGame.getAuction().getBiddersList().remove(playerWhoSent);
+        }
         playersCurrentGame.nextPlayer();
     }
 }

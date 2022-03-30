@@ -1,20 +1,26 @@
 package serversrc;
 
+import java.util.ArrayList;
 
 public class Auction {
     private int aCurrentBid;
     private Player HighestBidPlayer;
     private Token aToken;
+    private ArrayList<Player> biddersList;
+    private Player lastPassedPlayer;
+    private int IndLastPassedPlayer;
 
-    public Auction(Token pToken){
+    public Auction(Token pToken, ArrayList<Player> pList){
         this.aCurrentBid = 0;
         this.HighestBidPlayer = null;
         this.aToken = pToken;
+        biddersList = pList;
     }
-    public Auction(){
+    public Auction(ArrayList<Player> pList){
         this.aCurrentBid = 0;
         this.HighestBidPlayer = null;
         this.aToken = null;
+        biddersList = pList;
     }
 
     public void setToken(Token pToken){
@@ -64,6 +70,28 @@ public class Auction {
         // otherwise bid is a success, update fields
         this.aCurrentBid = pBid;
         this.HighestBidPlayer = pPlayer;
+
+        // should check if everyone else passed turn ?
+    }
+    public Token getToken() {
+        return this.aToken;
+    }
+    public ArrayList<Player> getBiddersList(){
+        return this.biddersList;
+    }
+    public void setBiddersList(ArrayList<Player> p){
+        this.biddersList = p;
+    }
+    public void setLastPassedPlayer(Player p){
+        this.lastPassedPlayer = p;
+        this.IndLastPassedPlayer = this.biddersList.indexOf(p);
+    }
+
+    public Player getLastPassedPlayer(){
+        return this.lastPassedPlayer;
+    }
+    public int getIndLastPassedPlayer(){
+        return this.IndLastPassedPlayer;
     }
 
 }
