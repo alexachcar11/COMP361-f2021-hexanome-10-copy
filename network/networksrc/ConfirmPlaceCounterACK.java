@@ -1,9 +1,10 @@
 package networksrc;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.ClientMain;
-import clientsrc.Player;
 import clientsrc.Route;
-import clientsrc.TokenImage;
+import clientsrc.TokenSprite;
 import clientsrc.ClientPlayer;
 import clientsrc.Town;
 
@@ -27,9 +28,15 @@ public class ConfirmPlaceCounterACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         // set token to route
         Route r = ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
-        r.setToken(TokenImage.getTokenImageByString(tok));
+        try {
+            r.setToken(TokenSprite.getTokenSpriteByString(tok));
+        } catch (MinuetoFileException e) {
+            System.out.println("MinuetoFileException");
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException");
+        }
     }
 }

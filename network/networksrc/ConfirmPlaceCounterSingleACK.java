@@ -3,7 +3,7 @@ package networksrc;
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
-import clientsrc.TokenImage;
+import clientsrc.TokenSprite;
 
 
 public class ConfirmPlaceCounterSingleACK implements Action {
@@ -20,9 +20,15 @@ public class ConfirmPlaceCounterSingleACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         // consume token from player's hand
-        ClientMain.currentPlayer.consumeToken(TokenImage.getTokenImageByString(tok));
+        try {
+            ClientMain.currentPlayer.consumeToken(TokenSprite.getTokenSpriteByString(tok));
+        } catch (MinuetoFileException e) {
+            System.out.println("MinuetoFileException");
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException");
+        }
         // note: setting token to route is done in ConfirmPlaceCounterACK
     }
 }

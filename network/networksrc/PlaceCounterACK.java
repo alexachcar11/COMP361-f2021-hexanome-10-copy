@@ -16,9 +16,9 @@ public class PlaceCounterACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         System.out.println("It's now phase 4, place counters");
-        Player currentPlayer = ClientMain.currentPlayer;
+        ClientPlayer currentPlayer = ClientMain.currentPlayer;
         ClientMain.currentGame.setPhase(4);
 
         // currentPlayer.setTurn(true);

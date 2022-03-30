@@ -87,7 +87,7 @@ public class Route {
         }
     }
 
-    public void setToken(TokenImage pToken){
+    public void setToken(TokenSprite pToken){
         this.aToken = pToken;
     }
 

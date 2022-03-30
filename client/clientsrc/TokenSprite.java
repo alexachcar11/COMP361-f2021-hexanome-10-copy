@@ -4,8 +4,6 @@ import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-import serversrc.CardType;
-
 // make this implement serializable at some point
 public class TokenSprite extends AbstractSprite {
 
