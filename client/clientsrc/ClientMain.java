@@ -125,7 +125,7 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
-    static int numberPlayers = 2;
+    static int numberPlayers = currentGame.getNumberOfPlayers();
 
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
