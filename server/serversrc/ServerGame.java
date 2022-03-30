@@ -7,6 +7,7 @@ max 6 players
  */
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -749,9 +750,21 @@ public class ServerGame {
     public String getJSON() {
         Field[] fields = ServerGame.class.getDeclaredFields();
         List<Field> fieldsList = Arrays.asList(fields);
+        HashMap<String, Object> fieldData = new HashMap<>();
         // fields must be accessible for Gson to work
-        fieldsList.forEach((field) -> field.setAccessible(true));
-        String jsonGame = GSON.toJson(this);
+        fieldsList.forEach((field) -> {
+            if (Modifier.isStatic(field.getModifiers()))
+                return;
+            field.setAccessible(true);
+            try {
+                fieldData.put(field.getName(), field.get(this));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
+        String jsonGame = GSON.toJson(fieldData);
         return jsonGame;
     }
 

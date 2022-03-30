@@ -1,7 +1,5 @@
 package serversrc;
 
-import org.json.simple.parser.JSONParser;
-
 import unirest.shaded.com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
@@ -35,8 +33,8 @@ public class SaveGameManager {
                 e.printStackTrace();
             }
         }
-        // String jsonGame = game.getJSON();
-        String jsonGame = GSON.toJson(gameData);
+        String jsonGame = game.getJSON();
+        // String jsonGame = GSON.toJson(gameData);
         boolean status = false;
         try {
             status = saveGameFile.createNewFile();
