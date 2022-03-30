@@ -22,14 +22,7 @@ import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
 import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
-// import serversrc.Token;
-
 import javax.imageio.ImageIO;
-
-// import serversrc.Color;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.TownGoldOption;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -1134,7 +1127,6 @@ public class ClientMain {
         @Override
         public void handleMousePress(int x, int y, int button) {
 
-            // TODO Auto-generated method stub
             // for (Route r: Route.getAllRoutes()){
             // if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >=
             // r.getMaxY()){
@@ -1148,10 +1140,7 @@ public class ClientMain {
                 // pick tok
                 pickedTok = currentPlayer.getTokensInHand().get(1);
 
-                // Draw on Route
-                pickedRoute.placeToken(currentPlayer, pickedTok);
                 if (pickedRoute != null && pickedTok != null) {
-
                     ActionManager.getInstance()
                             .sendAction(new PlaceCounterAction(currentPlayer.getName(),
                                     pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),

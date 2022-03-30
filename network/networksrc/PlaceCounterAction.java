@@ -69,6 +69,8 @@ public class PlaceCounterAction implements Action {
         playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
 
         ActionManager ackManager = ActionManager.getInstance();
+        // consume token on client side
+        
         ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown,
                 this.tok);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
