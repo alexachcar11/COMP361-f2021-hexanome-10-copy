@@ -579,6 +579,12 @@ public class ClientMain {
                         openPlayerInventory(players.get(4));
                     }
                 }
+                
+
+                // IF THE TURN IS PASSABLE -> 
+                if ( x > 20 && x < 130 && y > 637 && y < 712) { 
+                    currentGame.
+                }
             }
 
             // if we right click 
@@ -1658,7 +1664,7 @@ public class ClientMain {
                 ClientMain.gui.window.draw(indicator, 88, 439);
 
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(passTurnText, 42, 600);
+                ClientMain.gui.window.draw(passTurnText, 42, 650);
 
                 // IF WE CLICK ON PASSTURN THEN PASS THE TURN 
 
