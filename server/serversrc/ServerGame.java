@@ -9,6 +9,7 @@ max 6 players
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 
@@ -124,6 +125,15 @@ public class ServerGame {
         towns.add(elvenhold);
         towns.add(beata);
         towns.add(strykhaven);
+
+        if(townGoldOption == TownGoldOption.YESRANDOM) { 
+            for(Town t: towns) { 
+                Random rand = new Random();
+                int townGoldVal = rand.nextInt(7) + 1;
+                t.setGoldValue(townGoldVal);
+
+            }
+        }
 
         // shuffle towns list
         Collections.shuffle(towns); // to be used for destination town
