@@ -434,6 +434,18 @@ public class ClientMain {
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(goldPanel);
 
+        // if there are destination towns, add the destination town of the player to their information 
+        if(currentGame.isDestinationTownEnabled() == true) { 
+            JPanel destTownPanel = new JPanel();
+            destTownPanel.setLayout(new BoxLayout(destTownPanel, BoxLayout.X_AXIS));
+
+            JLabel targetTownText = new JLabel("This player must reach " + p.getTargetDestinationTown().getTownName() + " as their final town!");
+            destTownPanel.add(targetTownText);
+
+            inventory.add(Box.createVerticalStrut(10));
+            inventory.add(destTownPanel);
+        }
+
         opponentFrame.add(inventory);
 
         // set the location of the window
@@ -1648,6 +1660,8 @@ public class ClientMain {
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(passTurnText, 42, 600);
 
+                // IF WE CLICK ON PASSTURN THEN PASS THE TURN 
+
                 List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                 List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
 
@@ -1692,6 +1706,15 @@ public class ClientMain {
                     ClientMain.gui.window.draw(p4, 615, 698);
                     ClientMain.gui.window.draw(p5, 709, 698);
                 }
+
+                // if(phaseNumb == 4) { 
+                //     if ( listOfTokens.size() == 3) { 
+                //         if (x,y is within picture 1) { 
+                //             selected token = listOfTokens.get(1); 
+
+                //         }
+                //     }
+                // }
 
                 // organize cards in inventory
                 if (listOfCards.size() == 1) {
