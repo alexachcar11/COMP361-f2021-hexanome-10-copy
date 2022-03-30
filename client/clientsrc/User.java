@@ -6,39 +6,21 @@ package clientsrc;
 
 import java.util.ArrayList;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
 import networksrc.Client;
 
 public class User {
 
     // FIELDS
     private String name;
-    private JSONObject currentTokenJSON;
-    private static final Registrator REGISTRATOR = Registrator.instance();
     private boolean ready = false;
     private Color color = null;
     private Client client;
     private static ArrayList<User> allUsers = new ArrayList<>();
 
     // CONSTRUCTOR
-    public User(String name, String password) {
-        this.name = name;
-        try {
-            this.currentTokenJSON = REGISTRATOR.createToken(name, password);
-        } catch (ParseException e) {
-            throw new RuntimeException("Error: could not create user.");
-        }
-        // client-server connection (1 user = 1 client)
-        Client client = new Client("elfenland.simui.com", 13645, this);
-        this.client = client;
-        client.start();
-        allUsers.add(this);
-    }
-
     public User(String name) {
         this.name = name;
+        allUsers.add(this);
     }
 
     public static User getUserByName(String name) {
@@ -58,15 +40,6 @@ public class User {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * GETTER: returns the user's current token from the LS
-     * @return token in String format
-     */
-    public String getToken() {
-        String stringToken = (String) this.currentTokenJSON.get("access_token");
-        return stringToken.replace("+", "%2B");
     }
 
     /**

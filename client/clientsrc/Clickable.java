@@ -1,5 +1,5 @@
 package clientsrc;
 
-public interface HitBox {
+public interface Clickable {
     public boolean hasCollidePoint(int x, int y);
 }

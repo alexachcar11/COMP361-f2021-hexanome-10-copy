@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import serversrc.GameLobby;
 import serversrc.ServerUser;
 
-public class UpdateUsersAction implements Action{
+public class UpdateUsersAction implements Action {
 
     private String senderName;
     private String gameID;
@@ -35,9 +35,9 @@ public class UpdateUsersAction implements Action{
         }
 
         // send ACK to sender
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         UpdateUsersACK actionToSend = new UpdateUsersACK(newUsers);
         ackManager.sendToSender(actionToSend, senderName);
     }
-    
+
 }

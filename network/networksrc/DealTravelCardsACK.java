@@ -22,7 +22,7 @@ public class DealTravelCardsACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
+    public void execute() {
         System.out.println("BEFORE RECIEVE PHASEONE");
         try {
             ClientMain.recievePhaseOne(playerName, playerCards);

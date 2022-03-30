@@ -41,10 +41,12 @@ public class PlayerHasJoinedACK implements Action {
         } else if (color.equals("PURPLE")) {
             newUser.setColor(Color.PURPLE);
         } 
+
+        // display users
         try {
             ClientMain.displayUsers();
-            System.out.println("displaying users.");
         } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

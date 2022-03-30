@@ -34,7 +34,7 @@ public class GetAvailableColorsAction implements Action {
             System.err.println("The GameLobby " + gameID + " does not exist on the server.");
             return false;
         }
-    
+
         // senderName exists
         ServerUser sUser = ServerUser.getServerUser(senderName);
         if (sUser == null) {
@@ -62,19 +62,19 @@ public class GetAvailableColorsAction implements Action {
         availableColors.add("RED");
         availableColors.add("PURPLE");
         availableColors.add("YELLOW");
-        
+
         // remove colors that are taken
         GameLobby gameLobby = GameLobby.getGameLobby(gameID);
         for (ServerUser sUser : gameLobby.getAllUsers()) {
             Color colorTaken = sUser.getColor();
             if (colorTaken != null)
-            availableColors.remove(colorTaken.name());
+                availableColors.remove(colorTaken.name());
         }
 
         // send ACK to sender
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         GetAvailableColorsACK actionToSend = new GetAvailableColorsACK(availableColors);
         ackManager.sendToSender(actionToSend, senderName);
     }
-    
+
 }

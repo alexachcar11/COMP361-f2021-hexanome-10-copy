@@ -1,13 +1,15 @@
+package testsrc;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.json.simple.JSONObject;
 import org.junit.*;
 
-import clientsrc.Registrator;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import serversrc.Registrator;
 
 public class LoginTest {
 

@@ -18,7 +18,7 @@ public class UpdateDestinationTownACK implements Action{
     @Override
     public void execute() {
         System.out.println("UpdateDestinationTownACK received");
-        Player p = ClientMain.currentPlayer;
+        ClientPlayer p = ClientMain.currentPlayer;
         Town t = Game.getTownByName(TargetTown);
         p.setTargetDestinationTown(t);
         

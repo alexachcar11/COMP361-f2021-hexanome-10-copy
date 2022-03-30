@@ -1,11 +1,10 @@
 package networksrc;
 
-import org.minueto.MinuetoFileException;
-
 import clientsrc.ClientMain;
 import clientsrc.Player;
 import clientsrc.Route;
 import clientsrc.TokenImage;
+import clientsrc.ClientPlayer;
 import clientsrc.Town;
 
 public class ConfirmPlaceCounterACK implements Action {

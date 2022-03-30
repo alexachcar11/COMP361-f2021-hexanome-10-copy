@@ -3,18 +3,20 @@
 package clientsrc;
 
 import java.util.*;
+import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-public class Player {
+public class ClientPlayer {
     boolean isTurn = false;
 
     private int gold;
     private GUI guiDisplayed; // TODO: initialize this
-    private List<TravelCard> cardsInHand;
-    private List<TokenImage> tokensInHand;
+    private List<CardSprite> cardsInHand;
+    private List<TokenSprite> tokensInHand;
     private Town inTown;
     private Town targetDestinationTown = null;
 
@@ -26,9 +28,9 @@ public class Player {
     // used in ActionManager
     private User aUser;
     private Game currentGame;
-    private static ArrayList<Player> allPlayers = new ArrayList<Player>();
+    private static ArrayList<ClientPlayer> allPlayers = new ArrayList<ClientPlayer>();
 
-    public Player(Color pColor, User pUser, Game currentGame) {
+    public ClientPlayer(Color pColor, User pUser, Game currentGame) {
 
         // inTown = elvenhold; // fix this
         this.gold = 0;
@@ -49,8 +51,8 @@ public class Player {
         allPlayers.add(this);
     }
 
-    public static Player getPlayerByName(String name) {
-        for (Player p : allPlayers) {
+    public static ClientPlayer getPlayerByName(String name) {
+        for (ClientPlayer p : allPlayers) {
             if (p.getServerUser().getName().equals(name)) {
                 return p;
             }
@@ -71,6 +73,14 @@ public class Player {
         return this.targetDestinationTown;
     }
 
+    public void drawTargetDestination() throws MinuetoFileException { 
+        Town targetTown = getTargetDestinationTown();
+
+        MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
+        ClientMain.gui.window.draw(destTownFlag, targetTown.getMaxX() + 8, targetTown.getMaxY() + 8);
+
+    }
+
     public Game getCurrentGame() {
         return currentGame;
     }
@@ -85,6 +95,14 @@ public class Player {
 
     public boolean isTurn() {
         return isTurn;
+    }
+
+    public void incrementGold(int townGoldValue) { 
+        this.gold += townGoldValue;
+    }
+
+    public int getGoldAmount() { 
+        return this.gold;
     }
 
     public GUI getGui() {
@@ -108,7 +126,7 @@ public class Player {
     }
 
     public void addTokenString(String token) throws MinuetoFileException {
-        tokensInHand.add(TokenImage.getTokenImageByString(token));
+        tokensInHand.add(TokenSprite.getTokenSpriteByString(token));
     }
 
     /**
@@ -117,10 +135,10 @@ public class Player {
      * @param tokenStrings
      */
     public void addTokenStringList(List<String> tokenStrings) {
-        List<TokenImage> tokenImages = tokenStrings.stream()
+        List<TokenSprite> tokenImages = tokenStrings.stream()
                 .map((tokenString) -> {
                     try {
-                        return TokenImage.getTokenImageByString(tokenString);
+                        return TokenSprite.getTokenSpriteByString(tokenString);
                     } catch (MinuetoFileException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
@@ -133,15 +151,16 @@ public class Player {
         tokensInHand.addAll(tokenImages);
     }
 
-    public List<TravelCard> getCardsInHand() {
+    public List<CardSprite> getCardsInHand() {
         return cardsInHand;
     }
 
-    public List<TokenImage> getTokensInHand() {
+    public List<TokenSprite> getTokensInHand() {
         return tokensInHand;
     }
 
-    public void drawBoot() { 
+    public void drawBoot() {
+        this.incrementGold(inTown.getGoldValue());
         ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
@@ -392,7 +411,7 @@ public class Player {
      * Post: Sends a new game state to the player.
      */
 
-    public void consumeToken(TokenImage token) {
+    public void consumeToken(TokenSprite token) {
         assert token != null;
 
         if (tokensInHand.contains(token)) {

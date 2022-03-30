@@ -15,6 +15,7 @@ public class Town {
     int maxY;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
     private static ArrayList<Town> allTowns = new ArrayList<>();
+    private int goldValue; 
 
     // keeps track of the player boots that are on the town
     ArrayList<Player> playersHere = new ArrayList<>();
@@ -27,12 +28,13 @@ public class Town {
      * @param minY bottom-most border of the town
      * @param maxY top-most border of the town
      */
-    public Town(String townName, int minX, int maxX, int minY, int maxY) {
+    public Town(String townName, int minX, int maxX, int minY, int maxY, int goldValue) {
         this.townName = townName;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
+        this.goldValue = goldValue;
         // if(Game.getNumberOfPlayers()) { 
 
         // }
@@ -134,4 +136,8 @@ public class Town {
 
     //     }
     // }
+
+    public int getGoldValue(){ 
+        return this.goldValue;
+    }
 }

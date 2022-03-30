@@ -3,7 +3,6 @@ package networksrc;
 import java.util.ArrayList;
 import serversrc.*;
 
-
 public class MoveBootAction implements Action {
 
     private String senderName;
@@ -31,13 +30,13 @@ public class MoveBootAction implements Action {
 
         // add other validation here
         // check for moveBoot phase
-        if (playersCurrentGame.getCurrentPhase() != 5){
+        if (playersCurrentGame.getCurrentPhase() != 5) {
             // do nothing ?
             System.out.println("ERROR: Not moveBoot phase!");
             return false;
         }
         // check if it's not player's turn
-        if (!playerWhoSent.getIsTurn()){
+        if (!playerWhoSent.getIsTurn()) {
             // do nothing ?
             System.out.println("ERROR: Not " + playerWhoSent.getName() + "'s turn!");
             return false;
@@ -46,13 +45,13 @@ public class MoveBootAction implements Action {
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
         // check if route is not adjacent to player
-        if (!(route.getSource() == playerWhoSent.getTown() || route.getDest() == playerWhoSent.getTown())){
+        if (!(route.getSource() == playerWhoSent.getTown() || route.getDest() == playerWhoSent.getTown())) {
             // do nothing ?
             System.out.println("ERROR: Invalid route (not adjacent to player's location)!");
             return false;
         }
         // check if player has the cards required to travel that route
-        if (!playerWhoSent.hasCards(route.getRequiredCards(playerWhoSent.getTown()))){
+        if (!playerWhoSent.hasCards(route.getRequiredCards(playerWhoSent.getTown()))) {
             System.out.println("ERROR: Player doesn't have all cards required!");
             return false;
         }
@@ -71,13 +70,16 @@ public class MoveBootAction implements Action {
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
 
+        // increase the amount of gold that the player has based on how much gold the town is worth 
+        playerWhoSent.incrementGold(dTown.getGoldValue());
+
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
         // here you can do stuff with playerWhoSent and playersCurrentGame
         playersCurrentGame.playerMovedBoot(playerWhoSent, route);
 
         // send an ACK to all clients in the game
-        ACKManager ackManager = ACKManager.getInstance();
+        ActionManager ackManager = ActionManager.getInstance();
         MoveBootACK actionToSend = new MoveBootACK(dstTown, senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
     }

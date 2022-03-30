@@ -52,7 +52,7 @@ public class Player {
             this.index++;
 
             // update client on target town
-            ACKManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
+            ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
         }
 
         this.aServerUser = pServerUser;
@@ -60,6 +60,10 @@ public class Player {
         currentGame.addPlayer(this);
         allPlayers.add(this);
         // aBootAction = new BootAction(this);
+    }
+
+    public void incrementGold(int townGoldValue) { 
+        this.gold += townGoldValue;
     }
 
     public static Player getPlayerByName(String name) {
@@ -177,18 +181,8 @@ public class Player {
 
     // returns list of tokens except obstacle from player's hand
     public List<Token> removeAllTokens() {
-        List<Token> output = new ArrayList<>();
-        for (Token tok : tokensInHand) {
-            if (tok instanceof Obstacle) {
-                continue;
-            } else {
-                // add to output
-                output.add(tok);
-                // remove from player's hand
-                tokensInHand.remove(tok);
-            }
-        }
-        return output;
+        this.tokensInHand.remove(new Obstacle());
+        return this.tokensInHand;
     }
 
     /*

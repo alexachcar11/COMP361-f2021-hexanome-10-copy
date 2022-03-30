@@ -1,22 +1,48 @@
 package networksrc;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.minueto.MinuetoFileException;
+import clientsrc.ClientMain;
 import serversrc.Player;
 import serversrc.ServerGame;
 
-public class ACKManager {
+public class ActionManager {
 
     // singleton
-    private static ACKManager INSTANCE = new ACKManager();
+    private static ActionManager INSTANCE = new ActionManager();
 
-    private ACKManager() {
+    private ActionManager() {
 
     }
 
-    public static ACKManager getInstance() {
+    /**
+     * Returns the singleton INSTANCE of the ActionManager
+     * 
+     * @return INSTANCE
+     */
+    public static ActionManager getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * Sends the action to the Server and waits for a reply. When the reply is
+     * received, it is executed if it is valid.
+     * 
+     * @param action action to send to the user. Don't forget to set senderName in
+     *               the action parameters.
+     */
+    public Action sendAction(Action action) {
+        try {
+            // SEND TEST
+            ObjectOutputStream out = ClientMain.currentClient.getObjectOutputStream();
+            out.writeObject(action);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -63,5 +89,4 @@ public class ACKManager {
             e.printStackTrace();
         }
     }
-
 }
