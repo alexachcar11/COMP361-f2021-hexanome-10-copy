@@ -33,7 +33,7 @@ public class ClientPlayer {
     public ClientPlayer(Color pColor, User pUser, Game currentGame) {
 
         // inTown = elvenhold; // fix this
-        this.gold = 0;
+        this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aUser = pUser;
