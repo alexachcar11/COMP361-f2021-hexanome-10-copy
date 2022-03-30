@@ -1136,6 +1136,11 @@ public class ClientMain {
             // }
             // }
 
+            // hard code one route
+            if (x >= 800 && y >= 650){
+                pickedRoute = currentGame.getTownGraph().getRoute(Town.getTownByName("Elvenhold"), Town.getTownByName("Beata"));
+            }
+
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
                 // pick tok
                 pickedTok = currentPlayer.getTokensInHand().get(1);
