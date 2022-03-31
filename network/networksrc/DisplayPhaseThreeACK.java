@@ -3,6 +3,12 @@ package networksrc;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.minueto.MinuetoEventQueue;
 import org.minueto.MinuetoFileException;
 import org.minueto.handlers.MinuetoMouseHandler;
@@ -11,7 +17,7 @@ import org.minueto.window.MinuetoWindow;
 import clientsrc.ClientMain;
 import clientsrc.TokenSprite;
 
-public class DisplayPhaseThreeACK implements Action{
+public class DisplayPhaseThreeACK implements Action {
 
     private List<String> faceUpCopy;
 
@@ -39,12 +45,15 @@ public class DisplayPhaseThreeACK implements Action{
         })
                 .collect(Collectors.toList());
         int count = 0;
-        for (TokenSprite tImage : tokenImages) {
-            // change these coords
-            tImage.setPos(200 + count * 20, 200);
-            window.draw(tImage, tImage.getX(), tImage.getY());
-            count++;
-        }
+        JFrame tokenFrame = new JFrame("Select a token.");
+        JPanel tokenPanel = new JPanel();
+        tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
+        tokenImages.forEach((tokenImage) -> {
+            JLabel pic = new JLabel(new ImageIcon(tokenImage.getFileAddress()));
+            tokenPanel.add(pic);
+        });
+        tokenFrame.add(tokenPanel);
+        tokenFrame.setVisible(true);
         // mouse handler for selecting token from face up tokens
         MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
 
@@ -72,7 +81,7 @@ public class DisplayPhaseThreeACK implements Action{
         MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
         window.registerMouseHandler(tokenSelect, selectTokenQueue);
         window.render();
-        Thread.yield(); 
+        Thread.yield();
     }
-    
+
 }
