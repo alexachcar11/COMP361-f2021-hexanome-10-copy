@@ -71,6 +71,8 @@ public class DisplayPhaseThreeACK implements Action{
         };
         MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
         window.registerMouseHandler(tokenSelect, selectTokenQueue);
+        window.render();
+        Thread.yield(); 
     }
     
 }
