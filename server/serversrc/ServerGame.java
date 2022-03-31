@@ -138,53 +138,148 @@ public class ServerGame {
         // shuffle towns list
         Collections.shuffle(towns); // to be used for destination town
 
-        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN);
-        Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER); // river
-        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD);
-        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN);
-        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN);
-        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT);
-        Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE); // lake
-        Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE); // lake
-        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD);
-        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN);
-        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT);
-        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD);
-        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT);
-        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT);
-        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN);
-        Route yttarGrangor2 = new Route(yttar, grangor, RouteType.LAKE); // lake
-        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN);
-        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, RouteType.LAKE); // river
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara, RouteType.RIVER); // river
-        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD);
-        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD);
-        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD);
-        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN);
-        Route ixaraVirst2 = new Route(ixara, virst, RouteType.RIVER); // river
-        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN);
-        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN);
-        Route virstStrykhaven2 = new Route(virst, strykhaven, RouteType.LAKE); // lake
-        Route virstElvenhold = new Route(virst, elvenhold, RouteType.LAKE); // lake
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN);
-        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN);
-        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN);
-        Route beataElvenhold2 = new Route(beata, elvenhold, RouteType.LAKE); // lake
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, RouteType.LAKE); // lake
-        Route elvenholdRivinia = new Route(rivinia, elvenhold, RouteType.RIVER); // river
-        Route riviniaTichih = new Route(tichih, rivinia, RouteType.RIVER); // river
-        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD);
-        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD);
-        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD);
-        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD);
-        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD);
-        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD);
+        // int[] city = new int[]{minX, maxX, minY, maxY};
+
+        int[] essWyl1 = new int[]{1,2,3,4};
+        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN, essWyl1);
+
+        int[] essWyl2 = new int[]{1,2,3,4};
+        Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER, essWyl2); // river
+
+        int[] essYtt = new int[]{1,2,3,4};
+        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD, essYtt);
+
+        int[] essPar = new int[]{1,2,3,4};
+        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD, essPar);
+
+        int[] wylJac = new int[]{1,2,3,4};
+        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN, wylJac);
+
+        int[] wylPar = new int[]{1,2,3,4};
+        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN, wylPar);
+
+        int[] wylAlb = new int[]{1,2,3,4};
+        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT, wylAlb);
+
+        int[] yttPar = new int[]{1,2,3,4};
+        Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE, yttPar); // lake
+
+        int[] parGra = new int[]{1,2,3,4};
+        Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE, parGra); // lake
+
+        int[] parAlb = new int[]{1,2,3,4};
+        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT, parAlb);
+
+        int[] jacThr = new int[]{1,2,3,4};
+        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN, jacThr);
+
+        int[] jacTic = new int[]{1,2,3,4};
+        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN, jacTic);
+
+        int[] thrAlb = new int[]{1,2,3,4};
+        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT, thrAlb);
+
+        int[] troRiv = new int[]{1,2,3,4};
+        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD, troRiv);
+
+        int[] thrTic = new int[]{1,2,3,4};
+        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN, thrTic);
+
+        int[] thrFeo = new int[]{1,2,3,4};
+        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT, thrFeo);
+
+        int[] kihDag = new int[]{1,2,3,4};
+        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD, kihDag);
+
+        int[] albDag = new int[]{1,2,3,4};
+        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT, albDag);
+
+        int[] dagFeo = new int[]{1,2,3,4};
+        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT, dagFeo);
+
+        int[] yttGra1 = new int[]{1,2,3,4};
+        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN, yttGra1);
+
+        int[] yttGra2 = new int[]{1,2,3,4};
+        Route yttarGrangor2 = new Route(yttar, grangor, RouteType.LAKE, yttGra2); // lake
+
+        int[] graMah1 = new int[]{1,2,3,4};
+        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN, graMah1);
+
+        int[] graMah2 = new int[]{1,2,3,4};
+        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, RouteType.LAKE, graMah2); // river
+
+        int[] mahIxa1 = new int[]{1,2,3,4};
+        Route mahdavikiaIxara = new Route(mahdavikia, ixara, RouteType.RIVER, mahIxa1); // river
+
+        int[] mahIxa2 = new int[]{1,2,3,4};
+        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN, mahIxa2);
+
+        int[] dagLap = new int[]{1,2,3,4};
+        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD, dagLap);
+
+        int[] ixaLap = new int[]{1,2,3,4};
+        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD, ixaLap);
+
+        int[] ixaDag = new int[]{1,2,3,4};
+        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD, ixaDag);
+
+        int[] ixaVir1 = new int[]{1,2,3,4};
+        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN, ixaVir1);
+
+        int[] ixaVir2 = new int[]{1,2,3,4};
+        Route ixaraVirst2 = new Route(ixara, virst, RouteType.RIVER, ixaVir2); // river
+
+        int[] virLap = new int[]{1,2,3,4};
+        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN, virLap);
+
+        int[] virStr1 = new int[]{1,2,3,4};
+        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN, virStr1);
+
+        int[] virStr2 = new int[]{1,2,3,4};
+        Route virstStrykhaven2 = new Route(virst, strykhaven, RouteType.LAKE, virStr2); // lake
+
+        int[] virElv = new int[]{1,2,3,4};
+        Route virstElvenhold = new Route(virst, elvenhold, RouteType.LAKE, virElv); // lake
+
+        int[] lapElv = new int[]{1,2,3,4};
+        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN, lapElv);
+
+        int[] beaStr = new int[]{1,2,3,4};
+        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN, beaStr);
+
+        int[] beaElv1 = new int[]{1,2,3,4};
+        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN, beaElv1);
+
+        int[] beaElv2 = new int[]{1,2,3,4};
+        Route beataElvenhold2 = new Route(beata, elvenhold, RouteType.LAKE, beaElv2); // lake
+
+        int[] elvStr = new int[]{1,2,3,4};
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, RouteType.LAKE, elvStr); // lake
+
+        int[] elvRiv = new int[]{1,2,3,4};
+        Route elvenholdRivinia = new Route(rivinia, elvenhold, RouteType.RIVER, elvRiv); // river
+
+        int[] rivTic = new int[]{1,2,3,4};
+        Route riviniaTichih = new Route(tichih, rivinia, RouteType.RIVER, rivTic); // river
+
+        int[] ticErg = new int[]{1,2,3,4};
+        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD, ticErg);
+
+        int[] elvErg = new int[]{1,2,3,4};
+        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD, elvErg);
+
+        int[] feoRiv = new int[]{1,2,3,4};
+        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD, feoRiv);
+
+        int[] lapRiv = new int[]{1,2,3,4};
+        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD, lapRiv);
+
+        int[] feoLap = new int[]{1,2,3,4};
+        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD, feoLap);
+
+        int[] feoAlb = new int[]{1,2,3,4};
+        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD, feoAlb);
 
         routes.add(parundiaGrangor);
         routes.add(WylhienAlbaran);

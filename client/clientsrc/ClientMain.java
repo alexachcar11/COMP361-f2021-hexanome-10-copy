@@ -581,9 +581,9 @@ public class ClientMain {
                 }
                 
 
-                // IF THE TURN IS PASSABLE -> 
+                // IF THE TURN IS PASSABLE -> PASS TURN WHEN WE CLICK HERE
                 if ( x > 20 && x < 130 && y > 637 && y < 712) { 
-                    currentGame.
+                    // PASS TURN 
                 }
             }
 

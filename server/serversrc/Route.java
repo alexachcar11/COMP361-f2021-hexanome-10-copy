@@ -12,12 +12,15 @@ public class Route {
     // upstream
     boolean isUpstream;
     private RouteType type;
+    private int[] hitbox;
 
-    Route(Town pStartingTown, Town pEndTown, RouteType rType) {
+    Route(Town pStartingTown, Town pEndTown, RouteType rType, int[] pHitbox) {
+    // Route(Town pStartingTown, Town pEndTown, RouteType rType) {
         this.source = pStartingTown;
         this.dest = pEndTown;
         this.aToken = null;
         this.type = rType;
+        this.hitbox = pHitbox;
     }
 
     // overload if it's a river
@@ -42,6 +45,10 @@ public class Route {
     public Town getDest() {
         return dest;
     }
+
+    // public int[] getHitBox() { 
+    //     return hitbox;
+    // }
 
     /**
      * Place a token on a valid route.
