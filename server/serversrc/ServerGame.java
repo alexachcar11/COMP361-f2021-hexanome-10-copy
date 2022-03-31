@@ -497,8 +497,7 @@ public class ServerGame {
                 phaseTwo();
                 break;
             case 3:
-                // phaseThree();
-                nextPhase();
+                phaseThree();
                 break;
             case 4:
                 phaseFour();
