@@ -577,7 +577,7 @@ public class ServerGame {
 
             @Override
             public void execute() {
-                MinuetoWindow window = ClientMain.WINDOW;
+                /* MinuetoWindow window = ClientMain.WINDOW;
                 final List<TokenSprite> tokenImages = faceUpCopy.stream().map((s) -> {
                     try {
                         return TokenSprite.getTokenSpriteByString(s);
@@ -621,7 +621,8 @@ public class ServerGame {
                     }
                 };
                 MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
-                window.registerMouseHandler(tokenSelect, selectTokenQueue);
+                window.registerMouseHandler(tokenSelect, selectTokenQueue); */
+                System.out.println("inside execute");
             }
         }, currentPlayerName);
 
