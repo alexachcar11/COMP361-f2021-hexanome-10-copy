@@ -140,55 +140,55 @@ public class ServerGame {
 
         // int[] city = new int[]{minX, maxX, minY, maxY};
 
-        int[] essWyl1 = new int[]{1,2,3,4};
+        int[] essWyl1 = new int[]{92,109,59,75};
         Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN, essWyl1);
 
-        int[] essWyl2 = new int[]{1,2,3,4};
+        int[] essWyl2 = new int[]{151,166,106,121};
         Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER, essWyl2); // river
 
-        int[] essYtt = new int[]{1,2,3,4};
+        int[] essYtt = new int[]{40,55,193,208};
         Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD, essYtt);
 
-        int[] essPar = new int[]{1,2,3,4};
+        int[] essPar = new int[]{124,139,167,182};
         Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD, essPar);
 
-        int[] wylJac = new int[]{1,2,3,4};
+        int[] wylJac = new int[]{281,296,61,76};
         Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN, wylJac);
 
-        int[] wylPar = new int[]{1,2,3,4};
+        int[] wylPar = new int[]{172,187,131,146};
         Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN, wylPar);
 
-        int[] wylAlb = new int[]{1,2,3,4};
+        int[] wylAlb = new int[]{249,264,135,150};
         Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT, wylAlb);
 
-        int[] yttPar = new int[]{1,2,3,4};
+        int[] yttPar = new int[]{121,136,236,251};
         Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE, yttPar); // lake
 
-        int[] parGra = new int[]{1,2,3,4};
+        int[] parGra = new int[]{126,141,287,302};
         Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE, parGra); // lake
 
-        int[] parAlb = new int[]{1,2,3,4};
+        int[] parAlb = new int[]{261,276,213,228};
         Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT, parAlb);
 
-        int[] jacThr = new int[]{1,2,3,4};
+        int[] jacThr = new int[]{384,399,135,150};
         Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN, jacThr);
 
-        int[] jacTic = new int[]{1,2,3,4};
+        int[] jacTic = new int[]{489,504,84,99};
         Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN, jacTic);
 
-        int[] thrAlb = new int[]{1,2,3,4};
+        int[] thrAlb = new int[]{383,398,203,218};
         Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT, thrAlb);
 
-        int[] troRiv = new int[]{1,2,3,4};
+        int[] troRiv = new int[]{534,549,191,206};
         Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD, troRiv);
 
-        int[] thrTic = new int[]{1,2,3,4};
+        int[] thrTic = new int[]{557,572,146,161};
         Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN, thrTic);
 
-        int[] thrFeo = new int[]{1,2,3,4};
+        int[] thrFeo = new int[]{444,459,223,238};
         Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT, thrFeo);
 
-        int[] kihDag = new int[]{1,2,3,4};
+        int[] kihDag = new int[]{243,258,347,362};
         Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD, kihDag);
 
         int[] albDag = new int[]{1,2,3,4};
