@@ -64,6 +64,10 @@ public class ClientPlayer {
         return aUser.getName();
     }
 
+    public Town getCurrentLocation() { 
+        return inTown;
+    }
+
     public void setTargetDestinationTown(Town pTown){
         this.targetDestinationTown = pTown;
     }
