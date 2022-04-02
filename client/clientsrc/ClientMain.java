@@ -591,10 +591,12 @@ public class ClientMain {
                     // PASS TURN
                 }
 
-                // IF PLAYERS TURN TO MOVE
+                // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
                 if( true ) { 
                     for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
-                        if( x > r)
+                        if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
+                            // selectedRoute = r;
+                        }
                     }
                 }
 
