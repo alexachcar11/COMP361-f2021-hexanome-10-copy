@@ -29,7 +29,7 @@ public class ServerGame {
     private ArrayList<Player> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
-    public ArrayList<Route> routes;
+    public static ArrayList<Route> routes;
     public int currentRound;
     private int currentPhase;
     public int gameRoundsLimit;
@@ -386,6 +386,10 @@ public class ServerGame {
     // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
+    }
+
+    public static ArrayList<Route> getAllRoutes() { 
+        return routes;
     }
 
     public int getGameRoundsLimit() {

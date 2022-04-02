@@ -334,4 +334,20 @@ public class Route {
     public String getDestTownString() { 
         return source.getTownName();
     }
+
+    public int getMinX(){ 
+        return hitbox[0];
+    }
+
+    public int getMaxX(){ 
+        return hitbox[1];
+    }
+
+    public int getMinY(){ 
+        return hitbox[2];
+    }
+
+    public int getMaxY(){ 
+        return hitbox[3];
+    }
 }
