@@ -64,7 +64,8 @@ public class ClientMain {
     public static ClientPlayer currentPlayer;
 
     public static GUI gui;
-    static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,savedGamesScreenQueue,
+    static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
+            savedGamesScreenQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
     public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
@@ -125,7 +126,8 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
-    static int numberPlayers = currentGame.getNumberOfPlayers();
+    // currentGame.getNumberOfPlayers()
+    static int numberPlayers = 2;
 
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
@@ -434,12 +436,14 @@ public class ClientMain {
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(goldPanel);
 
-        // if there are destination towns, add the destination town of the player to their information 
-        if(currentGame.isDestinationTownEnabled() == true) { 
+        // if there are destination towns, add the destination town of the player to
+        // their information
+        if (currentGame.isDestinationTownEnabled() == true) {
             JPanel destTownPanel = new JPanel();
             destTownPanel.setLayout(new BoxLayout(destTownPanel, BoxLayout.X_AXIS));
 
-            JLabel targetTownText = new JLabel("This player must reach " + p.getTargetDestinationTown().getTownName() + " as their final town!");
+            JLabel targetTownText = new JLabel(
+                    "This player must reach " + p.getTargetDestinationTown().getTownName() + " as their final town!");
             destTownPanel.add(targetTownText);
 
             inventory.add(Box.createVerticalStrut(10));
@@ -456,9 +460,9 @@ public class ClientMain {
 
     }
 
-    static void openTownInformation(Town t) { 
+    static void openTownInformation(Town t) {
 
-        JPanel townInformation = new JPanel(); 
+        JPanel townInformation = new JPanel();
         townInformation.setLayout(new BoxLayout(townInformation, BoxLayout.Y_AXIS));
 
         JPanel nameOfTown = new JPanel();
@@ -475,20 +479,20 @@ public class ClientMain {
 
         JLabel currentlyLookingAtText = new JLabel("You are currently looking at " + townName);
         currentlyLookingAtText.setText("You are currently looking at " + townName);
-        
+
         JLabel hasBeenText;
 
-        if(t.playersThatPassed.contains(currentPlayer)) { 
+        if (t.playersThatPassed.contains(currentPlayer)) {
             hasBeenText = new JLabel("You have been to this town already");
             hasBeenText.setText("You have been to this town already");
-        } else { 
+        } else {
             hasBeenText = new JLabel("You have not been to this town yet");
             hasBeenText.setText("You have not been to this town yet");
         }
 
-        JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue()); 
+        JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
         goldValueText.setText("This town has a gold value of " + t.getGoldValue());
-        
+
         nameOfTown.add(currentlyLookingAtText);
         playerBeen.add(hasBeenText);
         goldVal.add(goldValueText);
@@ -501,12 +505,12 @@ public class ClientMain {
         townInformation.add(goldVal);
 
         townOverview.add(townInformation);
-        
+
         townOverview.setLocation(300, 200);
         townOverview.setSize(new Dimension(700, 300));
 
         townOverview.setVisible(true);
-    
+
     }
 
     static MinuetoMouseHandler elfenlandMouseHandler = new MinuetoMouseHandler() {
@@ -521,7 +525,7 @@ public class ClientMain {
             System.out.println("This is x: " + x + ". This is y: " + y);
 
             // if we left click
-            if(button == 1){
+            if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
                 if (numberPlayers == 2) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
@@ -579,27 +583,26 @@ public class ClientMain {
                         openPlayerInventory(players.get(4));
                     }
                 }
-                
 
                 // IF THE TURN IS PASSABLE -> PASS TURN WHEN WE CLICK HERE
-                if ( x > 20 && x < 130 && y > 637 && y < 712) { 
-                    // PASS TURN 
+                if (x > 20 && x < 130 && y > 637 && y < 712) {
+                    // PASS TURN
                 }
             }
 
-            // if we right click 
-            if(button == 3) { 
+            // if we right click
+            if (button == 3) {
 
-                // iterate over all towns 
-                for(Town t : Game.getTowns()) {
-                // we are clicking on a town 
-                    if(x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY() ) { 
+                // iterate over all towns
+                for (Town t : Game.getTowns()) {
+                    // we are clicking on a town
+                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY()) {
                         // temporary print statement to make sure we're clicking on a specific town
                         System.out.println("Clicking on " + t.getTownName());
 
                         // open a swing gui containing information about that town
                         openTownInformation(t);
-                         
+
                     }
                 }
             }
@@ -651,17 +654,20 @@ public class ClientMain {
                     int minY = (int) coords.getKey().get(3);
 
                     // TODO: fix this
-                    /* if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-                        gameToJoin = coords.getValue();
-                        try {
-                            // get available boot colors
-                            currentSession = gameToJoin;
-                            ACTION_MANAGER.sendAction(
-                                    new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } */
+                    /*
+                     * if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                     * gameToJoin = coords.getValue();
+                     * try {
+                     * // get available boot colors
+                     * currentSession = gameToJoin;
+                     * ACTION_MANAGER.sendAction(
+                     * new GetAvailableColorsAction(currentUser.getName(),
+                     * gameToJoin.getSessionID()));
+                     * } catch (Exception e) {
+                     * e.printStackTrace();
+                     * }
+                     * }
+                     */
                 }
             }
 
@@ -700,7 +706,7 @@ public class ClientMain {
             if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
                 // click on Create New Lobby button
                 gui.currentBackground = GUI.Screen.CREATELOBBY;
-            } else if (x<=0) {
+            } else if (x <= 0) {
                 // click on Load Game button
                 displaySavedGames();
             } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
@@ -1570,7 +1576,6 @@ public class ClientMain {
                     elfenlandLobbyQueue.handle();
                 }
 
-
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
                 if (currentSession.isLaunchable()) {
@@ -1666,7 +1671,7 @@ public class ClientMain {
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(passTurnText, 42, 650);
 
-                // IF WE CLICK ON PASSTURN THEN PASS THE TURN 
+                // IF WE CLICK ON PASSTURN THEN PASS THE TURN
 
                 List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                 List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
@@ -1713,13 +1718,13 @@ public class ClientMain {
                     ClientMain.gui.window.draw(p5, 709, 698);
                 }
 
-                // if(phaseNumb == 4) { 
-                //     if ( listOfTokens.size() == 3) { 
-                //         if (x,y is within picture 1) { 
-                //             selected token = listOfTokens.get(1); 
+                // if(phaseNumb == 4) {
+                // if ( listOfTokens.size() == 3) {
+                // if (x,y is within picture 1) {
+                // selected token = listOfTokens.get(1);
 
-                //         }
-                //     }
+                // }
+                // }
                 // }
 
                 // organize cards in inventory
@@ -1809,36 +1814,43 @@ public class ClientMain {
                 MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
                 ClientMain.gui.window.draw(roundNumCircle, 792, 562);
 
-                // can be optimized a bit for less code 
+                // can be optimized a bit for less code
                 int roundNumber = 1;
                 // if (roundNumber == 1) {
-                //     MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                //     ClientMain.gui.window.draw(firstRound, 806, 570);
+                // MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold,
+                // MinuetoColor.BLACK);
+                // ClientMain.gui.window.draw(firstRound, 806, 570);
                 // } else if (roundNumber == 2) {
-                //     MinuetoText secondRound = new MinuetoText("2", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                //     ClientMain.gui.window.draw(secondRound, 806, 570);
+                // MinuetoText secondRound = new MinuetoText("2", ClientMain.fontArial22Bold,
+                // MinuetoColor.BLACK);
+                // ClientMain.gui.window.draw(secondRound, 806, 570);
                 // } else if (roundNumber == 3) {
-                //     MinuetoText thirdRound = new MinuetoText("3", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                //     ClientMain.gui.window.draw(thirdRound, 806, 570);
+                // MinuetoText thirdRound = new MinuetoText("3", ClientMain.fontArial22Bold,
+                // MinuetoColor.BLACK);
+                // ClientMain.gui.window.draw(thirdRound, 806, 570);
                 // } else if (roundNumber == 4) {
-                //     MinuetoText fourthRound = new MinuetoText("4", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                //     ClientMain.gui.window.draw(fourthRound, 806, 570);
+                // MinuetoText fourthRound = new MinuetoText("4", ClientMain.fontArial22Bold,
+                // MinuetoColor.BLACK);
+                // ClientMain.gui.window.draw(fourthRound, 806, 570);
                 // } else if (roundNumber == 5) {
-                //     MinuetoText fifthRound = new MinuetoText("5", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                //     ClientMain.gui.window.draw(fifthRound, 806, 570);
+                // MinuetoText fifthRound = new MinuetoText("5", ClientMain.fontArial22Bold,
+                // MinuetoColor.BLACK);
+                // ClientMain.gui.window.draw(fifthRound, 806, 570);
                 // }
 
-                MinuetoText roundNumberText = new MinuetoText(String.valueOf(roundNumber), ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+                MinuetoText roundNumberText = new MinuetoText(String.valueOf(roundNumber), ClientMain.fontArial22Bold,
+                        MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
-                MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true); 
-                ClientMain.gui.window.draw(goldValueCircle, 792, 522); 
-                MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), ClientMain.fontArial20, MinuetoColor.BLACK);
+                MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
+                ClientMain.gui.window.draw(goldValueCircle, 792, 522);
+                MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
+                        ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(goldAmnt, 806, 530);
 
                 int numberPlayers = players.size();
 
-                for(int i = 0; i < numberPlayers; i++) { 
+                for (int i = 0; i < numberPlayers; i++) {
                     ClientPlayer opponent = players.get(i);
                     int xName = 835;
                     int yName = 70 + (i * 92);
@@ -1847,26 +1859,25 @@ public class ClientMain {
                     // opponent.getColor());
                     MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
                     ClientMain.gui.window.draw(playerBackground, xName - 10, yName - 10);
-                    
+
                     MinuetoText pName = new MinuetoText(opponent.getName(), ClientMain.fontArial20, MinuetoColor.BLACK);
                     ClientMain.gui.window.draw(pName, xName, yName);
                     MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                     ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
                 }
-                
-                //HARDCODED TOKEN ON THE MAP 
+
+                // HARDCODED TOKEN ON THE MAP
                 // Token testToken = new Token(CardType.DRAGON);
                 // MinuetoImage testTokImage = testToken.getSmallImage();
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
-                
-                for(ClientPlayer p: players) { 
+
+                for (ClientPlayer p : players) {
                     p.drawBoot();
                 }
                 ClientMain.currentPlayer.drawBoot();
 
                 // update gui
                 ClientMain.gui.window.render();
-
 
             } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 gui.window.draw(elfengoldImage, 0, 0);
@@ -2007,7 +2018,8 @@ public class ClientMain {
     }
 
     /**
-     * Display an error message saying that the game name is already taken (on game creation screen)
+     * Display an error message saying that the game name is already taken (on game
+     * creation screen)
      */
     public static void displayNameTaken() {
         // reset name to empty
@@ -2190,7 +2202,8 @@ public class ClientMain {
             // display a message when no sessions are available to join
             int nbAvailableGameSessions = availableSessionsList.size();
             if (nbAvailableGameSessions == 0) {
-                MinuetoText noneAvailableText = new MinuetoText("There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
+                MinuetoText noneAvailableText = new MinuetoText(
+                        "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
                 gui.window.draw(noneAvailableText, 200, 340);
             }
 
@@ -2252,9 +2265,9 @@ public class ClientMain {
         // display
         gui.window.draw(saveGameBackground, 0, 0);
         gui.currentBackground = GUI.Screen.SAVEDGAMES;
-        
+
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
-        
+
         // TODO: display all saved games and keep track of the Join button location
     }
 

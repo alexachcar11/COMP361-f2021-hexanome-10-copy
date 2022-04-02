@@ -15,7 +15,7 @@ public class Route {
     private int[] hitbox;
 
     Route(Town pStartingTown, Town pEndTown, RouteType rType, int[] pHitbox) {
-    // Route(Town pStartingTown, Town pEndTown, RouteType rType) {
+        // Route(Town pStartingTown, Town pEndTown, RouteType rType) {
         this.source = pStartingTown;
         this.dest = pEndTown;
         this.aToken = null;
@@ -46,8 +46,8 @@ public class Route {
         return dest;
     }
 
-    // public int[] getHitBox() { 
-    //     return hitbox;
+    // public int[] getHitBox() {
+    // return hitbox;
     // }
 
     /**
@@ -112,6 +112,8 @@ public class Route {
     // reset route's token delets obstacle from game and returns it
     public Token removeToken() {
         Token temp = this.aToken;
+        if (temp == null)
+            return null;
         if (temp.isObstacle()) {
             temp = ((Obstacle) temp).getInnerToken();
         }

@@ -62,6 +62,7 @@ public class ActionManager {
             objectOutputStream.writeObject(action);
         } catch (IOException e) {
             System.err.println("IOException in sendToSender().");
+            e.printStackTrace();
         }
     }
 
