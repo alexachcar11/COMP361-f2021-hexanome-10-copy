@@ -25,12 +25,13 @@ public class Route {
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    Route(Town pStartingTown, Town pEndTown, boolean upstream) {
+    Route(Town pStartingTown, Town pEndTown, boolean upstream, int[] pHitbox) {
         this.isUpstream = upstream;
         this.source = pStartingTown;
         this.dest = pEndTown;
         this.aToken = null;
         this.type = RouteType.RIVER;
+        this.hitbox = pHitbox;
     }
 
     // sets Upstream with a boolean
@@ -316,5 +317,37 @@ public class Route {
 
     public boolean hasCounter() {
         return (!(this.aToken == null));
+    }
+
+    public Town getSourceTown() { 
+        return source;
+    }
+
+    public String getSourceTownString() { 
+        return source.getTownName();
+    }
+
+    public Town getDestTown() { 
+        return source;
+    }
+
+    public String getDestTownString() { 
+        return source.getTownName();
+    }
+
+    public int getMinX(){ 
+        return hitbox[0];
+    }
+
+    public int getMaxX(){ 
+        return hitbox[1];
+    }
+
+    public int getMinY(){ 
+        return hitbox[2];
+    }
+
+    public int getMaxY(){ 
+        return hitbox[3];
     }
 }

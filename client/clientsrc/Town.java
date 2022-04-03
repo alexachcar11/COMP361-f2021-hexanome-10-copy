@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import serversrc.Player;
 // import serversrc.Town;
 // import serversrc.TownMarker;
+import serversrc.ServerGame;
+import serversrc.Route;
 
 public class Town {
 
@@ -166,4 +168,20 @@ public class Town {
 
     // }
     // }
+
+    public ArrayList<Route> getRoutes() { 
+
+        // initialize list of routes for return 
+        ArrayList<Route> listOfRoutes = new ArrayList<>(); 
+
+        // get all routes that are going out of the current town 
+        // look over all routes 
+        for(Route r : ServerGame.getAllRoutes()) { 
+            if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
+                listOfRoutes.add(r);
+            }
+        }
+
+        return listOfRoutes;
+    }
 }
