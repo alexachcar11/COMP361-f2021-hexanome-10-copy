@@ -58,6 +58,8 @@ public class DisplayPhaseThreeACK implements Action {
                     String gameID = ClientMain.currentSession.getSessionID();
                     ActionManager.getInstance()
                             .sendAction(new TokenSelectedAction(gameID, sprite.getTypeString()));
+                    // TODO: add some acknowledgement of token selection
+                    origin.getParent().getParent().setVisible(false);
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
                     return;
