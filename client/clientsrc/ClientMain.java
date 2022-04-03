@@ -592,9 +592,9 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if( true ) { 
-                    for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
-                        if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
+                if (true) {
+                    for (Route r : currentPlayer.getCurrentLocation().getRoutes()) {
+                        if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             // selectedRoute = r;
                         }
                     }
@@ -1158,7 +1158,7 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
+    private static ClientRoute pickedRoute = null;
     private static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
