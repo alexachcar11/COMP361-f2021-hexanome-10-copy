@@ -1136,22 +1136,24 @@ public class ClientMain {
             // }
             // }
 
-            // hard code one route
-            if (x >= 800 && y >= 650){
-                pickedRoute = currentGame.getTownGraph().getRoute(Town.getTownByName("Elvenhold"), Town.getTownByName("Beata"));
-            }
+            // // hard code one route
+            // if (x >= 800 && y >= 650){
+            //     pickedRoute = currentGame.getTownGraph().getRoute(Town.getTownByName("Elvenhold"), Town.getTownByName("Beata"));
+            // }
 
-            if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
-                // pick tok
-                pickedTok = currentPlayer.getTokensInHand().get(1);
+            // if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
+            //     // pick tok
+            //     pickedTok = currentPlayer.getTokensInHand().get(1);//}
+                
 
-                if (pickedRoute != null && pickedTok != null) {
-                    ActionManager.getInstance()
-                            .sendAction(new PlaceCounterAction(currentPlayer.getName(),
-                                    pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
-                                    pickedTok.getTokenName()));
-                }
+
+            if (pickedRoute != null && pickedTok != null) {
+                ActionManager.getInstance()
+                        .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                                pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                pickedTok.getTokenName()));
             }
+            
 
             if (x > 1000 && y > 740) {
                 // click on mute/unmute button
