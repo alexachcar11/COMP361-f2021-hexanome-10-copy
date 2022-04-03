@@ -24,6 +24,8 @@ import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
 // import serversrc.Token;
 
+import serversrc.Route;
+
 import javax.imageio.ImageIO;
 
 // import serversrc.Color;
@@ -588,6 +590,16 @@ public class ClientMain {
                 if (x > 20 && x < 130 && y > 637 && y < 712) {
                     // PASS TURN
                 }
+
+                // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
+                if( true ) { 
+                    for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
+                        if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
+                            // selectedRoute = r;
+                        }
+                    }
+                }
+
             }
 
             // if we right click
