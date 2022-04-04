@@ -117,6 +117,7 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
+    static MinuetoImage menuPopup;
     static int numberPlayers = 3;
 
     public static final Registrator REGISTRATOR = Registrator.instance();
@@ -142,7 +143,9 @@ public class ClientMain {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
                 gui.currentBackground = GUI.Screen.LOGIN;
-                // gui.currentBackground = GUI.Screen.ELFENLAND;
+                 //gui.currentBackground = GUI.Screen.ELFENLAND;
+                System.out.println("This is x: " + x + ". This is y: " + y);
+
             }
 
             // click on Quit
@@ -483,6 +486,35 @@ public class ClientMain {
                     gui.window.draw(soundOnButton, 1000, 745);
                 }
             }
+
+            // open menu
+            if (x>11 && x<58 && y>15 && y<61){
+
+                // set menuPopupActive to display image
+                menuPopupActive = true;
+
+                // save game
+                if ((x>=435 && x<=585 && y>=378 && y<=410) && menuPopupActive){
+                    // do save game stuff
+                }
+
+                // quit game
+                else if (x>=435 && x<=585 && y>=436 && y<=470 && menuPopupActive){
+                    // do quit game stuff
+                }
+                // close menu
+                else if (x>=420 && x<=437 && y>=300 && y<=317 && menuPopupActive){
+                    //close menu stuff
+                    menuPopupActive = false;
+                }
+                else if (!(x>=435 && x<=585 && y>=378 && y<=410) || !(x>=435 && x<=585 && y>=436 && y<=470) || !(x>=420 && x<=437 && y>=300 && y<=317)){
+                    // do nothing so game functions are not accessible while menu is open
+                }
+
+
+            }
+
+
         }
 
         @Override
@@ -542,6 +574,7 @@ public class ClientMain {
                     gui.window.draw(soundOnButton, 1000, 745);
                 }
             }
+
         }
 
         @Override
@@ -1153,6 +1186,10 @@ public class ClientMain {
     private static boolean townGoldDropdownActive = false;
     private static LobbyServiceGameSession gameToJoin;
 
+    // menuPopup boolean
+    private static boolean menuPopupActive = false;
+
+
     // create window that will contain our game - stays in Main (or not lol)
     public static final MinuetoWindow WINDOW = new MinuetoFrame(1024, 768, true);;
 
@@ -1236,6 +1273,9 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+
+            //menu popup
+            menuPopup = new MinuetoImageFile("images/menuPopup.png").scale(.6,.6);
             // players = Game.getPlayers();
 
             // for(Player p : players) {
@@ -1442,6 +1482,12 @@ public class ClientMain {
 
             WINDOW.render();
             Thread.yield();
+
+            // display menuPopup
+            if (menuPopupActive){
+                gui.window.draw(menuPopup,420,300);
+
+            }
         }
 
         // swing gui
