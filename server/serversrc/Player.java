@@ -198,7 +198,12 @@ public class Player {
     }
 
     public void clearTokenHand(){
+        // keep obstacle, clear the rest
+        boolean hasObstacle = this.tokensInHand.remove(new Obstacle());
         this.tokensInHand.clear();
+        if(hasObstacle){
+            this.tokensInHand.add(new Obstacle());
+        }
     }
 
     /*
