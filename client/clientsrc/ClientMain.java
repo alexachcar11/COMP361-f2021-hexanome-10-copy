@@ -1161,6 +1161,9 @@ public class ClientMain {
     private static Route pickedRoute = null;
     private static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
+
+        List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+
         @Override
         public void handleMouseMove(int arg0, int arg1) {
             // TODO Auto-generated method stub
@@ -1180,6 +1183,13 @@ public class ClientMain {
             // }
             // }
 
+            if (listOfTokens.size() == 0){
+                // do nothin :)
+            }
+            else if(listOfTokens.size() == 1){
+
+            }
+
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
                 // pick tok
                 pickedTok = currentPlayer.getTokensInHand().get(1);
@@ -1194,6 +1204,8 @@ public class ClientMain {
                                     pickedTok.getTokenName()));
                 }
             }
+
+
 
             if (x > 1000 && y > 740) {
                 // click on mute/unmute button
