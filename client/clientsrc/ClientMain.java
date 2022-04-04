@@ -1158,7 +1158,7 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
+    private static ClientRoute pickedRoute = null;
     private static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
