@@ -25,6 +25,7 @@ import networksrc.TestAction;
 // import serversrc.Token;
 
 import serversrc.Route;
+import serversrc.Token;
 
 import javax.imageio.ImageIO;
 
@@ -595,7 +596,7 @@ public class ClientMain {
                 if( true ) { 
                     for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
                         if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
-                            // selectedRoute = r;
+                            pickedRoute = r;
                         }
                     }
                 }
@@ -1158,7 +1159,7 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static ClientRoute pickedRoute = null;
+    private static Route pickedRoute = null;
     private static TokenSprite pickedTok = null;
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
@@ -1183,9 +1184,9 @@ public class ClientMain {
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
                 // pick tok
                 pickedTok = currentPlayer.getTokensInHand().get(1);
-
+                Token tok = new Token(pickedTok.getTokenType());
                 // Draw on Route
-                pickedRoute.placeToken(currentPlayer, pickedTok);
+                pickedRoute.placeToken(tok);
                 if (pickedRoute != null && pickedTok != null) {
 
                     ActionManager.getInstance()
@@ -1629,6 +1630,8 @@ public class ClientMain {
 
                 // draw indication on all of the routes
                 MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
+                MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
+
                 ClientMain.gui.window.draw(indicator, 90, 55);
                 ClientMain.gui.window.draw(indicator, 38, 189);
                 ClientMain.gui.window.draw(indicator, 169, 126);
@@ -1882,6 +1885,13 @@ public class ClientMain {
                 // Token testToken = new Token(CardType.DRAGON);
                 // MinuetoImage testTokImage = testToken.getSmallImage();
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
+
+                if(currentPlayer.isTurn == true) { 
+                    for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
+                        gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
+                    }
+                    
+                }
 
                 for (ClientPlayer p : players) {
                     p.drawBoot();
