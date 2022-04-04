@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import org.minueto.window.MinuetoWindow;
 import clientsrc.ClientMain;
 import clientsrc.SwingTokenSprite;
 import clientsrc.TokenSprite;
+import clientsrc.PhaseThreeMouseListener;
 
 public class DisplayPhaseThreeACK implements Action {
 
@@ -44,56 +46,48 @@ public class DisplayPhaseThreeACK implements Action {
             return null;
         })
                 .collect(Collectors.toList());
-        MouseInputListener mouseListener = new MouseInputListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
+        MouseInputListener tokenListener = new PhaseThreeMouseListener() {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                String gameID = ClientMain.currentSession.getSessionID();
                 try {
                     JLabel origin = (JLabel) e.getComponent();
                     SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
-                    String gameID = ClientMain.currentSession.getSessionID();
                     ActionManager.getInstance()
                             .sendAction(new TokenSelectedAction(gameID, sprite.getTypeString()));
                     // TODO: add some acknowledgement of token selection
+
+                    // close pop up
                     origin.getParent().getParent().setVisible(false);
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
+                    exception.printStackTrace();
                     return;
                 }
             }
+        };
+
+        MouseInputListener buttonListener = new PhaseThreeMouseListener() {
 
             @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
+                String gameID = ClientMain.currentSession.getSessionID();
+                ActionManager.getInstance().sendAction(new TokenSelectedAction(gameID, "random"));
             }
         };
+
         JFrame tokenFrame = new JFrame("Select a token.");
         JPanel tokenPanel = new JPanel();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
         tokenImages.forEach((tokenImage) -> {
             JLabel pic = new JLabel(new SwingTokenSprite(tokenImage));
-            pic.addMouseListener(mouseListener);
+            pic.addMouseListener(tokenListener);
             tokenPanel.add(pic);
         });
+        JButton faceDownButton = new JButton("Face-down Token.");
+        faceDownButton.addMouseListener(buttonListener);
+        tokenPanel.add(faceDownButton);
         tokenFrame.add(tokenPanel);
         tokenFrame.setVisible(true);
         window.render();

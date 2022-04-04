@@ -2,7 +2,6 @@ package networksrc;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import clientsrc.ClientMain;
@@ -35,12 +34,15 @@ public class TokenSelectedAction implements Action {
     public void execute() {
         serversrc.Player player = Player.getPlayerByName(this.playerName);
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
-        Token tokenToAdd = Token.getTokenByName(this.tokenString);
+        Token tokenToAdd;
+        if (this.tokenString.equals("random")) {
+            tokenToAdd = game.faceDownTokenStack.pop();
+        } else {
+            tokenToAdd = Token.getTokenByName(this.tokenString);
+        }
         player.addToken(tokenToAdd);
         if (game.faceUpTokenPile.remove(tokenToAdd)) {
             game.faceUpTokenPile.add(game.faceDownTokenStack.pop());
-        } else {
-            game.faceDownTokenStack.remove(tokenToAdd);
         }
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
         ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
