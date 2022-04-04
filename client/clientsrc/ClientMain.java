@@ -496,19 +496,23 @@ public class ClientMain {
                 // save game
                 if ((x>=435 && x<=585 && y>=378 && y<=410) && menuPopupActive){
                     // do save game stuff
+                    System.out.println("Clicked on SAVE game button");
                 }
 
                 // quit game
                 else if (x>=435 && x<=585 && y>=436 && y<=470 && menuPopupActive){
                     // do quit game stuff
+                    System.out.println("Clicked on QUIT game button");
                 }
                 // close menu
                 else if (x>=420 && x<=437 && y>=300 && y<=317 && menuPopupActive){
                     //close menu stuff
                     menuPopupActive = false;
+                    System.out.println("Clicked on close menu button");
                 }
                 else if (!(x>=435 && x<=585 && y>=378 && y<=410) || !(x>=435 && x<=585 && y>=436 && y<=470) || !(x>=420 && x<=437 && y>=300 && y<=317)){
                     // do nothing so game functions are not accessible while menu is open
+                    System.out.println("Clicked on something thats not a button");
                 }
 
 
