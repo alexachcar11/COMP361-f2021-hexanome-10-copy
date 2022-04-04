@@ -204,6 +204,12 @@ public class Game {
         }
     }
 
+    public void clearAllTokensOnMap(){
+        for(Route r: routes){
+            r.clearToken();
+        }
+    }
+    
     // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return numberOfPlayers;

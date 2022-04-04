@@ -420,8 +420,8 @@ public class ServerGame {
             p.resetTurnPassed();
         }
 
-        // go to next round if current phase is 6
-        if (currentPhase == 6) {
+        // go to next round if current phase is 7
+        if (currentPhase == 7) {
             currentPhase = 1;
         } else {
             this.currentPhase++;
@@ -442,11 +442,13 @@ public class ServerGame {
                 phaseFour();
                 break;
             case 5:
-                // not done yet phaseFive();
-                nextPhase();
+                phaseFive();
                 break;
             case 6:
                 phaseSix();
+                break;
+            case 7:
+                phaseSix2();
                 break;
         }
     }
@@ -629,6 +631,11 @@ public class ServerGame {
         ACK_MANAGER.sentToAllPlayersInGame(new PlaceCounterACK(), this);
     }
 
+    public void phaseFive(){
+        // server sends message ACK to client to let it know it's phase 5, moving boot phase
+        ACK_MANAGER.sentToAllPlayersInGame(new MovingBootACK(), this);
+    }
+
     public Auction getAuction(){
         return this.auction;
     }
@@ -648,6 +655,63 @@ public class ServerGame {
         this.auction.setToken(auctionTokenList.remove(0));
         // sends ACK to client letting them know of the token to be auctioned
         ACK_MANAGER.sentToAllPlayersInGame(new AuctionACK(this.auction.getToken().toString()), this);
+    }
+    // @pre we're in phase 7 (just finished phase 6 choosing token to keep)
+    // this is basically phase 6.2 to complete finalizing end of round
+    public void phaseSix2(){
+        // change starting player by index in list
+        int startingPlayerIndex = players.indexOf(startingPlayer);
+        // if starting player is last in list, go back to first player in list
+        if (startingPlayerIndex == players.size() - 1) {
+            this.startingPlayer = players.get(0);
+        } else {
+            this.startingPlayer = players.get(startingPlayerIndex + 1);
+        }
+        // each player turns in all their transportation counters EXCEPT ONE THAT THEY CHOOSE TO KEEP
+        for (Player p : players) {
+            Token tempTok = p.popTokenToKeep();
+            List<Token> removedTokens = p.removeAllTokens();
+            if (tempTok != null){
+                removedTokens.remove(tempTok); // is Token == Token overwritten by name yet ???
+                p.addToken(tempTok);
+            }
+            // add these back to token stack
+            faceDownTokenStack.addTokens(removedTokens);
+            // clear token hand
+            p.clearTokenHand();
+        }
+
+        // remove transportation counters from board (note this doesn't add the tokens
+        // that are face up (aka up for grabs during drawing counter phase))
+        for (Route r : routes) {
+            // remove token deletes obstacle from game basically
+            Token tok = r.removeToken();
+            // check if not null
+            if (tok != null) {
+                // check if it's face up ?
+
+                // reset the route field in token
+                tok.resetRoute();
+                // add to the tokenStack
+                faceDownTokenStack.addToken(tok);
+            }
+        }
+        faceDownTokenStack.shuffle();
+
+        // send ACK to client for update
+        // tell client their new token hand
+        // and tell client to remove tokens from map
+        for (Player p: players){
+            String tok = "none";
+            // if tokens in hand is not empty, then there can only be one token left
+            if (!p.getTokensInHand().isEmpty()){
+                tok = p.getTokensInHand().get(0).toString();
+            }
+            ACK_MANAGER.sendToSender(new AfterPhase6TokensACK(p.getName(),tok), p.getName());
+        }
+
+        // go to next phase
+        nextPhase();
     }
 
     // @pre we're in phase 6 (just finished phase 5 move boot)
@@ -709,46 +773,11 @@ public class ServerGame {
             return;
         }
 
+        // server sends message ACK to client to let it know it's phase 6, choose token to keep
+        ACK_MANAGER.sentToAllPlayersInGame(new ChoosingTokenToKeepACK(), this);
+
         // update round
         currentRound++;
-        // change starting player by index in list
-        int startingPlayerIndex = players.indexOf(startingPlayer);
-        // if starting player is last in list, go back to first player in list
-        if (startingPlayerIndex == players.size() - 1) {
-            this.startingPlayer = players.get(0);
-        } else {
-            this.startingPlayer = players.get(startingPlayerIndex + 1);
-        }
-        // each player turns in all their transportation counters
-        for (Player p : players) {
-            // TODO: player chooses to keep a token ?
-
-            List<Token> removedTokens = p.removeAllTokens();
-            // add these back to token stack
-            faceDownTokenStack.addTokens(removedTokens);
-        }
-
-        // remove transportation counters from board (note this doesn't add the tokens
-        // that are face up (aka up for grabs during drawing counter phase))
-        for (Route r : routes) {
-            // remove token delets obstacle from game basically
-            Token tok = r.removeToken();
-            // check if not null
-            if (tok != null) {
-                // check if it's face up ?
-
-                // reset the route field in token
-                tok.resetRoute();
-                // add to the tokenStack
-                faceDownTokenStack.addToken(tok);
-            }
-        }
-        faceDownTokenStack.shuffle();
-
-        // send ACK to client for update
-        // tell client to remove all tokens from player (tho technically player should
-        // be able to keep a token but not done)
-        // and tell client to remove tokens from map
 
     }
 
