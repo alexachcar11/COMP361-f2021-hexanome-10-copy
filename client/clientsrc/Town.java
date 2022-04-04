@@ -178,6 +178,7 @@ public class Town {
         // look over all routes 
         for(Route r : ServerGame.getAllRoutes()) { 
             if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
+                System.out.println("One route added");
                 listOfRoutes.add(r);
             }
         }
