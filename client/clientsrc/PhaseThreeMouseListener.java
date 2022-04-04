@@ -3,7 +3,7 @@ package clientsrc;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseEvent;
 
-public interface PhaseThreeMouseHandler extends MouseInputListener {
+public interface PhaseThreeMouseListener extends MouseInputListener {
 
     @Override
     public default void mouseClicked(MouseEvent e) {
