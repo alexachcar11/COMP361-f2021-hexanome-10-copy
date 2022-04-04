@@ -596,6 +596,7 @@ public class ClientMain {
                 if( true ) { 
                     for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
                         if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
                             pickedRoute = r;
                         }
                     }
