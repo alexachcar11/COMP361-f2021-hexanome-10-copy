@@ -140,4 +140,8 @@ public class Town {
     public int getGoldValue(){ 
         return this.goldValue;
     }
+
+    public void setGoldValue(int value) { 
+        this.goldValue = value;
+    }
 }

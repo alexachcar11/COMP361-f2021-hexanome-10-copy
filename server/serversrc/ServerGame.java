@@ -9,6 +9,7 @@ max 6 players
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 
@@ -28,7 +29,7 @@ public class ServerGame {
     private ArrayList<Player> players;
     private int numberOfPlayers;
     public static ArrayList<Town> towns;
-    public ArrayList<Route> routes;
+    public static ArrayList<Route> routes;
     public int currentRound;
     private int currentPhase;
     public int gameRoundsLimit;
@@ -126,56 +127,160 @@ public class ServerGame {
         towns.add(beata);
         towns.add(strykhaven);
 
+        if(townGoldOption == TownGoldOption.YESRANDOM) { 
+            for(Town t: towns) { 
+                Random rand = new Random();
+                int townGoldVal = rand.nextInt(7) + 1;
+                t.setGoldValue(townGoldVal);
+
+            }
+        }
+
         // shuffle towns list
         Collections.shuffle(towns); // to be used for destination town
 
-        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN);
-        Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER); // river
-        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD);
-        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN);
-        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN);
-        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT);
-        Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE); // lake
-        Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE); // lake
-        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD);
-        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN);
-        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT);
-        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD);
-        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT);
-        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT);
-        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN);
-        Route yttarGrangor2 = new Route(yttar, grangor, RouteType.LAKE); // lake
-        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN);
-        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, RouteType.LAKE); // river
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara, RouteType.RIVER); // river
-        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD);
-        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD);
-        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD);
-        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN);
-        Route ixaraVirst2 = new Route(ixara, virst, RouteType.RIVER); // river
-        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN);
-        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN);
-        Route virstStrykhaven2 = new Route(virst, strykhaven, RouteType.LAKE); // lake
-        Route virstElvenhold = new Route(virst, elvenhold, RouteType.LAKE); // lake
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN);
-        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN);
-        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN);
-        Route beataElvenhold2 = new Route(beata, elvenhold, RouteType.LAKE); // lake
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, RouteType.LAKE); // lake
-        Route elvenholdRivinia = new Route(rivinia, elvenhold, RouteType.RIVER); // river
-        Route riviniaTichih = new Route(tichih, rivinia, RouteType.RIVER); // river
-        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD);
-        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD);
-        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD);
-        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD);
-        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD);
-        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD);
+        // int[] city = new int[]{minX, maxX, minY, maxY};
+
+        int[] essWyl1 = new int[]{92,109,59,75};
+        Route esselenWylhien = new Route(esselen, wylhien, RouteType.PLAIN, essWyl1);
+
+        int[] essWyl2 = new int[]{151,166,106,121};
+        Route esselenWylhien2 = new Route(esselen, wylhien, RouteType.RIVER, essWyl2); // river
+
+        int[] essYtt = new int[]{40,55,193,208};
+        Route esselenYttar = new Route(esselen, yttar, RouteType.WOOD, essYtt);
+
+        int[] essPar = new int[]{124,139,167,182};
+        Route esselenParundia = new Route(esselen, parundia, RouteType.WOOD, essPar);
+
+        int[] wylJac = new int[]{281,296,61,76};
+        Route WylhienJaccaranda = new Route(wylhien, jaccaranda, RouteType.MOUNTAIN, wylJac);
+
+        int[] wylPar = new int[]{172,187,131,146};
+        Route WylhienParundia = new Route(wylhien, parundia, RouteType.PLAIN, wylPar);
+
+        int[] wylAlb = new int[]{249,264,135,150};
+        Route WylhienAlbaran = new Route(wylhien, albaran, RouteType.DESERT, wylAlb);
+
+        int[] yttPar = new int[]{121,136,236,251};
+        Route yttarParundia = new Route(yttar, parundia, RouteType.LAKE, yttPar); // lake
+
+        int[] parGra = new int[]{126,141,287,302};
+        Route parundiaGrangor = new Route(parundia, grangor, RouteType.LAKE, parGra); // lake
+
+        int[] parAlb = new int[]{261,276,213,228};
+        Route parundiaAlbaran = new Route(parundia, albaran, RouteType.DESERT, parAlb);
+
+        int[] jacThr = new int[]{384,399,135,150};
+        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni, RouteType.MOUNTAIN, jacThr);
+
+        int[] jacTic = new int[]{489,504,84,99};
+        Route jaccarandaTichih = new Route(jaccaranda, tichih, RouteType.MOUNTAIN, jacTic);
+
+        int[] thrAlb = new int[]{383,398,203,218};
+        Route throtmanniAlbaran = new Route(thortmanni, albaran, RouteType.DESERT, thrAlb);
+
+        int[] troRiv = new int[]{534,549,191,206};
+        Route throtmanniRivinia = new Route(thortmanni, rivinia, RouteType.WOOD, troRiv);
+
+        int[] thrTic = new int[]{557,572,146,161};
+        Route throtmanniTichih = new Route(thortmanni, tichih, RouteType.PLAIN, thrTic);
+
+        int[] thrFeo = new int[]{444,459,223,238};
+        Route throtmanniFeodori = new Route(thortmanni, feodori, RouteType.DESERT, thrFeo);
+
+        int[] kihDag = new int[]{243,258,347,362};
+        Route kihromahDagamura = new Route(kihromah, dagamura, RouteType.WOOD, kihDag);
+
+        int[] albDag = new int[]{303,318,316,331};
+        Route albaranDagamura = new Route(albaran, dagamura, RouteType.DESERT, albDag);
+
+        int[] dagFeo = new int[]{366,381,319,334};
+        Route dagamuraFeodori = new Route(dagamura, feodori, RouteType.DESERT, dagFeo);
+
+        int[] yttGra1 = new int[]{46,61,323,338};
+        Route yttarGrangor = new Route(yttar, grangor, RouteType.MOUNTAIN, yttGra1);
+
+        int[] yttGra2 = new int[]{80,95,312,327};
+        Route yttarGrangor2 = new Route(yttar, grangor, RouteType.LAKE, yttGra2); // lake
+
+        int[] graMah1 = new int[]{51,66,454,469};
+        Route grangorMahdavikia = new Route(grangor, mahdavikia, RouteType.MOUNTAIN, graMah1);
+
+        int[] graMah2 = new int[]{88,103,443,458};
+        Route grangorMahdavikia2 = new Route(grangor, mahdavikia, RouteType.LAKE, graMah2); // river
+
+        int[] mahIxa1 = new int[]{167,182,514,529};
+        Route mahdavikiaIxara = new Route(mahdavikia, ixara, RouteType.RIVER, mahIxa1); // river
+
+        int[] mahIxa2 = new int[]{246,261,555,570};
+        Route mahdavikiaIxara2 = new Route(mahdavikia, ixara, RouteType.MOUNTAIN, mahIxa2);
+
+        int[] dagLap = new int[]{355,370,405,420};
+        Route dagamuraLapphalya = new Route(dagamura, lapphalya, RouteType.WOOD, dagLap);
+
+        int[] ixaLap = new int[]{370,385,466,481};
+        Route ixaraLapphalya = new Route(ixara, lapphalya, RouteType.WOOD, ixaLap);
+
+        int[] ixaDag = new int[]{285,300,446,461};
+        Route ixaraDagamura = new Route(ixara, dagamura, RouteType.WOOD, ixaDag);
+
+        int[] ixaVir1 = new int[]{380,395,549,564};
+        Route ixaraVirst = new Route(ixara, virst, RouteType.PLAIN, ixaVir1);
+
+        int[] ixaVir2 = new int[]{439,454,553,568};
+        Route ixaraVirst2 = new Route(ixara, virst, RouteType.RIVER, ixaVir2); // river
+
+        int[] virLap = new int[]{453,468,472,487};
+        Route virstLapphalya = new Route(virst, lapphalya, RouteType.PLAIN, virLap);
+
+        int[] virStr1 = new int[]{586,601,561,576};
+        Route virstStrykhaven = new Route(virst, strykhaven, RouteType.MOUNTAIN, virStr1);
+
+        int[] virStr2 = new int[]{579,594,486,501};
+        Route virstStrykhaven2 = new Route(virst, strykhaven, RouteType.LAKE, virStr2); // lake
+
+        int[] virElv = new int[]{565,580,436,451};
+        Route virstElvenhold = new Route(virst, elvenhold, RouteType.LAKE, virElv); // lake
+
+        int[] lapElv = new int[]{528,543,394,409};
+        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold, RouteType.PLAIN, lapElv);
+
+        int[] beaStr = new int[]{730,745,493,508};
+        Route beataStrykhaven = new Route(beata, strykhaven, RouteType.PLAIN, beaStr);
+
+        int[] beaElv1 = new int[]{700,715,400,415};
+        Route beataElvenhold = new Route(beata, elvenhold, RouteType.PLAIN, beaElv1);
+
+        int[] beaElv2 = new int[]{728,743,377,392};
+        Route beataElvenhold2 = new Route(beata, elvenhold, RouteType.LAKE, beaElv2); // lake
+
+        int[] elvStr = new int[]{622,637,427,442};
+        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven, RouteType.LAKE, elvStr); // lake
+
+        int[] elvRiv = new int[]{637,652,257,272};
+        Route elvenholdRivinia = new Route(rivinia, elvenhold, RouteType.RIVER, elvRiv); // river
+
+        int[] rivTic = new int[]{621,636,176,191};
+        Route riviniaTichih = new Route(tichih, rivinia, RouteType.RIVER, rivTic); // river
+ 
+        int[] ticErg = new int[]{689,704,178,193};
+        Route tichihErgeren = new Route(tichih, ergeren, RouteType.WOOD, ticErg);
+
+        int[] elvErg = new int[]{719,734,296,311};
+        Route elvenholdErgeren = new Route(elvenhold, ergeren, RouteType.WOOD, elvErg);
+
+        int[] feoRiv = new int[]{490,505,259,274};
+        Route feodoriRivinia = new Route(feodori, rivinia, RouteType.WOOD, feoRiv);
+
+        int[] lapRiv = new int[]{511,526,316,331};
+        Route lapphalyaRivinia = new Route(lapphalya, rivinia, RouteType.WOOD, lapRiv);
+
+        int[] feoLap = new int[]{451,466,344,359};
+        Route feodoriLapphalya = new Route(feodori, lapphalya, RouteType.WOOD, feoLap);
+
+        int[] feoAlb = new int[]{376,391,259,274};
+        Route feodoriAlbaran = new Route(feodori, albaran, RouteType.WOOD, feoAlb);
 
         routes.add(parundiaGrangor);
         routes.add(WylhienAlbaran);
@@ -282,6 +387,10 @@ public class ServerGame {
     // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
+    }
+
+    public static ArrayList<Route> getAllRoutes() { 
+        return routes;
     }
 
     public int getGameRoundsLimit() {
@@ -435,8 +544,7 @@ public class ServerGame {
                 phaseTwo();
                 break;
             case 3:
-                // phaseThree();
-                nextPhase();
+                phaseThree();
                 break;
             case 4:
                 phaseFour();
@@ -508,63 +616,8 @@ public class ServerGame {
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
         final String currentPlayerName = this.getCurrentPlayer().getName();
-        // anonymous action class, displays tokens to client
-        ACK_MANAGER.sendToSender(new Action() {
-
-            @Override
-            public boolean isValid() {
-                return true;
-            }
-
-            @Override
-            public void execute() {
-                MinuetoWindow window = ClientMain.WINDOW;
-                final List<TokenSprite> tokenImages = faceUpCopy.stream().map((s) -> {
-                    try {
-                        return TokenSprite.getTokenSpriteByString(s);
-                    } catch (MinuetoFileException e) {
-                        e.printStackTrace();
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                        .collect(Collectors.toList());
-                int count = 0;
-                for (TokenSprite tImage : tokenImages) {
-                    // change these coords
-                    tImage.setPos(200 + count * 20, 200);
-                    window.draw(tImage, tImage.getX(), tImage.getY());
-                    count++;
-                }
-                // mouse handler for selecting token from face up tokens
-                MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
-
-                    @Override
-                    public void handleMousePress(int xClicked, int yClicked, int arg2) {
-                        for (TokenSprite t : tokenImages) {
-                            if (t.hasCollidePoint(xClicked, yClicked)) {
-                                // inform server that user has selected t
-                                ActionManager.getInstance()
-                                        .sendAction(new TokenSelectedAction(
-                                                ClientMain.currentSession.getSessionID(), t.getTokenName()));
-                                break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void handleMouseRelease(int arg0, int arg1, int arg2) {
-                    }
-
-                    @Override
-                    public void handleMouseMove(int arg0, int arg1) {
-                    }
-                };
-                MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
-                window.registerMouseHandler(tokenSelect, selectTokenQueue);
-            }
-        }, currentPlayerName);
+        // displays tokens to client
+        ACK_MANAGER.sendToSender(new DisplayPhaseThreeACK(faceUpCopy), currentPlayerName);
 
         // go next phase
         nextPhase();

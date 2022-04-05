@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class TownGraph {
     // use HashMap to store edges in graph
-    private Map<Town, List<Route> > map;
+    private Map<Town, List<ClientRoute> > map;
 
     // HashMap to store relations between Towns
     private Map<Town, List<Town> > townMap;
@@ -26,7 +26,7 @@ public class TownGraph {
     }
 
     // adds edge (route) between source and destination
-    public void addEdge(Route pRoute){
+    public void addEdge(ClientRoute pRoute){
         Town source = pRoute.getSource();
         Town dest = pRoute.getDest();
         // add towns if not included yet in map
@@ -52,8 +52,8 @@ public class TownGraph {
     }
 
     // to add list of edges
-    public void addEdges(List<Route> li){
-        for (Route r: li){
+    public void addEdges(List<ClientRoute> li){
+        for (ClientRoute r: li){
             addEdge(r);
         }
     }
@@ -65,11 +65,11 @@ public class TownGraph {
 
     // function to get the route between 2 towns
     // @pre town s and d needs to have an existing edge
-    public Route getRoute(Town s, Town d){
+    public ClientRoute getRoute(Town s, Town d){
         assert hasEdge(s, d);
-        List<Route> routes = map.get(s);
+        List<ClientRoute> routes = map.get(s);
         // loop through routes to find the right one
-        for (Route r: routes){
+        for (ClientRoute r: routes){
             Town source = r.getSource();
             Town dest = r.getDest();
             // return if d matches one of the towns in route
