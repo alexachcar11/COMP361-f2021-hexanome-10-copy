@@ -2,7 +2,7 @@ package networksrc;
 
 import clientsrc.ClientMain;
 import clientsrc.ClientPlayer;
-import clientsrc.Town;
+import clientsrc.ClientTown;
 
 public class ConfirmPlaceCounterACK implements Action {
 
@@ -29,6 +29,6 @@ public class ConfirmPlaceCounterACK implements Action {
         ClientPlayer thePlayer = ClientPlayer.getPlayerByName(senderName);
         // thePlayer.consumeToken(TokenImage.getTokenByName(tok));
 
-        ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
+        ClientMain.currentGame.getTownGraph().getRoute(ClientTown.getTownByName(srcT), ClientTown.getTownByName(destT));
     }
 }

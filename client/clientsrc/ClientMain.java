@@ -26,6 +26,7 @@ import networksrc.TestAction;
 
 import serversrc.Route;
 import serversrc.Token;
+import serversrc.ServerGame;
 
 import javax.imageio.ImageIO;
 
@@ -463,7 +464,7 @@ public class ClientMain {
 
     }
 
-    static void openTownInformation(Town t) {
+    static void openTownInformation(ClientTown t) {
 
         JPanel townInformation = new JPanel();
         townInformation.setLayout(new BoxLayout(townInformation, BoxLayout.Y_AXIS));
@@ -593,8 +594,8 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if( true ) { 
-                    for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
+                if( currentPlayer.isTurn() == true ) { 
+                    for(Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) { 
                         if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
                             pickedRoute = r;
@@ -608,7 +609,7 @@ public class ClientMain {
             if (button == 3) {
 
                 // iterate over all towns
-                for (Town t : Game.getTowns()) {
+                for (ClientTown t : Game.getTowns()) {
                     // we are clicking on a town
                     if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY()) {
                         // temporary print statement to make sure we're clicking on a specific town
@@ -1886,9 +1887,10 @@ public class ClientMain {
                 // Token testToken = new Token(CardType.DRAGON);
                 // MinuetoImage testTokImage = testToken.getSmallImage();
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
-
+                
                 if(currentPlayer.isTurn == true) { 
-                    for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
+                    // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
+                    for(Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) { 
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
                     }
                     

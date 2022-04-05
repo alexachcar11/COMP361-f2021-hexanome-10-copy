@@ -17,8 +17,8 @@ public class ClientPlayer {
     private GUI guiDisplayed; // TODO: initialize this
     private List<CardSprite> cardsInHand;
     private List<TokenSprite> tokensInHand;
-    private Town inTown;
-    private Town targetDestinationTown = null;
+    private ClientTown inTown;
+    private ClientTown targetDestinationTown = null;
 
     private MinuetoImageFile bootImage;
     private Color color;
@@ -64,21 +64,21 @@ public class ClientPlayer {
         return aUser.getName();
     }
 
-    public Town getCurrentLocation() { 
+    public ClientTown getCurrentLocation() { 
         return inTown;
     }
 
-    public void setTargetDestinationTown(Town pTown){
+    public void setTargetDestinationTown(ClientTown pTown){
         this.targetDestinationTown = pTown;
     }
 
     // get TargetTown
-    public Town getTargetDestinationTown(){
+    public ClientTown getTargetDestinationTown(){
         return this.targetDestinationTown;
     }
 
     public void drawTargetDestination() throws MinuetoFileException { 
-        Town targetTown = getTargetDestinationTown();
+        ClientTown targetTown = getTargetDestinationTown();
 
         MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
         ClientMain.gui.window.draw(destTownFlag, targetTown.getMaxX() + 8, targetTown.getMaxY() + 8);
@@ -329,12 +329,12 @@ public class ClientPlayer {
      * 
      * @param t
      */
-    public void setTown(Town t) {
+    public void setTown(ClientTown t) {
         inTown = t;
         t.addPlayer(this);
     }
 
-    public void moveBoot(Town t) {
+    public void moveBoot(ClientTown t) {
         // remove the player from the old town
         inTown.playersHere.remove(this);
 
