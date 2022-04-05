@@ -205,7 +205,7 @@ public class Game {
     }
 
     public void clearAllTokensOnMap(){
-        for(Route r: routes){
+        for(ClientRoute r: routes){
             r.clearToken();
         }
     }

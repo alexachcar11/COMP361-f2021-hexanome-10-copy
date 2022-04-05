@@ -14,6 +14,8 @@ public class Route {
     private RouteType type;
     private int[] hitbox;
 
+    private static ArrayList<Route> allRoutes = new ArrayList<>();
+
     Route(Town pStartingTown, Town pEndTown, RouteType rType, int[] pHitbox) {
         // Route(Town pStartingTown, Town pEndTown, RouteType rType) {
         this.source = pStartingTown;
@@ -21,6 +23,7 @@ public class Route {
         this.aToken = null;
         this.type = rType;
         this.hitbox = pHitbox;
+        allRoutes.add(this);
     }
 
     // overload if it's a river
@@ -32,6 +35,7 @@ public class Route {
         this.aToken = null;
         this.type = RouteType.RIVER;
         this.hitbox = pHitbox;
+        allRoutes.add(this);
     }
 
     // sets Upstream with a boolean
@@ -353,5 +357,8 @@ public class Route {
 
     public int getMaxY(){ 
         return hitbox[3];
+    }
+    public static ArrayList<Route> getAllRoutes(){
+        return allRoutes;
     }
 }

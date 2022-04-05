@@ -20,6 +20,7 @@ import networksrc.GetAvailableColorsAction;
 import networksrc.GetAvailableSessionsAction;
 import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
+import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
 // import serversrc.Token;
@@ -589,7 +590,7 @@ public class ClientMain {
 
                 // IF THE TURN IS PASSABLE -> PASS TURN WHEN WE CLICK HERE
                 if (x > 20 && x < 130 && y > 637 && y < 712) {
-                    // PASS TURN
+                    ActionManager.getInstance().sendAction(new PassTurnAction(currentPlayer.getName()));
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
@@ -1156,7 +1157,6 @@ public class ClientMain {
             // TODO Auto-generated method stub
 
         }
-
     };
 
     // keep track of route and token
@@ -1172,15 +1172,13 @@ public class ClientMain {
         @Override
         public void handleMousePress(int x, int y, int button) {
 
-            // TODO Auto-generated method stub
-            // for (Route r: Route.getAllRoutes()){
-            // if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >=
-            // r.getMaxY()){
-            // // pick route
-            // pickedRoute = r;
-            // break;
-            // }
-            // }
+            for (Route r: Route.getAllRoutes()){
+                if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()){
+                    // pick route
+                    pickedRoute = r;
+                    break;
+                }
+            }
 
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
                 // pick tok

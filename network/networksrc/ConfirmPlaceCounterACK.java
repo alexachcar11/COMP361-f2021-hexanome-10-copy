@@ -3,9 +3,9 @@ package networksrc;
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
-import clientsrc.Route;
 import clientsrc.TokenSprite;
 import clientsrc.ClientPlayer;
+import clientsrc.ClientRoute;
 import clientsrc.Town;
 
 public class ConfirmPlaceCounterACK implements Action {
@@ -30,7 +30,7 @@ public class ConfirmPlaceCounterACK implements Action {
     @Override
     public void execute() {
         // set token to route
-        Route r = ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
+        ClientRoute r = ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
         try {
             r.setToken(TokenSprite.getTokenSpriteByString(tok));
         } catch (MinuetoFileException e) {
