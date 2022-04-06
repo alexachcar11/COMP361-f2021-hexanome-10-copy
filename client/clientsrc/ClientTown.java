@@ -2,13 +2,15 @@ package clientsrc;
 
 import java.util.ArrayList;
 
+import networksrc.Server;
 import serversrc.Player;
 // import serversrc.Town;
 // import serversrc.TownMarker;
 import serversrc.ServerGame;
+import serversrc.Town;
 import serversrc.Route;
 
-public class Town {
+public class ClientTown {
 
     // fields
     private String townName;
@@ -23,9 +25,8 @@ public class Town {
     ArrayList<ClientPlayer> playersHere = new ArrayList<>();
 
     // keeps track of all towns so we can search them by name
-    private static ArrayList<Town> allTowns = new ArrayList<>();
-    private int goldValue; 
-
+    private static ArrayList<ClientTown> allTowns = new ArrayList<>();
+    private int goldValue;
 
     /**
      * CONSTRUCTOR : Creates a Town object
@@ -37,7 +38,7 @@ public class Town {
      * @param maxY     top-most border of the town
      */
 
-    public Town(String townName, int minX, int maxX, int minY, int maxY) {
+    public ClientTown(String townName, int minX, int maxX, int minY, int maxY) {
         this.townName = townName;
         this.minX = minX;
         this.maxX = maxX;
@@ -50,8 +51,8 @@ public class Town {
         allTowns.add(this);
     }
 
-    public static Town getTownByName(String stringTown) {
-        for (Town t : allTowns) {
+    public static ClientTown getTownByName(String stringTown) {
+        for (ClientTown t : allTowns) {
             if (t.getTownName().equalsIgnoreCase(stringTown)) {
                 return t;
             }
@@ -70,7 +71,7 @@ public class Town {
     }
 
     // 2 towns are the same if they have same name
-    public boolean equal(Town t) {
+    public boolean equal(ClientTown t) {
         return t.getTownName().equalsIgnoreCase(this.townName);
     }
 
@@ -150,39 +151,47 @@ public class Town {
         return location;
     }
 
-
-    public ArrayList<ClientPlayer> getPlayersThatPassed() { 
+    public ArrayList<ClientPlayer> getPlayersThatPassed() {
         return playersThatPassed;
     }
 
-    public int getGoldValue(){ 
+    public int getGoldValue() {
         return this.goldValue;
     }
 
-    public void setGoldValue(int value) { 
+    public void setGoldValue(int value) {
         this.goldValue = value;
     }
 
-    // public boolean notClickingOnATown(int x, int y) { 
-    //     for(Town t : ServerGame.getTowns()) { 
-
-    // }
-    // }
-
-    public ArrayList<Route> getRoutes() { 
-
-        // initialize list of routes for return 
-        ArrayList<Route> listOfRoutes = new ArrayList<>(); 
-
-        // get all routes that are going out of the current town 
-        // look over all routes 
-        for(Route r : ServerGame.getAllRoutes()) { 
-            if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
-                System.out.println("One route added");
-                listOfRoutes.add(r);
+    public Town getServerTown() {
+        Town returnTown = null;
+        for (Town t : ServerGame.towns) {
+            if (t.getTownName().equals(this.townName)) {
+                returnTown = t;
             }
         }
-
-        return listOfRoutes;
+        return returnTown;
     }
+
+    // public boolean notClickingOnATown(int x, int y) {
+    // for(Town t : ServerGame.getTowns()) {
+
+    // }
+    // }
+
+    // public ArrayList<Route> getRoutes() {
+
+    // // initialize list of routes for return
+    // ArrayList<Route> listOfRoutes = new ArrayList<>();
+
+    // // get all routes that are going out of the current town
+    // // look over all routes
+    // for(Route r : getAllRoutes()) {
+    // if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) {
+    // listOfRoutes.add(r);
+    // }
+    // }
+
+    // return listOfRoutes;
+    // }
 }

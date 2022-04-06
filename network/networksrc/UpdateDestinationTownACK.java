@@ -19,7 +19,7 @@ public class UpdateDestinationTownACK implements Action{
     public void execute() {
         System.out.println("UpdateDestinationTownACK received");
         ClientPlayer p = ClientMain.currentPlayer;
-        Town t = Game.getTownByName(TargetTown);
+        ClientTown t = Game.getTownByName(TargetTown);
         p.setTargetDestinationTown(t);
         
     }

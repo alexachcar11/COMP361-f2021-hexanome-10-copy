@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class TownGraph {
     // use HashMap to store edges in graph
-    private Map<Town, List<ClientRoute>> map;
+    private Map<ClientTown, List<ClientRoute>> map;
 
     // HashMap to store relations between Towns
-    private Map<Town, List<Town>> townMap;
+    private Map<ClientTown, List<ClientTown>> townMap;
 
     public TownGraph() {
         this.map = new HashMap<>();
@@ -21,14 +21,14 @@ public class TownGraph {
     }
 
     // adds vertex to graph
-    public void addVertex(Town t) {
+    public void addVertex(ClientTown t) {
         map.put(t, new LinkedList<>());
     }
 
     // adds edge (route) between source and destination
     public void addEdge(ClientRoute pRoute) {
-        Town source = pRoute.getSource();
-        Town dest = pRoute.getDest();
+        ClientTown source = pRoute.getSource();
+        ClientTown dest = pRoute.getDest();
         // add towns if not included yet in map
         if (!map.containsKey(source)) {
             addVertex(source);
@@ -59,19 +59,19 @@ public class TownGraph {
     }
 
     // function to check wether edge exist or not between 2 towns
-    public boolean hasEdge(Town s, Town d) {
+    public boolean hasEdge(ClientTown s, ClientTown d) {
         return townMap.get(s).contains(d);
     }
 
     // function to get the route between 2 towns
     // @pre town s and d needs to have an existing edge
-    public ClientRoute getRoute(Town s, Town d) {
+    public ClientRoute getRoute(ClientTown s, ClientTown d) {
         assert hasEdge(s, d);
         List<ClientRoute> routes = map.get(s);
         // loop through routes to find the right one
         for (ClientRoute r : routes) {
-            Town source = r.getSource();
-            Town dest = r.getDest();
+            ClientTown source = r.getSource();
+            ClientTown dest = r.getDest();
             // return if d matches one of the towns in route
             if (d.equal(source) || d.equal(dest)) {
                 return r;
