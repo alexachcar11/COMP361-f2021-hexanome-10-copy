@@ -25,7 +25,7 @@ public class MoveBootACK implements Action {
         // TODO: call a method that updates GUI by changing the boot with bootColor to
         // newTown
         // get town by name
-        Town t = Game.getTownByName(newTown);
+        ClientTown t = Game.getTownByName(newTown);
         p.moveBoot(t);
     }
 

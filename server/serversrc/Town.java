@@ -144,4 +144,21 @@ public class Town {
     public void setGoldValue(int value) { 
         this.goldValue = value;
     }
+
+    public ArrayList<Route> getRoutes() { 
+
+        // initialize list of routes for return 
+        ArrayList<Route> listOfRoutes = new ArrayList<>(); 
+
+        // get all routes that are going out of the current town 
+        // look over all routes 
+        for(Route r : ServerGame.routes) { 
+            if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
+                listOfRoutes.add(r);
+            }
+        }
+
+        return listOfRoutes;
+    }
+
 }
