@@ -14,12 +14,14 @@ import org.minueto.window.MinuetoPanel;
 
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
+import networksrc.ChooseTokenToKeepAction;
 import networksrc.Client;
 import networksrc.CreateNewGameAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.GetAvailableSessionsAction;
 import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
+import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
@@ -594,11 +596,77 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if( true ) { 
+                // if current phase is moveBoot phase (5)
+                if( currentGame.getCurrentPhase()==5 ) { 
                     for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
                         if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
                             pickedRoute = r;
+                            break;
+                        }
+                    }
+                    // send message to server on pickedRoute
+                    if (pickedRoute != null){
+                        ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(), pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                    }
+                }
+                // place counter on routes phase
+                if ( currentGame.getCurrentPhase() == 4){
+
+                    // testingggg
+                    if (pickedRoute != null){
+                        System.out.println("TESTING LINE 616, ROUTE NOT NULL: " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                    }
+
+                    for (Route r: Route.getAllRoutes()){
+                        if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()){
+                            // pick route
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
+                            pickedRoute = r;
+                            break;
+                        }
+                    }
+
+                    // testingggg
+                    if (pickedTok != null){
+                        System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+
+                    if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
+                        // pick tok
+                        pickedTok = currentPlayer.getTokensInHand().get(1);
+                        // Token tok = new Token(pickedTok.getTokenType());
+                        System.out.println("You have selected the token: " + pickedTok.getTokenName());
+                        // Draw on Route
+                        // pickedRoute.placeToken(tok);
+
+                        if (pickedRoute != null && pickedTok != null) {
+                            System.out.println("Sending placeCounterAction to server with counter: " + pickedTok.getTokenName() + "\nSelected the route from " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                            ActionManager.getInstance()
+                                    .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                                            pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                            pickedTok.getTokenName()));
+                        }
+                    }
+                }
+                if ( currentGame.getCurrentPhase() == 6){
+                    // testingggg
+                    if (pickedTok != null){
+                        System.out.println("TESTING LINE 644, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+                    // hardcode right now
+                    // picks token in hand to keep
+                    if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
+                        // pick tok
+                        pickedTok = currentPlayer.getTokensInHand().get(1);
+                        // Token tok = new Token(pickedTok.getTokenType());
+                        System.out.println("You have selected the token: " + pickedTok.getTokenName());
+                        // Draw on Route
+                        // pickedRoute.placeToken(tok);
+
+                        if (pickedTok != null) {
+                            System.out.println("Sending TokenToKeepAction to server with counter: " + pickedTok.getTokenName());
+                            ActionManager.getInstance().sendAction(new ChooseTokenToKeepAction(currentPlayer.getName(),pickedTok.getTokenName()));
                         }
                     }
                 }
