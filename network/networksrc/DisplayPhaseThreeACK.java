@@ -50,12 +50,11 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                String gameID = ClientMain.currentSession.getSessionID();
                 try {
                     JLabel origin = (JLabel) e.getComponent();
                     SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
                     ActionManager.getInstance()
-                            .sendAction(new TokenSelectedAction(gameID, sprite.getTypeString()));
+                            .sendAction(new TokenSelectedAction(sprite.getTypeString()));
                     // TODO: add some acknowledgement of token selection
 
                     // close pop up
@@ -63,7 +62,6 @@ public class DisplayPhaseThreeACK implements Action {
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
                     exception.printStackTrace();
-                    return;
                 }
             }
         };
@@ -72,8 +70,8 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                String gameID = ClientMain.currentSession.getSessionID();
-                ActionManager.getInstance().sendAction(new TokenSelectedAction(gameID, "random"));
+                ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
+                e.getComponent().getParent().getParent().setVisible(false);
             }
         };
 
@@ -82,8 +80,8 @@ public class DisplayPhaseThreeACK implements Action {
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
         tokenImages.forEach((tokenImage) -> {
             JLabel pic = new JLabel(new SwingTokenSprite(tokenImage));
-            pic.addMouseListener(tokenListener);
             tokenPanel.add(pic);
+            pic.addMouseListener(tokenListener);
         });
         JButton faceDownButton = new JButton("Face-down Token.");
         faceDownButton.addMouseListener(buttonListener);
@@ -93,5 +91,4 @@ public class DisplayPhaseThreeACK implements Action {
         window.render();
         Thread.yield();
     }
-
 }

@@ -16,8 +16,8 @@ public class TokenSelectedAction implements Action {
     private String tokenString;
     private String playerName;
 
-    public TokenSelectedAction(String currentGameID, String tName) {
-        this.serverGameID = currentGameID;
+    public TokenSelectedAction(String tName) {
+        this.serverGameID = ClientMain.currentSession.getSessionID();
         this.tokenString = tName;
         this.playerName = ClientMain.currentPlayer.getName();
     }
@@ -39,18 +39,21 @@ public class TokenSelectedAction implements Action {
             tokenToAdd = game.faceDownTokenStack.pop();
         } else {
             tokenToAdd = Token.getTokenByName(this.tokenString);
-        }
-        player.addToken(tokenToAdd);
-        if (game.faceUpTokenPile.remove(tokenToAdd)) {
+            game.faceUpTokenPile.remove(tokenToAdd);
             game.faceUpTokenPile.add(game.faceDownTokenStack.pop());
         }
+        player.addToken(tokenToAdd);
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
         ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
         game.nextPlayer();
         List<String> tokenStrings = game.faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
-        ActionManager.getInstance().sendToSender(new DisplayPhaseThreeACK(tokenStrings),
-                game.getCurrentPlayer().getName());
+        if (game.getCurrentPlayer().getTokensInHand().size() < 3) {
+            ActionManager.getInstance().sendToSender(new DisplayPhaseThreeACK(tokenStrings),
+                    game.getCurrentPlayer().getName());
+        } else {
+            game.nextPhase();
+        }
     }
 
 }
