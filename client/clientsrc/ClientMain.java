@@ -1824,11 +1824,7 @@ public class ClientMain {
                     ClientMain.gui.window.draw(p6, 318, 685);
                     ClientMain.gui.window.draw(p7, 414, 685);
                     ClientMain.gui.window.draw(p8, 510, 685);
-                }
-
-                // draw circle for the current turn
-                MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
-                ClientMain.gui.window.draw(roundNumCircle, 792, 562);
+                }            
 
                 // HARDCODED
                 int roundNumber = 1;
