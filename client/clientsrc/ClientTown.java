@@ -173,6 +173,10 @@ public class ClientTown {
         return returnTown;
     }
 
+    public int getNumberPlayersHere() {
+        return playersHere.size();
+    }
+
     // public boolean notClickingOnATown(int x, int y) {
     // for(Town t : ServerGame.getTowns()) {
 
