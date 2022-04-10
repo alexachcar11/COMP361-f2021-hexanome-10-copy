@@ -16,3 +16,4 @@ crash.log
 LobbyService-master/target
 .DS_Store
 LobbyService-master/.DS_Store
+LobbyService-master/.classpath
