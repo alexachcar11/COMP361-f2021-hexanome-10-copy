@@ -548,7 +548,9 @@ public class ClientMain {
                 // CLICKING ON THE OPPONENTS PROFILE
 
                 for(ClientTown t: Game.getTowns()) { 
-                    System.out.println("You just clicked on " + t.getTownName());
+                    if(x > t.minX && x < t.maxX && y > t.minY && y < t.minX){
+                        System.out.println("You just clicked on " + t.getTownName());
+                    }
                 }
 
                 if (numberPlayers == 2) {
