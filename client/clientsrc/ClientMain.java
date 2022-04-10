@@ -540,12 +540,12 @@ public class ClientMain {
             // if we left click
             if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
-                if (numberPlayers == 2-1) {
+                if (numberPlayers == 2) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
                         openPlayerInventory(players.get(0));
                     }
-                } else if (numberPlayers == 3-1) {
+                } else if (numberPlayers == 3) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
                         openPlayerInventory(players.get(0));
@@ -553,7 +553,7 @@ public class ClientMain {
                         // CLICKING ON PLAYER 2
                         openPlayerInventory(players.get(1));
                     }
-                } else if (numberPlayers == 4-1) {
+                } else if (numberPlayers == 4) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
                         openPlayerInventory(players.get(0));
@@ -564,7 +564,7 @@ public class ClientMain {
                         // CLICKING ON PLAYER 3
                         openPlayerInventory(players.get(2));
                     }
-                } else if (numberPlayers == 5-1) {
+                } else if (numberPlayers == 5) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
                         openPlayerInventory(players.get(0));
@@ -578,7 +578,7 @@ public class ClientMain {
                         // CLICKING ON PLAYER 4
                         openPlayerInventory(players.get(3));
                     }
-                } else if (numberPlayers == 6-1) {
+                } else if (numberPlayers == 6) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
                         openPlayerInventory(players.get(0));
@@ -1839,7 +1839,7 @@ public class ClientMain {
                 }
                 
                 //draw the round card on the screen
-                ClientMain.gui.window.draw(roundNumberImage, 719, 42);
+                ClientMain.gui.window.draw(roundNumberImage, 719, 40);
 
                 if (currentGame.getMode() == Mode.ELFENGOLD) {
                     MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
