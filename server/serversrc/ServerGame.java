@@ -600,9 +600,8 @@ public class ServerGame {
                     (card) -> card.getCardType().toString()).collect(Collectors.toList());
             cards.put(p.getName(), cardsAdded);
         }
-        for (String p : cards.keySet()) {
-            ACK_MANAGER.sendToSender(new DealTravelCardsACK(cards), p);
-        }
+
+        ACK_MANAGER.sentToAllPlayersInGame(new DealTravelCardsACK(cards), this);
 
         nextPhase();
     }
