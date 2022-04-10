@@ -403,8 +403,8 @@ public class ClientMain {
         JPanel tokenPanel = new JPanel();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
 
-        JPanel goldPanel = new JPanel();
-        goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
+        // JPanel goldPanel = new JPanel();
+        // goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
 
         // can substitute 'Opponent's' for the actual name of the opponent
         String playerName = p.getName();
@@ -415,11 +415,8 @@ public class ClientMain {
         travelCardText.setText("Travel Cards:     ");
         tokenText.setText("Tokens:     ");
 
-        JLabel goldText = new JLabel(playerName + " has " + p.getGoldAmount() + " gold.");
-
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
-        goldPanel.add(goldText);
 
         for (CardSprite tCard : p.getCardsInHand()) {
             ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
@@ -438,8 +435,15 @@ public class ClientMain {
         inventory.add(cardPanel);
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(tokenPanel);
-        inventory.add(Box.createVerticalStrut(10));
-        inventory.add(goldPanel);
+
+        if(currentGame.getMode() == Mode.ELFENGOLD) {
+            JPanel goldPanel = new JPanel();
+            goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
+            JLabel goldText = new JLabel(playerName + " has " + p.getGoldAmount() + " gold.");
+            goldPanel.add(goldText);
+            inventory.add(Box.createVerticalStrut(10));
+            inventory.add(goldPanel);
+        }
 
         // if there are destination towns, add the destination town of the player to
         // their information
