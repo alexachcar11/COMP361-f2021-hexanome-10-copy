@@ -1827,41 +1827,19 @@ public class ClientMain {
                 }            
 
                 // HARDCODED
-                int roundNumber = 1;
+                int roundNumber = 2;
                 if(roundNumber == 1) { 
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+                } else if (roundNumber == 2) { 
+                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+                } else if(roundNumber == 3) { 
+                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+                } else if (roundNumber == 4) { 
+                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
                 }
                 
                 //draw the round card on the screen
                 ClientMain.gui.window.draw(roundNumberImage, 719, 42);
-
-                // can be optimized a bit for less code
-                
-                // if (roundNumber == 1) {
-                // MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold,
-                // MinuetoColor.BLACK);
-                // ClientMain.gui.window.draw(firstRound, 806, 570);
-                // } else if (roundNumber == 2) {
-                // MinuetoText secondRound = new MinuetoText("2", ClientMain.fontArial22Bold,
-                // MinuetoColor.BLACK);
-                // ClientMain.gui.window.draw(secondRound, 806, 570);
-                // } else if (roundNumber == 3) {
-                // MinuetoText thirdRound = new MinuetoText("3", ClientMain.fontArial22Bold,
-                // MinuetoColor.BLACK);
-                // ClientMain.gui.window.draw(thirdRound, 806, 570);
-                // } else if (roundNumber == 4) {
-                // MinuetoText fourthRound = new MinuetoText("4", ClientMain.fontArial22Bold,
-                // MinuetoColor.BLACK);
-                // ClientMain.gui.window.draw(fourthRound, 806, 570);
-                // } else if (roundNumber == 5) {
-                // MinuetoText fifthRound = new MinuetoText("5", ClientMain.fontArial22Bold,
-                // MinuetoColor.BLACK);
-                // ClientMain.gui.window.draw(fifthRound, 806, 570);
-                // }
-
-                MinuetoText roundNumberText = new MinuetoText(String.valueOf(roundNumber), ClientMain.fontArial22Bold,
-                        MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
                 if (currentGame.getMode() == Mode.ELFENGOLD) {
                     MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
