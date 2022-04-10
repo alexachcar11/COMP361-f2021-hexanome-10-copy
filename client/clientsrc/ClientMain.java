@@ -1187,8 +1187,62 @@ public class ClientMain {
                 // do nothin :)
             }
             else if(listOfTokens.size() == 1){
-
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(0);
+                }
             }
+            else if(listOfTokens.size() == 2){
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(0);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(1);
+                }
+            }
+            else if(listOfTokens.size() == 3){
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(0);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(1);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(2);
+                }
+            }
+            else if(listOfTokens.size() == 4){
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(0);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(1);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(2);
+                }
+                if(x>= && x<= && y>= && y<= ){
+                    pickedTok = listOfTokens.get(3);
+                }
+            }
+            else if(listOfTokens.size() == 5){
+                if(x>=592 && x<= && y>= && y<=636 ){
+                    pickedTok = listOfTokens.get(0);
+                }
+                if(x>=663 && x<= && y>= && y<=636 ){
+                    pickedTok = listOfTokens.get(1);
+                }
+                if(x>=734 && x<= && y>= && y<=636 ){
+                    pickedTok = listOfTokens.get(2);
+                }
+                if(x>=615 && x<= && y>= && y<=698 ){
+                    pickedTok = listOfTokens.get(3);
+                }
+                if(x>=709 && x<= && y>= && y<=698 ){
+                    pickedTok = listOfTokens.get(4);
+                }
+            }
+
+
 
             if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
                 // pick tok
