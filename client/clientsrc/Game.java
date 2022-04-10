@@ -18,7 +18,7 @@ public class Game {
     private int numberOfPlayers;
     public static ArrayList<ClientTown> towns;
     private ArrayList<ClientRoute> routes;
-    private int currentRound;
+    private int currentRound = 1;
     private int currentPhase;
     private int gameRoundsLimit;
     private boolean destinationTownEnabled;
@@ -194,6 +194,10 @@ public class Game {
         } else {
             throw new IndexOutOfBoundsException("The max number of players has already been reached.");
         }
+    }
+
+    public void setRound(int r){
+        this.currentRound = r;
     }
 
     public void clearAllTokensOnMap(){
