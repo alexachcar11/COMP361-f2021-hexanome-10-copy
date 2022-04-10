@@ -116,7 +116,7 @@ public class ServerGame {
         Town lapphalya = new Town("Lapphalya", 415, 482, 383, 437, 2);
         Town feodori = new Town("Feodori", 411, 472, 259, 317, 4);
         Town virst = new Town("Virst", 478, 536, 491, 541, 3);
-        Town elvenhold = new Town("Elvenhold", 588, 666, 304, 370, 0);
+        Town elvenhold = new Town("Elvenhold", 575, 666, 290, 370, 0);
         Town beata = new Town("Beata", 724, 779, 407, 456, 2);
         Town strykhaven = new Town("Strkhaven", 616, 679, 463, 502, 4);
 
@@ -597,7 +597,7 @@ public class ServerGame {
                 p.addCard(aCardStack.pop());
             }
             List<String> cardsAdded = p.getCards().stream().map(
-                    (card) -> card.getCardType().toString()).collect(Collectors.toList());
+                    (card) -> card.toString()).collect(Collectors.toList());
             cards.put(p.getName(), cardsAdded);
         }
         for (String p : cards.keySet()) {
