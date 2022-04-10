@@ -471,6 +471,10 @@ public class ClientMain {
         
     }
 
+    static void openRouteInformation(Route r) { 
+
+    }
+
     static void openTownInformation(ClientTown t) {
 
         JPanel townInformation = new JPanel();
@@ -542,6 +546,11 @@ public class ClientMain {
             // if we left click
             if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
+
+                for(ClientTown t: Game.getTowns()) { 
+                    System.out.println("You just clicked on " + t.getTownName());
+                }
+
                 if (numberPlayers == 2) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
