@@ -45,16 +45,28 @@ public class Player {
         this.aName = pServerUser.getName();
         this.turnPassed = false;
         this.tokenToKeep = null;
-
-
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
         allPlayers.add(this);
+
+        // if the variant 1 is on, give player a random dest town.
+        if (currentGame.destinationTownEnabled) {
+            // set target town
+            this.targetTown = ServerGame.getTowns().get(this.index);
+            // increment index
+            this.index++;
+
+            // update client on target town
+            ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()),
+                    this.getName());
+            ;
+        }
+
         // aBootAction = new BootAction(this);
     }
 
-    public void incrementGold(int townGoldValue) { 
+    public void incrementGold(int townGoldValue) {
         this.gold += townGoldValue;
     }
 
@@ -72,15 +84,15 @@ public class Player {
     }
 
     // returns destination town
-    public Town getTargetTown(){
+    public Town getTargetTown() {
         return this.targetTown;
     }
 
-    public void deductGold(int golds){
+    public void deductGold(int golds) {
         this.gold -= golds;
     }
 
-    public int getGold(){
+    public int getGold() {
         return this.gold;
     }
 
@@ -142,7 +154,7 @@ public class Player {
     }
 
     public String getName() {
-        return aServerUser.getName();
+        return this.aName;
     }
 
     public Town getTown() {
@@ -181,21 +193,21 @@ public class Player {
         return this.tokensInHand;
     }
 
-    public void setTokenToKeep(Token pTok){
+    public void setTokenToKeep(Token pTok) {
         this.tokenToKeep = pTok;
     }
 
-    public Token popTokenToKeep(){
+    public Token popTokenToKeep() {
         Token output = this.tokenToKeep;
-        this.tokenToKeep=null;
+        this.tokenToKeep = null;
         return output;
     }
 
-    public void clearTokenHand(){
+    public void clearTokenHand() {
         // keep obstacle, clear the rest
         boolean hasObstacle = this.tokensInHand.remove(new Obstacle());
         this.tokensInHand.clear();
-        if(hasObstacle){
+        if (hasObstacle) {
             this.tokensInHand.add(new Obstacle());
         }
     }
@@ -385,7 +397,7 @@ public class Player {
         }
     }
 
-    public void initScore(){
+    public void initScore() {
         this.score = this.townsPassed.size();
     }
 
@@ -394,7 +406,7 @@ public class Player {
         return this.score;
     }
 
-    public void deductScore(int i){
+    public void deductScore(int i) {
         this.score -= i;
     }
 
