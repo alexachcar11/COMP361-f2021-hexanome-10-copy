@@ -169,7 +169,7 @@ public class ClientPlayer {
      */
     public void drawBoot(int order) {
         this.incrementGold(inTown.getGoldValue());
-        ClientMain.gui.window.draw(bootImage, inTown.minX + order*25, inTown.maxY + order*25);
+        ClientMain.gui.window.draw(bootImage, inTown.minX + order*20, inTown.maxY + order*15);
     }
 
     public void clearTokenHand() {
