@@ -17,3 +17,7 @@ LobbyService-master/target
 .DS_Store
 LobbyService-master/.DS_Store
 LobbyService-master/.classpath
+LobbyService-master/.project
+LobbyService-master/.settings/org.eclipse.core.resources.prefs
+LobbyService-master/.settings/org.eclipse.jdt.apt.core.prefs
+LobbyService-master/.settings/org.eclipse.jdt.core.prefs
