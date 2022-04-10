@@ -39,6 +39,7 @@ public class LaunchGameACK implements Action {
         // display board screen
         ClientMain.displayOriginalBoard();
 
+
         System.out.println("LaunchGameACK received");
     }
 

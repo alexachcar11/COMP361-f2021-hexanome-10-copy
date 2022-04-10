@@ -46,16 +46,6 @@ public class Player {
         this.turnPassed = false;
         this.tokenToKeep = null;
 
-        // if the variant 1 is on, give player a random dest town.
-        if (currentGame.destinationTownEnabled){
-            // set target town
-            this.targetTown = ServerGame.getTowns().get(this.index);
-            // increment index
-            this.index++;
-
-            // update client on target town
-            ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()), this.getName());;
-        }
 
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
@@ -75,6 +65,10 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public void setTargetTown(Town t){
+        this.targetTown = t;
     }
 
     // returns destination town

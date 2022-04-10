@@ -77,6 +77,20 @@ public class ServerGame {
         faceUpCardPile = new ArrayList<>();
         disposedCardPile = new ArrayList<>();
 
+        // if the variant 1 is on, give player a random dest town.
+        if (destinationTownEnabled){
+            int index = 0;
+            for (Player p: players){
+                // set target town
+                p.setTargetTown(ServerGame.getTowns().get(index));
+                // increment index
+                index++;
+                // update client on target town
+                ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(p.getTargetTown().getTownName()), p.getName());
+                }
+            
+        }
+
         // TODO: initialize faceDownCardPile, goldCardPile and auction depending on the
         // mode
 
