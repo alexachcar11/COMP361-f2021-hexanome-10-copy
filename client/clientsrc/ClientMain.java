@@ -473,6 +473,41 @@ public class ClientMain {
 
     static void openRouteInformation(Route r) { 
 
+        JFrame routeOverview = new JFrame("Route");
+
+        JPanel routeInformation = new JPanel();
+        routeInformation.setLayout(new BoxLayout(routeInformation, BoxLayout.Y_AXIS));
+
+        JPanel connects = new JPanel();
+        connects.setLayout(new BoxLayout(connects, BoxLayout.Y_AXIS));
+
+        JPanel requirements = new JPanel();
+        requirements.setLayout(new BoxLayout(requirements, BoxLayout.Y_AXIS));
+
+        String connectsString = "This route connects " + r.getSourceTownString() + " and " + r.getDestTownString();
+        JLabel connectsText = new JLabel(connectsString);
+        connectsText.setText(connectsString);
+
+        String requirementsString = r.formatRequirements(); 
+        JLabel requirementsText = new JLabel(requirementsString);
+        requirementsText.setText(requirementsString);
+
+        connects.add(connectsText);
+        requirements.add(requirementsText);
+
+        routeInformation.add(Box.createVerticalStrut(30));
+        routeInformation.add(connects);
+        routeInformation.add(Box.createVerticalStrut(10));
+        routeInformation.add(requirements);
+
+        routeOverview.add(routeInformation);
+
+        routeOverview.setLocation(300, 200);
+        routeOverview.setSize(new Dimension(700, 300));
+        routeOverview.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        routeOverview.setVisible(true);
+
     }
 
     static void openTownInformation(ClientTown t) {
@@ -655,6 +690,12 @@ public class ClientMain {
                         // open a swing gui containing information about that town
                         openTownInformation(t);
 
+                    }
+                }
+                for (Route r: Route.getAllRoutes()) { 
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) { 
+                        System.out.println("You are clicking on a route");
+                        openRouteInformation(r);
                     }
                 }
             }
