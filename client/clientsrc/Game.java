@@ -12,14 +12,6 @@ import org.minueto.MinuetoFileException;
 
 import serversrc.CardType;
 
-// import serversrc.Card;
-// import serversrc.GoldCard;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.Route;
-// import serversrc.Town;
-// import serversrc.TownGoldOption;
-
 public class Game {
 
     private static ArrayList<ClientPlayer> players;
