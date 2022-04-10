@@ -1863,11 +1863,13 @@ public class ClientMain {
                         MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
-                MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
-                ClientMain.gui.window.draw(goldValueCircle, 792, 522);
-                MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
-                        ClientMain.fontArial20, MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(goldAmnt, 806, 530);
+                if(currentGame.getMode() == Mode.ELFENGOLD) {
+                    MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
+                    ClientMain.gui.window.draw(goldValueCircle, 792, 522);
+                    MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
+                            ClientMain.fontArial20, MinuetoColor.BLACK);
+                    ClientMain.gui.window.draw(goldAmnt, 806, 530);
+                }
 
                 int numberPlayers = players.size();
 
