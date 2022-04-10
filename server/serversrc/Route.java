@@ -127,6 +127,27 @@ public class Route {
         return temp;
     }
 
+    public String formatRequirements() { 
+        String result = "To traverse this route you require ";
+
+        if(type == RouteType.DESERT) { 
+            result += "either one dragon, or two unicorns, troll wagons.";
+        } else if (type == RouteType.LAKE) {
+            result += "one boat card";
+        } else if (type == RouteType.MOUNTAIN) {
+            result += "either one cloud, unicord, dragon, or two elfcycles, troll wagons.";
+        } else if (type == RouteType.PLAIN) {
+            result += "either one pig, elfcycle, troll wagon, dragon, or two clouds.";
+        } else if (type == RouteType.WOOD) {
+            result += "either one pig, elfcycle, unicorn, or two clouds, troll wagons, dragons.";
+        } else if (type == RouteType.RIVER && isUpstream == true) {
+            result += "two boat cards.";
+        } else if (type == RouteType.LAKE && isUpstream == false) {
+            result += "one boat card.";
+        }
+        return result;
+    }
+
     // DIJIAN'S VERSION OF GETREQUIREDCARDS
     // // @pre should check if there's a counter on road first
     // // (extra note, check region type is valid for the counter when placing
