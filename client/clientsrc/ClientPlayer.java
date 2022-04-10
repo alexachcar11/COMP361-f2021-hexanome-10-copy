@@ -163,9 +163,13 @@ public class ClientPlayer {
         return tokensInHand;
     }
 
-    public void drawBoot() {
+    /**
+     * Draw the player's boot
+     * @param order this player's "spot" at the town (to stack the boots)
+     */
+    public void drawBoot(int order) {
         this.incrementGold(inTown.getGoldValue());
-        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+        ClientMain.gui.window.draw(bootImage, inTown.minX + order*20, inTown.maxY + order*20);
     }
 
     public void clearTokenHand() {
