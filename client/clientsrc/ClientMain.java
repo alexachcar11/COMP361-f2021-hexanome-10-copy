@@ -465,8 +465,13 @@ public class ClientMain {
         // set the location of the window
         opponentFrame.setLocation(300, 200);
         opponentFrame.setSize(new Dimension(700, 300));
+        opponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         opponentFrame.setVisible(true);
+        
+    }
+
+    static void openRouteInformation(Route r) { 
 
     }
 
@@ -521,6 +526,7 @@ public class ClientMain {
 
         townOverview.setLocation(300, 200);
         townOverview.setSize(new Dimension(700, 300));
+        townOverview.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         townOverview.setVisible(true);
 
@@ -540,6 +546,13 @@ public class ClientMain {
             // if we left click
             if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
+
+                for(ClientTown t: Game.getTowns()) { 
+                    if(x > t.minX && x < t.maxX && y > t.minY && y < t.minX){
+                        System.out.println("You just clicked on " + t.getTownName());
+                    }
+                }
+
                 if (numberPlayers == 2) {
                     if (x > 856 && x < 984 && y > 105 && y < 132) {
                         // CLICKING ON PLAYER 1
