@@ -1896,7 +1896,13 @@ public class ClientMain {
                 }
 
                 // display boots
-                displayInGameBoots();
+                // draw other players
+                for (int i=0; i<players.size(); i++) {
+                    ClientPlayer player = players.get(i);
+                    player.drawBoot(i);
+                }
+                // draw your boot
+                currentPlayer.drawBoot(players.size());
 
                 // update gui
                 ClientMain.gui.window.render();
@@ -1951,19 +1957,6 @@ public class ClientMain {
     static void resumeSound() {
         loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
-    }
-
-    /**
-     * Displays in game boots
-     */
-    public static void displayInGameBoots() {
-        // draw other players
-        for (int i=0; i<players.size(); i++) {
-            ClientPlayer player = players.get(i);
-            player.drawBoot(i);
-        }
-        // draw your boot
-        currentPlayer.drawBoot(players.size() + 1);
     }
 
     /**
