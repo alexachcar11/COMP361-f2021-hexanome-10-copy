@@ -26,8 +26,7 @@ public class ClientTown {
 
     // keeps track of all towns so we can search them by name
     private static ArrayList<ClientTown> allTowns = new ArrayList<>();
-    private int goldValue; 
-
+    private int goldValue;
 
     /**
      * CONSTRUCTOR : Creates a Town object
@@ -152,49 +151,47 @@ public class ClientTown {
         return location;
     }
 
-
-    public ArrayList<ClientPlayer> getPlayersThatPassed() { 
+    public ArrayList<ClientPlayer> getPlayersThatPassed() {
         return playersThatPassed;
     }
 
-    public int getGoldValue(){ 
+    public int getGoldValue() {
         return this.goldValue;
     }
 
-    public void setGoldValue(int value) { 
+    public void setGoldValue(int value) {
         this.goldValue = value;
     }
 
-
-    public Town getServerTown() { 
+    public Town getServerTown() {
         Town returnTown = null;
-        for (Town t: ServerGame.towns) { 
-            if (t.getTownName().equals(this.townName)){ 
+        for (Town t : ServerGame.towns) {
+            if (t.getTownName().equals(this.townName)) {
                 returnTown = t;
             }
         }
         return returnTown;
     }
 
-    // public boolean notClickingOnATown(int x, int y) { 
-    //     for(Town t : ServerGame.getTowns()) { 
+    // public boolean notClickingOnATown(int x, int y) {
+    // for(Town t : ServerGame.getTowns()) {
 
     // }
     // }
 
-    // public ArrayList<Route> getRoutes() { 
+    // public ArrayList<Route> getRoutes() {
 
-    //     // initialize list of routes for return 
-    //     ArrayList<Route> listOfRoutes = new ArrayList<>(); 
+    // // initialize list of routes for return
+    // ArrayList<Route> listOfRoutes = new ArrayList<>();
 
-    //     // get all routes that are going out of the current town 
-    //     // look over all routes 
-    //     for(Route r : getAllRoutes()) { 
-    //         if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
-    //             listOfRoutes.add(r);
-    //         }
-    //     }
+    // // get all routes that are going out of the current town
+    // // look over all routes
+    // for(Route r : getAllRoutes()) {
+    // if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) {
+    // listOfRoutes.add(r);
+    // }
+    // }
 
-    //     return listOfRoutes;
+    // return listOfRoutes;
     // }
 }

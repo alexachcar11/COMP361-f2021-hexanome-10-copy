@@ -1,10 +1,8 @@
 package networksrc;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.minueto.MinuetoFileException;
 import clientsrc.ClientMain;
 import serversrc.Player;
 import serversrc.ServerGame;

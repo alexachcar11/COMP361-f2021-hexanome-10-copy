@@ -1,17 +1,25 @@
 package networksrc;
 
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.minueto.MinuetoEventQueue;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
+
 import org.minueto.MinuetoFileException;
-import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.window.MinuetoWindow;
 
 import clientsrc.ClientMain;
+import clientsrc.SwingTokenSprite;
 import clientsrc.TokenSprite;
+import clientsrc.PhaseThreeMouseListener;
 
-public class DisplayPhaseThreeACK implements Action{
+public class DisplayPhaseThreeACK implements Action {
 
     private List<String> faceUpCopy;
 
@@ -38,41 +46,49 @@ public class DisplayPhaseThreeACK implements Action{
             return null;
         })
                 .collect(Collectors.toList());
-        int count = 0;
-        for (TokenSprite tImage : tokenImages) {
-            // change these coords
-            tImage.setPos(200 + count * 20, 200);
-            window.draw(tImage, tImage.getX(), tImage.getY());
-            count++;
-        }
-        // mouse handler for selecting token from face up tokens
-        MinuetoMouseHandler tokenSelect = new MinuetoMouseHandler() {
+        MouseInputListener tokenListener = new PhaseThreeMouseListener() {
 
             @Override
-            public void handleMousePress(int xClicked, int yClicked, int arg2) {
-                for (TokenSprite t : tokenImages) {
-                    if (t.hasCollidePoint(xClicked, yClicked)) {
-                        // inform server that user has selected t
-                        ActionManager.getInstance()
-                                .sendAction(new TokenSelectedAction(
-                                        ClientMain.currentSession.getSessionID(), t.getTokenName()));
-                        break;
-                    }
+            public void mousePressed(MouseEvent e) {
+                try {
+                    JLabel origin = (JLabel) e.getComponent();
+                    SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
+                    ActionManager.getInstance()
+                            .sendAction(new TokenSelectedAction(sprite.getTypeString()));
+                    // TODO: add some acknowledgement of token selection
+
+                    // close pop up
+                    origin.getParent().getParent().setVisible(false);
+                } catch (ClassCastException exception) {
+                    // do nothing if not a JLabel
+                    exception.printStackTrace();
                 }
             }
+        };
+
+        MouseInputListener buttonListener = new PhaseThreeMouseListener() {
 
             @Override
-            public void handleMouseRelease(int arg0, int arg1, int arg2) {
-            }
-
-            @Override
-            public void handleMouseMove(int arg0, int arg1) {
+            public void mousePressed(MouseEvent e) {
+                ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
+                e.getComponent().getParent().getParent().setVisible(false);
             }
         };
-        MinuetoEventQueue selectTokenQueue = new MinuetoEventQueue();
-        window.registerMouseHandler(tokenSelect, selectTokenQueue);
+
+        JFrame tokenFrame = new JFrame("Select a token.");
+        JPanel tokenPanel = new JPanel();
+        tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
+        tokenImages.forEach((tokenImage) -> {
+            JLabel pic = new JLabel(new SwingTokenSprite(tokenImage));
+            tokenPanel.add(pic);
+            pic.addMouseListener(tokenListener);
+        });
+        JButton faceDownButton = new JButton("Face-down Token.");
+        faceDownButton.addMouseListener(buttonListener);
+        tokenPanel.add(faceDownButton);
+        tokenFrame.add(tokenPanel);
+        tokenFrame.setVisible(true);
         window.render();
-        Thread.yield(); 
+        Thread.yield();
     }
-    
 }

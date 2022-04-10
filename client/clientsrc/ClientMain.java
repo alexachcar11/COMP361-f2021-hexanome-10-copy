@@ -594,10 +594,11 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if( currentPlayer.isTurn() == true ) { 
-                    for(Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) { 
-                        if( x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()){ 
-                            System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
+                if (currentPlayer.isTurn() == true) {
+                    for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
+                        if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to "
+                                    + r.getSourceTownString());
                             pickedRoute = r;
                         }
                     }
@@ -1887,13 +1888,13 @@ public class ClientMain {
                 // Token testToken = new Token(CardType.DRAGON);
                 // MinuetoImage testTokImage = testToken.getSmallImage();
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
-                
-                if(currentPlayer.isTurn == true) { 
-                    // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) { 
-                    for(Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) { 
+
+                if (currentPlayer.isTurn == true) {
+                    // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) {
+                    for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
                     }
-                    
+
                 }
 
                 for (ClientPlayer p : players) {
