@@ -55,6 +55,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -2297,9 +2298,10 @@ public class ClientMain {
         // TODO: display all saved games and keep track of the Join button location
     }
 
-    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) throws MinuetoFileException {
-        for (ClientPlayer p : currentGame.getPlayers())
-            p.addCardStringArray(cardArray);
+    public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
+        for (ClientPlayer p : ClientMain.currentGame.getPlayers()) {
+            p.addCardStringArray(cardsHashMap.get(p.getName()));
+        }
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {

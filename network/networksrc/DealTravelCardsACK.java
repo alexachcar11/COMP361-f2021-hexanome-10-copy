@@ -3,16 +3,16 @@ package networksrc;
 import clientsrc.ClientMain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.minueto.MinuetoFileException;
 
 public class DealTravelCardsACK implements Action {
 
-    private String playerName;
-    private ArrayList<String> playerCards;
+    private HashMap<String, List<String>> playerCards;
 
-    public DealTravelCardsACK(String playerName, ArrayList<String> playerCards) {
-        this.playerName = playerName;
+    public DealTravelCardsACK(HashMap<String, List<String>> playerCards) {
         this.playerCards = playerCards;
     }
 
@@ -25,7 +25,7 @@ public class DealTravelCardsACK implements Action {
     public void execute() {
         System.out.println("BEFORE RECIEVE PHASEONE");
         try {
-            ClientMain.recievePhaseOne(playerName, playerCards);
+            ClientMain.recievePhaseOne(playerCards);
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }

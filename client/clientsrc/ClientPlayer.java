@@ -64,20 +64,20 @@ public class ClientPlayer {
         return aUser.getName();
     }
 
-    public ClientTown getCurrentLocation() { 
+    public ClientTown getCurrentLocation() {
         return inTown;
     }
 
-    public void setTargetDestinationTown(ClientTown pTown){
+    public void setTargetDestinationTown(ClientTown pTown) {
         this.targetDestinationTown = pTown;
     }
 
     // get TargetTown
-    public ClientTown getTargetDestinationTown(){
+    public ClientTown getTargetDestinationTown() {
         return this.targetDestinationTown;
     }
 
-    public void drawTargetDestination() throws MinuetoFileException { 
+    public void drawTargetDestination() throws MinuetoFileException {
         ClientTown targetTown = getTargetDestinationTown();
 
         MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
@@ -101,11 +101,11 @@ public class ClientPlayer {
         return isTurn;
     }
 
-    public void incrementGold(int townGoldValue) { 
+    public void incrementGold(int townGoldValue) {
         this.gold += townGoldValue;
     }
 
-    public int getGoldAmount() { 
+    public int getGoldAmount() {
         return this.gold;
     }
 
@@ -123,7 +123,7 @@ public class ClientPlayer {
     // return aBootAction;
     // }
 
-    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+    public void addCardStringArray(List<String> cardArray) throws MinuetoFileException {
         for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
@@ -168,7 +168,7 @@ public class ClientPlayer {
         ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
-    public void clearTokenHand(){
+    public void clearTokenHand() {
         tokensInHand.clear();
     }
 
