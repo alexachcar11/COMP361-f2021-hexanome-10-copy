@@ -2,8 +2,11 @@ package serversrc;
 
 import unirest.shaded.com.google.gson.Gson;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
@@ -21,29 +24,18 @@ public class SaveGameManager {
     }
 
     public boolean saveGame(ServerGame game) {
-        File saveGameFile = new File("saved-games/" + game.getGameID() + ".json");
-        HashMap<String, Object> gameData = new HashMap<>();
-        Field[] gameFields = ServerGame.class.getDeclaredFields();
-        for (Field field : gameFields) {
-            try {
-                gameData.put(field.toString(), field.get(game));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        String jsonGame = game.getJSON();
-        // String jsonGame = GSON.toJson(gameData);
-        boolean status = false;
+        File saveGameFile = new File("saved-games/" + game.getGameID());
+        FileOutputStream fileStream;
         try {
-            status = saveGameFile.createNewFile();
-            FileWriter writer = new FileWriter(saveGameFile);
-            writer.write(jsonGame);
-            writer.close();
+            fileStream = new FileOutputStream(saveGameFile);
+            ObjectOutputStream output = new ObjectOutputStream(fileStream);
+            output.writeObject(game);
+            output.close();
+            return true;
         } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
+            return false;
         }
-        return status;
     }
 }
