@@ -476,9 +476,6 @@ public class ClientMain {
         JPanel playerBeen = new JPanel();
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
-        JPanel goldVal = new JPanel();
-        goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
-
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
 
@@ -494,20 +491,26 @@ public class ClientMain {
             hasBeenText = new JLabel("You have not been to this town yet");
             hasBeenText.setText("You have not been to this town yet");
         }
-
-        JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
-        goldValueText.setText("This town has a gold value of " + t.getGoldValue());
-
         nameOfTown.add(currentlyLookingAtText);
         playerBeen.add(hasBeenText);
-        goldVal.add(goldValueText);
 
         townInformation.add(Box.createVerticalStrut(30));
         townInformation.add(nameOfTown);
         townInformation.add(Box.createVerticalStrut(10));
         townInformation.add(playerBeen);
-        townInformation.add(Box.createVerticalStrut(10));
-        townInformation.add(goldVal);
+
+        if(currentGame.getMode() == Mode.ELFENGOLD){
+            JPanel goldVal = new JPanel();
+            goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
+
+            JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
+            goldValueText.setText("This town has a gold value of " + t.getGoldValue());
+
+            goldVal.add(goldValueText);
+
+            townInformation.add(Box.createVerticalStrut(10));
+            townInformation.add(goldVal);
+        }
 
         townOverview.add(townInformation);
 
@@ -1897,10 +1900,8 @@ public class ClientMain {
 
                 }
 
-                for (ClientPlayer p : players) {
-                    p.drawBoot();
-                }
-                ClientMain.currentPlayer.drawBoot();
+                // display boots
+                displayInGameBoots();
 
                 // update gui
                 ClientMain.gui.window.render();
@@ -1955,6 +1956,16 @@ public class ClientMain {
     static void resumeSound() {
         loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
+    }
+
+    /**
+     * Displays in game boots
+     */
+    public static void displayInGameBoots() {
+        for (int i=0; i<players.size(); i++) {
+            ClientPlayer player = players.get(i);
+            player.drawBoot(i);
+        }
     }
 
     /**
