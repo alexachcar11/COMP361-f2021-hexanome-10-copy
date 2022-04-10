@@ -597,7 +597,7 @@ public class ServerGame {
                 p.addCard(aCardStack.pop());
             }
             List<String> cardsAdded = p.getCards().stream().map(
-                    (card) -> card.toString()).collect(Collectors.toList());
+                    (card) -> card.getCardType().toString()).collect(Collectors.toList());
             cards.put(p.getName(), cardsAdded);
         }
         for (String p : cards.keySet()) {
@@ -757,7 +757,7 @@ public class ServerGame {
             if (!p.getTokensInHand().isEmpty()) {
                 tok = p.getTokensInHand().get(0).toString();
             }
-            ACK_MANAGER.sendToSender(new AfterPhase6TokensACK(p.getName(),tok,this.currentRound), p.getName());
+            ACK_MANAGER.sendToSender(new AfterPhase6TokensACK(p.getName(), tok, this.currentRound), p.getName());
         }
 
         // go to next phase
