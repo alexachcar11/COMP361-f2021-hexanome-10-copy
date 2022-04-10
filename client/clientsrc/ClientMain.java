@@ -476,9 +476,6 @@ public class ClientMain {
         JPanel playerBeen = new JPanel();
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
-        JPanel goldVal = new JPanel();
-        goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
-
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
 
@@ -494,20 +491,26 @@ public class ClientMain {
             hasBeenText = new JLabel("You have not been to this town yet");
             hasBeenText.setText("You have not been to this town yet");
         }
-
-        JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
-        goldValueText.setText("This town has a gold value of " + t.getGoldValue());
-
         nameOfTown.add(currentlyLookingAtText);
         playerBeen.add(hasBeenText);
-        goldVal.add(goldValueText);
 
         townInformation.add(Box.createVerticalStrut(30));
         townInformation.add(nameOfTown);
         townInformation.add(Box.createVerticalStrut(10));
         townInformation.add(playerBeen);
-        townInformation.add(Box.createVerticalStrut(10));
-        townInformation.add(goldVal);
+
+        if(currentGame.getMode() == Mode.ELFENGOLD){
+            JPanel goldVal = new JPanel();
+            goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
+
+            JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
+            goldValueText.setText("This town has a gold value of " + t.getGoldValue());
+
+            goldVal.add(goldValueText);
+
+            townInformation.add(Box.createVerticalStrut(10));
+            townInformation.add(goldVal);
+        }
 
         townOverview.add(townInformation);
 
