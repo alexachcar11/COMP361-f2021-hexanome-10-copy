@@ -757,7 +757,7 @@ public class ServerGame {
             if (!p.getTokensInHand().isEmpty()) {
                 tok = p.getTokensInHand().get(0).toString();
             }
-            ACK_MANAGER.sendToSender(new AfterPhase6TokensACK(p.getName(), tok), p.getName());
+            ACK_MANAGER.sendToSender(new AfterPhase6TokensACK(p.getName(),tok,this.currentRound), p.getName());
         }
 
         // go to next phase

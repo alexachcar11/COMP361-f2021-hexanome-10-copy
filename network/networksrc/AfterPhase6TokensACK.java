@@ -6,10 +6,12 @@ public class AfterPhase6TokensACK implements Action{
 
     String senderName;
     String token;
+    int currentRound;
 
-    public AfterPhase6TokensACK(String name, String pTok){
+    public AfterPhase6TokensACK(String name, String pTok, int currRound){
         this.senderName = name;
         this.token = pTok;
+        this.currentRound = currRound;
     }
 
     @Override
@@ -30,6 +32,8 @@ public class AfterPhase6TokensACK implements Action{
             }
         }
         ClientMain.currentGame.clearAllTokensOnMap();
+        // update round
+        ClientMain.currentGame.setRound(currentRound);
     }
     
 }
