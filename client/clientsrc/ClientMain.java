@@ -465,9 +465,10 @@ public class ClientMain {
         // set the location of the window
         opponentFrame.setLocation(300, 200);
         opponentFrame.setSize(new Dimension(700, 300));
+        opponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         opponentFrame.setVisible(true);
-
+        
     }
 
     static void openTownInformation(ClientTown t) {
@@ -521,6 +522,7 @@ public class ClientMain {
 
         townOverview.setLocation(300, 200);
         townOverview.setSize(new Dimension(700, 300));
+        townOverview.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         townOverview.setVisible(true);
 
