@@ -2299,9 +2299,14 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        for (ClientPlayer p : ClientMain.currentGame.getPlayers()) {
-            p.addCardStringArray(cardsHashMap.get(p.getName()));
-        }
+        ClientMain.currentGame.getPlayers().forEach((p) -> {
+            try {
+                p.addCardStringArray(cardsHashMap.get(p.getName()));
+            } catch (MinuetoFileException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
