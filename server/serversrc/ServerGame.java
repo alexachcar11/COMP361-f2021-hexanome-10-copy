@@ -593,20 +593,11 @@ public class ServerGame {
         HashMap<String, List<String>> cards = new HashMap<>();
 
         for (Player p : players) {
-
-            int numPlayerCards = p.getCards().size();
-            ArrayList<String> cardsAdded = new ArrayList<>(); // cards added to players
-
-            for (int i = 0; i < 8 - numPlayerCards; i++) {
-
-                AbstractCard card = aCardStack.pop();
-
-                String cardString = card.getCardType().name();
-
-                p.addCard(card); // add to player
-                cardsAdded.add(cardString); // add to string array
-
+            for (int i = 0; i < 8; i++) {
+                p.addCard(aCardStack.pop());
             }
+            List<String> cardsAdded = p.getCards().stream().map(
+                    (card) -> card.toString()).collect(Collectors.toList());
             cards.put(p.getName(), cardsAdded);
         }
         for (String p : cards.keySet()) {
