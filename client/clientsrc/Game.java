@@ -279,4 +279,8 @@ public class Game {
         return this.currentPhase;
     }
 
+    public int getCurrentRound() { 
+        return this.currentRound;
+    }
+
 }
