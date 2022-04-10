@@ -1864,7 +1864,7 @@ public class ClientMain {
                 ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
                 if(currentGame.getMode() == Mode.ELFENGOLD) {
-                    MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
+                    MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
                     ClientMain.gui.window.draw(goldValueCircle, 792, 522);
                     MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
                             ClientMain.fontArial20, MinuetoColor.BLACK);
