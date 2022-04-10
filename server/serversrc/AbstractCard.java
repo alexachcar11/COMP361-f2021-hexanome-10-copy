@@ -4,14 +4,16 @@ Interface representing a Card.
 
 package serversrc;
 
+import java.io.Serializable;
+
 import org.minueto.MinuetoFileException;
 import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-public abstract class AbstractCard {
+public abstract class AbstractCard implements Serializable{
 
     private CardType type;
-    private MinuetoImage image;
+    private transient MinuetoImage image;
 
     AbstractCard(CardType someType, String fileName) {
         type = someType;

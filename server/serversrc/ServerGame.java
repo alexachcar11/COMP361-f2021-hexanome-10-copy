@@ -6,6 +6,7 @@ min 2 players
 max 6 players
  */
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import org.minueto.window.MinuetoWindow;
 import clientsrc.ClientMain;
 import clientsrc.TokenSprite;
 
-public class ServerGame {
+public class ServerGame implements Serializable {
 
     private static final ActionManager ACK_MANAGER = ActionManager.getInstance();
     private static final Gson GSON = new Gson();

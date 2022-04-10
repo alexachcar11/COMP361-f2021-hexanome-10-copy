@@ -1,5 +1,6 @@
 package serversrc;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import org.minueto.MinuetoFileException;
@@ -8,7 +9,7 @@ import org.minueto.image.MinuetoImageFile;
 
 import clientsrc.TokenSprite;
 
-public class Token {
+public class Token implements Serializable{
     // type of counter
     private final CardType tokenType;
     private Optional<Route> route = Optional.empty();

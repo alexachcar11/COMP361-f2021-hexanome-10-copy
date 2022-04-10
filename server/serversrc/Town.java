@@ -1,11 +1,12 @@
 package serversrc;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // import clientsrc.Player;
 // import clientsrc.Town;
 // import clientsrc.TownMarker;
 
-public class Town {
+public class Town implements Serializable{
 
     //fields
     private String townName;

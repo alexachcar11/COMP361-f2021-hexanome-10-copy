@@ -1,8 +1,10 @@
 package serversrc;
 
+import java.io.Serializable;
+
 // import clientsrc.Player;
 
-public class TownMarker {
+public class TownMarker implements Serializable{
 
     public Player aPlayer;
     public String townName;

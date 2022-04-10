@@ -1,5 +1,6 @@
 package serversrc;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 // import serversrc.Route;
 // import serversrc.Town;
 
-public class TownGraph {
+public class TownGraph implements Serializable{
     // use HashMap to store edges in graph
     private Map<Town, List<Route> > map;
 

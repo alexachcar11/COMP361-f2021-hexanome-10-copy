@@ -1,9 +1,11 @@
 package serversrc;
 
+import java.io.Serializable;
+
 // import clientsrc.Player;
 // import clientsrc.Token;
 
-public class Auction {
+public class Auction implements Serializable{
     private int aCurrentBid;
     private Player HighestBidPlayer;
     private Token aToken;

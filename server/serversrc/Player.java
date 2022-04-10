@@ -1,6 +1,7 @@
 package serversrc;
 /* This class contains all info relevant to a single Player */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,13 +10,12 @@ import org.hamcrest.core.IsInstanceOf;
 
 import networksrc.*;
 
-public class Player {
+public class Player implements Serializable {
     boolean isTurn = false;
     private Boot aBoot;
     private boolean turnPassed;
 
     private int gold;
-    private Boot boot;
     private List<AbstractCard> cardsInHand;
     private List<Token> tokensInHand;
     private Town inTown;

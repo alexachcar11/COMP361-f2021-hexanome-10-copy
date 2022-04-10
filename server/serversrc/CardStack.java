@@ -1,5 +1,6 @@
 package serversrc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,7 +8,7 @@ import java.util.List;
 
 // import clientsrc.Card;
 
-public class CardStack implements Iterable<AbstractCard>
+public class CardStack implements Iterable<AbstractCard>, Serializable
 {
     private final List<AbstractCard> aCards;
     

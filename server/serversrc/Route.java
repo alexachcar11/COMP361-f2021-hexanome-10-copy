@@ -1,9 +1,10 @@
 package serversrc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Route {
+public class Route implements Serializable{
 
     //
     private Town source;

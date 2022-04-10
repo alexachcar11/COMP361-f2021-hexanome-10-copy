@@ -1,5 +1,6 @@
 package serversrc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,7 +8,7 @@ import java.util.List;
 
 // import clientsrc.Token;
 
-public class TokenStack implements Iterable<Token> {
+public class TokenStack implements Iterable<Token>, Serializable {
 
     private final List<Token> aTokens;
 

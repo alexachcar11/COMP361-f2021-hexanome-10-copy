@@ -1,6 +1,6 @@
 package serversrc;
 
-public class GoldCard extends AbstractCard {
+public class GoldCard extends AbstractCard{
 
     public GoldCard() {
         super(CardType.GOLD, "images/elfenroads-sprites/Gold.png");
