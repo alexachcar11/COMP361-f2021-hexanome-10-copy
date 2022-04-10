@@ -18,7 +18,7 @@ public class ClientPlayer {
     private List<CardSprite> cardsInHand;
     private List<TokenSprite> tokensInHand;
     private ClientTown inTown;
-    private ClientTown targetDestinationTown = null;
+    private ClientTown targetDestinationTown;
 
     private MinuetoImageFile bootImage;
     private Color color;
