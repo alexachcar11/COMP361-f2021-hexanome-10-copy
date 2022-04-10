@@ -22,6 +22,7 @@ public class LaunchGameACK implements Action {
     public void execute() {
         // set the session to launched
         ClientMain.currentSession.launch();
+        System.out.println("executing launchgameack");
 
         // create players and assign their location to elvenhold, the base town
         for (User u : ClientMain.currentSession.getUsers()) {
