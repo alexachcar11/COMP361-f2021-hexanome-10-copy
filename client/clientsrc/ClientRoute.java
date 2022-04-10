@@ -87,6 +87,10 @@ public class ClientRoute {
         }
     }
 
+    public void setToken(TokenSprite pToken){
+        this.aToken = pToken;
+    }
+
     public void clearToken() {
         // update token field
         this.aToken = null;

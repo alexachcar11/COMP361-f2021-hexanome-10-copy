@@ -168,6 +168,10 @@ public class ClientPlayer {
         ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
+    public void clearTokenHand(){
+        tokensInHand.clear();
+    }
+
     /*
      * Operation: Player::startGame(gameSession: Session)
      * Scope: Player; Session;

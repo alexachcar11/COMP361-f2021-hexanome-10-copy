@@ -3,23 +3,21 @@ package networksrc;
 import clientsrc.ClientMain;
 import clientsrc.ClientPlayer;
 
-public class PlaceCounterACK implements Action {
+public class MovingBootACK implements Action{
 
-    public PlaceCounterACK(){
+    public MovingBootACK(){
     }
 
     @Override
-    // make sure not to click on edge cases (don't try to click on route with token
-    // on it already)
     public boolean isValid() {
         return true;
     }
 
     @Override
     public void execute() {
-        System.out.println("It's now phase 4, place counters");
+        System.out.println("It's now phase 5, move boot");
         ClientPlayer currentPlayer = ClientMain.currentPlayer;
-        ClientMain.currentGame.setPhase(4);
+        ClientMain.currentGame.setPhase(5);
 
         // currentPlayer.setTurn(true);
     }

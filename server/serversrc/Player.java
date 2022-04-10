@@ -23,6 +23,7 @@ public class Player {
     private Town targetTown; // destination town for variant
     private int index = 0; // index of destination town in the shuffled list of towns
     private int score;
+    private Token tokenToKeep;
 
     private String aName;
     private Action aBootAction;
@@ -37,11 +38,13 @@ public class Player {
         aBoot = new Boot();
 
         // inTown = elvenhold; // fix this
+        // start with 12 gold for elfengold
         this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aName = pServerUser.getName();
         this.turnPassed = false;
+        this.tokenToKeep = null;
 
         // if the variant 1 is on, give player a random dest town.
         if (currentGame.destinationTownEnabled){
@@ -77,6 +80,14 @@ public class Player {
     // returns destination town
     public Town getTargetTown(){
         return this.targetTown;
+    }
+
+    public void deductGold(int golds){
+        this.gold -= golds;
+    }
+
+    public int getGold(){
+        return this.gold;
     }
 
     public List<Token> getTokensInHand() {
@@ -174,6 +185,25 @@ public class Player {
     public List<Token> removeAllTokens() {
         this.tokensInHand.remove(new Obstacle());
         return this.tokensInHand;
+    }
+
+    public void setTokenToKeep(Token pTok){
+        this.tokenToKeep = pTok;
+    }
+
+    public Token popTokenToKeep(){
+        Token output = this.tokenToKeep;
+        this.tokenToKeep=null;
+        return output;
+    }
+
+    public void clearTokenHand(){
+        // keep obstacle, clear the rest
+        boolean hasObstacle = this.tokensInHand.remove(new Obstacle());
+        this.tokensInHand.clear();
+        if(hasObstacle){
+            this.tokensInHand.add(new Obstacle());
+        }
     }
 
     /*
