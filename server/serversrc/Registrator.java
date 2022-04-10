@@ -12,9 +12,9 @@ import unirest.shaded.com.google.gson.Gson;
 
 public class Registrator {
 
-    private static final Registrator INSTANCE = new Registrator();  // SINGLETON
+    private static final Registrator INSTANCE = new Registrator(); // SINGLETON
 
-    private JSONObject currentToken;    // registrator's token
+    private JSONObject currentToken; // registrator's token
 
     private static final String encoded = Base64.getEncoder()
             .encodeToString(("bgp-client-name:bgp-client-pw").getBytes(StandardCharsets.UTF_8)); // Java 8
@@ -56,6 +56,7 @@ public class Registrator {
 
     /**
      * Returns the singleton instance of Registrator
+     * 
      * @return
      */
     public static Registrator instance() {
@@ -64,6 +65,7 @@ public class Registrator {
 
     /**
      * Creates an access token for an admin
+     * 
      * @param username username of the admin
      * @param password password of the admin
      * @return new token for the admin (String format)
@@ -122,6 +124,7 @@ public class Registrator {
 
     /**
      * Retrieve registrator's currenToken
+     * 
      * @return current token in String format
      */
     public String getToken() {
@@ -132,6 +135,7 @@ public class Registrator {
 
     /**
      * Retrieves a user by their username on LS
+     * 
      * @param userName
      * @return JSONObject of the user info: name, password, preferredColour, role
      * @throws ParseException
@@ -155,6 +159,7 @@ public class Registrator {
 
     /**
      * Retrieves the list of existing users on the LS
+     * 
      * @return JSONArray of JSONObjects: name, password, preferredColour, role
      * @throws ParseException
      */
@@ -174,6 +179,7 @@ public class Registrator {
 
     /**
      * Returns true if the username exists in LS, false otherwise.
+     * 
      * @param username username to search
      * @return true when the user exists already
      */
@@ -196,6 +202,7 @@ public class Registrator {
 
     /**
      * Create a new user on the LS
+     * 
      * @param userName username of the user
      * @param passWord password of the user
      * @return User instance that is created upon API request success
@@ -224,25 +231,27 @@ public class Registrator {
             System.out.println(jsonResponse.getStatus() + jsonResponse.getBody());
             throw new IllegalArgumentException("Cannot create user: " + userName);
         } else {
-            
+
         }
     }
 
     /**
      * Sends a request to LS to create a new game service.
-     * @param creator ServerUser that send the request
-     * @param displayName display name of the game (i.e name chosen by the creator)
-     * @param numberOfPlayers total number of players
-     * @param numberOfRounds number of rounds to play
-     * @param mode elfenland or elfengold
-     * @param witchEnabled are we playing with the witch variant
+     * 
+     * @param creator                ServerUser that send the request
+     * @param displayName            display name of the game (i.e name chosen by
+     *                               the creator)
+     * @param numberOfPlayers        total number of players
+     * @param numberOfRounds         number of rounds to play
+     * @param mode                   elfenland or elfengold
+     * @param witchEnabled           are we playing with the witch variant
      * @param destinationTownEnabled are we playing with destination towns
-     * @param townGoldOption are we playing with town gold
+     * @param townGoldOption         are we playing with town gold
      * @return gameID of the session created
      * @throws ParseException
      */
     public String createGame(ServerUser creator, String displayName, int numberOfPlayers, int numberOfRounds, Mode mode,
-                                       boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
+            boolean witchEnabled, boolean destinationTownEnabled, TownGoldOption townGoldOption) throws ParseException {
 
         HttpResponse<String> jsonToken = Unirest
                 .post("http://127.0.0.1:4242/oauth/token?grant_type=password&username=service&password=abc123_ABC123")
@@ -292,8 +301,9 @@ public class Registrator {
 
     /**
      * Sends a LS request to create a new game session.
-     * @param name name of the game service(NOT display name)
-     * @param creator creator's username
+     * 
+     * @param name       name of the game service(NOT display name)
+     * @param creator    creator's username
      * @param saveGameID save game ID or "" if there is none
      * @return gameID
      */
@@ -315,7 +325,6 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .body(new Gson().toJson(fields)).asString();
 
-
         String id = null;
 
         // verify response
@@ -331,7 +340,8 @@ public class Registrator {
 
     /**
      * Sends a request to LS for a user to join a session
-     * @param sessionID session ID of the session to join
+     * 
+     * @param sessionID   session ID of the session to join
      * @param userJoining ServerUser that wants to join
      * @throws Exception when the request is rejected
      */
@@ -351,8 +361,26 @@ public class Registrator {
 
         // verify response
         if (jsonResponse.getStatus() != 200) {
-            System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
-            throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
+            if (jsonResponse.getBody().contains("Access token expired")) {
+                this.refreshUserToken(userJoining);
+                this.joinGame(sessionID, userJoining);
+            } else {
+                System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
+                throw new Exception("Error" + jsonResponse.getStatus() + ": could not join game");
+            }
+        }
+    }
+
+    public void refreshUserToken(ServerUser user) {
+        JSONObject token = user.getTokenObject();
+        String refreshToken = ((String) token.get("refresh_token")).replace("+", "%2B");
+        HttpResponse<String> jsonResponse = Unirest
+                .post("http://127.0.0.1:4242/oauth/token?grant_type=refresh_token&refresh_token="
+                        + refreshToken)
+                .header("Authorization", "Basic " + encoded)
+                .asString();
+        if (jsonResponse.getStatus() != 200) {
+            throw new IllegalArgumentException("Error" + jsonResponse.getStatus() + ": could not refresh user token.");
         }
     }
 
@@ -375,7 +403,7 @@ public class Registrator {
         if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not leave game");
         } else {
-            //sessionToLeave.removeUser(userLeaving);
+            // sessionToLeave.removeUser(userLeaving);
             // TODO: notify all users that a player has left
         }
     }
@@ -405,29 +433,32 @@ public class Registrator {
 
     /**
      * Send an LS request to launch a session
-     * @param sessionID session ID to launch
+     * 
+     * @param sessionID          session ID to launch
      * @param userAskingToLaunch user that send the request
      * @throws Exception if the request was rejected
      */
     public void launchSession(String sessionID, ServerUser userAskingToLaunch) throws Exception {
-        
 
-        /* // user token
-        String token = userAskingToLaunch.getToken().replace("+", "%2B");
-        System.out.println(token);
-
-        // build request
-        HttpResponse<String> jsonResponse = Unirest
-                .post("http://127.0.0.1:4242/api/sessions/" + sessionID
-                        + "?access_token="
-                        + token)
-                .asString();
-
-        System.out.println(jsonResponse.getBody());
-
-        // verify response
-        if (jsonResponse.getStatus() != 200) {
-            throw new Exception("Error" + jsonResponse.getStatus() + jsonResponse.getBody());
-        }  */
+        /*
+         * // user token
+         * String token = userAskingToLaunch.getToken().replace("+", "%2B");
+         * System.out.println(token);
+         * 
+         * // build request
+         * HttpResponse<String> jsonResponse = Unirest
+         * .post("http://127.0.0.1:4242/api/sessions/" + sessionID
+         * + "?access_token="
+         * + token)
+         * .asString();
+         * 
+         * System.out.println(jsonResponse.getBody());
+         * 
+         * // verify response
+         * if (jsonResponse.getStatus() != 200) {
+         * throw new Exception("Error" + jsonResponse.getStatus() +
+         * jsonResponse.getBody());
+         * }
+         */
     }
 }
