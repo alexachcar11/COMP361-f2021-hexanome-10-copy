@@ -50,19 +50,6 @@ public class Player {
         currentGame.addPlayer(this);
         allPlayers.add(this);
 
-        // if the variant 1 is on, give player a random dest town.
-        if (currentGame.destinationTownEnabled) {
-            // set target town
-            this.targetTown = ServerGame.getTowns().get(this.index);
-            // increment index
-            this.index++;
-
-            // update client on target town
-            ActionManager.getInstance().sendToSender(new UpdateDestinationTownACK(this.targetTown.getTownName()),
-                    this.getName());
-            ;
-        }
-
         // aBootAction = new BootAction(this);
     }
 
