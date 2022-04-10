@@ -1406,13 +1406,6 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
-            // players = Game.getPlayers();
-
-            // for(Player p : players) {
-            // if(p != currentPlayer) {
-            // players.add(p);
-            // }
-            // }
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1964,10 +1957,13 @@ public class ClientMain {
      * Displays in game boots
      */
     public static void displayInGameBoots() {
+        // draw other players
         for (int i=0; i<players.size(); i++) {
             ClientPlayer player = players.get(i);
             player.drawBoot(i);
         }
+        // draw your boot
+        currentPlayer.drawBoot(players.size() + 1);
     }
 
     /**
