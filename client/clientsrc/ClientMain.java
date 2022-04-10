@@ -99,6 +99,7 @@ public class ClientMain {
     private static MinuetoImage purpleBoppel;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
+    private static MinuetoImage roundNumberImage;
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
@@ -1829,8 +1830,17 @@ public class ClientMain {
                 MinuetoCircle roundNumCircle = new MinuetoCircle(20, MinuetoColor.WHITE, true);
                 ClientMain.gui.window.draw(roundNumCircle, 792, 562);
 
-                // can be optimized a bit for less code
+                // HARDCODED
                 int roundNumber = 1;
+                if(roundNumber == 1) { 
+                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+                }
+                
+                //draw the round card on the screen
+                ClientMain.gui.window.draw(roundNumberImage, 719, 42);
+
+                // can be optimized a bit for less code
+                
                 // if (roundNumber == 1) {
                 // MinuetoText firstRound = new MinuetoText("1", ClientMain.fontArial22Bold,
                 // MinuetoColor.BLACK);
