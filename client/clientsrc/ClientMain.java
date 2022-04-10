@@ -1827,7 +1827,7 @@ public class ClientMain {
                 }            
 
                 // HARDCODED
-                int roundNumber = 2;
+                int roundNumber = currentGame.getCurrentRound();
                 if(roundNumber == 1) { 
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
                 } else if (roundNumber == 2) { 
