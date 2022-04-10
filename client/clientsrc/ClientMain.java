@@ -486,6 +486,9 @@ public class ClientMain {
         JPanel playerBeen = new JPanel();
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
+        JPanel otherPlayersBeen = new JPanel();
+        otherPlayersBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
+
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
 
@@ -493,6 +496,14 @@ public class ClientMain {
         currentlyLookingAtText.setText("You are currently looking at " + townName);
 
         JLabel hasBeenText;
+
+        ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
+        String text = "The following players have passed:";
+        for(ClientPlayer p: playersThatPassed) { 
+            text += " and ";
+            text += p.getName();
+        }
+        JLabel otherPlayersBeenText = new JLabel(text);
 
         if (t.playersThatPassed.contains(currentPlayer)) {
             hasBeenText = new JLabel("You have been to this town already");
@@ -503,11 +514,14 @@ public class ClientMain {
         }
         nameOfTown.add(currentlyLookingAtText);
         playerBeen.add(hasBeenText);
+        otherPlayersBeen.add(otherPlayersBeenText);
 
         townInformation.add(Box.createVerticalStrut(30));
         townInformation.add(nameOfTown);
         townInformation.add(Box.createVerticalStrut(10));
         townInformation.add(playerBeen);
+        townInformation.add(Box.createVerticalStrut(10));
+        townInformation.add(otherPlayersBeen);
 
         if (currentGame.getMode() == Mode.ELFENGOLD) {
             JPanel goldVal = new JPanel();
