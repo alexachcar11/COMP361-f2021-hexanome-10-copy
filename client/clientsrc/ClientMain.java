@@ -499,7 +499,7 @@ public class ClientMain {
         townInformation.add(Box.createVerticalStrut(10));
         townInformation.add(playerBeen);
 
-        if(currentGame.getMode() == Mode.ELFENGOLD){
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
             JPanel goldVal = new JPanel();
             goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
 
@@ -1853,7 +1853,7 @@ public class ClientMain {
                         MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(roundNumberText, 806, 570);
 
-                if(currentGame.getMode() == Mode.ELFENGOLD) {
+                if (currentGame.getMode() == Mode.ELFENGOLD) {
                     MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
                     ClientMain.gui.window.draw(goldValueCircle, 792, 522);
                     MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
@@ -1893,7 +1893,13 @@ public class ClientMain {
                 }
 
                 // display boots
-                displayInGameBoots();
+                // draw other players
+                for (int i = 0; i < players.size(); i++) {
+                    ClientPlayer player = players.get(i);
+                    player.drawBoot(i);
+                }
+                // draw your boot
+                currentPlayer.drawBoot(players.size());
 
                 // update gui
                 ClientMain.gui.window.render();
@@ -1948,19 +1954,6 @@ public class ClientMain {
     static void resumeSound() {
         loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
-    }
-
-    /**
-     * Displays in game boots
-     */
-    public static void displayInGameBoots() {
-        // draw other players
-        for (int i=0; i<players.size(); i++) {
-            ClientPlayer player = players.get(i);
-            player.drawBoot(i);
-        }
-        // draw your boot
-        currentPlayer.drawBoot(players.size() + 1);
     }
 
     /**
@@ -2305,13 +2298,14 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        ClientMain.currentGame.getPlayers().forEach((p) -> {
+        players.forEach((p) -> {
             try {
                 p.addCardStringArray(cardsHashMap.get(p.getName()));
             } catch (MinuetoFileException e) {
                 e.printStackTrace();
             }
         });
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
 
     }
 
