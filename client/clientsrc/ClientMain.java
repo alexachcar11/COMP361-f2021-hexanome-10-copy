@@ -437,7 +437,7 @@ public class ClientMain {
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(tokenPanel);
 
-        if(currentGame.getMode() == Mode.ELFENGOLD) {
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
             JPanel goldPanel = new JPanel();
             goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
             JLabel goldText = new JLabel(playerName + " has " + p.getGoldAmount() + " gold.");
@@ -1851,21 +1851,21 @@ public class ClientMain {
                     ClientMain.gui.window.draw(p6, 318, 685);
                     ClientMain.gui.window.draw(p7, 414, 685);
                     ClientMain.gui.window.draw(p8, 510, 685);
-                }            
+                }
 
                 // HARDCODED
                 int roundNumber = currentGame.getCurrentRound();
-                if(roundNumber == 1) { 
+                if (roundNumber == 1) {
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
-                } else if (roundNumber == 2) { 
+                } else if (roundNumber == 2) {
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
-                } else if(roundNumber == 3) { 
+                } else if (roundNumber == 3) {
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
-                } else if (roundNumber == 4) { 
+                } else if (roundNumber == 4) {
                     roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
                 }
-                
-                //draw the round card on the screen
+
+                // draw the round card on the screen
                 ClientMain.gui.window.draw(roundNumberImage, 719, 40);
 
                 if (currentGame.getMode() == Mode.ELFENGOLD) {
@@ -2313,6 +2313,8 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
+        while (players == null)
+            ;
         players.forEach((p) -> {
             try {
                 p.addCardStringArray(cardsHashMap.get(p.getName()));
