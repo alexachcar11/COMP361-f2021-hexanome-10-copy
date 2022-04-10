@@ -1690,9 +1690,6 @@ public class ClientMain {
                 List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                 List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
 
-                System.out.println("YOU HAVE " + listOfCards.size() + " CARDS!");
-                System.out.println("YOU HAVE " + listOfTokens.size() + " TOKENS!");
-
                 // organize tokens in inventory
                 if (listOfTokens.size() == 1) {
                     MinuetoImage p1 = listOfTokens.get(0);
