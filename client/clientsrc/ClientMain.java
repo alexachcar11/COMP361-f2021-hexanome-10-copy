@@ -1625,9 +1625,8 @@ public class ClientMain {
         }
 
         // Play Music
-        if (!soundStarted) {
+        if (soundOn) {
             playSound("music/flute.mid");
-            soundStarted = true;
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
