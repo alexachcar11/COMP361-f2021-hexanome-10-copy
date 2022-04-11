@@ -16,11 +16,11 @@ public class ChooseTokenToKeepAction implements Action{
     @Override
     public boolean isValid() {
         Player playerWhoSent = Player.getPlayerByName(senderName);
-        ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         // check if it's player's turn
         if (!playerWhoSent.getIsTurn()){
             return false;
         }
+        ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         // check phase
         if (playersCurrentGame.getCurrentPhase() != 6){
             return false;

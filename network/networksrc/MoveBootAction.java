@@ -17,11 +17,15 @@ public class MoveBootAction implements Action {
 
     @Override
     public boolean isValid() {
-        // TODO: check if parameters are not null
         if(this.senderName == null || this.srcTown == null || this.dstTown == null){
             return false;
         }
         Player playerWhoSent = Player.getPlayerByName(senderName);
+        // check if it's not player's turn
+        if (!playerWhoSent.getIsTurn()) {
+            System.out.println("ERROR: Not " + playerWhoSent.getName() + "'s turn!");
+            return false;
+        }
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
 
         // sanity check : the player is actually in that game
@@ -37,12 +41,7 @@ public class MoveBootAction implements Action {
             System.out.println("ERROR: Not moveBoot phase!");
             return false;
         }
-        // check if it's not player's turn
-        if (!playerWhoSent.getIsTurn()) {
-            // do nothing ?
-            System.out.println("ERROR: Not " + playerWhoSent.getName() + "'s turn!");
-            return false;
-        }
+        
         Town sTown = playersCurrentGame.getTownByName(srcTown);
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
