@@ -75,21 +75,8 @@ public class LaunchGameAction implements Action {
             }
 
             // notify all users in the lobby
-            LaunchGameACK actionToSend = new LaunchGameACK();
-            try {
-                Server serverInstance = Server.getInstance();
-                for (ServerUser serverUser : gameLobby.getAllUsers()) {
-                    String username = serverUser.getName();
-                    // get the user's socket
-                    ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
-                    // get the socket's output stream
-                    ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-                    // send the acknowledgment
-                    objectOutputStream.writeObject(actionToSend);
-                }
-            } catch (IOException e) {
-                System.err.println("IOException in LaunchGameAction.execute()");
-            }
+            LaunchGameACK actionToSend = new LaunchGameACK(); 
+            ActionManager.getInstance().sentToAllPlayersInGame(actionToSend, serverGame);
             serverGame.nextPhase();
         } catch (NullPointerException e) {
             System.err.println("Could not create a server game.");
