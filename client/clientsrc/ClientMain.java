@@ -1570,18 +1570,6 @@ public class ClientMain {
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
     public static void main(String[] args) throws IOException {
-        /*
-         * in the Boot class
-         * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
-         * image files
-         * 
-         * List<String> bootFileNames = new ArrayList<>();
-         * // add file names of boot images to the bootFiles list
-         * for (File file : bootDir.listFiles()) {
-         * if (file.getName().startsWith("boot-"))
-         * bootFileNames.add("images/böppels-and-boots/" + file.getName());
-         * }
-         */
 
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
@@ -1869,10 +1857,6 @@ public class ClientMain {
                 // draw line between the text:
                 ClientMain.gui.window.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
 
-                // draw indication on all of the routes
-                MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
-                MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
-
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(passTurnText, 42, 650);
 
@@ -1923,25 +1907,25 @@ public class ClientMain {
                     ClientMain.gui.window.draw(bopp,xName - 32, yName);
                 }
 
-                if (currentPlayer.isTurn == false) { 
+                // draw indication on all of the routes
+                MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
+                MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
+
+                if (!currentPlayer.isTurn) { 
                     for(ClientRoute r: Game.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
                     }
-                }
-                if (currentPlayer.isTurn == true) {
-                    // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) {
+                } else {
                     // draw turn indicators  (can travel here)
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
                     }
                     // draw indicators (cant travel here)
                     for (ClientRoute r : Game.getAllRoutes()) { 
-                        if( currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r) == false) { 
+                        if(!currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r)) { 
                             gui.window.draw(indicator, r.getMinX(), r.getMinY());
                         }
                     }
-
-
                 }
 
                 // display boots
