@@ -2357,7 +2357,7 @@ public class ClientMain {
             }
         });
         currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-
+        displayInventories();
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
