@@ -1931,13 +1931,11 @@ public class ClientMain {
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
 
                 if (currentPlayer.isTurn == false) { 
-                    System.out.println("ADDING INDICATORS FOR IF ITS NOT YOUR TURN");
                     for(Route r: ServerGame.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
                     }
                 }
                 if (currentPlayer.isTurn == true) {
-                    System.out.println("ADDING INDICATORS IF IT IS YOUR TURN");
                     // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) {
                     // draw turn indicators  (can travel here)
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
