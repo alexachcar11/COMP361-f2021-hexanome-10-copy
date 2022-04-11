@@ -109,7 +109,7 @@ public class ClientPlayer {
     public int getGoldAmount() {
         return this.gold;
     }
-    
+
     public void addCardStringArray(List<String> cardArray) throws MinuetoFileException {
         for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
@@ -176,5 +176,28 @@ public class ClientPlayer {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void setTown(ClientTown t) {
+        inTown = t;
+        t.addPlayer(this);
+    }
+
+    public void moveBoot(ClientTown t) {
+        // remove the player from the old town
+        inTown.playersHere.remove(this);
+
+        // set the town of the player to the new town
+        this.inTown = t;
+
+        // add the player to the list of players located at the new town
+        t.addPlayer(this);
+        // drawBoot();
+
+        // TODO: check if the player has traveled to the new town in the past already,
+        // -> if yes, do nothing
+        // -> if no, collect the town marker and remove the town marker from the town
+
+        // note: actually GUI movement is all done inside of client main
     }
 }
