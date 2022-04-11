@@ -10,7 +10,6 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
-import org.minueto.window.MinuetoPanel;
 
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
@@ -24,28 +23,14 @@ import networksrc.LoginAction;
 import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
-import networksrc.TestAction;
-// import serversrc.Token;
 
 import serversrc.Route;
-import serversrc.Token;
-import serversrc.ServerGame;
-
-import javax.imageio.ImageIO;
-
-// import serversrc.Color;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.TownGoldOption;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.image.*;
-
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -54,8 +39,6 @@ import javax.swing.JLabel;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
