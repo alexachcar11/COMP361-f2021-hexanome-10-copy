@@ -36,6 +36,8 @@ public class LaunchGameACK implements Action {
         }
 
         // modify game objects based on the game state received
+        ClientMain.players = ClientMain.currentGame.getPlayers();
+        ClientMain.players.remove(ClientMain.currentPlayer);
 
         // display board screen
         ClientMain.displayOriginalBoard();

@@ -1813,9 +1813,6 @@ public class ClientMain {
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
                 }
-
-                players = ClientMain.currentGame.getPlayers();
-                players.remove(ClientMain.currentPlayer);
                 // List<Player> listOfPlayers = players;
 
                 ClientMain.gui.window.draw(ClientMain.elfenlandImage, 0, 0);
