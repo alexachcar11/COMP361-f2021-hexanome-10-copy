@@ -1810,7 +1810,7 @@ public class ClientMain {
                     elfenlandQueue.handle();
                 }
             }
-            
+
             // Add a button in the bottom right to pause the music
             if (soundOn) {
                 gui.window.draw(soundOffButton, 1000, 745);
@@ -1871,6 +1871,8 @@ public class ClientMain {
         } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
             currentBackground = elfengoldImage;
         }
+
+        System.out.println("displaying board elements")
 
         // REDRAW CLEAN BACKGROUND
         gui.window.draw(currentBackground, 0, 0);
@@ -2177,6 +2179,8 @@ public class ClientMain {
             currentBackground = elfengoldImage;
         }
 
+        System.out.println("displaying original game board");
+
         // draw Cards text
         MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
         currentBackground.draw(cardsText, 145, 600);
@@ -2205,7 +2209,7 @@ public class ClientMain {
             MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
             currentBackground.draw(seeInv, xName + 25, yName + 35);
             MinuetoImage bopp = opponent.getBoppel();
-            currentBackground.draw(bopp,xName - 32, yName);
+            currentBackground.draw(bopp,xName, yName + 35);
         }
 
         // display on the windows
