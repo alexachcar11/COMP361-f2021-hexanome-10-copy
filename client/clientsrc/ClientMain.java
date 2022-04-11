@@ -136,6 +136,7 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
+    static boolean played;
     // currentGame.getNumberOfPlayers()
     static int numberPlayers = 2;
 
@@ -512,6 +513,15 @@ public class ClientMain {
             tokenOnRoute.add(tokenOnRouteText);
             routeInformation.add(Box.createVerticalStrut(10));
             routeInformation.add(tokenOnRoute);
+        } else { 
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has no tokens on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
         }
 
         routeOverview.add(routeInformation);
@@ -875,7 +885,7 @@ public class ClientMain {
                     }
                 }
                 for (ClientRoute r : Game.getAllRoutes()) {
-                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && y > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
                     }
@@ -1632,6 +1642,7 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+            played = false;
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1835,6 +1846,18 @@ public class ClientMain {
                     elfenlandQueue.handle();
                 }
 
+                if(currentPlayer.isTurn() == true) { 
+                    MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
+                    gui.window.draw(itsYourTurnText, 836, 504);
+                } else { 
+                    for (ClientPlayer p: currentGame.getPlayers()) { 
+                        if(p.isTurn == true) {
+                            MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn", fontArial22Bold, MinuetoColor.BLACK);
+                            gui.window.draw(otherPlayerTurnText, 836, 504);
+                        }
+                    }
+                }
+
                 // draw Cards text
                 MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(cardsText, 145, 600);
@@ -1894,6 +1917,8 @@ public class ClientMain {
                     ClientMain.gui.window.draw(pName, xName, yName);
                     MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                     ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
+                    
+                    ClientMain.gui.window.draw(opponent.getBoppel(),xName, yName);
                 }
 
                 if (currentPlayer.isTurn == false) { 
@@ -1952,14 +1977,17 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            loadedClip = AudioSystem.getClip();
-            loadedClip.open(audioIn);
-            loadedClip.start();
-        } catch (Exception e) {
-            throw new Error("Unable to play sound file");
+        if (played = false) {
+            File f = new File("./" + soundFile);
+            try {
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+                loadedClip = AudioSystem.getClip();
+                loadedClip.open(audioIn);
+                loadedClip.start();
+                played = true;
+            } catch (Exception e) {
+                throw new Error("Unable to play sound file");
+            }
         }
     }
 
