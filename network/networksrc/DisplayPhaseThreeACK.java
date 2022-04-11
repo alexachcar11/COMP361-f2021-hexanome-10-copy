@@ -69,7 +69,6 @@ public class DisplayPhaseThreeACK implements Action {
             @Override
             public void mousePressed(MouseEvent e) {
                 displayWindow = false;
-                System.out.println("Picked random token.");
             }
         };
 
@@ -95,10 +94,16 @@ public class DisplayPhaseThreeACK implements Action {
         }
         tokenFrame.setVisible(false);
         tokenFrame.dispose();
-        SwingTokenSprite selected = selectedSprite.get(0);
-        selectedSprite.clear();
-        ActionManager.getInstance()
-                .sendAction(new TokenSelectedAction(selected.getTypeString()));
-        System.out.println("Selected token: " + selected.getTypeString());
+        if (selectedSprite.size() > 0) {
+            SwingTokenSprite selected = selectedSprite.get(0);
+            selectedSprite.clear();
+            ActionManager.getInstance()
+                    .sendAction(new TokenSelectedAction(selected.getTypeString()));
+            System.out.println("Selected token: " + selected.getTypeString());
+        }
+        else {
+            ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
+            System.out.println("Picked random token.");
+        }
     }
 }
