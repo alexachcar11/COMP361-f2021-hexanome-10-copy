@@ -59,6 +59,7 @@ import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -545,10 +546,16 @@ public class ClientMain {
         JLabel hasBeenText;
 
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
+
+        HashSet<ClientPlayer> playersPassedNoDups = new HashSet<>();
+        for (ClientPlayer p: playersThatPassed) { 
+            playersPassedNoDups.add(p);
+        }
+
         String text = "The following players have passed:";
         int count = 0;
-        for (ClientPlayer p : playersThatPassed) {
-            if (count != 0){
+        for (ClientPlayer p : playersPassedNoDups) {
+            if (count != 0 && count != playersPassedNoDups.size()) {
                 text += " and ";
             }
             text += p.getName();
