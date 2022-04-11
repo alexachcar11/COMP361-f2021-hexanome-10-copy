@@ -512,6 +512,15 @@ public class ClientMain {
             tokenOnRoute.add(tokenOnRouteText);
             routeInformation.add(Box.createVerticalStrut(10));
             routeInformation.add(tokenOnRoute);
+        } else { 
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has no tokens on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
         }
 
         routeOverview.add(routeInformation);
