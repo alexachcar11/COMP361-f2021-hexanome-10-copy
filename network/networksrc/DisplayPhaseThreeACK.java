@@ -55,10 +55,9 @@ public class DisplayPhaseThreeACK implements Action {
                     SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
                     ActionManager.getInstance()
                             .sendAction(new TokenSelectedAction(sprite.getTypeString()));
-                    // TODO: add some acknowledgement of token selection
-
+                    System.out.println("Selected token: " + sprite.getTypeString());
                     // close pop up
-                    origin.getParent().getParent().setVisible(false);
+                    origin.getParent().getParent().getParent().setVisible(false);
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
                     exception.printStackTrace();
@@ -71,7 +70,7 @@ public class DisplayPhaseThreeACK implements Action {
             @Override
             public void mousePressed(MouseEvent e) {
                 ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
-                e.getComponent().getParent().getParent().setVisible(false);
+                e.getComponent().getParent().getParent().getParent().setVisible(false);
             }
         };
 
@@ -87,6 +86,7 @@ public class DisplayPhaseThreeACK implements Action {
         faceDownButton.addMouseListener(buttonListener);
         tokenPanel.add(faceDownButton);
         tokenFrame.add(tokenPanel);
+        tokenFrame.setSize(400, 400);
         tokenFrame.setVisible(true);
         window.render();
         Thread.yield();
