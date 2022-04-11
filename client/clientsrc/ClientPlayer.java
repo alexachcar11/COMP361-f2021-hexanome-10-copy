@@ -21,6 +21,7 @@ public class ClientPlayer {
     private ClientTown targetDestinationTown;
 
     private MinuetoImageFile bootImage;
+    private MinuetoImageFile boppel;
     private Color color;
 
     private String aName;
@@ -43,6 +44,8 @@ public class ClientPlayer {
         try {
             this.bootImage = new MinuetoImageFile(
                     "images/boot" + pColor.toString().toLowerCase() + ".png");
+            this.bootImage = new MinuetoImageFile(
+                    "images/böppel-" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,6 +164,10 @@ public class ClientPlayer {
 
     public List<TokenSprite> getTokensInHand() {
         return tokensInHand;
+    }
+
+    public MinuetoImageFile getBoppel() { 
+        return boppel;
     }
 
     /**
