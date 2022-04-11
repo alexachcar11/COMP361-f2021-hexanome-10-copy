@@ -1,6 +1,7 @@
 package networksrc;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class DisplayPhaseThreeACK implements Action {
     @Override
     public void execute() {
         MinuetoWindow window = ClientMain.WINDOW;
+        final ArrayList<SwingTokenSprite> selectedSprite = new ArrayList<>();
         final List<TokenSprite> tokenImages = faceUpCopy.stream().map((s) -> {
             try {
                 return TokenSprite.getTokenSpriteByString(s);
@@ -53,11 +55,8 @@ public class DisplayPhaseThreeACK implements Action {
             public void mousePressed(MouseEvent e) {
                 try {
                     JLabel origin = (JLabel) e.getComponent();
-                    SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
+                    selectedSprite.add((SwingTokenSprite) origin.getIcon());
                     displayWindow = false;
-                    ActionManager.getInstance()
-                            .sendAction(new TokenSelectedAction(sprite.getTypeString()));
-                    System.out.println("Selected token: " + sprite.getTypeString());
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
                     exception.printStackTrace();
@@ -70,7 +69,6 @@ public class DisplayPhaseThreeACK implements Action {
             @Override
             public void mousePressed(MouseEvent e) {
                 displayWindow = false;
-                ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
                 System.out.println("Picked random token.");
             }
         };
@@ -97,5 +95,10 @@ public class DisplayPhaseThreeACK implements Action {
         }
         tokenFrame.setVisible(false);
         tokenFrame.dispose();
+        SwingTokenSprite selected = selectedSprite.get(0);
+        selectedSprite.clear();
+        ActionManager.getInstance()
+                .sendAction(new TokenSelectedAction(selected.getTypeString()));
+        System.out.println("Selected token: " + selected.getTypeString());
     }
 }
