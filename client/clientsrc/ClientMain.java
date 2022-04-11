@@ -502,6 +502,17 @@ public class ClientMain {
         routeInformation.add(Box.createVerticalStrut(10));
         routeInformation.add(requirements);
 
+        if(r.getTokenOnRoute() != null) { 
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName() + " token on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
+        }
+
         routeOverview.add(routeInformation);
 
         routeOverview.setLocation(300, 200);
@@ -535,9 +546,13 @@ public class ClientMain {
 
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
         String text = "The following players have passed:";
+        int count = 0;
         for (ClientPlayer p : playersThatPassed) {
-            text += " and ";
+            if (count != 0){
+                text += " and ";
+            }
             text += p.getName();
+            count++;
         }
         JLabel otherPlayersBeenText = new JLabel(text);
 

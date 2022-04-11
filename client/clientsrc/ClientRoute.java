@@ -149,4 +149,8 @@ public class ClientRoute {
         return result;
     }
 
+    public TokenSprite getTokenOnRoute() { 
+        return aToken;
+    }
+
 }
