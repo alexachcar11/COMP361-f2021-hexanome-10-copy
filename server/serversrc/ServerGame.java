@@ -528,6 +528,7 @@ public class ServerGame {
             if(doingPhase3 == 3){
                 if (didAllPlayersPassTurn() && currentPhase != 10) {
                     nextPhase();
+                    return;
                 }
             }
             else {
