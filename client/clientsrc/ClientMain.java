@@ -1931,7 +1931,7 @@ public class ClientMain {
                 // ClientMain.gui.window.draw(testTokImage, 368, 462);
 
                 if (currentPlayer.isTurn == false) { 
-                    for(Route r: ServerGame.getAllRoutes()) { 
+                    for(ClientRoute r: Game.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
                     }
                 }
@@ -1942,7 +1942,7 @@ public class ClientMain {
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
                     }
                     // draw indicators (cant travel here)
-                    for (Route r : ServerGame.getAllRoutes()) { 
+                    for (ClientRoute r : Game.getAllRoutes()) { 
                         if( currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r) == false) { 
                             gui.window.draw(indicator, r.getMinX(), r.getMinY());
                         }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 // import serversrc.Player;
 // import serversrc.Token;
 // import serversrc.Town;
+import serversrc.RouteType;
 
 public class ClientRoute {
 
@@ -18,12 +19,19 @@ public class ClientRoute {
     boolean isRiver = false;
     // upstream
     boolean isUpstream;
+    private RouteType type;
+    private int[] hitbox;
+
+
     private static ArrayList<ClientRoute> allRoutes = new ArrayList<>();
 
-    public ClientRoute(ClientTown pStartingTown, ClientTown pEndTown) {
+    public ClientRoute(ClientTown pStartingTown, ClientTown pEndTown, RouteType rType, int[] pHitbox) {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
+        this.type = rType;
+        this.hitbox = pHitbox;
+
         allRoutes.add(this);
     }
 
@@ -94,5 +102,21 @@ public class ClientRoute {
     public void clearToken() {
         // update token field
         this.aToken = null;
+    }
+
+    public int getMinX(){ 
+        return hitbox[0];
+    }
+
+    public int getMaxX(){ 
+        return hitbox[1];
+    }
+
+    public int getMinY(){ 
+        return hitbox[2];
+    }
+
+    public int getMaxY(){ 
+        return hitbox[3];
     }
 }
