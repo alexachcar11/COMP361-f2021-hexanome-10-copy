@@ -48,7 +48,7 @@ public class TokenSelectedAction implements Action {
         game.nextPlayer();
         List<String> tokenStrings = game.faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
-        if (game.getCurrentPlayer().getTokensInHand().size() < 3) {
+        if (game.getCurrentPlayer().getTokensInHand().size() < 5) {
             ActionManager.getInstance().sendToSender(new DisplayPhaseThreeACK(tokenStrings),
                     game.getCurrentPlayer().getName());
         } else {
