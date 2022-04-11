@@ -57,6 +57,7 @@ public class TokenSelectedAction implements Action {
         game.nextPlayer();
         System.out.println("Now it's " + game.getCurrentPlayer().getName() + "'s turn.");
         if (game.getCurrentPhase() == 3){
+            System.out.println("Calling phaseThree, current phase: " + game.getCurrentPhase());
             game.phaseThree();
         }
         

@@ -697,7 +697,7 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if (currentPlayer.isTurn() == true && currentGame.getCurrentPhase() == 5) {
+                if (currentGame.getCurrentPhase() == 5) {
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
@@ -800,7 +800,7 @@ public class ClientMain {
                         }
                     }
                 }
-                if (currentGame.getCurrentPhase() == 6 && currentPlayer.isTurn()) {
+                if (currentGame.getCurrentPhase() == 6) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
                     if (pickedTok != null) {
