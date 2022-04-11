@@ -644,31 +644,6 @@ public class ServerGame {
         ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
 
-    // old version of phaseFour
-    // public void phaseFour() {
-    // while (true) {
-    // // breaks once all players pass turn
-    // if (didAllPlayersPassTurn()) {
-    // break;
-    // }
-    // Player currentPlayer = getCurrentPlayer();
-    // // server sends message ACK to client to get input
-    // ACK_MANAGER.sendToSender(new PlaceCounterACK(), currentPlayer.getName());
-    // // client sends back input to server
-
-    // // we get a Token input
-    // // we get a route input
-    // // this done inside the Action class: playerPlaceCounter(currentPlayer, r,
-    // tok);
-
-    // // calls nextPlayer() in the PassTurnAction
-    // }
-    // for (Player p : players) {
-    // p.resetTurnPassed();
-    // }
-    // nextPhase();
-    // }
-
     // new version of phaseFour
     // pre: currentPhase should be 4 right now
     public void phaseFour() {
