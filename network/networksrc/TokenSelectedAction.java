@@ -25,6 +25,9 @@ public class TokenSelectedAction implements Action {
     @Override
     public boolean isValid() {
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
+        if (game.getCurrentPhase() != 3){
+            return false;
+        }
         if (this.tokenString.equals("random"))
         {
             return !game.faceDownTokenStack.isEmpty();
@@ -53,7 +56,10 @@ public class TokenSelectedAction implements Action {
         System.out.println(playerName + " just picked a token.");
         game.nextPlayer();
         System.out.println("Now it's " + game.getCurrentPlayer().getName() + "'s turn.");
-        game.phaseThree();
+        if (game.getCurrentPhase() == 3){
+            game.phaseThree();
+        }
+        
     }
 
 }

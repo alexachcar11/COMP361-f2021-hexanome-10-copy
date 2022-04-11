@@ -520,7 +520,7 @@ public class ServerGame {
             }
             if (doingPhase3 == 3) {
                 if (didAllPlayersPassTurn() && currentPhase != 10) {
-                    this.doingPhase3 = 1;
+                    this.doingPhase3++;
                     nextPhase();
                     return;
                 }
@@ -586,6 +586,7 @@ public class ServerGame {
                 phaseThree();
                 break;
             case 4:
+                this.doingPhase3 = 1;
                 phaseFour();
                 break;
             case 5:
