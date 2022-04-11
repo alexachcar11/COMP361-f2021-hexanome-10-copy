@@ -875,7 +875,7 @@ public class ClientMain {
                     }
                 }
                 for (ClientRoute r : Game.getAllRoutes()) {
-                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && y > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
                     }
