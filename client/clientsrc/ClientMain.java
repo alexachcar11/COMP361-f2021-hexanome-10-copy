@@ -782,6 +782,10 @@ public class ClientMain {
                             pickedTok = listOfTokens.get(4);
                         }
                     }
+                    // testingggg
+                    if (pickedTok != null) {
+                        System.out.println("pickedTok is: " + pickedTok.getTokenName());
+                    }
                 }
                 if (currentGame.getCurrentPhase() == 6) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
