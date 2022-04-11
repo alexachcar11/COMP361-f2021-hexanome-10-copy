@@ -704,14 +704,7 @@ public class ClientMain {
                                 + " to " + pickedRoute.getSourceTownString());
                     }
 
-                    // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-                    System.out.println("Clicked on coordinates: \nx: " + x + "\ny: " + y);
-
                     for (Route r : Route.getAllRoutes()) {
-                        // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-                        System.out.println("Looking at route: " + r.getDestTownString() + " to "
-                        + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
-                        + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
                         if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
@@ -1531,6 +1524,7 @@ public class ClientMain {
     private static boolean soundOn = true;
     private static Clip loadedClip;
     private static long clipPos;
+    private static boolean soundStarted = false;
 
     private static boolean nameSel = false;
     private static String nameString = "";
@@ -1631,8 +1625,9 @@ public class ClientMain {
         }
 
         // Play Music
-        if (soundOn) {
+        if (!soundStarted) {
             playSound("music/flute.mid");
+            soundStarted = true;
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
@@ -1839,14 +1834,14 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        if (soundOn == false) {
+        if (played == false) {
             File f = new File("./" + soundFile);
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
                 loadedClip = AudioSystem.getClip();
                 loadedClip.open(audioIn);
                 loadedClip.start();
-                soundOn = true;
+                played = true;
             } catch (Exception e) {
                 throw new Error("Unable to play sound file");
             }
@@ -1859,7 +1854,6 @@ public class ClientMain {
     static void pauseSound() {
         clipPos = loadedClip.getMicrosecondPosition();
         loadedClip.stop();
-        soundOn = false;
     }
 
     /*
