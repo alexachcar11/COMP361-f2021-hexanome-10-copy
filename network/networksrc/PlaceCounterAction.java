@@ -27,14 +27,14 @@ public class PlaceCounterAction implements Action {
         }
         // check if it's player's turn
         Player playerWhoSent = Player.getPlayerByName(senderName);
+        if (!playerWhoSent.getIsTurn()){
+            return false;
+        }
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         Town s = Town.getTownByName(srcTown);
         Town d = Town.getTownByName(destTown);
         Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
         Token t = Token.getTokenByName(tok);
-        if (!playerWhoSent.getIsTurn()){
-            return false;
-        }
         // check if it's phase 4 for placing counters
         // TODO: might need modification for elfengold
         if (playerWhoSent.getCurrentGame().getCurrentPhase() != 4){
