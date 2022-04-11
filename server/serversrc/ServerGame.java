@@ -14,13 +14,6 @@ import java.util.stream.Collectors;
 import java.util.HashMap;
 
 import networksrc.*;
-import org.minueto.MinuetoEventQueue;
-import org.minueto.MinuetoFileException;
-import org.minueto.handlers.MinuetoMouseHandler;
-import org.minueto.window.MinuetoWindow;
-
-import clientsrc.ClientMain;
-import clientsrc.TokenSprite;
 
 public class ServerGame {
 
@@ -650,6 +643,10 @@ public class ServerGame {
     }
 
     public void phaseThree() {
+        if (doingPhase3 > 3)
+        {
+            return;
+        }
         int numOfTokens = faceUpTokenPile.size();
         for (int i = 0; i < 5 - numOfTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
