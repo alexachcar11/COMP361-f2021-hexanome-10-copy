@@ -467,10 +467,10 @@ public class ClientMain {
         opponentFrame.setSize(new Dimension(700, 300));
 
         opponentFrame.setVisible(true);
-        
+
     }
 
-    static void openRouteInformation(Route r) { 
+    static void openRouteInformation(Route r) {
 
         JFrame routeOverview = new JFrame("Route");
 
@@ -487,7 +487,7 @@ public class ClientMain {
         JLabel connectsText = new JLabel(connectsString);
         connectsText.setText(connectsString);
 
-        String requirementsString = r.formatRequirements(); 
+        String requirementsString = r.formatRequirements();
         JLabel requirementsText = new JLabel(requirementsString);
         requirementsText.setText(requirementsString);
 
@@ -532,7 +532,7 @@ public class ClientMain {
 
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
         String text = "The following players have passed:";
-        for(ClientPlayer p: playersThatPassed) { 
+        for (ClientPlayer p : playersThatPassed) {
             text += " and ";
             text += p.getName();
         }
@@ -593,8 +593,8 @@ public class ClientMain {
             if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
 
-                for(ClientTown t: Game.getTowns()) { 
-                    if(x > t.minX && x < t.maxX && y > t.minY && y < t.minX){
+                for (ClientTown t : Game.getTowns()) {
+                    if (x > t.minX && x < t.maxX && y > t.minY && y < t.minX) {
                         System.out.println("You just clicked on " + t.getTownName());
                     }
                 }
@@ -688,8 +688,8 @@ public class ClientMain {
                         openTownInformation(t);
                     }
                 }
-                for (Route r: Route.getAllRoutes()) { 
-                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) { 
+                for (Route r : Route.getAllRoutes()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
                     }
@@ -2350,8 +2350,6 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        while (players == null)
-            ;
         players.forEach((p) -> {
             try {
                 p.addCardStringArray(cardsHashMap.get(p.getName()));
