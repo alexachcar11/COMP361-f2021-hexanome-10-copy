@@ -81,7 +81,7 @@ public class ClientMain {
     public static MinuetoImage elfengoldImage;
 
     // create a list of the players
-    static List<ClientPlayer> players;
+    public static List<ClientPlayer> players;
 
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
@@ -2483,9 +2483,7 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        while (players == null)
-            ;
-        players.forEach((p) -> {
+        /* players.forEach((p) -> {
             try {
                 p.addCardStringArray(cardsHashMap.get(p.getName()));
             } catch (MinuetoFileException e) {
@@ -2493,7 +2491,7 @@ public class ClientMain {
             }
         });
         currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-        displayInventories();
+        displayInventories(); */
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
