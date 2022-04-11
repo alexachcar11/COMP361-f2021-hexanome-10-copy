@@ -54,14 +54,9 @@ public class DisplayPhaseThreeACK implements Action {
             @Override
             public void mousePressed(MouseEvent e) {
                 synchronized(selectedSprite) {
-                    try {
-                        JLabel origin = (JLabel) e.getComponent();
-                        selectedSprite.add((SwingTokenSprite) origin.getIcon());
-                        selectedSprite.notify();
-                    } catch (ClassCastException exception) {
-                        // do nothing if not a JLabel
-                        exception.printStackTrace();
-                    }
+                    JLabel origin = (JLabel) e.getComponent();
+                    selectedSprite.add((SwingTokenSprite) origin.getIcon());
+                    selectedSprite.notify();
                 }
             }
         };
@@ -70,7 +65,9 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                selectedSprite.notify();
+                synchronized(selectedSprite){
+                    selectedSprite.notify();
+                }
             }
         };
 
