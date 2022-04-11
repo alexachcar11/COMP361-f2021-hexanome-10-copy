@@ -696,7 +696,7 @@ public class ClientMain {
                     }
                 }
                 // place counter on routes phase
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
+                if (currentGame.getCurrentPhase() == 4) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
                     if (pickedRoute != null) {
@@ -1625,9 +1625,8 @@ public class ClientMain {
         }
 
         // Play Music
-        if (!soundStarted) {
+        if (soundOn) {
             playSound("music/flute.mid");
-            soundStarted = true;
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
@@ -2063,12 +2062,10 @@ public class ClientMain {
         // gold value if elfengold
         if (currentGame.getMode() == Mode.ELFENGOLD) {
             MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
-            ClientMain.gui.window.draw(goldValueCircle, 792, 522);
-            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
-                    ClientMain.fontArial20, MinuetoColor.BLACK);
-            ClientMain.gui.window.draw(goldAmnt, 806, 530);
+            gui.window.draw(goldValueCircle, 792, 522);
+            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20, MinuetoColor.BLACK);
+            gui.window.draw(goldAmnt, 806, 530);
         }
-
     }
 
     /**
@@ -2459,14 +2456,11 @@ public class ClientMain {
                 e.printStackTrace();
             }
         });
-        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-        displayBoardElements();
-        
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));  
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
         ClientPlayer.getPlayerByName(playerString).addTokenStringList(tokenStrings);
-        displayBoardElements();
     }
 
     public static void diaplayWinnerByString(String winner) {
