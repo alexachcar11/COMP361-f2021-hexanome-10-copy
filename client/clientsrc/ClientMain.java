@@ -1843,57 +1843,6 @@ public class ClientMain {
                 MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
                 MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
 
-                // ClientMain.gui.window.draw(indicator, 90, 55);
-                // ClientMain.gui.window.draw(indicator, 38, 189);
-                // ClientMain.gui.window.draw(indicator, 169, 126);
-                // ClientMain.gui.window.draw(indicator, 121, 162);
-                // ClientMain.gui.window.draw(indicator, 45, 318);
-                // ClientMain.gui.window.draw(indicator, 78, 307);
-                // ClientMain.gui.window.draw(indicator, 119, 231);
-                // ClientMain.gui.window.draw(indicator, 125, 282);
-                // ClientMain.gui.window.draw(indicator, 246, 130);
-                // ClientMain.gui.window.draw(indicator, 259, 210);
-                // ClientMain.gui.window.draw(indicator, 194, 424);
-                // ClientMain.gui.window.draw(indicator, 165, 510);
-                // ClientMain.gui.window.draw(indicator, 283, 442);
-                // ClientMain.gui.window.draw(indicator, 378, 545);
-                // ClientMain.gui.window.draw(indicator, 279, 57);
-                // ClientMain.gui.window.draw(indicator, 381, 199);
-                // ClientMain.gui.window.draw(indicator, 241, 342);
-                // ClientMain.gui.window.draw(indicator, 354, 401);
-                // ClientMain.gui.window.draw(indicator, 368, 462);
-                // ClientMain.gui.window.draw(indicator, 451, 467);
-                // ClientMain.gui.window.draw(indicator, 563, 431);
-                // ClientMain.gui.window.draw(indicator, 577, 483);
-                // ClientMain.gui.window.draw(indicator, 584, 557);
-                // ClientMain.gui.window.draw(indicator, 728, 489);
-                // ClientMain.gui.window.draw(indicator, 620, 171);
-                // ClientMain.gui.window.draw(indicator, 726, 373);
-                // ClientMain.gui.window.draw(indicator, 635, 252);
-                // ClientMain.gui.window.draw(indicator, 49, 450);
-                // ClientMain.gui.window.draw(indicator, 244, 551);
-                // ClientMain.gui.window.draw(indicator, 621, 423);
-                // ClientMain.gui.window.draw(indicator, 443, 219);
-                // ClientMain.gui.window.draw(indicator, 376, 255);
-                // ClientMain.gui.window.draw(indicator, 302, 311);
-                // ClientMain.gui.window.draw(indicator, 699, 395);
-                // ClientMain.gui.window.draw(indicator, 488, 80);
-                // ClientMain.gui.window.draw(indicator, 383, 131);
-                // ClientMain.gui.window.draw(indicator, 302, 313);
-                // ClientMain.gui.window.draw(indicator, 555, 141);
-                // ClientMain.gui.window.draw(indicator, 717, 291);
-                // ClientMain.gui.window.draw(indicator, 450, 339);
-                // ClientMain.gui.window.draw(indicator, 489, 254);
-                // ClientMain.gui.window.draw(indicator, 526, 390);
-                // ClientMain.gui.window.draw(indicator, 364, 315);
-                // ClientMain.gui.window.draw(indicator, 687, 174);
-                // ClientMain.gui.window.draw(indicator, 510, 310);
-                // ClientMain.gui.window.draw(indicator, 149, 102);
-                // ClientMain.gui.window.draw(indicator, 533, 185);
-                // ClientMain.gui.window.draw(indicator, 438, 549);
-                // ClientMain.gui.window.draw(indicator, 536, 185);
-                // ClientMain.gui.window.draw(indicator, 88, 439);
-
                 MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(passTurnText, 42, 650);
 
@@ -1987,8 +1936,6 @@ public class ClientMain {
             WINDOW.render();
             Thread.yield();
         }
-
-        // swing gui
     }
 
     /**
