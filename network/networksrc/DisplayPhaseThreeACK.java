@@ -23,7 +23,6 @@ import clientsrc.PhaseThreeMouseListener;
 public class DisplayPhaseThreeACK implements Action {
 
     private List<String> faceUpCopy;
-    private boolean displayWindow = true;
 
     public DisplayPhaseThreeACK(List<String> faceUpCopy) {
         this.faceUpCopy = faceUpCopy;
@@ -95,9 +94,6 @@ public class DisplayPhaseThreeACK implements Action {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-        }
-        synchronized(selectedSprite)
-        {
             tokenFrame.setVisible(false);
             tokenFrame.dispose();
             if (selectedSprite.size() > 0) {
