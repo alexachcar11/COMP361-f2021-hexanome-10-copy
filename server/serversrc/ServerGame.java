@@ -620,7 +620,9 @@ public class ServerGame {
     }
 
     public void phaseThree() {
-        for (int i = 0; i < 5; i++)
+        int numFaceUpTokens = faceUpTokenPile.size();
+        // add missing tokens
+        for (int i = 0; i < 5 - numFaceUpTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
@@ -628,6 +630,7 @@ public class ServerGame {
         // displays tokens to client
         ACK_MANAGER.sendToSender(new DisplayPhaseThreeACK(faceUpCopy), currentPlayerName);
         // transition to nextphase handled elsewhere
+
     }
 
     // for planning travel routes phase (4)

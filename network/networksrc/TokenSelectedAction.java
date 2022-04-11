@@ -46,14 +46,7 @@ public class TokenSelectedAction implements Action {
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
         ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
         game.nextPlayer();
-        List<String> tokenStrings = game.faceUpTokenPile.stream().map((token) -> token.toString())
-                .collect(Collectors.toList());
-        if (game.getCurrentPlayer().getTokensInHand().size() < 5) {
-            ActionManager.getInstance().sendToSender(new DisplayPhaseThreeACK(tokenStrings),
-                    game.getCurrentPlayer().getName());
-        } else {
-            game.nextPhase();
-        }
+        game.phaseThree();
     }
 
 }
