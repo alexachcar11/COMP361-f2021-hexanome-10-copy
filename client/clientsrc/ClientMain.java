@@ -1822,15 +1822,12 @@ public class ClientMain {
                     elfenlandLobbyQueue.handle();
                 }
 
-            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+            } else if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
                 }
-
-            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
-                gui.window.draw(elfengoldImage, 0, 0);
             }
-
+            
             // Add a button in the bottom right to pause the music
             if (soundOn) {
                 gui.window.draw(soundOffButton, 1000, 745);
