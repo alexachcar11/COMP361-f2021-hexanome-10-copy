@@ -844,7 +844,7 @@ public class ClientMain {
                 // iterate over all towns
                 for (ClientTown t : Game.getTowns()) {
                     // we are clicking on a town
-                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY()) {
+                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && y > t.getMinY()) {
                         // temporary print statement to make sure we're clicking on a specific town
                         System.out.println("Clicking on " + t.getTownName());
 
