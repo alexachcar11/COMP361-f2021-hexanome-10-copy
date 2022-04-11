@@ -288,7 +288,10 @@ public class Registrator {
         String gameID = null;
 
         // verify response
-        if (jsonResponse.getStatus() == 400) {
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            this.refreshUserToken(creator);
+            gameID = this.createGameSession(name, creator, "");
+        } else  if (jsonResponse.getStatus() == 400) {
             System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
         } else if (jsonResponse.getStatus() != 200) {
             System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
@@ -306,8 +309,9 @@ public class Registrator {
      * @param creator    creator's username
      * @param saveGameID save game ID or "" if there is none
      * @return gameID
+     * @throws ParseException
      */
-    public String createGameSession(String name, ServerUser creator, String saveGameID) {
+    public String createGameSession(String name, ServerUser creator, String saveGameID) throws ParseException {
         // API request
         Map<String, Object> fields = new HashMap<>();
         fields.put("creator", creator.getName());
@@ -328,7 +332,10 @@ public class Registrator {
         String id = null;
 
         // verify response
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            this.refreshUserToken(creator);
+            id = jsonResponse.getBody();
+        } else  if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
         } else {
             // success !
@@ -371,7 +378,7 @@ public class Registrator {
         }
     }
 
-    public void refreshUserToken(ServerUser user) {
+    public void refreshUserToken(ServerUser user) throws ParseException {
         JSONObject token = user.getTokenObject();
         String refreshToken = ((String) token.get("refresh_token")).replace("+", "%2B");
         HttpResponse<String> jsonResponse = Unirest
@@ -381,11 +388,15 @@ public class Registrator {
                 .asString();
         if (jsonResponse.getStatus() != 200) {
             throw new IllegalArgumentException("Error" + jsonResponse.getStatus() + ": could not refresh user token.");
+        } else {
+            // success
+            JSONObject newToken = (JSONObject) parser.parse(jsonResponse.getBody());
+            user.setToken(newToken);
         }
     }
 
     // TODO
-    public void leaveGame(String sessionID, ServerUser userLeaving) {
+    public void leaveGame(String sessionID, ServerUser userLeaving) throws ParseException {
         // user token
         String token = userLeaving.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -400,7 +411,11 @@ public class Registrator {
         System.out.println(jsonResponse.getBody());
 
         // verify response
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            this.refreshUserToken(userLeaving);
+            // sessionToLeave.removeUser(userLeaving);
+            // TODO: notify all users that a player has left
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not leave game");
         } else {
             // sessionToLeave.removeUser(userLeaving);
@@ -409,7 +424,7 @@ public class Registrator {
     }
 
     // TODO
-    public void deleteSession(String sessionID, ServerUser userAskingToDelete) {
+    public void deleteSession(String sessionID, ServerUser userAskingToDelete) throws ParseException {
         // user token
         String token = userAskingToDelete.getToken().replace("+", "%2B");
         System.out.println(token);
@@ -424,7 +439,9 @@ public class Registrator {
         System.out.println(jsonResponse.getBody());
 
         // verify response
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            this.refreshUserToken(userAskingToDelete);
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": could not delete game session");
         } else {
             System.out.println("deleted successfully");
@@ -455,7 +472,9 @@ public class Registrator {
          * System.out.println(jsonResponse.getBody());
          * 
          * // verify response
-         * if (jsonResponse.getStatus() != 200) {
+         * if (jsonResponse.getBody().contains("Access token expired")) {
+            this.refreshUserToken(userAskingToLaunch);
+        } else if (jsonResponse.getStatus() != 200) {
          * throw new Exception("Error" + jsonResponse.getStatus() +
          * jsonResponse.getBody());
          * }
