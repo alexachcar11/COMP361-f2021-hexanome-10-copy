@@ -681,7 +681,7 @@ public class ClientMain {
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
                 if (currentGame.getCurrentPhase() == 5) {
-                    for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
+                    for (ClientRoute r : Game.getAllRoutes()) {
                         if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
                                     + r.getSourceTownString());
@@ -707,7 +707,7 @@ public class ClientMain {
                     // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
                     System.out.println("Clicked on coordinates: \nx: " + x + "\ny: " + y);
 
-                    for (Route r : Route.getAllRoutes()) {
+                    for (ClientRoute r : Game.getAllRoutes()) {
                         // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
                         System.out.println("Looking at route: " + r.getDestTownString() + " to "
                         + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
@@ -1433,7 +1433,7 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
+    private static ClientRoute pickedRoute = null;
     private static TokenSprite pickedTok = null;
 
     // not using this anymore
