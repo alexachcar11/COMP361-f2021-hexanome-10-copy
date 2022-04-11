@@ -81,7 +81,7 @@ public class ClientMain {
     public static MinuetoImage elfengoldImage;
 
     // create a list of the players
-    static List<ClientPlayer> players;
+    public static List<ClientPlayer> players;
 
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
@@ -470,10 +470,10 @@ public class ClientMain {
         opponentFrame.setSize(new Dimension(700, 300));
 
         opponentFrame.setVisible(true);
-        
+
     }
 
-    static void openRouteInformation(Route r) { 
+    static void openRouteInformation(Route r) {
 
         JFrame routeOverview = new JFrame("Route");
 
@@ -490,7 +490,7 @@ public class ClientMain {
         JLabel connectsText = new JLabel(connectsString);
         connectsText.setText(connectsString);
 
-        String requirementsString = r.formatRequirements(); 
+        String requirementsString = r.formatRequirements();
         JLabel requirementsText = new JLabel(requirementsString);
         requirementsText.setText(requirementsString);
 
@@ -535,7 +535,7 @@ public class ClientMain {
 
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
         String text = "The following players have passed:";
-        for(ClientPlayer p: playersThatPassed) { 
+        for (ClientPlayer p : playersThatPassed) {
             text += " and ";
             text += p.getName();
         }
@@ -596,8 +596,8 @@ public class ClientMain {
             if (button == 1) {
                 // CLICKING ON THE OPPONENTS PROFILE
 
-                for(ClientTown t: Game.getTowns()) { 
-                    if(x > t.minX && x < t.maxX && y > t.minY && y < t.minX){
+                for (ClientTown t : Game.getTowns()) {
+                    if (x > t.minX && x < t.maxX && y > t.minY && y < t.minX) {
                         System.out.println("You just clicked on " + t.getTownName());
                     }
                 }
@@ -665,39 +665,45 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if (currentPlayer.isTurn() == true && currentGame.getCurrentPhase()==5) {
+                if (currentPlayer.isTurn() == true && currentGame.getCurrentPhase() == 5) {
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
                                     + r.getSourceTownString());
                             pickedRoute = r;
                             // send message to server on pickedRoute
-                            if (pickedRoute != null){
-                                ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(), pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                            if (pickedRoute != null) {
+                                ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
+                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
                             }
                             break;
                         }
                     }
                 }
                 // place counter on routes phase
-                if ( currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()){
+                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
-                    if (pickedRoute != null){
-                        System.out.println("TESTING LINE 616, ROUTE NOT NULL: " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                    if (pickedRoute != null) {
+                        System.out.println("TESTING LINE 616, ROUTE NOT NULL: " + pickedRoute.getDestTownString()
+                                + " to " + pickedRoute.getSourceTownString());
                     }
 
-                    for (Route r: Route.getAllRoutes()){
-                        if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()){
+                    for (Route r : Route.getAllRoutes()) {
+                        if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
-                            System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to "
+                                    + r.getSourceTownString());
                             pickedRoute = r;
                             if (pickedRoute != null && pickedTok != null) {
                                 System.out.println("You have selected the token: " + pickedTok.getTokenName());
-                                System.out.println("Sending placeCounterAction to server with counter: " + pickedTok.getTokenName() + "\nSelected the route from " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                                System.out.println("Sending placeCounterAction to server with counter: "
+                                        + pickedTok.getTokenName() + "\nSelected the route from "
+                                        + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
                                 ActionManager.getInstance()
                                         .sendAction(new PlaceCounterAction(currentPlayer.getName(),
-                                                pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                                pickedRoute.getSource().getTownName(),
+                                                pickedRoute.getDest().getTownName(),
                                                 pickedTok.getTokenName()));
                             }
                             break;
@@ -705,136 +711,128 @@ public class ClientMain {
                     }
 
                     // testingggg
-                    if (pickedTok != null){
+                    if (pickedTok != null) {
                         System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
                     }
-                    if (listOfTokens.size() == 0){
+                    if (listOfTokens.size() == 0) {
                         // do nothin :)
-                    }
-                    else if(listOfTokens.size() == 1){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 1) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                    }
-                    else if(listOfTokens.size() == 2){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 2) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                    }
-                    else if(listOfTokens.size() == 3){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 3) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                    }
-                    else if(listOfTokens.size() == 4){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 4) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(3);
                         }
-                    }
-                    else if(listOfTokens.size() == 5){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 5) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if(x>=709 && x<=754 && y>=636 && y<=706 ){
+                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(4);
                         }
                     }
                 }
-                if ( currentGame.getCurrentPhase() == 6 && currentPlayer.isTurn()){
+                if (currentGame.getCurrentPhase() == 6 && currentPlayer.isTurn()) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
-                    if (pickedTok != null){
+                    if (pickedTok != null) {
                         System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
                     }
-                    if (listOfTokens.size() == 0){
+                    if (listOfTokens.size() == 0) {
                         // do nothin :)
-                    }
-                    else if(listOfTokens.size() == 1){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 1) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                    }
-                    else if(listOfTokens.size() == 2){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 2) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                    }
-                    else if(listOfTokens.size() == 3){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 3) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                    }
-                    else if(listOfTokens.size() == 4){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 4) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(3);
                         }
-                    }
-                    else if(listOfTokens.size() == 5){
-                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                    } else if (listOfTokens.size() == 5) {
+                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if(x>=709 && x<=754 && y>=636 && y<=706 ){
+                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
                             pickedTok = listOfTokens.get(4);
                         }
-                        
+
                     }
                     if (pickedTok != null) {
-                        System.out.println("Sending TokenToKeepAction to server with counter: " + pickedTok.getTokenName());
-                        ActionManager.getInstance().sendAction(new ChooseTokenToKeepAction(currentPlayer.getName(),pickedTok.getTokenName()));
+                        System.out.println(
+                                "Sending TokenToKeepAction to server with counter: " + pickedTok.getTokenName());
+                        ActionManager.getInstance().sendAction(
+                                new ChooseTokenToKeepAction(currentPlayer.getName(), pickedTok.getTokenName()));
                     }
                 }
 
@@ -854,8 +852,8 @@ public class ClientMain {
                         openTownInformation(t);
                     }
                 }
-                for (Route r: Route.getAllRoutes()) { 
-                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) { 
+                for (Route r : Route.getAllRoutes()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
                     }
@@ -888,10 +886,11 @@ public class ClientMain {
 
     };
 
-    public static void clearPickedTok(){
+    public static void clearPickedTok() {
         pickedTok = null;
     }
-    public static void clearPickedRoute(){
+
+    public static void clearPickedRoute() {
         pickedRoute = null;
     }
 
@@ -2483,17 +2482,17 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        while (players == null)
-            ;
-        players.forEach((p) -> {
-            try {
-                p.addCardStringArray(cardsHashMap.get(p.getName()));
-            } catch (MinuetoFileException e) {
-                e.printStackTrace();
-            }
-        });
-        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-        displayInventories();
+        /*
+         * players.forEach((p) -> {
+         * try {
+         * p.addCardStringArray(cardsHashMap.get(p.getName()));
+         * } catch (MinuetoFileException e) {
+         * e.printStackTrace();
+         * }
+         * });
+         * currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
+         * displayInventories();
+         */
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {

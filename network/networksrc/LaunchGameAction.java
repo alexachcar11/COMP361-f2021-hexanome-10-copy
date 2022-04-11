@@ -75,7 +75,7 @@ public class LaunchGameAction implements Action {
             }
 
             // notify all users in the lobby
-            LaunchGameACK actionToSend = new LaunchGameACK(); 
+            LaunchGameACK actionToSend = new LaunchGameACK();
             ActionManager.getInstance().sentToAllPlayersInGame(actionToSend, serverGame);
             serverGame.nextPhase();
         } catch (NullPointerException e) {
