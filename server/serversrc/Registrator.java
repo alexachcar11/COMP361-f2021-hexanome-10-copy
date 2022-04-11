@@ -149,7 +149,10 @@ public class Registrator {
                         + this.getToken().replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
-        if (jsonResponse.getStatus() != 200) {
+        
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            currentToken = this.refreshToken();
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println(jsonResponse.getBody());
             throw new IllegalArgumentException("Unable to retrieve user: " + userName);
         }
@@ -169,7 +172,9 @@ public class Registrator {
                 .get("http://127.0.0.1:4242/api/users?access_token=" + this.getToken().replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded).asString();
 
-        if (jsonResponse.getStatus() != 200) {
+        if (jsonResponse.getBody().contains("Access token expired")) {
+            currentToken = this.refreshToken();
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println(jsonResponse.getBody());
             throw new RuntimeException("Error" + jsonResponse.getStatus() + ": unable to retrieve users.");
         }
@@ -206,8 +211,9 @@ public class Registrator {
      * @param userName username of the user
      * @param passWord password of the user
      * @return User instance that is created upon API request success
+     * @throws ParseException
      */
-    public void createNewUser(String userName, String passWord) {
+    public void createNewUser(String userName, String passWord) throws ParseException {
         Map<String, Object> fields = new HashMap<>();
         fields.put("name", userName);
         fields.put("password", passWord);
@@ -226,7 +232,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .body(GSON.toJson(fields)).asString();
-
+        
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus() + jsonResponse.getBody());
             throw new IllegalArgumentException("Cannot create user: " + userName);
