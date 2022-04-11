@@ -511,8 +511,7 @@ public class ServerGame {
             this.auction.getLastPassedPlayer()
                     .passTurn(this.auction.getBiddersList().get(auction.getIndLastPassedPlayer()));
 
-        }
-        else if (currentPhase == 3){
+        } else if (currentPhase == 3) {
             // go to next player
             for (int i = 0; i < players.size(); i++) {
                 if (players.get(i).getIsTurn()) {
@@ -525,13 +524,12 @@ public class ServerGame {
                     break;
                 }
             }
-            if(doingPhase3 == 3){
+            if (doingPhase3 == 3) {
                 if (didAllPlayersPassTurn() && currentPhase != 10) {
                     nextPhase();
                     return;
                 }
-            }
-            else {
+            } else {
                 if (didAllPlayersPassTurn() && currentPhase != 10) {
                     // reset turn passed for all players
                     for (Player p : players) {
@@ -650,15 +648,15 @@ public class ServerGame {
     }
 
     public void phaseThree() {
+        int numOfTokens = faceUpTokenPile.size();
         doingPhase3 = 1;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5 - numOfTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
         final String currentPlayerName = this.getCurrentPlayer().getName();
         // displays tokens to client
         ACK_MANAGER.sendToSender(new DisplayPhaseThreeACK(faceUpCopy), currentPlayerName);
-        // transition to nextphase handled elsewhere
     }
 
     // for planning travel routes phase (4)
