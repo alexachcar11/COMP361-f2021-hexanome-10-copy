@@ -71,6 +71,7 @@ public class DisplayPhaseThreeACK implements Action {
             public void mousePressed(MouseEvent e) {
                 displayWindow = false;
                 ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
+                System.out.println("Picked random token.");
             }
         };
 

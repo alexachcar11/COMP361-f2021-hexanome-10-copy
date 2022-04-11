@@ -45,7 +45,10 @@ public class TokenSelectedAction implements Action {
         player.addToken(tokenToAdd);
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
         ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
+        String playerName = game.getCurrentPlayer().getName();
+        System.out.println(playerName + " just picked a token.");
         game.nextPlayer();
+        System.out.println("Now it's " + game.getCurrentPlayer().getName() + "'s turn.");
         game.phaseThree();
     }
 
