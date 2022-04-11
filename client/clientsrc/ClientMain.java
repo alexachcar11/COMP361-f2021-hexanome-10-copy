@@ -696,7 +696,7 @@ public class ClientMain {
                     }
                 }
                 // place counter on routes phase
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
+                if (currentGame.getCurrentPhase() == 4) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
                     if (pickedRoute != null) {
