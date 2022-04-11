@@ -57,7 +57,7 @@ public class DisplayPhaseThreeACK implements Action {
                     try {
                         JLabel origin = (JLabel) e.getComponent();
                         selectedSprite.add((SwingTokenSprite) origin.getIcon());
-                        Thread.currentThread().notify();
+                        selectedSprite.notify();
                     } catch (ClassCastException exception) {
                         // do nothing if not a JLabel
                         exception.printStackTrace();
@@ -70,7 +70,7 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                Thread.currentThread().notify();
+                selectedSprite.notify();
             }
         };
 
@@ -91,6 +91,11 @@ public class DisplayPhaseThreeACK implements Action {
         tokenFrame.setSize(600, 200);
         tokenFrame.setVisible(true);
         window.render();
+        try {
+            selectedSprite.wait();
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
         synchronized(selectedSprite)
         {
             tokenFrame.setVisible(false);
