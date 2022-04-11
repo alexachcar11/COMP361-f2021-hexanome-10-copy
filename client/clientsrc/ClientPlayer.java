@@ -40,8 +40,11 @@ public class ClientPlayer {
         this.color = pColor;
         this.aName = pUser.getName();
         try {
+            String lower = pColor.toString().toLowerCase().substring(1);
+            String upper = pColor.toString().toLowerCase().substring(0,1);
+            String bootFileName = upper.toUpperCase() + lower;
             this.bootImage = new MinuetoImageFile(
-                    "images/boot-" + pColor.toString().toLowerCase() + ".png");
+                    "images/boot" + bootFileName + ".png");
             this.boppel = new MinuetoImageFile(
                     "images/böppels-and-boots/böppel-" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
