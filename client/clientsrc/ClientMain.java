@@ -1524,7 +1524,6 @@ public class ClientMain {
     private static boolean soundOn = true;
     private static Clip loadedClip;
     private static long clipPos;
-    private static boolean soundStarted = false;
 
     private static boolean nameSel = false;
     private static String nameString = "";
@@ -1833,14 +1832,14 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        if (played == false) {
+        if (soundOn == false) {
             File f = new File("./" + soundFile);
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
                 loadedClip = AudioSystem.getClip();
                 loadedClip.open(audioIn);
                 loadedClip.start();
-                played = true;
+                soundOn = true;
             } catch (Exception e) {
                 throw new Error("Unable to play sound file");
             }
@@ -1853,6 +1852,7 @@ public class ClientMain {
     static void pauseSound() {
         clipPos = loadedClip.getMicrosecondPosition();
         loadedClip.stop();
+        soundOn = false;
     }
 
     /*
