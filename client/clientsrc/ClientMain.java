@@ -1802,7 +1802,6 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
-                gui.window.draw(elfenlandImage, 0, 0);
                 if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
                     // mouseHandler to click on route
                     while (placeCounterQueue.hasNext()) {
@@ -1813,9 +1812,6 @@ public class ClientMain {
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
                 }
-                // List<Player> listOfPlayers = players;
-
-                ClientMain.gui.window.draw(ClientMain.elfenlandImage, 0, 0);
 
                 // draw Cards text
                 MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
@@ -2010,6 +2006,10 @@ public class ClientMain {
      * Displays inventories
      */
     public static void displayInventories() {
+
+        // display
+        gui.window.draw(elfenlandImage, 0, 0);
+
         List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
         List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
 
@@ -2479,21 +2479,21 @@ public class ClientMain {
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
-        /*
-         * players.forEach((p) -> {
-         * try {
-         * p.addCardStringArray(cardsHashMap.get(p.getName()));
-         * } catch (MinuetoFileException e) {
-         * e.printStackTrace();
-         * }
-         * });
-         * currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-         * displayInventories();
-         */
+        players.forEach((p) -> {
+            try {
+                p.addCardStringArray(cardsHashMap.get(p.getName()));
+            } catch (MinuetoFileException e) {
+                e.printStackTrace();
+            }
+        });
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
+        displayInventories();
+        
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
         ClientPlayer.getPlayerByName(playerString).addTokenStringList(tokenStrings);
+        displayInventories();
     }
 
     public static void diaplayWinnerByString(String winner) {

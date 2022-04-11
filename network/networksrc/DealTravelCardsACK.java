@@ -24,16 +24,7 @@ public class DealTravelCardsACK implements Action {
     public void execute() {
         System.out.println("BEFORE RECIEVE PHASEONE");
         try {
-            //ClientMain.recievePhaseOne(playerCards);
-            ClientMain.players.forEach((p) -> {
-                try {
-                    p.addCardStringArray(playerCards.get(p.getName()));
-                } catch (MinuetoFileException e) {
-                    e.printStackTrace();
-                }
-            });
-            ClientMain.currentPlayer.addCardStringArray(playerCards.get(ClientMain.currentPlayer.getName()));
-            ClientMain.displayInventories();
+            ClientMain.recievePhaseOne(playerCards);
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
