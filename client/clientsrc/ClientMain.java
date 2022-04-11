@@ -1932,8 +1932,7 @@ public class ClientMain {
 
                 if (currentPlayer.isTurn == false) { 
                     System.out.println("ADDING INDICATORS FOR IF ITS NOT YOUR TURN");
-                    System.out.println("This is the size of getAllRoutes: " + Route.getAllRoutes().size());
-                    for(Route r: Route.getAllRoutes()) { 
+                    for(Route r: ServerGame.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
                     }
                 }
@@ -1945,7 +1944,7 @@ public class ClientMain {
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
                     }
                     // draw indicators (cant travel here)
-                    for (Route r : Route.getAllRoutes()) { 
+                    for (Route r : ServerGame.getAllRoutes()) { 
                         if( currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r) == false) { 
                             gui.window.draw(indicator, r.getMinX(), r.getMinY());
                         }
