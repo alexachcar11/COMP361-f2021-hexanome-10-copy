@@ -2049,12 +2049,12 @@ public class ClientMain {
             }
         } else {
             // turn indicators  (can travel here)
-            for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
+            for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
                 gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
             }
             // indicators (cant travel here)
             for (ClientRoute r : Game.getAllRoutes()) { 
-                if(!currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r)) { 
+                if(!currentPlayer.getCurrentLocation().getRoutes().contains(r)) { 
                     gui.window.draw(indicator, r.getMinX(), r.getMinY());
                 }
             }
