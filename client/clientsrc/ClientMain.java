@@ -708,10 +708,10 @@ public class ClientMain {
                     System.out.println("Clicked on coordinates: \nx: " + x + "\ny: " + y);
 
                     for (ClientRoute r : Game.getAllRoutes()) {
-                        // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-                        System.out.println("Looking at route: " + r.getDestTownString() + " to "
-                        + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
-                        + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
+                        // // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+                        // System.out.println("Looking at route: " + r.getDestTownString() + " to "
+                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
+                        // + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
                         if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
