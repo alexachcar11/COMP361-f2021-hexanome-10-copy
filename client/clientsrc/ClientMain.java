@@ -1917,8 +1917,10 @@ public class ClientMain {
                     ClientMain.gui.window.draw(pName, xName, yName);
                     MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                     ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
+
+                    MinuetoImage bopp = opponent.getBoppel();
                     
-                    ClientMain.gui.window.draw(opponent.getBoppel(),xName, yName);
+                    ClientMain.gui.window.draw(bopp,xName, yName);
                 }
 
                 if (currentPlayer.isTurn == false) { 
