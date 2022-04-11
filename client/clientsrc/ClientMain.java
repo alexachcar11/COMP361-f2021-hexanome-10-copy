@@ -136,6 +136,7 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
+    static boolean played;
     // currentGame.getNumberOfPlayers()
     static int numberPlayers = 2;
 
@@ -1641,6 +1642,7 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+            played = false;
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1975,14 +1977,17 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            loadedClip = AudioSystem.getClip();
-            loadedClip.open(audioIn);
-            loadedClip.start();
-        } catch (Exception e) {
-            throw new Error("Unable to play sound file");
+        if (played = false) {
+            File f = new File("./" + soundFile);
+            try {
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+                loadedClip = AudioSystem.getClip();
+                loadedClip.open(audioIn);
+                loadedClip.start();
+                played = true;
+            } catch (Exception e) {
+                throw new Error("Unable to play sound file");
+            }
         }
     }
 
