@@ -1,21 +1,15 @@
 package serversrc;
 
-import unirest.shaded.com.google.gson.Gson;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 
 public class SaveGameManager {
 
     private static final SaveGameManager INSTANCE = new SaveGameManager();
-    private static final Gson GSON = new Gson();
 
     private SaveGameManager() {
 
@@ -33,34 +27,34 @@ public class SaveGameManager {
             ObjectOutputStream output = new ObjectOutputStream(fileStream);
             output.writeObject(game);
             output.close();
+            fileStream.close();
             return true;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
     }
-    public ServerGame loadGame(String filename){
+
+    public ServerGame loadGame(String gameID) {
         ServerGame loadedGame = null;
         try {
-            FileInputStream file = new FileInputStream(filename);
+            String fileName = "saved-games/" + gameID;
+            File saveFile = new File(fileName);
+            FileInputStream file = new FileInputStream(saveFile);
             ObjectInputStream in = new ObjectInputStream(file);
 
             // deserialize object
-            loadedGame = (ServerGame)in.readObject();
+            loadedGame = (ServerGame) in.readObject();
 
             in.close();
             file.close();
+            saveFile.delete();
 
             return loadedGame;
 
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        catch (ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         // returns null if something goes wrong

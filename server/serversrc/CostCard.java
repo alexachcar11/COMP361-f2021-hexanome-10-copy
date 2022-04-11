@@ -22,7 +22,7 @@ public class CostCard extends AbstractCard {
     private static final CostCard INSTANCE = new CostCard();
 
     private CostCard() {
-        super(CardType.COST_CARD, "images/elfenroads-sprites/grid.png");
+        super(CardType.COST_CARD);
     }
 
     public static CostCard getInstance() {

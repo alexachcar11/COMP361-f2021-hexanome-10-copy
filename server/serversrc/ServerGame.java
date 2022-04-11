@@ -7,10 +7,7 @@ max 6 players
  */
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
@@ -29,7 +26,6 @@ import clientsrc.TokenSprite;
 public class ServerGame implements Serializable {
 
     private static final ActionManager ACK_MANAGER = ActionManager.getInstance();
-    private static final Gson GSON = new Gson();
 
     private ArrayList<Player> players;
     private int numberOfPlayers;
@@ -746,27 +742,6 @@ public class ServerGame implements Serializable {
             }
         }
         return null;
-    }
-
-    public String getJSON() {
-        Field[] fields = ServerGame.class.getDeclaredFields();
-        List<Field> fieldsList = Arrays.asList(fields);
-        HashMap<String, Object> fieldData = new HashMap<>();
-        // fields must be accessible for Gson to work
-        fieldsList.forEach((field) -> {
-            if (Modifier.isStatic(field.getModifiers()))
-                return;
-            field.setAccessible(true);
-            try {
-                fieldData.put(field.getName(), field.get(this));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
-        String jsonGame = GSON.toJson(fieldData);
-        return jsonGame;
     }
 
     /*

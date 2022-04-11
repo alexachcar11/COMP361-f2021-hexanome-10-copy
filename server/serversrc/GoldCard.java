@@ -1,9 +1,9 @@
 package serversrc;
 
-public class GoldCard extends AbstractCard{
+public class GoldCard extends AbstractCard {
 
     public GoldCard() {
-        super(CardType.GOLD, "images/elfenroads-sprites/Gold.png");
+        super(CardType.GOLD);
     }
 
     // for each Gold Card, they give player 3 gold if they choose the gold card
