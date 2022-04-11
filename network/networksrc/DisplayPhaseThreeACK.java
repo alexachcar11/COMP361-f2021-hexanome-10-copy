@@ -22,6 +22,7 @@ import clientsrc.PhaseThreeMouseListener;
 public class DisplayPhaseThreeACK implements Action {
 
     private List<String> faceUpCopy;
+    private boolean displayWindow = true;
 
     public DisplayPhaseThreeACK(List<String> faceUpCopy) {
         this.faceUpCopy = faceUpCopy;
@@ -53,14 +54,10 @@ public class DisplayPhaseThreeACK implements Action {
                 try {
                     JLabel origin = (JLabel) e.getComponent();
                     SwingTokenSprite sprite = (SwingTokenSprite) origin.getIcon();
+                    displayWindow = false;
                     ActionManager.getInstance()
                             .sendAction(new TokenSelectedAction(sprite.getTypeString()));
                     System.out.println("Selected token: " + sprite.getTypeString());
-                    // close pop up
-                    // origin.getParent().getParent().getParent().setVisible(false);
-                    JFrame frame = (JFrame) origin.getParent().getParent();
-                    frame.setVisible(false);
-                    frame.dispose();
                 } catch (ClassCastException exception) {
                     // do nothing if not a JLabel
                     exception.printStackTrace();
@@ -72,11 +69,8 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                displayWindow = false;
                 ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
-                // e.getComponent().getParent().getParent().getParent().setVisible(false);
-                JFrame origin = (JFrame) e.getComponent().getParent().getParent();
-                origin.setVisible(false);
-                origin.dispose();
             }
         };
 
@@ -95,6 +89,10 @@ public class DisplayPhaseThreeACK implements Action {
         tokenFrame.setSize(600, 200);
         tokenFrame.setVisible(true);
         window.render();
-        Thread.yield();
+        while (displayWindow) {
+            Thread.onSpinWait();
+        }
+        tokenFrame.setVisible(false);
+        tokenFrame.dispose();
     }
 }
