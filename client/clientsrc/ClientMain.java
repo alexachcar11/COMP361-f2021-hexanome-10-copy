@@ -1939,12 +1939,18 @@ public class ClientMain {
                 if (currentPlayer.isTurn == true) {
                     System.out.println("ADDING INDICATORS IF IT IS YOUR TURN");
                     // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) {
+                    // draw turn indicators  (can travel here)
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
-                        if(Route.getAllRoutes().contains(r) == false) { 
+                    }
+                    // draw indicators (cant travel here)
+                    for (Route r : Route.getAllRoutes()) { 
+                        if( currentPlayer.getCurrentLocation().getServerTown().getRoutes().contains(r) == false) { 
                             gui.window.draw(indicator, r.getMinX(), r.getMinY());
                         }
                     }
+
+
                 }
 
                 // display boots
