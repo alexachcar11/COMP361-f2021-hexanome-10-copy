@@ -1925,11 +1925,6 @@ public class ClientMain {
                     ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
                 }
 
-                // HARDCODED TOKEN ON THE MAP
-                // Token testToken = new Token(CardType.DRAGON);
-                // MinuetoImage testTokImage = testToken.getSmallImage();
-                // ClientMain.gui.window.draw(testTokImage, 368, 462);
-
                 if (currentPlayer.isTurn == false) { 
                     for(ClientRoute r: Game.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
