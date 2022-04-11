@@ -1,12 +1,17 @@
 package clientsrc;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
+import org.minueto.image.MinuetoImageFile;
+
 import serversrc.CardType;
 
 // make this implement serializable at some point
 public class TokenSprite extends AbstractSprite {
 
     private CardType tokenType;
+    private MinuetoImage mediumImage;
+    private MinuetoImage smallImage;
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.
@@ -22,6 +27,9 @@ public class TokenSprite extends AbstractSprite {
         this.tokenType = tokenType;
         this.x = 0;
         this.y = 0;
+        mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "medium.png");
+        smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
+        
     }
 
     /**
@@ -67,5 +75,13 @@ public class TokenSprite extends AbstractSprite {
      */
     public CardType getTokenType() {
         return this.tokenType;
+    }
+
+    public MinuetoImage getMediumImage() { 
+        return mediumImage;
+    }
+
+    public MinuetoImage getSmallImage() { 
+        return smallImage;
     }
 }

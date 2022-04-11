@@ -1,11 +1,16 @@
 package clientsrc;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
+import org.minueto.image.MinuetoImageFile;
+
 import serversrc.CardType;
 
 public class CardSprite extends AbstractSprite {
 
     private CardType aType;
+    private MinuetoImage mediumImage;
+    private MinuetoImage smallImage;
 
     /**
      * @throws MinuetoFileException
@@ -13,6 +18,9 @@ public class CardSprite extends AbstractSprite {
     public CardSprite(CardType pType) throws MinuetoFileException {
         super("images/elfenroads-sprites/T0" + (pType.ordinal() + 1) + ".png");
         aType = pType;
+        mediumImage = new MinuetoImageFile("images/elfenroads-sprites/T0" + (pType.ordinal() + 1) + "medium.png");
+        smallImage = new MinuetoImageFile("images/elfenroads-sprites/T0" + (pType.ordinal() + 1) + "small.png");
+        
     }
 
     @Override
@@ -34,4 +42,13 @@ public class CardSprite extends AbstractSprite {
         }
         throw new IllegalArgumentException(cardString + " is not a valid type for a card.");
     }
+
+    public MinuetoImage getMediumImage() { 
+        return mediumImage;
+    }
+
+    public MinuetoImage getSmallImage() { 
+        return smallImage;
+    }
+    
 }

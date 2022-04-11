@@ -16,6 +16,7 @@ public class Town implements Serializable{
     int maxY;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
     private static ArrayList<Town> allTowns = new ArrayList<>();
+    private int goldValue = 0; 
 
     // keeps track of the player boots that are on the town
     ArrayList<Player> playersHere = new ArrayList<>();
@@ -28,12 +29,13 @@ public class Town implements Serializable{
      * @param minY bottom-most border of the town
      * @param maxY top-most border of the town
      */
-    public Town(String townName, int minX, int maxX, int minY, int maxY) {
+    public Town(String townName, int minX, int maxX, int minY, int maxY, int goldValue) {
         this.townName = townName;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
+        this.goldValue = goldValue;
         // if(Game.getNumberOfPlayers()) { 
 
         // }
@@ -135,4 +137,29 @@ public class Town implements Serializable{
 
     //     }
     // }
+
+    public int getGoldValue(){ 
+        return this.goldValue;
+    }
+
+    public void setGoldValue(int value) { 
+        this.goldValue = value;
+    }
+
+    public ArrayList<Route> getRoutes() { 
+
+        // initialize list of routes for return 
+        ArrayList<Route> listOfRoutes = new ArrayList<>(); 
+
+        // get all routes that are going out of the current town 
+        // look over all routes 
+        for(Route r : ServerGame.routes) { 
+            if(r.getDestTown().equals(this) || r.getSourceTown().equals(this)) { 
+                listOfRoutes.add(r);
+            }
+        }
+
+        return listOfRoutes;
+    }
+
 }

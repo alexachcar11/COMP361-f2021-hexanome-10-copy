@@ -3,9 +3,11 @@
 package clientsrc;
 
 import java.util.*;
+import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
 public class ClientPlayer {
@@ -15,7 +17,8 @@ public class ClientPlayer {
     private GUI guiDisplayed; // TODO: initialize this
     private List<CardSprite> cardsInHand;
     private List<TokenSprite> tokensInHand;
-    private Town inTown;
+    private ClientTown inTown;
+    private ClientTown targetDestinationTown;
 
     private MinuetoImageFile bootImage;
     private Color color;
@@ -30,7 +33,7 @@ public class ClientPlayer {
     public ClientPlayer(Color pColor, User pUser, Game currentGame) {
 
         // inTown = elvenhold; // fix this
-        this.gold = 0;
+        this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aUser = pUser;
@@ -61,6 +64,27 @@ public class ClientPlayer {
         return aUser.getName();
     }
 
+    public ClientTown getCurrentLocation() {
+        return inTown;
+    }
+
+    public void setTargetDestinationTown(ClientTown pTown) {
+        this.targetDestinationTown = pTown;
+    }
+
+    // get TargetTown
+    public ClientTown getTargetDestinationTown() {
+        return this.targetDestinationTown;
+    }
+
+    public void drawTargetDestination() throws MinuetoFileException {
+        ClientTown targetTown = getTargetDestinationTown();
+
+        MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
+        ClientMain.gui.window.draw(destTownFlag, targetTown.getMaxX() + 8, targetTown.getMaxY() + 8);
+
+    }
+
     public Game getCurrentGame() {
         return currentGame;
     }
@@ -77,6 +101,14 @@ public class ClientPlayer {
         return isTurn;
     }
 
+    public void incrementGold(int townGoldValue) {
+        this.gold += townGoldValue;
+    }
+
+    public int getGoldAmount() {
+        return this.gold;
+    }
+
     public GUI getGui() {
         return guiDisplayed;
     }
@@ -91,7 +123,7 @@ public class ClientPlayer {
     // return aBootAction;
     // }
 
-    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+    public void addCardStringArray(List<String> cardArray) throws MinuetoFileException {
         for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
@@ -131,8 +163,17 @@ public class ClientPlayer {
         return tokensInHand;
     }
 
-    public void drawBoot() {
-        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+    /**
+     * Draw the player's boot
+     * @param order this player's "spot" at the town (to stack the boots)
+     */
+    public void drawBoot(int order) {
+        this.incrementGold(inTown.getGoldValue());
+        ClientMain.gui.window.draw(bootImage, inTown.minX + order*20, inTown.maxY-15 + order*15);
+    }
+
+    public void clearTokenHand() {
+        tokensInHand.clear();
     }
 
     /*
@@ -296,12 +337,12 @@ public class ClientPlayer {
      * 
      * @param t
      */
-    public void setTown(Town t) {
+    public void setTown(ClientTown t) {
         inTown = t;
         t.addPlayer(this);
     }
 
-    public void moveBoot(Town t) {
+    public void moveBoot(ClientTown t) {
         // remove the player from the old town
         inTown.playersHere.remove(this);
 

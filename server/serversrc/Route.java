@@ -13,22 +13,30 @@ public class Route implements Serializable {
     // upstream
     boolean isUpstream;
     private RouteType type;
+    private int[] hitbox;
 
-    Route(Town pStartingTown, Town pEndTown, RouteType rType) {
+    private static ArrayList<Route> allRoutes = new ArrayList<>();
+
+    Route(Town pStartingTown, Town pEndTown, RouteType rType, int[] pHitbox) {
+        // Route(Town pStartingTown, Town pEndTown, RouteType rType) {
         this.source = pStartingTown;
         this.dest = pEndTown;
         this.aToken = null;
         this.type = rType;
+        this.hitbox = pHitbox;
+        allRoutes.add(this);
     }
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    Route(Town pStartingTown, Town pEndTown, boolean upstream) {
+    Route(Town pStartingTown, Town pEndTown, boolean upstream, int[] pHitbox) {
         this.isUpstream = upstream;
         this.source = pStartingTown;
         this.dest = pEndTown;
         this.aToken = null;
         this.type = RouteType.RIVER;
+        this.hitbox = pHitbox;
+        allRoutes.add(this);
     }
 
     // sets Upstream with a boolean
@@ -43,6 +51,10 @@ public class Route implements Serializable {
     public Town getDest() {
         return dest;
     }
+
+    // public int[] getHitBox() {
+    // return hitbox;
+    // }
 
     /**
      * Place a token on a valid route.
@@ -106,12 +118,35 @@ public class Route implements Serializable {
     // reset route's token delets obstacle from game and returns it
     public Token removeToken() {
         Token temp = this.aToken;
+        if (temp == null)
+            return null;
         if (temp.isObstacle()) {
             temp = ((Obstacle) temp).getInnerToken();
         }
         temp.resetRoute();
         this.aToken = null;
         return temp;
+    }
+
+    public String formatRequirements() { 
+        String result = "To traverse this route you require ";
+
+        if(type == RouteType.DESERT) { 
+            result += "either one dragon, or two unicorns, troll wagons.";
+        } else if (type == RouteType.LAKE) {
+            result += "one boat card";
+        } else if (type == RouteType.MOUNTAIN) {
+            result += "either one cloud, unicord, dragon, or two elfcycles, troll wagons.";
+        } else if (type == RouteType.PLAIN) {
+            result += "either one pig, elfcycle, troll wagon, dragon, or two clouds.";
+        } else if (type == RouteType.WOOD) {
+            result += "either one pig, elfcycle, unicorn, or two clouds, troll wagons, dragons.";
+        } else if (type == RouteType.RIVER && isUpstream == true) {
+            result += "two boat cards.";
+        } else if (type == RouteType.LAKE && isUpstream == false) {
+            result += "one boat card.";
+        }
+        return result;
     }
 
     // DIJIAN'S VERSION OF GETREQUIREDCARDS
@@ -308,5 +343,44 @@ public class Route implements Serializable {
 
     public boolean hasCounter() {
         return (!(this.aToken == null));
+    }
+
+    public boolean hasObstacle(){
+        return this.aToken.isObstacle();
+    }
+    
+    public Town getSourceTown() { 
+        return source;
+    }
+
+    public String getSourceTownString() { 
+        return source.getTownName();
+    }
+
+    public Town getDestTown() { 
+        return source;
+    }
+
+    public String getDestTownString() { 
+        return source.getTownName();
+    }
+
+    public int getMinX(){ 
+        return hitbox[0];
+    }
+
+    public int getMaxX(){ 
+        return hitbox[1];
+    }
+
+    public int getMinY(){ 
+        return hitbox[2];
+    }
+
+    public int getMaxY(){ 
+        return hitbox[3];
+    }
+    public static ArrayList<Route> getAllRoutes(){
+        return allRoutes;
     }
 }

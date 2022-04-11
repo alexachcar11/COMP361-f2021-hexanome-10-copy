@@ -38,12 +38,17 @@ public class ServerUser {
 
     /**
      * GETTER: returns the user's current token from the LS
+     * 
      * @return token in String format
      */
     public String getToken() {
         String token = (String) currentToken.get("access_token");
         token = token.replace("+", "%2B");
         return token;
+    }
+
+    public JSONObject getTokenObject() {
+        return this.currentToken;
     }
 
     /**
@@ -55,6 +60,7 @@ public class ServerUser {
 
     /**
      * GETTER: returns user.ready
+     * 
      * @return true if the user is ready to play, false otherwise.
      */
     public boolean isReady() {

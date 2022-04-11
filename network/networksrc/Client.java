@@ -34,6 +34,9 @@ public class Client implements NetworkNode {
      */
     @Override
     public void start() {
+
+        // this.executionThread.start();
+        // this.listenThread.start();
         // notify the server of this client's username
         try {
             aObjectOut.writeObject(new GiveNameAction(name));
@@ -52,6 +55,7 @@ public class Client implements NetworkNode {
     private void listenToServer() {
         while (true) {
             Action actionIn = null;
+            String toPrint = null;
             try {
                 actionIn = (Action) aObjectIn.readObject();
                 if (actionIn.isValid()) {

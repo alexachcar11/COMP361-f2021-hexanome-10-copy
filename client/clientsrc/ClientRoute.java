@@ -6,21 +6,21 @@ import java.util.ArrayList;
 // import serversrc.Token;
 // import serversrc.Town;
 
-public class Route {
+public class ClientRoute {
 
     // route needs to have a starting town and an ending town
     // routes carry one transportation counter maximum, but don't need to have one
 
-    Town aStartingTown;
-    Town aEndTown;
+    ClientTown aStartingTown;
+    ClientTown aEndTown;
     TokenSprite aToken; // TODO: there could be multiple tokens, list ?
     // road or river
     boolean isRiver = false;
     // upstream
     boolean isUpstream;
-    private static ArrayList<Route> allRoutes = new ArrayList<>();
+    private static ArrayList<ClientRoute> allRoutes = new ArrayList<>();
 
-    public Route(Town pStartingTown, Town pEndTown) {
+    public ClientRoute(ClientTown pStartingTown, ClientTown pEndTown) {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
         this.aToken = null;
@@ -29,7 +29,7 @@ public class Route {
 
     // overload if it's a river
     // n = 0 means it's downstream, n = 1 means it's upstream
-    public Route(Town pStartingTown, Town pEndTown, int n) {
+    public ClientRoute(ClientTown pStartingTown, ClientTown pEndTown, int n) {
         this.isRiver = true;
         if (n == 1) {
             this.isUpstream = true;
@@ -50,7 +50,7 @@ public class Route {
         return isRiver;
     }
 
-    public static ArrayList<Route> getAllRoutes() {
+    public ArrayList<ClientRoute> getAllRoutes() {
         return allRoutes;
     }
 
@@ -59,11 +59,11 @@ public class Route {
         isUpstream = b;
     }
 
-    public Town getSource() {
+    public ClientTown getSource() {
         return this.aStartingTown;
     }
 
-    public Town getDest() {
+    public ClientTown getDest() {
         return this.aEndTown;
     }
 
@@ -85,6 +85,10 @@ public class Route {
             // update token field
             this.aToken = token;
         }
+    }
+
+    public void setToken(TokenSprite pToken){
+        this.aToken = pToken;
     }
 
     public void clearToken() {

@@ -1,10 +1,8 @@
 package networksrc;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.minueto.MinuetoFileException;
 import clientsrc.ClientMain;
 import serversrc.Player;
 import serversrc.ServerGame;
@@ -62,6 +60,7 @@ public class ActionManager {
             objectOutputStream.writeObject(action);
         } catch (IOException e) {
             System.err.println("IOException in sendToSender().");
+            e.printStackTrace();
         }
     }
 

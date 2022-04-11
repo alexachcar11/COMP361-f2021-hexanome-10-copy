@@ -18,7 +18,9 @@ public class MoveBootAction implements Action {
     @Override
     public boolean isValid() {
         // TODO: check if parameters are not null
-
+        if(this.senderName == null || this.srcTown == null || this.dstTown == null){
+            return false;
+        }
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
 
@@ -70,9 +72,11 @@ public class MoveBootAction implements Action {
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
 
+        // increase the amount of gold that the player has based on how much gold the town is worth 
+        playerWhoSent.incrementGold(dTown.getGoldValue());
+
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
-        // here you can do stuff with playerWhoSent and playersCurrentGame
         playersCurrentGame.playerMovedBoot(playerWhoSent, route);
 
         // send an ACK to all clients in the game

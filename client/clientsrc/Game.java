@@ -12,21 +12,13 @@ import org.minueto.MinuetoFileException;
 
 import serversrc.CardType;
 
-// import serversrc.Card;
-// import serversrc.GoldCard;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.Route;
-// import serversrc.Town;
-// import serversrc.TownGoldOption;
-
 public class Game {
 
     private static ArrayList<ClientPlayer> players;
     private int numberOfPlayers;
-    public static ArrayList<Town> towns;
-    private ArrayList<Route> routes;
-    private int currentRound;
+    public static ArrayList<ClientTown> towns;
+    private ArrayList<ClientRoute> routes;
+    private int currentRound = 1;
     private int currentPhase;
     private int gameRoundsLimit;
     private boolean destinationTownEnabled;
@@ -36,6 +28,8 @@ public class Game {
     private static ArrayList<CardSprite> faceDownCardPile;
     private ArrayList<CardSprite> faceUpCardPile;
     private TownGraph aTownGraph;
+    private TokenSprite auctionToken = null;
+    private int auctionBid = 0;
     // private ArrayList<GoldCard> goldCardPile;
     // private Auction auction; not doing this now
 
@@ -62,27 +56,27 @@ public class Game {
         // TODO: initialize faceDownCardPile, faceUpCardPile, goldCardPile and auction
         // depending on the mode
 
-        Town esselen = new Town("Esselen", 38, 103, 99, 152);
-        Town yttar = new Town("Yttar", 35, 98, 222, 274);
-        Town wylhien = new Town("Wylhien", 187, 234, 30, 75);
-        Town parundia = new Town("Parundia", 172, 241, 172, 227);
-        Town jaccaranda = new Town("Jaccaranda", 312, 381, 61, 119);
-        Town albaran = new Town("AlBaran", 280, 343, 227, 283);
-        Town thortmanni = new Town("Throtmanni", 451, 518, 129, 188);
-        Town rivinia = new Town("Rivinia", 555, 621, 205, 256);
-        Town tichih = new Town("Tichih", 604, 662, 79, 135);
-        Town ergeren = new Town("ErgEren", 716, 776, 210, 259);
-        Town grangor = new Town("Grangor", 49, 112, 366, 411);
-        Town mahdavikia = new Town("MahDavikia", 57, 136, 482, 533);
-        Town kihromah = new Town("Kihromah", 164, 223, 314, 367);
-        Town ixara = new Town("Ixara", 257, 322, 489, 534);
-        Town dagamura = new Town("DagAmura", 281, 339, 345, 394);
-        Town lapphalya = new Town("Lapphalya", 415, 482, 383, 437);
-        Town feodori = new Town("Feodori", 411, 472, 259, 317);
-        Town virst = new Town("Virst", 478, 536, 491, 541);
-        Town elvenhold = new Town("Elvenhold", 577, 666, 291, 370);
-        Town beata = new Town("Beata", 724, 779, 407, 456);
-        Town strykhaven = new Town("Strkhaven", 616, 679, 463, 502);
+        ClientTown esselen = new ClientTown("Esselen", 38, 103, 99, 152);
+        ClientTown yttar = new ClientTown("Yttar", 35, 98, 222, 274);
+        ClientTown wylhien = new ClientTown("Wylhien", 187, 234, 30, 75);
+        ClientTown parundia = new ClientTown("Parundia", 172, 241, 172, 227);
+        ClientTown jaccaranda = new ClientTown("Jaccaranda", 312, 381, 61, 119);
+        ClientTown albaran = new ClientTown("AlBaran", 280, 343, 227, 283);
+        ClientTown thortmanni = new ClientTown("Throtmanni", 451, 518, 129, 188);
+        ClientTown rivinia = new ClientTown("Rivinia", 555, 621, 205, 256);
+        ClientTown tichih = new ClientTown("Tichih", 604, 662, 79, 135);
+        ClientTown ergeren = new ClientTown("ErgEren", 716, 776, 210, 259);
+        ClientTown grangor = new ClientTown("Grangor", 49, 112, 366, 411);
+        ClientTown mahdavikia = new ClientTown("MahDavikia", 57, 136, 482, 533);
+        ClientTown kihromah = new ClientTown("Kihromah", 164, 223, 314, 367);
+        ClientTown ixara = new ClientTown("Ixara", 257, 322, 489, 534);
+        ClientTown dagamura = new ClientTown("DagAmura", 281, 339, 345, 394);
+        ClientTown lapphalya = new ClientTown("Lapphalya", 415, 482, 383, 437);
+        ClientTown feodori = new ClientTown("Feodori", 411, 472, 259, 317);
+        ClientTown virst = new ClientTown("Virst", 478, 536, 491, 541);
+        ClientTown elvenhold = new ClientTown("Elvenhold", 577, 666, 291, 370);
+        ClientTown beata = new ClientTown("Beata", 724, 779, 407, 456);
+        ClientTown strykhaven = new ClientTown("Strkhaven", 616, 679, 463, 502);
 
         towns.add(esselen);
         towns.add(yttar);
@@ -106,38 +100,38 @@ public class Game {
         towns.add(beata);
         towns.add(strykhaven);
 
-        Route esselenWylhien = new Route(esselen, wylhien);
-        Route esselenYttar = new Route(esselen, yttar);
-        Route esselenParundia = new Route(esselen, parundia);
-        Route WylhienJaccaranda = new Route(wylhien, jaccaranda);
-        Route WyhlienParundia = new Route(wylhien, parundia);
-        Route yttarParundia = new Route(yttar, parundia);
-        Route parundiaAlbaran = new Route(parundia, albaran);
-        Route jaccarandaThrotmanni = new Route(jaccaranda, thortmanni);
-        Route jaccarandaTichih = new Route(jaccaranda, tichih);
-        Route throtmanniAlbaran = new Route(thortmanni, albaran);
-        Route throtmanniRivinia = new Route(thortmanni, rivinia);
-        Route throtmanniTichih = new Route(thortmanni, tichih);
-        Route throtmanniFeodori = new Route(thortmanni, feodori);
-        Route kihromahDagamura = new Route(kihromah, dagamura);
-        Route albaranDagamura = new Route(albaran, dagamura);
-        Route dagamuraFeodori = new Route(dagamura, feodori);
-        Route yttarGrangor = new Route(yttar, grangor);
-        Route grangorMahdavikia = new Route(grangor, mahdavikia);
-        Route mahdavikiaIxara = new Route(mahdavikia, ixara);
-        Route dagamuraLapphalya = new Route(dagamura, lapphalya);
-        Route ixaraLapphalya = new Route(ixara, lapphalya);
-        Route ixaraDagamura = new Route(ixara, dagamura);
-        Route ixaraVirst = new Route(ixara, virst);
-        Route virstLapphalya = new Route(virst, lapphalya);
-        Route virstStrykhaven = new Route(virst, strykhaven);
-        Route lapphalyaElvenhold = new Route(lapphalya, elvenhold);
-        Route beataStrykhaven = new Route(beata, strykhaven);
-        Route beataElvenhold = new Route(beata, elvenhold);
-        Route elvenholdStrykhaven = new Route(elvenhold, strykhaven);
-        Route elvenholdRivinia = new Route(elvenhold, rivinia);
-        Route riviniaTichih = new Route(rivinia, tichih);
-        Route tichihErgeren = new Route(tichih, ergeren);
+        ClientRoute esselenWylhien = new ClientRoute(esselen, wylhien);
+        ClientRoute esselenYttar = new ClientRoute(esselen, yttar);
+        ClientRoute esselenParundia = new ClientRoute(esselen, parundia);
+        ClientRoute WylhienJaccaranda = new ClientRoute(wylhien, jaccaranda);
+        ClientRoute WyhlienParundia = new ClientRoute(wylhien, parundia);
+        ClientRoute yttarParundia = new ClientRoute(yttar, parundia);
+        ClientRoute parundiaAlbaran = new ClientRoute(parundia, albaran);
+        ClientRoute jaccarandaThrotmanni = new ClientRoute(jaccaranda, thortmanni);
+        ClientRoute jaccarandaTichih = new ClientRoute(jaccaranda, tichih);
+        ClientRoute throtmanniAlbaran = new ClientRoute(thortmanni, albaran);
+        ClientRoute throtmanniRivinia = new ClientRoute(thortmanni, rivinia);
+        ClientRoute throtmanniTichih = new ClientRoute(thortmanni, tichih);
+        ClientRoute throtmanniFeodori = new ClientRoute(thortmanni, feodori);
+        ClientRoute kihromahDagamura = new ClientRoute(kihromah, dagamura);
+        ClientRoute albaranDagamura = new ClientRoute(albaran, dagamura);
+        ClientRoute dagamuraFeodori = new ClientRoute(dagamura, feodori);
+        ClientRoute yttarGrangor = new ClientRoute(yttar, grangor);
+        ClientRoute grangorMahdavikia = new ClientRoute(grangor, mahdavikia);
+        ClientRoute mahdavikiaIxara = new ClientRoute(mahdavikia, ixara);
+        ClientRoute dagamuraLapphalya = new ClientRoute(dagamura, lapphalya);
+        ClientRoute ixaraLapphalya = new ClientRoute(ixara, lapphalya);
+        ClientRoute ixaraDagamura = new ClientRoute(ixara, dagamura);
+        ClientRoute ixaraVirst = new ClientRoute(ixara, virst);
+        ClientRoute virstLapphalya = new ClientRoute(virst, lapphalya);
+        ClientRoute virstStrykhaven = new ClientRoute(virst, strykhaven);
+        ClientRoute lapphalyaElvenhold = new ClientRoute(lapphalya, elvenhold);
+        ClientRoute beataStrykhaven = new ClientRoute(beata, strykhaven);
+        ClientRoute beataElvenhold = new ClientRoute(beata, elvenhold);
+        ClientRoute elvenholdStrykhaven = new ClientRoute(elvenhold, strykhaven);
+        ClientRoute elvenholdRivinia = new ClientRoute(elvenhold, rivinia);
+        ClientRoute riviniaTichih = new ClientRoute(rivinia, tichih);
+        ClientRoute tichihErgeren = new ClientRoute(tichih, ergeren);
 
         routes.add(virstLapphalya);
         routes.add(virstStrykhaven);
@@ -177,6 +171,10 @@ public class Game {
 
     }
 
+    public void setAuctionToken(TokenSprite pTok){
+        this.auctionToken = pTok;
+    }
+
     public TownGraph getTownGraph() {
         return this.aTownGraph;
     }
@@ -190,7 +188,7 @@ public class Game {
     public void addPlayer(ClientPlayer player) throws IndexOutOfBoundsException {
         if (players.size() <= numberOfPlayers) {
             players.add(player);
-            Town elvenhold = Game.getTownByName("Elvenhold");
+            ClientTown elvenhold = Game.getTownByName("Elvenhold");
             elvenhold.addPlayer(player);
             player.setTown(elvenhold);
         } else {
@@ -198,6 +196,16 @@ public class Game {
         }
     }
 
+    public void setRound(int r){
+        this.currentRound = r;
+    }
+
+    public void clearAllTokensOnMap(){
+        for(ClientRoute r: routes){
+            r.clearToken();
+        }
+    }
+    
     // GETTER for number of players in the game instance
     public int getNumberOfPlayers() {
         return numberOfPlayers;
@@ -223,13 +231,13 @@ public class Game {
         return mode;
     }
 
-    public static ArrayList<Town> getTowns() {
+    public static ArrayList<ClientTown> getTowns() {
         return towns;
     }
 
     // GETTER: gets town in towns by name
-    public static Town getTownByName(String name) {
-        for (Town t : towns) {
+    public static ClientTown getTownByName(String name) {
+        for (ClientTown t : towns) {
             if (t.getTownName().equals(name)) {
                 return t;
             }
@@ -238,7 +246,7 @@ public class Game {
     }
 
     public static boolean notClickingOnATown(int x, int y) {
-        for (Town t : towns) {
+        for (ClientTown t : towns) {
 
             if (t.minX < x && t.minY < y && t.maxX > x && t.maxY > y) {
                 return false;
@@ -269,6 +277,10 @@ public class Game {
 
     public int getCurrentPhase() {
         return this.currentPhase;
+    }
+
+    public int getCurrentRound() { 
+        return this.currentRound;
     }
 
 }
