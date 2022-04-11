@@ -1916,7 +1916,7 @@ public class ClientMain {
                     MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
                     ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
                     
-                    ClientMain.gui.window.draw(opponent.getBoppel(),xName +50, yName +50 );
+                    ClientMain.gui.window.draw(opponent.getBoppel(),xName, yName);
                 }
 
                 if (currentPlayer.isTurn == false) { 
