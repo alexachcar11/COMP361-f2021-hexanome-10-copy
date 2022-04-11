@@ -1920,7 +1920,7 @@ public class ClientMain {
 
                     MinuetoImage bopp = opponent.getBoppel();
                     
-                    ClientMain.gui.window.draw(bopp,xName, yName);
+                    ClientMain.gui.window.draw(bopp,xName - 32, yName);
                 }
 
                 if (currentPlayer.isTurn == false) { 
