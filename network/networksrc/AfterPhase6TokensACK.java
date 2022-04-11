@@ -23,6 +23,8 @@ public class AfterPhase6TokensACK implements Action{
     public void execute() {
         // clear all tokens in hand for player
         ClientMain.currentPlayer.clearTokenHand();
+        ClientMain.clearPickedTok();
+        ClientMain.currentGame.setPhase(1);
         // add token to hand if it's not "none"
         if (!this.token.equalsIgnoreCase("none")){
             try {

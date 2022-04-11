@@ -14,12 +14,15 @@ import org.minueto.window.MinuetoPanel;
 
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
+import networksrc.ChooseTokenToKeepAction;
 import networksrc.Client;
 import networksrc.CreateNewGameAction;
 import networksrc.GetAvailableColorsAction;
 import networksrc.GetAvailableSessionsAction;
 import networksrc.LaunchGameAction;
 import networksrc.LoginAction;
+import networksrc.MoveBootAction;
+import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 import networksrc.TestAction;
 // import serversrc.Token;
@@ -658,17 +661,180 @@ public class ClientMain {
 
                 // IF THE TURN IS PASSABLE -> PASS TURN WHEN WE CLICK HERE
                 if (x > 20 && x < 130 && y > 637 && y < 712) {
-                    // PASS TURN
+                    ActionManager.getInstance().sendAction(new PassTurnAction(currentPlayer.getName()));
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if (currentPlayer.isTurn() == true) {
+                if (currentPlayer.isTurn() == true && currentGame.getCurrentPhase()==5) {
                     for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
                         if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
                                     + r.getSourceTownString());
                             pickedRoute = r;
+                            // send message to server on pickedRoute
+                            if (pickedRoute != null){
+                                ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(), pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                            }
+                            break;
                         }
+                    }
+                }
+                // place counter on routes phase
+                if ( currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()){
+                    List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+                    // testingggg
+                    if (pickedRoute != null){
+                        System.out.println("TESTING LINE 616, ROUTE NOT NULL: " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                    }
+
+                    for (Route r: Route.getAllRoutes()){
+                        if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()){
+                            // pick route
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to " + r.getSourceTownString());
+                            pickedRoute = r;
+                            if (pickedRoute != null && pickedTok != null) {
+                                System.out.println("You have selected the token: " + pickedTok.getTokenName());
+                                System.out.println("Sending placeCounterAction to server with counter: " + pickedTok.getTokenName() + "\nSelected the route from " + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                                ActionManager.getInstance()
+                                        .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                                                pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
+                                                pickedTok.getTokenName()));
+                            }
+                            break;
+                        }
+                    }
+
+                    // testingggg
+                    if (pickedTok != null){
+                        System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+                    if (listOfTokens.size() == 0){
+                        // do nothin :)
+                    }
+                    else if(listOfTokens.size() == 1){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                    }
+                    else if(listOfTokens.size() == 2){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                    }
+                    else if(listOfTokens.size() == 3){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                    }
+                    else if(listOfTokens.size() == 4){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(3);
+                        }
+                    }
+                    else if(listOfTokens.size() == 5){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(3);
+                        }
+                        if(x>=709 && x<=754 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(4);
+                        }
+                    }
+                }
+                if ( currentGame.getCurrentPhase() == 6 && currentPlayer.isTurn()){
+                    List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+                    // testingggg
+                    if (pickedTok != null){
+                        System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+                    if (listOfTokens.size() == 0){
+                        // do nothin :)
+                    }
+                    else if(listOfTokens.size() == 1){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                    }
+                    else if(listOfTokens.size() == 2){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                    }
+                    else if(listOfTokens.size() == 3){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                    }
+                    else if(listOfTokens.size() == 4){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(3);
+                        }
+                    }
+                    else if(listOfTokens.size() == 5){
+                        if(x>=592 && x<=637 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if(x>=663 && x<=708 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if(x>=734 && x<=779 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if(x>=615 && x<=660 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(3);
+                        }
+                        if(x>=709 && x<=754 && y>=636 && y<=706 ){
+                            pickedTok = listOfTokens.get(4);
+                        }
+                        
+                    }
+                    if (pickedTok != null) {
+                        System.out.println("Sending TokenToKeepAction to server with counter: " + pickedTok.getTokenName());
+                        ActionManager.getInstance().sendAction(new ChooseTokenToKeepAction(currentPlayer.getName(),pickedTok.getTokenName()));
                     }
                 }
 
@@ -721,6 +887,13 @@ public class ClientMain {
         }
 
     };
+
+    public static void clearPickedTok(){
+        pickedTok = null;
+    }
+    public static void clearPickedRoute(){
+        pickedRoute = null;
+    }
 
     static MinuetoMouseHandler savedGamesMouseHandler = new MinuetoMouseHandler() {
         @Override
@@ -1237,54 +1410,17 @@ public class ClientMain {
     // keep track of route and token
     private static Route pickedRoute = null;
     private static TokenSprite pickedTok = null;
+
+    // not using this anymore
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMouseMove(int arg0, int arg1) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void handleMousePress(int x, int y, int button) {
-
-            // TODO Auto-generated method stub
-            // for (Route r: Route.getAllRoutes()){
-            // if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >=
-            // r.getMaxY()){
-            // // pick route
-            // pickedRoute = r;
-            // break;
-            // }
-            // }
-
-            if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
-                // pick tok
-                pickedTok = currentPlayer.getTokensInHand().get(1);
-                Token tok = new Token(pickedTok.getTokenType());
-                // Draw on Route
-                pickedRoute.placeToken(tok);
-                if (pickedRoute != null && pickedTok != null) {
-
-                    ActionManager.getInstance()
-                            .sendAction(new PlaceCounterAction(currentPlayer.getName(),
-                                    pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
-                                    pickedTok.getTokenName()));
-                }
-            }
-
-            if (x > 1000 && y > 740) {
-                // click on mute/unmute button
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
-
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
+            // do nothing
         }
 
         @Override
@@ -1756,140 +1892,6 @@ public class ClientMain {
 
                 // IF WE CLICK ON PASSTURN THEN PASS THE TURN
 
-                List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
-                List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
-
-                // organize tokens in inventory
-                if (listOfTokens.size() == 1) {
-                    MinuetoImage p1 = listOfTokens.get(0);
-                    ClientMain.gui.window.draw(p1, 642, 640);
-                } else if (listOfTokens.size() == 2) {
-                    MinuetoImage p1 = listOfTokens.get(0);
-                    MinuetoImage p2 = listOfTokens.get(1);
-                    ClientMain.gui.window.draw(p1, 587, 640);
-                    ClientMain.gui.window.draw(p2, 695, 640);
-                } else if (listOfTokens.size() == 3) {
-                    MinuetoImage p1 = listOfTokens.get(0);
-                    MinuetoImage p2 = listOfTokens.get(1);
-                    MinuetoImage p3 = listOfTokens.get(2);
-                    ClientMain.gui.window.draw(p1, 615, 636);
-                    ClientMain.gui.window.draw(p2, 709, 636);
-                    ClientMain.gui.window.draw(p3, 663, 698);
-                } else if (listOfTokens.size() == 4) {
-                    MinuetoImage p1 = listOfTokens.get(0);
-                    MinuetoImage p2 = listOfTokens.get(1);
-                    MinuetoImage p3 = listOfTokens.get(2);
-                    MinuetoImage p4 = listOfTokens.get(3);
-                    ClientMain.gui.window.draw(p1, 615, 636);
-                    ClientMain.gui.window.draw(p2, 709, 636);
-                    ClientMain.gui.window.draw(p3, 615, 698);
-                    ClientMain.gui.window.draw(p4, 709, 698);
-
-                } else if (listOfTokens.size() == 5) {
-                    MinuetoImage p1 = listOfTokens.get(0);
-                    MinuetoImage p2 = listOfTokens.get(1);
-                    MinuetoImage p3 = listOfTokens.get(2);
-                    MinuetoImage p4 = listOfTokens.get(3);
-                    MinuetoImage p5 = listOfTokens.get(4);
-                    ClientMain.gui.window.draw(p1, 592, 636);
-                    ClientMain.gui.window.draw(p2, 663, 636);
-                    ClientMain.gui.window.draw(p3, 734, 636);
-                    ClientMain.gui.window.draw(p4, 615, 698);
-                    ClientMain.gui.window.draw(p5, 709, 698);
-                }
-
-                // if(phaseNumb == 4) {
-                // if ( listOfTokens.size() == 3) {
-                // if (x,y is within picture 1) {
-                // selected token = listOfTokens.get(1);
-
-                // }
-                // }
-                // }
-
-                // organize cards in inventory
-                if (listOfCards.size() == 1) {
-                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                    ClientMain.gui.window.draw(p1, 314, 634);
-                } else if (listOfCards.size() == 2) {
-                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                    ClientMain.gui.window.draw(p1, 258, 634);
-                    ClientMain.gui.window.draw(p2, 370, 634);
-                } else if (listOfCards.size() == 3) {
-                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                    ClientMain.gui.window.draw(p1, 202, 634);
-                    ClientMain.gui.window.draw(p2, 314, 634);
-                    ClientMain.gui.window.draw(p3, 426, 634);
-                } else if (listOfCards.size() == 4) {
-                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                    MinuetoImage p4 = listOfCards.get(3).getMediumImage();
-                    ClientMain.gui.window.draw(p1, 153, 634);
-                    ClientMain.gui.window.draw(p2, 261, 634);
-                    ClientMain.gui.window.draw(p3, 369, 634);
-                    ClientMain.gui.window.draw(p4, 477, 634);
-                } else if (listOfCards.size() == 5) {
-                    MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-                    MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-                    MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-                    MinuetoImage p4 = listOfCards.get(3).getMediumImage();
-                    MinuetoImage p5 = listOfCards.get(4).getMediumImage();
-                    ClientMain.gui.window.draw(p1, 150, 634);
-                    ClientMain.gui.window.draw(p2, 232, 634);
-                    ClientMain.gui.window.draw(p3, 314, 634);
-                    ClientMain.gui.window.draw(p4, 396, 634);
-                    ClientMain.gui.window.draw(p5, 478, 634);
-                } else if (listOfCards.size() == 6) {
-                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                    ClientMain.gui.window.draw(p1, 235, 605);
-                    ClientMain.gui.window.draw(p2, 348, 605);
-                    ClientMain.gui.window.draw(p3, 461, 605);
-                    ClientMain.gui.window.draw(p4, 235, 685);
-                    ClientMain.gui.window.draw(p5, 348, 685);
-                    ClientMain.gui.window.draw(p6, 461, 685);
-                } else if (listOfCards.size() == 7) {
-                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                    MinuetoImage p7 = listOfCards.get(6).getSmallImage();
-                    ClientMain.gui.window.draw(p1, 235, 605);
-                    ClientMain.gui.window.draw(p2, 318, 605);
-                    ClientMain.gui.window.draw(p3, 414, 605);
-                    ClientMain.gui.window.draw(p4, 235, 685);
-                    ClientMain.gui.window.draw(p5, 318, 685);
-                    ClientMain.gui.window.draw(p6, 414, 685);
-                    ClientMain.gui.window.draw(p7, 510, 646);
-                } else if (listOfCards.size() == 8) {
-                    MinuetoImage p1 = listOfCards.get(0).getSmallImage();
-                    MinuetoImage p2 = listOfCards.get(1).getSmallImage();
-                    MinuetoImage p3 = listOfCards.get(2).getSmallImage();
-                    MinuetoImage p4 = listOfCards.get(3).getSmallImage();
-                    MinuetoImage p5 = listOfCards.get(4).getSmallImage();
-                    MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-                    MinuetoImage p7 = listOfCards.get(6).getSmallImage();
-                    MinuetoImage p8 = listOfCards.get(7).getSmallImage();
-                    ClientMain.gui.window.draw(p1, 222, 605);
-                    ClientMain.gui.window.draw(p2, 318, 605);
-                    ClientMain.gui.window.draw(p3, 414, 605);
-                    ClientMain.gui.window.draw(p4, 510, 605);
-                    ClientMain.gui.window.draw(p5, 222, 685);
-                    ClientMain.gui.window.draw(p6, 318, 685);
-                    ClientMain.gui.window.draw(p7, 414, 685);
-                    ClientMain.gui.window.draw(p8, 510, 685);
-                }
-
                 // HARDCODED
                 int roundNumber = currentGame.getCurrentRound();
                 if (roundNumber == 1) {
@@ -2006,6 +2008,137 @@ public class ClientMain {
     static void resumeSound() {
         loadedClip.setMicrosecondPosition(clipPos);
         loadedClip.start();
+    }
+
+    /**
+     * Displays inventories
+     */
+    public static void displayInventories() {
+        List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+        List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
+
+        // organize tokens in inventory
+        if (listOfTokens.size() == 1) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            ClientMain.gui.window.draw(p1, 642, 640);
+        } else if (listOfTokens.size() == 2) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            ClientMain.gui.window.draw(p1, 587, 640);
+            ClientMain.gui.window.draw(p2, 695, 640);
+        } else if (listOfTokens.size() == 3) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            ClientMain.gui.window.draw(p1, 615, 636);
+            ClientMain.gui.window.draw(p2, 709, 636);
+            ClientMain.gui.window.draw(p3, 663, 698);
+        } else if (listOfTokens.size() == 4) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            MinuetoImage p4 = listOfTokens.get(3);
+            ClientMain.gui.window.draw(p1, 615, 636);
+            ClientMain.gui.window.draw(p2, 709, 636);
+            ClientMain.gui.window.draw(p3, 615, 698);
+            ClientMain.gui.window.draw(p4, 709, 698);
+
+        } else if (listOfTokens.size() == 5) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            MinuetoImage p4 = listOfTokens.get(3);
+            MinuetoImage p5 = listOfTokens.get(4);
+            ClientMain.gui.window.draw(p1, 592, 636);
+            ClientMain.gui.window.draw(p2, 663, 636);
+            ClientMain.gui.window.draw(p3, 734, 636);
+            ClientMain.gui.window.draw(p4, 615, 698);
+            ClientMain.gui.window.draw(p5, 709, 698);
+        }
+
+        // organize cards in inventory
+        if (listOfCards.size() == 1) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            ClientMain.gui.window.draw(p1, 314, 634);
+        } else if (listOfCards.size() == 2) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            ClientMain.gui.window.draw(p1, 258, 634);
+            ClientMain.gui.window.draw(p2, 370, 634);
+        } else if (listOfCards.size() == 3) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            ClientMain.gui.window.draw(p1, 202, 634);
+            ClientMain.gui.window.draw(p2, 314, 634);
+            ClientMain.gui.window.draw(p3, 426, 634);
+        } else if (listOfCards.size() == 4) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+            ClientMain.gui.window.draw(p1, 153, 634);
+            ClientMain.gui.window.draw(p2, 261, 634);
+            ClientMain.gui.window.draw(p3, 369, 634);
+            ClientMain.gui.window.draw(p4, 477, 634);
+        } else if (listOfCards.size() == 5) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+            MinuetoImage p5 = listOfCards.get(4).getMediumImage();
+            ClientMain.gui.window.draw(p1, 150, 634);
+            ClientMain.gui.window.draw(p2, 232, 634);
+            ClientMain.gui.window.draw(p3, 314, 634);
+            ClientMain.gui.window.draw(p4, 396, 634);
+            ClientMain.gui.window.draw(p5, 478, 634);
+        } else if (listOfCards.size() == 6) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            ClientMain.gui.window.draw(p1, 235, 605);
+            ClientMain.gui.window.draw(p2, 348, 605);
+            ClientMain.gui.window.draw(p3, 461, 605);
+            ClientMain.gui.window.draw(p4, 235, 685);
+            ClientMain.gui.window.draw(p5, 348, 685);
+            ClientMain.gui.window.draw(p6, 461, 685);
+        } else if (listOfCards.size() == 7) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+            ClientMain.gui.window.draw(p1, 235, 605);
+            ClientMain.gui.window.draw(p2, 318, 605);
+            ClientMain.gui.window.draw(p3, 414, 605);
+            ClientMain.gui.window.draw(p4, 235, 685);
+            ClientMain.gui.window.draw(p5, 318, 685);
+            ClientMain.gui.window.draw(p6, 414, 685);
+            ClientMain.gui.window.draw(p7, 510, 646);
+        } else if (listOfCards.size() == 8) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+            MinuetoImage p8 = listOfCards.get(7).getSmallImage();
+            ClientMain.gui.window.draw(p1, 222, 605);
+            ClientMain.gui.window.draw(p2, 318, 605);
+            ClientMain.gui.window.draw(p3, 414, 605);
+            ClientMain.gui.window.draw(p4, 510, 605);
+            ClientMain.gui.window.draw(p5, 222, 685);
+            ClientMain.gui.window.draw(p6, 318, 685);
+            ClientMain.gui.window.draw(p7, 414, 685);
+            ClientMain.gui.window.draw(p8, 510, 685);
+        }
+        gui.window.render();
     }
 
     /**
@@ -2358,7 +2491,7 @@ public class ClientMain {
             }
         });
         currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-
+        displayInventories();
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
