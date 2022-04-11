@@ -647,8 +647,9 @@ public class ServerGame {
     }
 
     public void phaseThree() {
+        int numOfTokens = faceUpTokenPile.size();
         doingPhase3 = 1;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 5 - numOfTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
