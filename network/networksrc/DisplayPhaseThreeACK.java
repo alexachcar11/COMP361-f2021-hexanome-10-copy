@@ -53,13 +53,15 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                try {
-                    JLabel origin = (JLabel) e.getComponent();
-                    selectedSprite.add((SwingTokenSprite) origin.getIcon());
-                    displayWindow = false;
-                } catch (ClassCastException exception) {
-                    // do nothing if not a JLabel
-                    exception.printStackTrace();
+                synchronized(selectedSprite) {
+                    try {
+                        JLabel origin = (JLabel) e.getComponent();
+                        selectedSprite.add((SwingTokenSprite) origin.getIcon());
+                        Thread.currentThread().notify();
+                    } catch (ClassCastException exception) {
+                        // do nothing if not a JLabel
+                        exception.printStackTrace();
+                    }
                 }
             }
         };
@@ -68,7 +70,7 @@ public class DisplayPhaseThreeACK implements Action {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                displayWindow = false;
+                Thread.currentThread().notify();
             }
         };
 
@@ -89,29 +91,34 @@ public class DisplayPhaseThreeACK implements Action {
         tokenFrame.setSize(600, 200);
         tokenFrame.setVisible(true);
         window.render();
-        while (displayWindow) {
-            Thread.onSpinWait();
-        }
-        tokenFrame.setVisible(false);
-        tokenFrame.dispose();
-        if (selectedSprite.size() > 0) {
-            SwingTokenSprite selected = selectedSprite.get(0);
-            selectedSprite.clear();
-            ActionManager.getInstance()
-                    .sendAction(new TokenSelectedAction(selected.getTypeString()));
-            System.out.println("Selected token: " + selected.getTypeString());
-        }
-        else {
-            ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
-            System.out.println("Picked random token.");
-        }
-
-        // display
         try {
-            ClientMain.displayBoardElements();
-        } catch (MinuetoFileException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Thread.currentThread().wait();
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+        synchronized(selectedSprite)
+        {
+            tokenFrame.setVisible(false);
+            tokenFrame.dispose();
+            if (selectedSprite.size() > 0) {
+                SwingTokenSprite selected = selectedSprite.get(0);
+                selectedSprite.clear();
+                ActionManager.getInstance()
+                        .sendAction(new TokenSelectedAction(selected.getTypeString()));
+                System.out.println("Selected token: " + selected.getTypeString());
+            }
+            else {
+                ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
+                System.out.println("Picked random token.");
+            }
+    
+            // display
+            try {
+                ClientMain.displayBoardElements();
+            } catch (MinuetoFileException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 }
