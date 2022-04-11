@@ -1876,7 +1876,7 @@ public class ClientMain {
             currentBackground = elfengoldImage;
         }
 
-        System.out.println("displaying board elements")
+        System.out.println("displaying board elements");
 
         // REDRAW CLEAN BACKGROUND
         gui.window.draw(currentBackground, 0, 0);
