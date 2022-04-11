@@ -49,7 +49,8 @@ public class ServerGame {
     public CardStack aCardStack;
     private List<AbstractCard> disposedCardPile;
     private Player startingPlayer;
-    private int doingPhase3;
+    private int doingPhase3 = 1;
+    
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -526,6 +527,7 @@ public class ServerGame {
             }
             if (doingPhase3 == 3) {
                 if (didAllPlayersPassTurn() && currentPhase != 10) {
+                    this.doingPhase3 = 1;
                     nextPhase();
                     return;
                 }
@@ -649,7 +651,6 @@ public class ServerGame {
 
     public void phaseThree() {
         int numOfTokens = faceUpTokenPile.size();
-        doingPhase3 = 1;
         for (int i = 0; i < 5 - numOfTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
