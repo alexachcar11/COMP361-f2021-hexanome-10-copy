@@ -25,6 +25,10 @@ public class TokenSelectedAction implements Action {
     @Override
     public boolean isValid() {
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
+        if (this.tokenString == "random")
+        {
+            return !game.faceDownTokenStack.isEmpty();
+        }
         Token tokenToAdd = Token.getTokenByName(this.tokenString);
         return game.faceUpTokenPile.contains(tokenToAdd)
                 || game.faceDownTokenStack.contains(tokenToAdd);
