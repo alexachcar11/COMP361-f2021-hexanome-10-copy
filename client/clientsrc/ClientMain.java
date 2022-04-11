@@ -1844,6 +1844,11 @@ public class ClientMain {
                     elfenlandQueue.handle();
                 }
 
+                if(currentPlayer.isTurn() == true) { 
+                    MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
+                    gui.window.draw(itsYourTurnText, 836, 504);
+                }
+
                 // draw Cards text
                 MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
                 ClientMain.gui.window.draw(cardsText, 145, 600);
