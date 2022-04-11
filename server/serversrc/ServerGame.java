@@ -49,6 +49,7 @@ public class ServerGame {
     public CardStack aCardStack;
     private List<AbstractCard> disposedCardPile;
     private Player startingPlayer;
+    private int doingPhase3;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -511,6 +512,34 @@ public class ServerGame {
                     .passTurn(this.auction.getBiddersList().get(auction.getIndLastPassedPlayer()));
 
         }
+        else if (currentPhase == 3){
+            // go to next player
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).getIsTurn()) {
+                    // if it's last player in list, go back to start of list
+                    if (i == players.size() - 1) {
+                        players.get(i).passTurn(players.get(0));
+                    } else {
+                        players.get(i).passTurn(players.get(i + 1));
+                    }
+                    break;
+                }
+            }
+            if(doingPhase3 == 3){
+                if (didAllPlayersPassTurn() && currentPhase != 10) {
+                    nextPhase();
+                }
+            }
+            else {
+                if (didAllPlayersPassTurn() && currentPhase != 10) {
+                    // reset turn passed for all players
+                    for (Player p : players) {
+                        p.resetTurnPassed();
+                    }
+                    doingPhase3++;
+                }
+            }
+        }
         // change next player
         else {
             for (int i = 0; i < players.size(); i++) {
@@ -620,6 +649,7 @@ public class ServerGame {
     }
 
     public void phaseThree() {
+        doingPhase3 = 1;
         for (int i = 0; i < 5; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
