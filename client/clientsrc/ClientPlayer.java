@@ -45,7 +45,7 @@ public class ClientPlayer {
             this.bootImage = new MinuetoImageFile(
                     "images/boot" + pColor.toString().toLowerCase() + ".png");
             this.bootImage = new MinuetoImageFile(
-                    "images/böppel-" + pColor.toString().toLowerCase() + ".png");
+                    "images/böppels-and-boots/böppel-" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
             e.printStackTrace();
         }
