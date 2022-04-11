@@ -88,10 +88,13 @@ public class DisplayPhaseThreeACK implements Action {
         tokenFrame.setSize(600, 200);
         tokenFrame.setVisible(true);
         window.render();
-        try {
-            selectedSprite.wait();
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
+        synchronized(selectedSprite)
+        {
+            try {
+                selectedSprite.wait();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         synchronized(selectedSprite)
         {
