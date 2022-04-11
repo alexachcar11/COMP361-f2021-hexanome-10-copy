@@ -473,7 +473,7 @@ public class ClientMain {
 
     }
 
-    static void openRouteInformation(Route r) {
+    static void openRouteInformation(ClientRoute r) {
 
         JFrame routeOverview = new JFrame("Route");
 
@@ -852,7 +852,7 @@ public class ClientMain {
                         openTownInformation(t);
                     }
                 }
-                for (Route r : Route.getAllRoutes()) {
+                for (ClientRoute r : Game.getAllRoutes()) {
                     if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
