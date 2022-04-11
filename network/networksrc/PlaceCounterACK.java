@@ -1,5 +1,7 @@
 package networksrc;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.ClientMain;
 import clientsrc.ClientPlayer;
 
