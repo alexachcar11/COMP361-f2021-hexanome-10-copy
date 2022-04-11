@@ -22,5 +22,13 @@ public class PlaceCounterACK implements Action {
         ClientMain.currentGame.setPhase(4);
 
         // currentPlayer.setTurn(true);
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

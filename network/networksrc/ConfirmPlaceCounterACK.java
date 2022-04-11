@@ -38,5 +38,13 @@ public class ConfirmPlaceCounterACK implements Action {
         } catch (IllegalArgumentException e) {
             System.out.println("IllegalArgumentException");
         }
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

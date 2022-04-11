@@ -1,5 +1,7 @@
 package networksrc;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.*;
 
 // updates state of boot on GUI for clients
@@ -27,6 +29,14 @@ public class MoveBootACK implements Action {
         // get town by name
         ClientTown t = Game.getTownByName(newTown);
         p.moveBoot(t);
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

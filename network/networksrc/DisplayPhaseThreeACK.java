@@ -105,5 +105,13 @@ public class DisplayPhaseThreeACK implements Action {
             ActionManager.getInstance().sendAction(new TokenSelectedAction("random"));
             System.out.println("Picked random token.");
         }
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

@@ -36,6 +36,14 @@ public class AfterPhase6TokensACK implements Action{
         ClientMain.currentGame.clearAllTokensOnMap();
         // update round
         ClientMain.currentGame.setRound(currentRound);
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
 }
