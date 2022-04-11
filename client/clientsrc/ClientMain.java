@@ -1977,7 +1977,7 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        if (played = false) {
+        if (played == false) {
             File f = new File("./" + soundFile);
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
