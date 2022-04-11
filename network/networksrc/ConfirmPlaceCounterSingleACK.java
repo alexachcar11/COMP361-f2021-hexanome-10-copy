@@ -21,6 +21,8 @@ public class ConfirmPlaceCounterSingleACK implements Action {
 
     @Override
     public void execute() {
+        ClientMain.clearPickedRoute();
+        ClientMain.clearPickedTok();
         // consume token from player's hand
         try {
             ClientMain.currentPlayer.consumeToken(TokenSprite.getTokenSpriteByString(tok));
