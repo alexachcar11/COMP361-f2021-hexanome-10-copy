@@ -523,7 +523,7 @@ public class ClientMain {
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
         JPanel otherPlayersBeen = new JPanel();
-        otherPlayersBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
+        otherPlayersBeen.setLayout(new BoxLayout(otherPlayersBeen, BoxLayout.Y_AXIS));
 
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
