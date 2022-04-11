@@ -1847,6 +1847,13 @@ public class ClientMain {
                 if(currentPlayer.isTurn() == true) { 
                     MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
                     gui.window.draw(itsYourTurnText, 836, 504);
+                } else { 
+                    for (ClientPlayer p: currentGame.getPlayers()) { 
+                        if(p.isTurn == true) {
+                            MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn", fontArial22Bold, MinuetoColor.BLACK);
+                            gui.window.draw(otherPlayerTurnText, 836, 504);
+                        }
+                    }
                 }
 
                 // draw Cards text
