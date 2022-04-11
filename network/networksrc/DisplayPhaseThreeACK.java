@@ -75,6 +75,7 @@ public class DisplayPhaseThreeACK implements Action {
         };
 
         JFrame tokenFrame = new JFrame("Select a token.");
+        tokenFrame.setLocation(300, 200);
         tokenFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         JPanel tokenPanel = new JPanel();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
