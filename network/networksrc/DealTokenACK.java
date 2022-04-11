@@ -30,6 +30,13 @@ public class DealTokenACK implements Action {
             e.printStackTrace();
         }
         System.out.println("AFTER PHASE TWO");
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
