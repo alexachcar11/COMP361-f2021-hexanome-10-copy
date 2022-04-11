@@ -84,7 +84,7 @@ public class DisplayPhaseThreeACK implements Action {
             tokenPanel.add(pic);
             pic.addMouseListener(tokenListener);
         });
-        JButton faceDownButton = new JButton("Face-down Token.");
+        JButton faceDownButton = new JButton("Draw random token");
         faceDownButton.addMouseListener(buttonListener);
         tokenPanel.add(faceDownButton);
         tokenFrame.add(tokenPanel);
