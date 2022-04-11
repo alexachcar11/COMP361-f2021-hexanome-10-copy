@@ -41,7 +41,7 @@ public class ClientPlayer {
         this.aName = pUser.getName();
         try {
             this.bootImage = new MinuetoImageFile(
-                    "images/boot" + pColor.toString().toLowerCase() + ".png");
+                    "images/boot-" + pColor.toString().toLowerCase() + ".png");
             this.boppel = new MinuetoImageFile(
                     "images/böppels-and-boots/böppel-" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
