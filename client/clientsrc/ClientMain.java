@@ -1932,6 +1932,7 @@ public class ClientMain {
 
                 if (currentPlayer.isTurn == false) { 
                     System.out.println("ADDING INDICATORS FOR IF ITS NOT YOUR TURN");
+                    System.out.println("This is the size of getAllRoutes: " + Route.getAllRoutes().size());
                     for(Route r: Route.getAllRoutes()) { 
                         gui.window.draw(indicator, r.getMinX(), r.getMinY());
                     }
