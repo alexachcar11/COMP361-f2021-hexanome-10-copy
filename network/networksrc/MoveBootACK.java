@@ -34,6 +34,17 @@ public class MoveBootACK implements Action {
         ClientTown t = Game.getTownByName(newTown);
         p.moveBoot(t);
 
+        for(int i = 0; i<aCost; i++){
+            CardSprite c = null;
+            try {
+                c = CardSprite.getByName(aCardType);
+            } catch (MinuetoFileException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            p.removeCard(c);
+        }
+
         // display
         try {
             ClientMain.displayBoardElements();

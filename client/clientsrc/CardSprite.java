@@ -55,6 +55,16 @@ public class CardSprite extends AbstractSprite {
         return this.aType;
     }
 
+    public static CardSprite getByName(String cardType) throws MinuetoFileException { 
+        CardSprite cS = null;
+        for(CardType cT : CardType.values()) { 
+            if(cT.name().equals(cardType)) { 
+                cS = new CardSprite(cT);
+            }
+        }
+        return cS;
+    }
+
     @Override
     public boolean equals(Object o) {
         // if compared with itself then true
