@@ -143,6 +143,8 @@ public class Player {
         ClientMain.gui.window.draw(bootImage, (inTown.minX+1), (inTown.maxY+1));
     } else if (this.inTown.getPlayersHere().size() == 2) {
         ClientMain.gui.window.draw(bootImage, (inTown.minX-1), (inTown.maxY-1));
+    } else if (this.inTown.getPlayersHere().size() == 3) {
+        ClientMain.gui.window.draw(bootImage, (inTown.minX-2), (inTown.maxY-2));
     }
 }
 
