@@ -137,9 +137,12 @@ public class Player {
 
     public void drawBoot() { 
         this.incrementGold(inTown.getGoldValue());
-        if (this.inTown.getPlayersHere().size() ==0) {
+        if (this.inTown.getPlayersHere().size() == 0) {
             ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+    } else if (this.inTown.getPlayersHere().size() == 1) {
+        ClientMain.gui.window.draw(bootImage, (inTown.minX+1), (inTown.maxY+1));
     }
+}
 
     /*
      * Operation: Player::startGame(gameSession: Session)
