@@ -2070,9 +2070,9 @@ public class ClientMain {
         } else if (roundNumber == 2) {
             roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
         } else if (roundNumber == 3) {
-            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R3small.png");
         } else if (roundNumber == 4) {
-            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R4small.png");
         }
         gui.window.draw(roundNumberImage, 719, 40);
 
