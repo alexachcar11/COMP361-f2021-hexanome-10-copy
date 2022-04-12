@@ -406,6 +406,13 @@ public class ClientMain {
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
 
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size()-1).setFaceDown();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         for (CardSprite tCard : p.getCardsInHand()) {
             ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
             Image scaledImage = imageIcon.getImage()
@@ -415,8 +422,13 @@ public class ClientMain {
             cardPanel.add(pic);
         }
         for (TokenSprite tCounterImage : p.getTokensInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
-            tokenPanel.add(pic);
+            if(tCounterImage.isTokenFaceDown() == true) { 
+                JLabel pic = new JLabel(new ImageIcon("images/elfenroads-sprites/M08small.png"));
+                tokenPanel.add(pic);
+            } else {
+                JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
+                tokenPanel.add(pic);
+            }
         }
 
         inventory.add(Box.createVerticalStrut(30));
@@ -454,6 +466,13 @@ public class ClientMain {
         opponentFrame.setSize(new Dimension(700, 300));
 
         opponentFrame.setVisible(true);
+
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size()-1).setFaceUp();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -2062,7 +2081,9 @@ public class ClientMain {
         for(ClientRoute r: Game.getAllRoutes()) { 
             if(r.getTokenOnRoute().isEmpty() == false) { 
                 for(TokenSprite tok: r.getTokenOnRoute()) { 
-                    gui.window.draw(tok.getSmallImage(), r.getMinX(), r.getMinY());
+                    MinuetoImage imageIcon = tok.getSmallImage();
+                    imageIcon.scale(0.5, 0.5);
+                    gui.window.draw(imageIcon, r.getMinX(), r.getMinY());
                 }
             }
         }
@@ -2196,21 +2217,6 @@ public class ClientMain {
         }
 
         System.out.println("displaying original game board");
-
-        // draw Cards text
-        MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(cardsText, 145, 600);
-
-        // draw Tokens text
-        MinuetoText tokensText = new MinuetoText("Tokens:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(tokensText, 580, 600);
-
-        // draw line between the text:
-        currentBackground.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
-
-        // pass turn button
-        MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(passTurnText, 42, 650);
 
         // draw opponent inventory boxes
         int numberPlayers = players.size();
