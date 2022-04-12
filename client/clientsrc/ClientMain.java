@@ -689,7 +689,7 @@ public class ClientMain {
                             // send message to server on pickedRoute
                             if (pickedRoute != null) {
                                 ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
-                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString(), r.isRiver));
                             }
                             break;
                         }
@@ -725,7 +725,7 @@ public class ClientMain {
                                 ActionManager.getInstance()
                                         .sendAction(new PlaceCounterAction(currentPlayer.getName(),
                                                 pickedRoute.getSource().getTownName(),
-                                                pickedRoute.getDest().getTownName(),
+                                                pickedRoute.getDest().getTownName(), pickedRoute.isRiver,
                                                 pickedTok.getTokenName()));
                             }
                             break;

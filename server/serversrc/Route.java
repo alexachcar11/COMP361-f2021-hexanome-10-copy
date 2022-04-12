@@ -51,6 +51,15 @@ public class Route {
         return dest;
     }
 
+    public boolean isWater(){
+        if (this.type == RouteType.LAKE || this.type == RouteType.RIVER){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     // public int[] getHitBox() {
     // return hitbox;
     // }

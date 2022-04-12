@@ -13,12 +13,14 @@ public class PlaceCounterAction implements Action {
     String tok;
     String srcTown;
     String destTown;
+    boolean isWater;
 
-    public PlaceCounterAction(String sender, String src, String dest, String pTok) {
+    public PlaceCounterAction(String sender, String src, String dest, Boolean pIsWater, String pTok) {
         this.tok = pTok;
         this.senderName = sender;
         this.srcTown = src;
         this.destTown = dest;
+        this.isWater = pIsWater;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class PlaceCounterAction implements Action {
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         Town s = Town.getTownByName(srcTown);
         Town d = Town.getTownByName(destTown);
-        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
+        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
         Token t = Token.getTokenByName(tok);
         // check if it's phase 4 for placing counters
         // TODO: might need modification for elfengold
@@ -64,7 +66,7 @@ public class PlaceCounterAction implements Action {
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         Town s = Town.getTownByName(srcTown);
         Town d = Town.getTownByName(destTown);
-        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
+        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
         Token t;
         if (tok.equalsIgnoreCase("obstacle")){
             System.out.println("it's an obstacle !");
