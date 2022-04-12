@@ -58,7 +58,9 @@ public class MoveBootAction implements Action {
             System.out.println("ERROR: Player doesn't have all cards required!");
             return false;
         }
-
+        if (!route.hasCounter()){
+            return false;
+        }
         return true;
     }
 
