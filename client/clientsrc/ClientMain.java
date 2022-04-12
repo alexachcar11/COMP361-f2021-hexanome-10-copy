@@ -2474,7 +2474,10 @@ public class ClientMain {
 
                     @Override
                     public void execute() {
-                        savedGameNames = savedGames;
+                        synchronized (savedGameNames) {
+                            savedGameNames = savedGames;
+                            savedGameNames.notify();
+                        }
                     }
                 };
             }
@@ -2490,6 +2493,14 @@ public class ClientMain {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
 
         // TODO: display all saved games and keep track of the Join button location
+        synchronized (savedGameNames) {
+            try {
+                savedGameNames.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // CANON'S CODE HERE
+        }
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
