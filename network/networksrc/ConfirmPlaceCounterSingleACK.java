@@ -25,7 +25,9 @@ public class ConfirmPlaceCounterSingleACK implements Action {
         ClientMain.clearPickedTok();
         // consume token from player's hand
         try {
+            System.out.println("Consuming token: " + this.tok);
             ClientMain.currentPlayer.consumeToken(TokenSprite.getTokenSpriteByString(tok));
+            System.out.println("After consuming token: " + this.tok);
         } catch (MinuetoFileException e) {
             System.out.println("MinuetoFileException");
         } catch (IllegalArgumentException e) {
