@@ -510,7 +510,7 @@ public class ClientMain {
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
             String temp = "";
             for (int i = 0; i<r.getTokenOnRoute().size(); i++){
-                temp += r.getTokenOnRoute().get(i).getTokenName();
+                temp += r.getTokenOnRoute().get(i).getTokenName().toLowerCase();
                 if(i == r.getTokenOnRoute().size()-2){
                     temp += " and ";
                 }
@@ -1666,7 +1666,7 @@ public class ClientMain {
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
-        WINDOW.setMaxFrameRate(60);
+        WINDOW.setMaxFrameRate(0);
 
         // make window visible
         gui.window.setVisible(true);
