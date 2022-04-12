@@ -32,9 +32,13 @@ public class ConfirmPlaceCounterACK implements Action {
         // set token to route
         ClientRoute r = ClientMain.currentGame.getTownGraph().getRoute(ClientTown.getTownByName(srcT), ClientTown.getTownByName(destT));
         try {
+            ClientPlayer p = ClientPlayer.getPlayerByName(senderName);
+            p.consumeToken(TokenSprite.getTokenSpriteByString(tok));
+
             System.out.println("Setting token on ClientRoute: Token: " + this.tok);
             r.setToken(TokenSprite.getTokenSpriteByString(tok));
             System.out.println("After setting token on ClientRoute: Token: " + this.tok);
+
         } catch (MinuetoFileException e) {
             System.out.println("MinuetoFileException");
         } catch (IllegalArgumentException e) {
