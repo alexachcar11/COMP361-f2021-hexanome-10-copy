@@ -67,9 +67,9 @@ public class TownGraph {
     // @pre town s and d needs to have an existing edge
     public ClientRoute getRoute(ClientTown s, ClientTown d) {
         assert hasEdge(s, d);
-        List<ClientRoute> routes = map.get(s);
+        // List<ClientRoute> routes = map.get(s);
         // loop through routes to find the right one
-        for (ClientRoute r : routes) {
+        for (ClientRoute r : Game.getAllRoutes()) {
             ClientTown source = r.getSource();
             ClientTown dest = r.getDest();
             // return if d matches one of the towns in route
