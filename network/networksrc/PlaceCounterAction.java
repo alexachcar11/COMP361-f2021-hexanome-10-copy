@@ -43,6 +43,10 @@ public class PlaceCounterAction implements Action {
         if (playerWhoSent.getCurrentGame().getCurrentPhase() != 4){
             return false;
         }
+        // check if it's river
+        if (rou.isWater()){
+            return false;
+        }
         // check if there's already a token on road
         if (rou.hasCounter()){
             // if we're trying to place an obstacle
