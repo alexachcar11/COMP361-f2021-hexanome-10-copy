@@ -490,9 +490,14 @@ public class ClientMain {
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
             String temp = "";
-            for (TokenSprite t: r.getTokenOnRoute()){
-                temp += t.getTokenName();
-                temp += " ";
+            for (int i = 0; i<r.getTokenOnRoute().size(); i++){
+                temp += r.getTokenOnRoute().get(i).getTokenName();
+                if(i == r.getTokenOnRoute().size()-2){
+                    temp += " and ";
+                }
+                else {
+                    temp += ", ";
+                }
             }
             String tokenOnRouteString = "This route currently has a " + temp + "token on it";
             JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
