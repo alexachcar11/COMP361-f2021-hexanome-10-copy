@@ -54,6 +54,9 @@ public class PlaceCounterAction implements Action {
         if (playerWhoSent.getCurrentGame().getCurrentPhase() != 4){
             return false;
         }
+        if (this.tok.equalsIgnoreCase("OBSTACLE") && !selectedRoute.hasCounter()){
+            return false;
+        }
         // check if it's river
         if (selectedRoute.isWater()){
             return false;
