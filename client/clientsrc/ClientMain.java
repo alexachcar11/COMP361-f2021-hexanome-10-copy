@@ -2081,7 +2081,9 @@ public class ClientMain {
         for(ClientRoute r: Game.getAllRoutes()) { 
             if(r.getTokenOnRoute().isEmpty() == false) { 
                 for(TokenSprite tok: r.getTokenOnRoute()) { 
-                    gui.window.draw(tok.getSmallImage(), r.getMinX(), r.getMinY());
+                    MinuetoImage imageIcon = tok.getSmallImage();
+                    imageIcon.scale(0.5, 0.5);
+                    gui.window.draw(imageIcon, r.getMinX(), r.getMinY());
                 }
             }
         }
