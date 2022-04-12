@@ -84,7 +84,15 @@ public class MoveBootAction implements Action {
 
         // send an ACK to all clients in the game
         ActionManager ackManager = ActionManager.getInstance();
-        MoveBootACK actionToSend = new MoveBootACK(dstTown, senderName);
+        // set the right dst town
+        String goToTown;
+        if (playerWhoSent.getTown().equal(dTown)){
+            goToTown = srcTown;
+        }
+        else {
+            goToTown = dstTown;
+        }
+        MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
     }
 }
