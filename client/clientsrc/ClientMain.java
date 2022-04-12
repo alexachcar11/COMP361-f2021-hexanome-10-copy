@@ -773,53 +773,53 @@ public class ClientMain {
                     if (listOfTokens.size() == 0) {
                         // do nothin :)
                     } else if (listOfTokens.size() == 1) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
                     } else if (listOfTokens.size() == 2) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(1);
                         }
                     } else if (listOfTokens.size() == 3) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
                     } else if (listOfTokens.size() == 4) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(3);
                         }
                     } else if (listOfTokens.size() == 5) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(4);
                         }
                     }
@@ -837,56 +837,55 @@ public class ClientMain {
                     if (listOfTokens.size() == 0) {
                         // do nothin :)
                     } else if (listOfTokens.size() == 1) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
                     } else if (listOfTokens.size() == 2) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(1);
                         }
                     } else if (listOfTokens.size() == 3) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
                     } else if (listOfTokens.size() == 4) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(3);
                         }
                     } else if (listOfTokens.size() == 5) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(4);
                         }
-
                     }
                     if (pickedTok != null) {
                         System.out.println(
