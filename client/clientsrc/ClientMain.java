@@ -2444,6 +2444,10 @@ public class ClientMain {
 
     public static void displaySavedGames() {
         // TODO: retrieve info on the server
+        // TODO: use GetSavedGamesAction here
+        GetSavedGamesAction action = new GetSavedGamesAction(currentUser.getName());
+        ACTION_MANAGER.sendAction(action);
+
 
         // TODO: reset buttons
 
@@ -2454,6 +2458,69 @@ public class ClientMain {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
 
         // TODO: display all saved games and keep track of the Join button location
+        try {
+            // TODO: imma clone it idk
+            ArrayList<String> savedGamesList = savedGameNames.clone();
+
+            // display a message when there are no saved games
+            int nbSavedGameSessions = savedGamesList.size();
+            if (nbSavedGameSessions == 0) {
+                MinuetoText noneAvailableText = new MinuetoText(
+                        "There are no saved games.", font, MinuetoColor.BLACK);
+                gui.window.draw(noneAvailableText, 200, 340);
+            }
+
+            // display next button
+            if (nbSavedGameSessions > 9) {
+                MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
+                gui.window.draw(nextButton, 700, 676);
+            }
+
+            int totalCounter = 0; // how many games are displayed so far
+            int pageCounter = 0; // how many games are displayed on one page so far
+
+            // display saved games
+            for (String gameName : savedGamesList) {
+
+                //if (!gs.isLaunched()) { // only show unlaunched sessions
+                    //String gsName = gameName;
+                    //String gsCreator = gs.getCreator();
+                    //String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
+                    //String gsMaxPlayerNumber = String.valueOf(gs.getGame().getNumberOfPlayers());
+
+                    MinuetoText displayName = new MinuetoText(gameName, font, MinuetoColor.BLACK);
+                    //MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
+                    //MinuetoText size = new MinuetoText(gsCurrentPlayerNumber + "/" + gsMaxPlayerNumber, font,
+                    //        MinuetoColor.BLACK);
+                    MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
+                    MinuetoText joinText = new MinuetoText("LOAD", font, MinuetoColor.BLACK);
+
+                    gui.window.draw(displayName, 65, 215 + (pageCounter * 50));
+                    //gui.window.draw(creator, 350, 215 + (pageCounter * 50));
+                    //gui.window.draw(size, 655, 215 + (pageCounter * 50));
+                    gui.window.draw(joinButton, 835, 210 + (pageCounter * 50));
+                    gui.window.draw(joinText, 855, 215 + (pageCounter * 50));
+
+                    // keep track of the button location
+                    Integer maxX = 935;
+                    Integer minX = 835;
+                    Integer maxY = 245 + (pageCounter * 50);
+                    Integer minY = 210 + (pageCounter * 50);
+                    ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
+
+                    //TODO: what is this AbstractMap stuff
+                    AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
+                            listOfCoordinates, gs);
+                    joinButtonCoordinates.add(entry);
+
+                    pageCounter++;
+                    totalCounter++;
+                // }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
