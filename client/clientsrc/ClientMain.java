@@ -2218,21 +2218,6 @@ public class ClientMain {
 
         System.out.println("displaying original game board");
 
-        // draw Cards text
-        MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(cardsText, 145, 600);
-
-        // draw Tokens text
-        MinuetoText tokensText = new MinuetoText("Tokens:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(tokensText, 580, 600);
-
-        // draw line between the text:
-        currentBackground.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
-
-        // pass turn button
-        MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(passTurnText, 42, 650);
-
         // draw opponent inventory boxes
         int numberPlayers = players.size();
         for (int i = 0; i < numberPlayers; i++) {
