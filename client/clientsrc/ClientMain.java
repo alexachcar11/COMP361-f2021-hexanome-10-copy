@@ -2454,7 +2454,8 @@ public class ClientMain {
     }
 
     public static void displaySavedGames() {
-        // TODO: retrieve info on the server
+        // is this the same as the client name?
+        final String currentPlayer = ClientMain.currentPlayer.getName();
         Action getSavedGames = new Action() {
 
             @Override
@@ -2480,9 +2481,11 @@ public class ClientMain {
                         }
                     }
                 };
+                ActionManager.getInstance().sendToSender(sendSavedGamesToClient, currentPlayer);
             }
 
         };
+        ActionManager.getInstance().sendAction(getSavedGames);
 
         // TODO: reset buttons
 
