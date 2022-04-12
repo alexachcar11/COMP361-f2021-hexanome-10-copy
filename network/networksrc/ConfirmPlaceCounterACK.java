@@ -35,7 +35,7 @@ public class ConfirmPlaceCounterACK implements Action {
         // set token to route
         ClientRoute r = null;
         for(ClientRoute rou : Game.getAllRoutes()) { 
-            if(rou.getSourceTownString().equals(srcT) && rou.getDestTownString().equals(destT)) { 
+            if((rou.getSourceTownString().equals(srcT) && rou.getDestTownString().equals(destT)) || (rou.getSourceTownString().equals(destT) && rou.getDestTownString().equals(srcT))) { 
                 r = rou;
             } 
         }
