@@ -26,6 +26,7 @@ import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 
 import serversrc.Route;
+import serversrc.SaveGameManager;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -125,6 +126,8 @@ public class ClientMain {
     static boolean played;
     // currentGame.getNumberOfPlayers()
     static int numberPlayers = 2;
+
+    private static List<String> savedGameNames;
 
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
@@ -2456,14 +2459,24 @@ public class ClientMain {
 
             @Override
             public boolean isValid() {
-                // TODO Auto-generated method stub
-                return false;
+                return true;
             }
 
             @Override
             public void execute() {
-                // TODO Auto-generated method stub
+                List<String> savedGames = SaveGameManager.instance().getSavedGameNames();
+                Action sendSavedGamesToClient = new Action() {
 
+                    @Override
+                    public boolean isValid() {
+                        return true;
+                    }
+
+                    @Override
+                    public void execute() {
+                        savedGameNames = savedGames;
+                    }
+                };
             }
 
         };

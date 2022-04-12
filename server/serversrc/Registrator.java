@@ -454,11 +454,6 @@ public class Registrator {
         }
     }
 
-    public void registerSaveGame(String gameName, List<String> playerNames, String saveGameID) {
-        HttpResponse<String> jsonResponse = Unirest
-                .put("http://elfenland.simui.com/api/gameservices/{gameservice}/savegames").asString();
-    }
-
     /**
      * Send an LS request to launch a session
      * 
