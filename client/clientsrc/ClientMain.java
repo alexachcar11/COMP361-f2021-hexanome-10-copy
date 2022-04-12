@@ -1666,7 +1666,7 @@ public class ClientMain {
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
-        WINDOW.setMaxFrameRate(60);
+        WINDOW.setMaxFrameRate(0);
 
         // make window visible
         gui.window.setVisible(true);
