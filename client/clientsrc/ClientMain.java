@@ -2488,7 +2488,6 @@ public class ClientMain {
         };
         ActionManager.getInstance().sendAction(getSavedGames);
 
-
         // TODO: reset buttons
 
         // display
@@ -2499,7 +2498,6 @@ public class ClientMain {
 
         // TODO: display all saved games and keep track of the Join button location
 
-
         synchronized (savedGameNames) {
             try {
                 savedGameNames.wait();
@@ -2508,7 +2506,6 @@ public class ClientMain {
             }
             // CANON'S CODE HERE
             try {
-                // TODO: imma clone it idk
 
                 // display a message when there are no saved games
                 int nbSavedGameSessions = savedGameNames.size();
@@ -2530,22 +2527,24 @@ public class ClientMain {
                 // display saved games
                 for (String gameName : savedGameNames) {
 
-                    //if (!gs.isLaunched()) { // only show unlaunched sessions
-                    //String gsName = gameName;
-                    //String gsCreator = gs.getCreator();
-                    //String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
-                    //String gsMaxPlayerNumber = String.valueOf(gs.getGame().getNumberOfPlayers());
+                    // if (!gs.isLaunched()) { // only show unlaunched sessions
+                    // String gsName = gameName;
+                    // String gsCreator = gs.getCreator();
+                    // String gsCurrentPlayerNumber =
+                    // String.valueOf(gs.getNumberOfUsersCurrently());
+                    // String gsMaxPlayerNumber = String.valueOf(gs.getGame().getNumberOfPlayers());
 
                     MinuetoText displayName = new MinuetoText(gameName, font, MinuetoColor.BLACK);
-                    //MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
-                    //MinuetoText size = new MinuetoText(gsCurrentPlayerNumber + "/" + gsMaxPlayerNumber, font,
-                    //        MinuetoColor.BLACK);
+                    // MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
+                    // MinuetoText size = new MinuetoText(gsCurrentPlayerNumber + "/" +
+                    // gsMaxPlayerNumber, font,
+                    // MinuetoColor.BLACK);
                     MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
                     MinuetoText joinText = new MinuetoText("LOAD", font, MinuetoColor.BLACK);
 
                     gui.window.draw(displayName, 65, 215 + (pageCounter * 50));
-                    //gui.window.draw(creator, 350, 215 + (pageCounter * 50));
-                    //gui.window.draw(size, 655, 215 + (pageCounter * 50));
+                    // gui.window.draw(creator, 350, 215 + (pageCounter * 50));
+                    // gui.window.draw(size, 655, 215 + (pageCounter * 50));
                     gui.window.draw(joinButton, 835, 210 + (pageCounter * 50));
                     gui.window.draw(joinText, 855, 215 + (pageCounter * 50));
 
@@ -2556,7 +2555,6 @@ public class ClientMain {
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
 
-                    //TODO: what is this AbstractMap stuff
                     AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
