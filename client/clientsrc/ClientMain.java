@@ -752,8 +752,7 @@ public class ClientMain {
                                         + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
                                 ActionManager.getInstance()
                                         .sendAction(new PlaceCounterAction(currentPlayer.getName(),
-                                                pickedRoute.getSource().getTownName(),
-                                                pickedRoute.getDest().getTownName(), pickedRoute.isRiver,
+                                                pickedRoute, pickedRoute.isRiver,
                                                 pickedTok.getTokenName()));
                             }
                             break;

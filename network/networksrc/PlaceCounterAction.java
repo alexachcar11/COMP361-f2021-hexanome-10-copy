@@ -1,5 +1,8 @@
 package networksrc;
 
+import java.util.Arrays;
+
+import clientsrc.ClientRoute;
 import serversrc.Obstacle;
 import serversrc.Player;
 import serversrc.Route;
@@ -11,15 +14,14 @@ public class PlaceCounterAction implements Action {
 
     String senderName;
     String tok;
-    String srcTown;
-    String destTown;
+    
+    ClientRoute pickedRoute;
     boolean isWater;
 
-    public PlaceCounterAction(String sender, String src, String dest, Boolean pIsWater, String pTok) {
+    public PlaceCounterAction(String sender, ClientRoute pickedRoute, Boolean pIsWater, String pTok) {
         this.tok = pTok;
         this.senderName = sender;
-        this.srcTown = src;
-        this.destTown = dest;
+        this.pickedRoute = pickedRoute;
         this.isWater = pIsWater;
     }
 
@@ -34,9 +36,18 @@ public class PlaceCounterAction implements Action {
             return false;
         }
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
-        Town s = Town.getTownByName(srcTown);
-        Town d = Town.getTownByName(destTown);
-        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
+        // Town s = Town.getTownByName(srcTown);
+        // Town d = Town.getTownByName(destTown);
+        // Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
+
+        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        
+        for(Route r: ServerGame.getAllRoutes()) { 
+            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+                selectedRoute = r;
+            }
+        }
+        
         Token t = Token.getTokenByName(tok);
         // check if it's phase 4 for placing counters
         // TODO: might need modification for elfengold
@@ -44,14 +55,14 @@ public class PlaceCounterAction implements Action {
             return false;
         }
         // check if it's river
-        if (rou.isWater()){
+        if (selectedRoute.isWater()){
             return false;
         }
         // check if there's already a token on road
-        if (rou.hasCounter()){
+        if (selectedRoute.hasCounter()){
             // if we're trying to place an obstacle
             // return true if there's no obstacle yet
-            if (!rou.hasObstacle() && this.tok.equalsIgnoreCase("OBSTACLE")){
+            if (!selectedRoute.hasObstacle() && this.tok.equalsIgnoreCase("OBSTACLE")){
                 return true;
             }
             else {
@@ -68,9 +79,15 @@ public class PlaceCounterAction implements Action {
         System.out.println("Executing the PlaceCounterAction on the server");
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
-        Town s = Town.getTownByName(srcTown);
-        Town d = Town.getTownByName(destTown);
-        Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
+        
+        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        
+        for(Route r: ServerGame.getAllRoutes()) { 
+            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+                selectedRoute = r;
+            }
+        }
+
         Token t;
         if (tok.equalsIgnoreCase("obstacle")){
             System.out.println("it's an obstacle !");
@@ -82,14 +99,14 @@ public class PlaceCounterAction implements Action {
             t = Token.getTokenByName(tok);
         }
         
-        playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
+        playersCurrentGame.playerPlaceCounter(playerWhoSent, selectedRoute, t);
 
         ActionManager ackManager = ActionManager.getInstance();
 
         // consume token on client side
         ackManager.sendToSender(new ConfirmPlaceCounterSingleACK(this.tok), this.senderName);
         
-        ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, this.srcTown, this.destTown,
+        ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, selectedRoute.getSourceTownString(), selectedRoute.getDestTownString(),
                 this.tok);
                 
         // let everyone else know of the new state
