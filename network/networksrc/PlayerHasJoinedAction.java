@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 
 import serversrc.Color;
 import serversrc.GameLobby;
+import serversrc.ServerMain;
 import serversrc.ServerUser;
 
 public class PlayerHasJoinedAction implements Action{
@@ -76,60 +77,75 @@ public class PlayerHasJoinedAction implements Action{
         for (ServerUser user : gameLobby.getAllUsers()) {
             Color colorTaken = user.getColor();
             if (colorTaken != null && color.equals(colorTaken.name())) {
-                System.err.println("ChooseBootColorAction: the color is already taken");
+                // send ack to the sender only
+                ActionManager ackManager = ActionManager.getInstance();
+                ChooseBootColorACK actionToSend = new ChooseBootColorACK(color, "already-taken");
+                ackManager.sendToSender(actionToSend, senderName);
                 return false;
             }
         }
-        System.out.println("is valid");
         return true;
     }
 
 
     @Override
     public void execute() {
-        // add the user to the lobby
-        GameLobby gameLobby = GameLobby.getGameLobby(gameID);
-        ServerUser sUser = ServerUser.getServerUser(senderName);
-        gameLobby.addUser(sUser);
 
-        // set the user's color
-        if (color.equals("BLUE")) {
-            sUser.setColor(Color.BLUE);
-        } else if (color.equals("BLACK")) {
-            sUser.setColor(Color.BLACK);
-        } else if (color.equals("RED")) {
-            sUser.setColor(Color.RED);
-        } else if (color.equals("GREEN")) {
-            sUser.setColor(Color.GREEN);
-        } else if (color.equals("YELLOW")) {
-            sUser.setColor(Color.YELLOW);
-        } else if (color.equals("PURPLE")) {
-            sUser.setColor(Color.PURPLE);
-        }
-
-        // notify all users in the lobby
-        PlayerHasJoinedACK actionToSendToOthers = new PlayerHasJoinedACK(senderName, color);
-        PlayerHasJoinedSenderACK actionToSendToSender = new PlayerHasJoinedSenderACK(senderName, color);
+        // request to join on LS
+        ServerUser userJoining = ServerUser.getServerUser(senderName);
         try {
-            Server serverInstance = Server.getInstance();
-            for (ServerUser serverUser : gameLobby.getAllUsers()) {
-                String username = serverUser.getName();
-                // get the user's socket
-                ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
-                // get the socket's output stream 
-                ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
-                // send the acknowledgment
-                if (username.equals(senderName)) {
-                    // sender' ack
-                    objectOutputStream.writeObject(actionToSendToSender);
-                } else {
-                    // others' ack
-                    objectOutputStream.writeObject(actionToSendToOthers);
-                }
+            ServerMain.REGISTRATOR.joinGame(gameID, userJoining);
+
+            // add the user to the lobby
+            GameLobby gameLobby = GameLobby.getGameLobby(gameID);
+            ServerUser sUser = ServerUser.getServerUser(senderName);
+            gameLobby.addUser(sUser);
+
+            // set the user's color
+            if (color.equals("BLUE")) {
+                sUser.setColor(Color.BLUE);
+            } else if (color.equals("BLACK")) {
+                sUser.setColor(Color.BLACK);
+            } else if (color.equals("RED")) {
+                sUser.setColor(Color.RED);
+            } else if (color.equals("GREEN")) {
+                sUser.setColor(Color.GREEN);
+            } else if (color.equals("YELLOW")) {
+                sUser.setColor(Color.YELLOW);
+            } else if (color.equals("PURPLE")) {
+                sUser.setColor(Color.PURPLE);
             }
-        } catch (IOException e) { 
-            System.err.println("IOException in PlayerHasJoined.execute().");
+
+            // notify all users in the lobby
+            PlayerHasJoinedACK actionToSendToOthers = new PlayerHasJoinedACK(senderName, color);
+            PlayerHasJoinedSenderACK actionToSendToSender = new PlayerHasJoinedSenderACK(senderName, color);
+            try {
+                Server serverInstance = Server.getInstance();
+                for (ServerUser serverUser : gameLobby.getAllUsers()) {
+                    String username = serverUser.getName();
+                    // get the user's socket
+                    ClientTuple clientTupleToNotify = serverInstance.getClientTupleByUsername(username);
+                    // get the socket's output stream 
+                    ObjectOutputStream objectOutputStream = clientTupleToNotify.output();
+                    // send the acknowledgment
+                    if (username.equals(senderName)) {
+                        // sender's ack
+                        objectOutputStream.writeObject(actionToSendToSender);
+                    } else {
+                        // others' ack
+                        objectOutputStream.writeObject(actionToSendToOthers);
+                    }
+                }
+            } catch (IOException e) { 
+                System.err.println("IOException in PlayerHasJoined.execute().");
+            }
+
+        } catch (Exception e1) {
+            // fail to join on LS
+            e1.printStackTrace();
         }
+
+        
     }
     
 }

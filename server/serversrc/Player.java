@@ -21,6 +21,9 @@ public class Player {
     private Town inTown;
     private List<Town> townsPassed; // to keep track of score
     private Town targetTown; // destination town for variant
+    private int index = 0; // index of destination town in the shuffled list of towns
+    private int score;
+    private Token tokenToKeep;
 
     private String aName;
     private Action aBootAction;
@@ -34,18 +37,25 @@ public class Player {
     public Player(ServerUser pServerUser, ServerGame currentGame) {
         aBoot = new Boot();
 
-        // inTown = elvenhold; // fix this
-        this.gold = 0;
+        this.inTown = Town.getTownByName("Elvenhold");
+        // start with 12 gold for elfengold
+        this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aName = pServerUser.getName();
         this.turnPassed = false;
-
+        this.tokenToKeep = null;
         this.aServerUser = pServerUser;
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
         allPlayers.add(this);
+        this.townsPassed = new ArrayList<>();
+
         // aBootAction = new BootAction(this);
+    }
+
+    public void incrementGold(int townGoldValue) {
+        this.gold += townGoldValue;
     }
 
     public static Player getPlayerByName(String name) {
@@ -57,6 +67,23 @@ public class Player {
         return null;
     }
 
+    public void setTargetTown(Town t){
+        this.targetTown = t;
+    }
+
+    // returns destination town
+    public Town getTargetTown() {
+        return this.targetTown;
+    }
+
+    public void deductGold(int golds) {
+        this.gold -= golds;
+    }
+
+    public int getGold() {
+        return this.gold;
+    }
+
     public List<Token> getTokensInHand() {
         return tokensInHand;
     }
@@ -64,12 +91,14 @@ public class Player {
     public void passTurn(Player nextPlayer) {
         this.turnPassed = true;
         this.isTurn = false;
+        ActionManager.getInstance().sendToSender(new ChangePlayerTurnACK(this.isTurn), this.getName());
         // next player's turn
         nextPlayer.setTrueIsTurn();
     }
 
     public void setTrueIsTurn() {
         this.isTurn = true;
+        ActionManager.getInstance().sendToSender(new ChangePlayerTurnACK(this.isTurn), this.getName());
     }
 
     public void resetTurnPassed() {
@@ -80,10 +109,12 @@ public class Player {
         return this.turnPassed;
     }
 
+    // cardList is the list of cards needed
     public boolean hasCards(List<AbstractCard> cardList) {
+       
         // copy the cardList
-        List<AbstractCard> copyList = new ArrayList<AbstractCard>(cardList.size());
-        Collections.copy(copyList, cardList);
+        List<AbstractCard> copyList = new ArrayList<AbstractCard>();
+        copyList.addAll(this.cardsInHand);
 
         for (AbstractCard c : cardList) {
             // check if player doesn't have card c
@@ -115,7 +146,7 @@ public class Player {
     }
 
     public String getName() {
-        return aServerUser.getName();
+        return this.aName;
     }
 
     public Town getTown() {
@@ -150,18 +181,27 @@ public class Player {
 
     // returns list of tokens except obstacle from player's hand
     public List<Token> removeAllTokens() {
-        List<Token> output = new ArrayList<>();
-        for (Token tok : tokensInHand) {
-            if (tok instanceof Obstacle) {
-                continue;
-            } else {
-                // add to output
-                output.add(tok);
-                // remove from player's hand
-                tokensInHand.remove(tok);
-            }
-        }
+        this.tokensInHand.remove(new Obstacle());
+        return this.tokensInHand;
+    }
+
+    public void setTokenToKeep(Token pTok) {
+        this.tokenToKeep = pTok;
+    }
+
+    public Token popTokenToKeep() {
+        Token output = this.tokenToKeep;
+        this.tokenToKeep = null;
         return output;
+    }
+
+    public void clearTokenHand() {
+        // keep obstacle, clear the rest
+        boolean hasObstacle = this.tokensInHand.remove(new Obstacle());
+        this.tokensInHand.clear();
+        if (hasObstacle) {
+            this.tokensInHand.add(new Obstacle());
+        }
     }
 
     /*
@@ -349,9 +389,17 @@ public class Player {
         }
     }
 
-    // gets the total score by seeing how many towns player has passed
+    public void initScore() {
+        this.score = this.townsPassed.size();
+    }
+
+    // gets the total score
     public int getScore() {
-        return this.townsPassed.size();
+        return this.score;
+    }
+
+    public void deductScore(int i) {
+        this.score -= i;
     }
 
     /*

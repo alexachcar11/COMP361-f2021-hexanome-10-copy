@@ -24,8 +24,11 @@ public class PlayerHasJoinedSenderACK implements Action{
     @Override
     public void execute() {
         // add the player to LobbyServiceGameSession
-        User existing = User.getUserByName(joinerName);
+        User existing = ClientMain.currentUser;
         ClientMain.currentSession.addUser(existing);
+
+        // set current game
+        ClientMain.currentGame = ClientMain.currentSession.getGame();
 
         // assign the color
         if (color.equals("BLUE")) {
@@ -41,14 +44,10 @@ public class PlayerHasJoinedSenderACK implements Action{
         } else if (color.equals("PURPLE")) {
             existing.setColor(Color.PURPLE);
         } 
+
+        // get other users' colors from the server
         ClientMain.currentSession.updateUsers();
-        try {
-            ClientMain.displayUsers();
-            System.out.println("displaying users to the sender");
-            ClientMain.displayLobbyInfo();
-        } catch (MinuetoFileException e) {
-            e.printStackTrace();
-        }
+
         
     }
     

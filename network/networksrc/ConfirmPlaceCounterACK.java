@@ -3,9 +3,13 @@ package networksrc;
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
-import clientsrc.Player;
-import clientsrc.TokenImage;
-import clientsrc.Town;
+import clientsrc.TokenSprite;
+import clientsrc.ClientPlayer;
+import clientsrc.ClientRoute;
+import clientsrc.ClientTown;
+import clientsrc.Game;
+import serversrc.Route;
+import serversrc.ServerGame;
 
 public class ConfirmPlaceCounterACK implements Action {
 
@@ -27,11 +31,35 @@ public class ConfirmPlaceCounterACK implements Action {
     }
 
     @Override
-    public void execute() throws MinuetoFileException {
-        // TODO Auto-generated method stub
-        Player thePlayer = Player.getPlayerByName(senderName);
-        // thePlayer.consumeToken(TokenImage.getTokenByName(tok));
+    public void execute() {
+        // set token to route
+        ClientRoute r = null;
+        for(ClientRoute rou : Game.getAllRoutes()) { 
+            if((rou.getSourceTownString().equals(srcT) && rou.getDestTownString().equals(destT)) || (rou.getSourceTownString().equals(destT) && rou.getDestTownString().equals(srcT))) { 
+                r = rou;
+            } 
+        }
+        // ClientRoute r = ClientMain.currentGame.getTownGraph().getRoute(ClientTown.getTownByName(srcT), ClientTown.getTownByName(destT));
+        try {
+            ClientPlayer p = ClientPlayer.getPlayerByName(senderName);
+            p.consumeToken(TokenSprite.getTokenSpriteByString(tok));
 
-        ClientMain.currentGame.getTownGraph().getRoute(Town.getTownByName(srcT), Town.getTownByName(destT));
+            System.out.println("Setting token on ClientRoute: Token: " + this.tok);
+            r.setToken(TokenSprite.getTokenSpriteByString(tok));
+            System.out.println("After setting token on ClientRoute: Token: " + this.tok);
+
+        } catch (MinuetoFileException e) {
+            System.out.println("MinuetoFileException");
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException inside ConfirmPlaceCounterACK");
+        }
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

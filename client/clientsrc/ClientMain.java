@@ -1,7 +1,6 @@
 package clientsrc;
 
 // minueto
-import org.json.simple.JSONObject;
 import org.minueto.MinuetoColor;
 import org.minueto.MinuetoEventQueue;
 import org.minueto.MinuetoFileException;
@@ -11,28 +10,25 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
-import org.minueto.window.MinuetoPanel;
 
+import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
-//import networksrc.ChooseBootColorAction;
+import networksrc.ChooseTokenToKeepAction;
+import networksrc.Client;
+import networksrc.CreateNewGameAction;
 import networksrc.GetAvailableColorsAction;
+import networksrc.GetAvailableSessionsAction;
+import networksrc.LaunchGameAction;
+import networksrc.LoginAction;
+import networksrc.MoveBootAction;
+import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
-import networksrc.TestAction;
-// import serversrc.Token;
-
-import javax.imageio.ImageIO;
-
-// import serversrc.Color;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.TownGoldOption;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -41,37 +37,40 @@ import javax.swing.JLabel;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 public class ClientMain {
 
     // fields
+    public static Client currentClient;
     public static User currentUser;
     public static LobbyServiceGameSession currentSession;
     public static Game currentGame;
-    public static Player currentPlayer;
+    public static ClientPlayer currentPlayer;
 
     public static GUI gui;
     static MinuetoEventQueue entryScreenQueue, loginScreenQueue, moveBootQueue, lobbyScreenQueue, createGameQueue,
+            savedGamesScreenQueue,
             elfenlandLobbyQueue, elfenlandQueue, chooseBootQueue, placeCounterQueue;
-    static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
+    public final static MinuetoFont fontArial20 = new MinuetoFont("Arial", 19, false, false);
     // make images
-    static MinuetoImage elfenlandImage;
-    static MinuetoImage elfengoldImage;
+    public static MinuetoImage elfenlandImage;
+    public static MinuetoImage elfengoldImage;
 
     // create a list of the players
-    static List<Player> players;
+    public static List<ClientPlayer> players;
 
     // TODO: fix this List<MinuetoImage> bootImages = getBootImages(bootFileNames);
     static MinuetoImage playScreenImage;
-    static MinuetoImage loginScreenImage;
-    static MinuetoImage whiteBoxImage;
+    public static MinuetoImage loginScreenImage;
+    public static MinuetoImage whiteBoxImage;
     private static MinuetoImage lobbyBackground;
+    private static MinuetoImage saveGameBackground;
     static MinuetoImage createGameBackground;
     static MinuetoImage createGameBackgroundElfengold;
     static MinuetoImage elfenlandSelected;
@@ -85,11 +84,12 @@ public class ClientMain {
     private static MinuetoImage purpleBoppel;
     private static MinuetoImage lobbyElfenlandBackground;
     private static MinuetoImage lobbyElfengoldBackground;
+    private static MinuetoImage roundNumberImage;
     static MinuetoImage readyGreen;
     static MinuetoImage readyWhite;
     static MinuetoImage startButton;
     public static MinuetoImage waitingForLaunch;
-    static MinuetoFont fontArial22Bold;
+    public static MinuetoFont fontArial22Bold;
     static MinuetoRectangle modeDropdownRectangle;
     static MinuetoRectangle destinationTownDropdownRectangle;
     static MinuetoRectangle sizeDropdownRectangle;
@@ -117,24 +117,11 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
-    static int numberPlayers = 3;
+    static boolean played;
+    // currentGame.getNumberOfPlayers()
+    static int numberPlayers = 2;
 
-    public static final Registrator REGISTRATOR = Registrator.instance();
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
-
-    // TODO: place this somewhere else configImages(bootImages);
-    /*
-     * in the Boot class
-     * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
-     * image files
-     * 
-     * List<String> bootFileNames = new ArrayList<>();
-     * // add file names of boot images to the bootFiles list
-     * for (File file : bootDir.listFiles()) {
-     * if (file.getName().startsWith("boot-"))
-     * bootFileNames.add("images/böppels-and-boots/" + file.getName());
-     * }
-     */
 
     static MinuetoMouseHandler entryScreenMouseHandler = new MinuetoMouseHandler() {
         @Override
@@ -142,7 +129,6 @@ public class ClientMain {
             // click on Play
             if (x <= 665 && x >= 360 && y >= 345 && y <= 445) {
                 gui.currentBackground = GUI.Screen.LOGIN;
-                // gui.currentBackground = GUI.Screen.ELFENLAND;
             }
 
             // click on Quit
@@ -196,12 +182,6 @@ public class ClientMain {
 
             // CLICK ON THE LOGIN BOX AREA
             if (x <= 235 && x >= 165 && y >= 525 && y <= 550) {
-
-                // TODO: Check if the username exists in the list of usernames
-                // if it exists -> check if password matches -
-                // if password matches --> send to availableGamesScreen
-                // else --> send red text to reflect outcome
-                // if it doesn't exist -> send red text to reflect outcome
                 if (passString.length() == 0 || userString.length() == 0) {
 
                     if (passString.length() == 0) {
@@ -219,32 +199,36 @@ public class ClientMain {
                 }
 
                 else {
+                    // login
                     try {
-                        boolean userFound = false;
-                        for (Object user : REGISTRATOR.getAllUsers()) {
-                            if (((JSONObject) user).get("name").equals(userString)) {
-                                userFound = true;
-                            }
+                        if (currentClient == null) {
+                            // client-server connection
+                            Client client = new Client("elfenland.simui.com", 13645, userString);
+                            client.start();
+                            currentClient = client;
+                        } else if (clientNeedsNewName) {
+                            // here if the username provided does not exist
+                            // associate the client with a new name on the server
+                            currentClient.setName(userString);
                         }
-                        if (userFound) {
-                            // user exists, login
-                            System.out.println("User exists");
-                            currentUser = new User(userString, passString);
 
-                            // send a test action
-                            ACTION_MANAGER.sendActionAndGetReply(new TestAction(currentUser.getName()));
-                        } else {
-                            // user doesn't exist. create and login
-                            User newUser = REGISTRATOR.createNewUser(userString, passString);
-                            System.out.println("New User");
-                            currentUser = newUser;
-                        }
+                        // NOTE: we skip the above if-else when the password provided is wrong
+
+                        // send login info to the server
+                        ACTION_MANAGER.sendAction(new LoginAction(userString, passString));
+
+                        // NOTE: commented out the code to create a new user
+                        /*
+                         * // user doesn't exist. create and login
+                         * User newUser = REGISTRATOR.createNewUser(userString, passString);
+                         * System.out.println("New User");
+                         * currentUser = newUser;
+                         */
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         System.out.println("Error: failed to login a user.");
                     }
-                    displayAvailableGames();
-                    gui.currentBackground = GUI.Screen.LOBBY;
                 }
             }
 
@@ -281,11 +265,54 @@ public class ClientMain {
         public void handleKeyPress(int i) {
             // press on enter key takes you to the next screen
             if (i == MinuetoKeyboard.KEY_ENTER) {
-                // TODO: owen add login verification here
+                if (passString.length() == 0 || userString.length() == 0) {
 
-                // switch to lobby screen if login ok
-                displayAvailableGames();
-                gui.currentBackground = GUI.Screen.LOBBY;
+                    if (passString.length() == 0) {
+                        // no password
+                        String passFail = "Please enter a password";
+                        MinuetoImage passwordFailed = new MinuetoText(passFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(passwordFailed, 200, 450);
+                    }
+                    if (userString.length() == 0) {
+                        // no username
+                        String usernameFail = "Please enter a username";
+                        MinuetoImage usernameFailed = new MinuetoText(usernameFail, fontArial20, MinuetoColor.RED);
+                        loginScreenImage.draw(usernameFailed, 200, 360);
+                    }
+                }
+
+                else {
+                    // login
+                    try {
+                        if (currentClient == null) {
+                            // client-server connection
+                            Client client = new Client("elfenland.simui.com", 13645, userString);
+                            client.start();
+                            currentClient = client;
+                        } else if (clientNeedsNewName) {
+                            // here if the username provided does not exist
+                            // associate the client with a new name on the server
+                            currentClient.setName(userString);
+                        }
+
+                        // NOTE: we skip the above if-else when the password provided is wrong
+
+                        // send login info to the server
+                        ACTION_MANAGER.sendAction(new LoginAction(userString, passString));
+
+                        // NOTE: commented out the code to create a new user
+                        /*
+                         * // user doesn't exist. create and login
+                         * User newUser = REGISTRATOR.createNewUser(userString, passString);
+                         * System.out.println("New User");
+                         * currentUser = newUser;
+                         */
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error: failed to login a user.");
+                    }
+                }
             }
             // TAB used to switch boxes
             else if (i == 9 && userNameSel) {
@@ -315,9 +342,17 @@ public class ClientMain {
             // lowercase letters
             else {
                 if (userNameSel) {
-                    userString = userString + (char) (i + 32);
+                    if (i == 45) {
+                        userString = userString + "_";
+                    } else {
+                        userString = userString + (char) (i + 32);
+                    }
                 } else if (passWordSel) {
-                    passString = passString + (char) (i + 32);
+                    if (i == 45) {
+                        passString = passString + "_";
+                    } else {
+                        passString = passString + (char) (i + 32);
+                    }
                 }
             }
             // cover the last entry, draw username
@@ -336,8 +371,6 @@ public class ClientMain {
 
             // create MinuetoImage for hiddenPassword
             MinuetoImage hiddenPasswordImage = new MinuetoText(hiddenPassword, fontArial20, MinuetoColor.BLACK);
-
-            MinuetoImage password = new MinuetoText(passString, fontArial20, MinuetoColor.BLACK);
             loginScreenImage.draw(hiddenPasswordImage, 200, 450);
         }
 
@@ -354,7 +387,7 @@ public class ClientMain {
         }
     };
 
-    static void openPlayerInventory(Player p) {
+    static void openPlayerInventory(ClientPlayer p) {
 
         JPanel inventory = new JPanel();
         inventory.setLayout(new BoxLayout(inventory, BoxLayout.Y_AXIS));
@@ -364,6 +397,9 @@ public class ClientMain {
 
         JPanel tokenPanel = new JPanel();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.X_AXIS));
+
+        // JPanel goldPanel = new JPanel();
+        // goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
 
         // can substitute 'Opponent's' for the actual name of the opponent
         String playerName = p.getName();
@@ -377,19 +413,58 @@ public class ClientMain {
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
 
-        for (TravelCard tCard : p.getCardsInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCard.getMediumAddress()));
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size() - 1).setFaceDown();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        for (CardSprite tCard : p.getCardsInHand()) {
+            ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
+            Image scaledImage = imageIcon.getImage()
+                    .getScaledInstance(72, 111, java.awt.Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(scaledImage);
+            JLabel pic = new JLabel(imageIcon);
             cardPanel.add(pic);
         }
-        for (TokenImage tCounterImage : p.getTokensInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAdress()));
-            tokenPanel.add(pic);
+        for (TokenSprite tCounterImage : p.getTokensInHand()) {
+            if (tCounterImage.isTokenFaceDown() == true) {
+                JLabel pic = new JLabel(new ImageIcon("images/elfenroads-sprites/M08small.png"));
+                tokenPanel.add(pic);
+            } else {
+                JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
+                tokenPanel.add(pic);
+            }
         }
 
         inventory.add(Box.createVerticalStrut(30));
         inventory.add(cardPanel);
         inventory.add(Box.createVerticalStrut(10));
         inventory.add(tokenPanel);
+
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
+            JPanel goldPanel = new JPanel();
+            goldPanel.setLayout(new BoxLayout(goldPanel, BoxLayout.X_AXIS));
+            JLabel goldText = new JLabel(playerName + " has " + p.getGoldAmount() + " gold.");
+            goldPanel.add(goldText);
+            inventory.add(Box.createVerticalStrut(10));
+            inventory.add(goldPanel);
+        }
+
+        // if there are destination towns, add the destination town of the player to
+        // their information
+        if (currentGame.isDestinationTownEnabled() == true) {
+            JPanel destTownPanel = new JPanel();
+            destTownPanel.setLayout(new BoxLayout(destTownPanel, BoxLayout.X_AXIS));
+
+            JLabel targetTownText = new JLabel(
+                    "This player must reach " + p.getTargetDestinationTown().getTownName() + " as their final town!");
+            destTownPanel.add(targetTownText);
+
+            inventory.add(Box.createVerticalStrut(10));
+            inventory.add(destTownPanel);
+        }
 
         opponentFrame.add(inventory);
 
@@ -398,6 +473,160 @@ public class ClientMain {
         opponentFrame.setSize(new Dimension(700, 300));
 
         opponentFrame.setVisible(true);
+
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size() - 1).setFaceUp();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    static void openRouteInformation(ClientRoute r) {
+
+        JFrame routeOverview = new JFrame("Route");
+
+        JPanel routeInformation = new JPanel();
+        routeInformation.setLayout(new BoxLayout(routeInformation, BoxLayout.Y_AXIS));
+
+        JPanel connects = new JPanel();
+        connects.setLayout(new BoxLayout(connects, BoxLayout.Y_AXIS));
+
+        JPanel requirements = new JPanel();
+        requirements.setLayout(new BoxLayout(requirements, BoxLayout.Y_AXIS));
+
+        String connectsString = "This route connects " + r.getSourceTownString() + " and " + r.getDestTownString();
+        JLabel connectsText = new JLabel(connectsString);
+        connectsText.setText(connectsString);
+
+        String requirementsString = r.formatRequirements();
+        JLabel requirementsText = new JLabel(requirementsString);
+        requirementsText.setText(requirementsString);
+
+        connects.add(connectsText);
+        requirements.add(requirementsText);
+
+        routeInformation.add(Box.createVerticalStrut(30));
+        routeInformation.add(connects);
+        routeInformation.add(Box.createVerticalStrut(10));
+        routeInformation.add(requirements);
+
+        if (!r.getTokenOnRoute().isEmpty()) {
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String temp = "";
+            for (int i = 0; i < r.getTokenOnRoute().size(); i++) {
+                temp += r.getTokenOnRoute().get(i).getTokenName().toLowerCase();
+                if (i == r.getTokenOnRoute().size() - 2) {
+                    temp += " and ";
+                } else {
+                    temp += ", ";
+                }
+            }
+            String tokenOnRouteString = "This route currently has a " + temp + "token on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
+        } else {
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has no tokens on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
+        }
+
+        routeOverview.add(routeInformation);
+
+        routeOverview.setLocation(300, 200);
+        routeOverview.setSize(new Dimension(700, 300));
+
+        routeOverview.setVisible(true);
+
+    }
+
+    static void openTownInformation(ClientTown t) {
+
+        JPanel townInformation = new JPanel();
+        townInformation.setLayout(new BoxLayout(townInformation, BoxLayout.Y_AXIS));
+
+        JPanel nameOfTown = new JPanel();
+        nameOfTown.setLayout(new BoxLayout(nameOfTown, BoxLayout.Y_AXIS));
+
+        JPanel playerBeen = new JPanel();
+        playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
+
+        JPanel otherPlayersBeen = new JPanel();
+        otherPlayersBeen.setLayout(new BoxLayout(otherPlayersBeen, BoxLayout.Y_AXIS));
+
+        String townName = t.getTownName();
+        JFrame townOverview = new JFrame(townName);
+
+        JLabel currentlyLookingAtText = new JLabel("You are currently looking at " + townName);
+        currentlyLookingAtText.setText("You are currently looking at " + townName);
+
+        JLabel hasBeenText;
+
+        ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
+
+        HashSet<ClientPlayer> playersPassedNoDups = new HashSet<>();
+        for (ClientPlayer p : playersThatPassed) {
+            playersPassedNoDups.add(p);
+        }
+
+        String text = "The following players have passed: ";
+        int count = 0;
+        for (ClientPlayer p : playersPassedNoDups) {
+            if (count != 0 && count != playersPassedNoDups.size()) {
+                text += " and ";
+            }
+            text += p.getName();
+            count++;
+        }
+        JLabel otherPlayersBeenText = new JLabel(text);
+
+        if (t.playersThatPassed.contains(currentPlayer)) {
+            hasBeenText = new JLabel("You have been to this town already");
+            hasBeenText.setText("You have been to this town already");
+        } else {
+            hasBeenText = new JLabel("You have not been to this town yet");
+            hasBeenText.setText("You have not been to this town yet");
+        }
+        nameOfTown.add(currentlyLookingAtText);
+        playerBeen.add(hasBeenText);
+        otherPlayersBeen.add(otherPlayersBeenText);
+
+        townInformation.add(Box.createVerticalStrut(30));
+        townInformation.add(nameOfTown);
+        townInformation.add(Box.createVerticalStrut(10));
+        townInformation.add(playerBeen);
+        townInformation.add(Box.createVerticalStrut(10));
+        townInformation.add(otherPlayersBeen);
+
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
+            JPanel goldVal = new JPanel();
+            goldVal.setLayout(new BoxLayout(goldVal, BoxLayout.Y_AXIS));
+
+            JLabel goldValueText = new JLabel("This town has a gold value of " + t.getGoldValue());
+            goldValueText.setText("This town has a gold value of " + t.getGoldValue());
+
+            goldVal.add(goldValueText);
+
+            townInformation.add(Box.createVerticalStrut(10));
+            townInformation.add(goldVal);
+        }
+
+        townOverview.add(townInformation);
+
+        townOverview.setLocation(300, 200);
+        townOverview.setSize(new Dimension(700, 300));
+
+        townOverview.setVisible(true);
 
     }
 
@@ -412,61 +641,281 @@ public class ClientMain {
         public void handleMousePress(int x, int y, int button) {
             System.out.println("This is x: " + x + ". This is y: " + y);
 
-            // CLICKING ON THE OPPONENTS PROFILE
-            if (numberPlayers == 2) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
+            // if we left click
+            if (button == 1) {
+                // CLICKING ON THE OPPONENTS PROFILE
+
+                for (ClientTown t : Game.getTowns()) {
+                    if (x > t.minX && x < t.maxX && y > t.minY && y < t.minX) {
+                        System.out.println("You just clicked on " + t.getTownName());
+                    }
                 }
-            } else if (numberPlayers == 3) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
+
+                if (numberPlayers == 2) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    }
+                } else if (numberPlayers == 3) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    }
+                } else if (numberPlayers == 4) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    }
+                } else if (numberPlayers == 5) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    } else if (x > 856 && x < 984 && y > 382 && y < 409) {
+                        // CLICKING ON PLAYER 4
+                        openPlayerInventory(players.get(3));
+                    }
+                } else if (numberPlayers == 6) {
+                    if (x > 856 && x < 984 && y > 105 && y < 132) {
+                        // CLICKING ON PLAYER 1
+                        openPlayerInventory(players.get(0));
+                    } else if (x > 856 && x < 984 && y > 197 && y < 225) {
+                        // CLICKING ON PLAYER 2
+                        openPlayerInventory(players.get(1));
+                    } else if (x > 856 && x < 984 && y > 290 && y < 317) {
+                        // CLICKING ON PLAYER 3
+                        openPlayerInventory(players.get(2));
+                    } else if (x > 856 && x < 984 && y > 382 && y < 409) {
+                        // CLICKING ON PLAYER 4
+                        openPlayerInventory(players.get(3));
+                    } else if (x > 856 && x < 984 && y > 474 && y < 499) {
+                        // CLICKING ON PLAYER 5
+                        openPlayerInventory(players.get(4));
+                    }
                 }
-            } else if (numberPlayers == 4) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
+
+                // IF THE TURN IS PASSABLE -> PASS TURN WHEN WE CLICK HERE
+                if (x > 20 && x < 130 && y > 637 && y < 712) {
+                    ActionManager.getInstance().sendAction(new PassTurnAction(currentPlayer.getName()));
                 }
-            } else if (numberPlayers == 5) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
-                } else if (x > 856 && x < 984 && y > 382 && y < 409) {
-                    // CLICKING ON PLAYER 4
-                    openPlayerInventory(players.get(3));
+
+                // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
+                if (currentGame.getCurrentPhase() == 5) {
+                    for (ClientRoute r : Game.getAllRoutes()) {
+                        if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to "
+                                    + r.getSourceTownString());
+                            pickedRoute = r;
+                            // send message to server on pickedRoute
+                            if (pickedRoute != null) {
+                                ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
+                                        pickedRoute.getHitbox(), r.isRiver));
+                            }
+                            break;
+                        }
+                    }
                 }
-            } else if (numberPlayers == 6) {
-                if (x > 856 && x < 984 && y > 105 && y < 132) {
-                    // CLICKING ON PLAYER 1
-                    openPlayerInventory(players.get(0));
-                } else if (x > 856 && x < 984 && y > 197 && y < 225) {
-                    // CLICKING ON PLAYER 2
-                    openPlayerInventory(players.get(1));
-                } else if (x > 856 && x < 984 && y > 290 && y < 317) {
-                    // CLICKING ON PLAYER 3
-                    openPlayerInventory(players.get(2));
-                } else if (x > 856 && x < 984 && y > 382 && y < 409) {
-                    // CLICKING ON PLAYER 4
-                    openPlayerInventory(players.get(3));
-                } else if (x > 856 && x < 984 && y > 474 && y < 499) {
-                    // CLICKING ON PLAYER 5
-                    openPlayerInventory(players.get(4));
+                // place counter on routes phase
+                if (currentGame.getCurrentPhase() == 4) {
+                    List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+                    // testingggg
+                    if (pickedRoute != null) {
+                        System.out.println("TESTING LINE 616, ROUTE NOT NULL: " + pickedRoute.getDestTownString()
+                                + " to " + pickedRoute.getSourceTownString());
+                    }
+
+                    // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+                    System.out.println("Clicked on coordinates: \nx: " + x + "\ny: " + y);
+
+                    for (ClientRoute r : Game.getAllRoutes()) {
+                        // // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+                        // System.out.println("Looking at route: " + r.getDestTownString() + " to "
+                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin
+                        // x: " + r.getMinX()
+                        // + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
+                        if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
+                            // pick route
+                            System.out.println("You have selected the route from " + r.getDestTownString() + " to "
+                                    + r.getSourceTownString());
+                            pickedRoute = r;
+                            if (pickedRoute != null && pickedTok != null) {
+                                System.out.println("You have selected the token: " + pickedTok.getTokenName());
+                                System.out.println("Sending placeCounterAction to server with counter: "
+                                        + pickedTok.getTokenName() + "\nSelected the route from "
+                                        + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
+                                ActionManager.getInstance()
+                                        .sendAction(new PlaceCounterAction(currentPlayer.getName(),
+                                                pickedRoute.getHitbox(), pickedRoute.isRiver,
+                                                pickedTok.getTokenName()));
+                            }
+                            break;
+                        }
+                    }
+
+                    // testingggg
+                    if (pickedTok != null) {
+                        System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+                    if (listOfTokens.size() == 0) {
+                        // do nothin :)
+                    } else if (listOfTokens.size() == 1) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                    } else if (listOfTokens.size() == 2) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                    } else if (listOfTokens.size() == 3) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                    } else if (listOfTokens.size() == 4) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
+                            pickedTok = listOfTokens.get(3);
+                        }
+                    } else if (listOfTokens.size() == 5) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
+                            pickedTok = listOfTokens.get(3);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
+                            pickedTok = listOfTokens.get(4);
+                        }
+                    }
+                    // testingggg
+                    if (pickedTok != null) {
+                        System.out.println("pickedTok is: " + pickedTok.getTokenName());
+                    }
+                }
+                if (currentGame.getCurrentPhase() == 6) {
+                    List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
+                    // testingggg
+                    if (pickedTok != null) {
+                        System.out.println("TESTING LINE 626, TOKEN NOT NULL:" + pickedTok.getTokenName());
+                    }
+                    if (listOfTokens.size() == 0) {
+                        // do nothin :)
+                    } else if (listOfTokens.size() == 1) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                    } else if (listOfTokens.size() == 2) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                    } else if (listOfTokens.size() == 3) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                    } else if (listOfTokens.size() == 4) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
+                            pickedTok = listOfTokens.get(3);
+                        }
+                    } else if (listOfTokens.size() == 5) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(0);
+                        }
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(1);
+                        }
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
+                            pickedTok = listOfTokens.get(2);
+                        }
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
+                            pickedTok = listOfTokens.get(3);
+                        }
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
+                            pickedTok = listOfTokens.get(4);
+                        }
+                    }
+                    if (pickedTok != null) {
+                        System.out.println(
+                                "Sending TokenToKeepAction to server with counter: " + pickedTok.getTokenName());
+                        ActionManager.getInstance().sendAction(
+                                new ChooseTokenToKeepAction(currentPlayer.getName(), pickedTok.getTokenName()));
+                    }
+                }
+
+            }
+
+            // if we right click
+            if (button == 3) {
+
+                // iterate over all towns
+                for (ClientTown t : Game.getTowns()) {
+                    // we are clicking on a town
+                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && y > t.getMinY()) {
+                        // temporary print statement to make sure we're clicking on a specific town
+                        System.out.println("Clicking on " + t.getTownName());
+
+                        // open a swing gui containing information about that town
+                        openTownInformation(t);
+                    }
+                }
+                for (ClientRoute r : Game.getAllRoutes()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && y > r.getMinY()) {
+                        System.out.println("You are clicking on a route");
+                        openRouteInformation(r);
+                    }
                 }
             }
 
@@ -493,7 +942,81 @@ public class ClientMain {
         public void handleMouseMove(int x, int y) {
 
         }
+
     };
+
+    public static void clearPickedTok() {
+        pickedTok = null;
+    }
+
+    public static void clearPickedRoute() {
+        pickedRoute = null;
+    }
+
+    static MinuetoMouseHandler savedGamesMouseHandler = new MinuetoMouseHandler() {
+        @Override
+        public void handleMousePress(int x, int y, int button) {
+
+            System.out.println("x:" + x + " y:" + y);
+
+            if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
+                // click on Back to Open Lobbies button
+                displayAvailableGames();
+            } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
+                // click on the Refresh button
+                displaySavedGames();
+            } else {
+                // click on a Join button
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> coords : savedGameButtonCoordinates) {
+                    int maxX = (int) coords.getKey().get(0);
+                    int minX = (int) coords.getKey().get(1);
+                    int maxY = (int) coords.getKey().get(2);
+                    int minY = (int) coords.getKey().get(3);
+
+                    // TODO: fix this
+                    /*
+                     * if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+                     * gameToJoin = coords.getValue();
+                     * try {
+                     * // get available boot colors
+                     * currentSession = gameToJoin;
+                     * ACTION_MANAGER.sendAction(
+                     * new GetAvailableColorsAction(currentUser.getName(),
+                     * gameToJoin.getSessionID()));
+                     * } catch (Exception e) {
+                     * e.printStackTrace();
+                     * }
+                     * }
+                     */
+                }
+            }
+
+            if (x > 1000 && y > 740) {
+                // click on mute/unmute button
+                if (soundOn) {
+                    soundOn = false;
+                    pauseSound();
+                    gui.window.draw(soundOffButton, 1000, 745);
+
+                } else {
+                    soundOn = true;
+                    resumeSound();
+                    gui.window.draw(soundOnButton, 1000, 745);
+                }
+            }
+        }
+
+        @Override
+        public void handleMouseRelease(int x, int y, int button) {
+            // do nothing
+        }
+
+        @Override
+        public void handleMouseMove(int x, int y) {
+            // do nothing
+        }
+    };
+
     static MinuetoMouseHandler lobbyMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMousePress(int x, int y, int button) {
@@ -501,14 +1024,17 @@ public class ClientMain {
             System.out.println("x:" + x + " y:" + y);
 
             if (x >= 30 && x <= 440 && y >= 680 && y <= 750) {
-                // click on Create New Game button
+                // click on Create New Lobby button
                 gui.currentBackground = GUI.Screen.CREATELOBBY;
+            } else if (x <= 0) {
+                // click on Load Game button
+                displaySavedGames();
             } else if (x >= 920 && x <= 990 && y >= 675 && y <= 745) {
                 // click on the Refresh button
                 displayAvailableGames();
             } else {
                 // click on a Join button
-                for (AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> coords : joinButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> coords : joinButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
@@ -518,10 +1044,9 @@ public class ClientMain {
                         gameToJoin = coords.getValue();
                         try {
                             // get available boot colors
-                            ACTION_MANAGER.sendActionAndGetReply(
-                                    new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                             currentSession = gameToJoin;
-                            gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+                            ACTION_MANAGER.sendAction(
+                                    new GetAvailableColorsAction(currentUser.getName(), gameToJoin.getSessionID()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -793,35 +1318,25 @@ public class ClientMain {
 
                         try {
                             if (modeSel.equals(Mode.ELFENLAND)) {
-                                // create an elfenland game
-                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, numRoundsSel,
-                                        Mode.ELFENLAND, false, destinationTownSel, TownGoldOption.NO);
-                                if (gameToJoin == null) {
-                                    // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
-                                            MinuetoColor.RED);
-                                    createGameBackground.draw(nameIsTaken, 178, 120);
-                                } else {
-                                    // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
-                                            currentUser.getName(), currentSession.getSessionID()));
-                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
-                                }
+                                // send request to the server to create an elfenland game
+                                CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
+                                        nameString, numberPlayers, numRoundsSel, destinationTownSel, false, "elfenland",
+                                        "no");
+                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
                             } else if (modeSel.equals(Mode.ELFENGOLD)) {
-                                // create an elfengold game
-                                gameToJoin = REGISTRATOR.createGame(nameString, numberPlayers, 6, Mode.ELFENGOLD,
-                                        witchSel, destinationTownSel, townGoldOption);
-                                if (gameToJoin == null) {
-                                    // show error message because the game already exists
-                                    MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold,
-                                            MinuetoColor.RED);
-                                    createGameBackground.draw(nameIsTaken, 178, 120);
-                                } else {
-                                    // get available boot colors
-                                    ACTION_MANAGER.sendActionAndGetReply(new GetAvailableColorsAction(
-                                            currentUser.getName(), currentSession.getSessionID()));
-                                    gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+                                // send request to the server to create an elfengold game
+                                String townGoldOptionString = null;
+                                if (townGoldOption.equals(TownGoldOption.NO)) {
+                                    townGoldOptionString = "no";
+                                } else if (townGoldOption.equals(TownGoldOption.YESDEFAULT)) {
+                                    townGoldOptionString = "yes-default";
+                                } else if (townGoldOption.equals(TownGoldOption.YESRANDOM)) {
+                                    townGoldOptionString = "yes-random";
                                 }
+                                CreateNewGameAction createNewGameAction = new CreateNewGameAction(currentUser.getName(),
+                                        nameString, numberPlayers, 6, destinationTownSel, witchSel, "elfengold",
+                                        townGoldOptionString);
+                                ClientMain.ACTION_MANAGER.sendAction(createNewGameAction);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -830,7 +1345,6 @@ public class ClientMain {
                 } else if (x >= 335 && x <= 690 && y <= 760 && y >= 695) {
                     // click on the Return to Open Lobbies button
                     displayAvailableGames();
-                    gui.currentBackground = GUI.Screen.LOBBY;
 
                 } else if (x > 1000 && y > 740) {
                     // click on mute/unmute button
@@ -872,94 +1386,43 @@ public class ClientMain {
                     // print error message
                     MinuetoText errorText = new MinuetoText("Please select a color.", fontArial22Bold,
                             MinuetoColor.RED);
-                    chooseBootBackground.draw(errorText, 378, 526);
+                    gui.window.draw(errorText, 378, 526);
                 } else {
-
-                    // TODO: add elfengold options
-
                     if (currentUser.getName().equals(currentSession.getCreator())) {
                         // creator
-                        try {
-                            // send action to the server
-                            String senderName = currentUser.getName();
-                            String color = colorChosen.name();
-                            String gameID = currentSession.getSessionID();
-                            ACTION_MANAGER.sendActionAndGetReply(new ChooseBootColorAction(senderName, color, gameID));
-                            // display users
-                            displayUsers();
-                            System.out.println("displaying users as a creator");
-                            // display game info
-                            displayLobbyInfo();
-                        } catch (MinuetoFileException e) {
-                            e.printStackTrace();
-                        }
 
-                        Game game = currentSession.getGame();
-                        Mode currentMode = game.getMode();
-                        // switch backgrounds depending on the game mode
-                        if (currentMode.equals(Mode.ELFENLAND)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
-                            gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                            gui.window.render();
-                            // wait for enough players to join
-                            try {
-                                ACTION_MANAGER.waitForPlayersAsCreator();
-                            } catch (MinuetoFileException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfenlandBackground.draw(startButton, 822, 580);
-                        } else if (currentMode.equals(Mode.ELFENGOLD)) {
-                            gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
-                            gui.window.draw(lobbyElfengoldBackground, 0, 0);
-                            gui.window.render();
-                            // wait for enough players to join
-                            try {
-                                ACTION_MANAGER.waitForPlayersAsCreator();
-                            } catch (MinuetoFileException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            // we arrive here if the session is launchable: then display the launch button
-                            lobbyElfengoldBackground.draw(startButton, 822, 580);
-                        }
-
+                        // send action to the server
+                        String senderName = currentUser.getName();
+                        String color = colorChosen.name();
+                        String gameID = currentSession.getSessionID();
+                        ACTION_MANAGER.sendAction(new ChooseBootColorAction(senderName, color, gameID));
                     } else {
                         // not the creator
 
                         try {
                             // join the game
                             gameToJoin.join(colorChosen);
-                            currentSession = gameToJoin.getActiveSession();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        // change backgrounds
+                    }
+                    Game game = currentSession.getGame();
+                    Mode currentMode = game.getMode();
+                    // switch backgrounds depending on the game mode
+                    if (currentMode.equals(Mode.ELFENLAND)) {
                         gui.currentBackground = GUI.Screen.LOBBYELFENLAND;
                         gui.window.draw(lobbyElfenlandBackground, 0, 0);
-                        // show wait for launch image
-                        if (ClientMain.currentSession.isLaunchable()) {
-                            ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
-                        }
-                        // display game info
-                        displayLobbyInfo();
-                        gui.window.render();
-
-                        // wait for other players (i.e wait for the game to launch)
-                        try {
-                            ACTION_MANAGER.waitForPlayers();
-                        } catch (MinuetoFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                    } else if (currentMode.equals(Mode.ELFENGOLD)) {
+                        gui.currentBackground = GUI.Screen.LOBBYELFENGOLD;
+                        gui.window.draw(lobbyElfengoldBackground, 0, 0);
                     }
-
+                    // display game info
+                    displayLobbyInfo();
                 }
             } else {
                 // Click on a Color
-                for (AbstractMap.SimpleEntry<ImmutableList, Color> coords : colorButtonCoordinates) {
+                for (AbstractMap.SimpleEntry<ImmutableList<Integer>, Color> coords : colorButtonCoordinates) {
                     int maxX = (int) coords.getKey().get(0);
                     int minX = (int) coords.getKey().get(1);
                     int maxY = (int) coords.getKey().get(2);
@@ -971,17 +1434,17 @@ public class ClientMain {
                         System.out.println("chose: " + colorChosen);
                         // display a boppel on the confirm button
                         if (colorChosen.equals(Color.BLACK)) {
-                            chooseBootBackground.draw(blackBoppel, 640, 691);
+                            gui.window.draw(blackBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.BLUE)) {
-                            chooseBootBackground.draw(blueBoppel, 640, 691);
+                            gui.window.draw(blueBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.YELLOW)) {
-                            chooseBootBackground.draw(yellowBoppel, 640, 691);
+                            gui.window.draw(yellowBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.GREEN)) {
-                            chooseBootBackground.draw(greenBoppel, 640, 691);
+                            gui.window.draw(greenBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.PURPLE)) {
-                            chooseBootBackground.draw(purpleBoppel, 640, 691);
+                            gui.window.draw(purpleBoppel, 640, 691);
                         } else if (colorChosen.equals(Color.RED)) {
-                            chooseBootBackground.draw(redBoppel, 640, 691);
+                            gui.window.draw(redBoppel, 640, 691);
                         }
                     }
                 }
@@ -1003,56 +1466,19 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
-    private static TokenImage pickedTok = null;
+    private static ClientRoute pickedRoute = null;
+    private static TokenSprite pickedTok = null;
+
+    // not using this anymore
     static MinuetoMouseHandler placeCounterMouseHandler = new MinuetoMouseHandler() {
         @Override
         public void handleMouseMove(int arg0, int arg1) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void handleMousePress(int x, int y, int button) {
-
-            // TODO Auto-generated method stub
-            // for (Route r: Route.getAllRoutes()){
-            // if ( x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >=
-            // r.getMaxY()){
-            // // pick route
-            // pickedRoute = r;
-            // break;
-            // }
-            // }
-
-            if (x >= 695 && y <= 640 && x <= 790 && y >= 550) {
-                // pick tok
-                pickedTok = currentPlayer.getTokensInHand().get(1);
-
-                // Draw on Route
-                pickedRoute.placeToken(currentPlayer, pickedTok);
-                if (pickedRoute != null && pickedTok != null) {
-
-                    ActionManager.getInstance()
-                            .sendActionAndGetReply(new PlaceCounterAction(currentPlayer.getName(),
-                                    pickedRoute.getSource().getTownName(), pickedRoute.getDest().getTownName(),
-                                    pickedTok.getName()));
-                }
-            }
-
-            if (x > 1000 && y > 740) {
-                // click on mute/unmute button
-                if (soundOn) {
-                    soundOn = false;
-                    pauseSound();
-                    gui.window.draw(soundOffButton, 1000, 745);
-
-                } else {
-                    soundOn = true;
-                    resumeSound();
-                    gui.window.draw(soundOnButton, 1000, 745);
-                }
-            }
+            // do nothing
         }
 
         @Override
@@ -1093,8 +1519,9 @@ public class ClientMain {
             } else {
                 // for the creator
                 if (currentSession.isLaunchable() && x >= 825 && x <= 1000 && y >= 580 && y <= 735) {
-                    // click on Launch button -> launch the session
-                    REGISTRATOR.launchSession(currentSession, currentUser);
+                    // send to the server
+                    ClientMain.ACTION_MANAGER
+                            .sendAction(new LaunchGameAction(currentUser.getName(), currentSession.getSessionID()));
                 }
             }
 
@@ -1129,8 +1556,9 @@ public class ClientMain {
     // for login screen queue
     private static boolean userNameSel = false;
     private static boolean passWordSel = false;
-    private static String userString = "";
-    private static String passString = "";
+    public static String userString = "";
+    public static String passString = "";
+    public static boolean clientNeedsNewName = false;
 
     // for mute button
     private static boolean soundOn = true;
@@ -1157,27 +1585,18 @@ public class ClientMain {
     public static final MinuetoWindow WINDOW = new MinuetoFrame(1024, 768, true);;
 
     // for lobbyMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> joinButtonCoordinates = new ArrayList<>();
+
+    // for savedGamesMouseHandler
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession>> savedGameButtonCoordinates = new ArrayList<>();
 
     // for chooseBootMouseHandler
-    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList, Color>> colorButtonCoordinates = new ArrayList<>();
+    private static ArrayList<AbstractMap.SimpleEntry<ImmutableList<Integer>, Color>> colorButtonCoordinates = new ArrayList<>();
     private static Color colorChosen;
 
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
     public static void main(String[] args) throws IOException {
-        /*
-         * in the Boot class
-         * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
-         * image files
-         * 
-         * List<String> bootFileNames = new ArrayList<>();
-         * // add file names of boot images to the bootFiles list
-         * for (File file : bootDir.listFiles()) {
-         * if (file.getName().startsWith("boot-"))
-         * bootFileNames.add("images/böppels-and-boots/" + file.getName());
-         * }
-         */
 
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
@@ -1201,6 +1620,8 @@ public class ClientMain {
             readyWhite = new MinuetoImageFile("images/ready-button-white.png");
             startButton = new MinuetoImageFile("images/blue-launch-button.png");
             waitingForLaunch = new MinuetoImageFile("images/waiting-for-launch.png");
+            // saved game
+            saveGameBackground = new MinuetoImageFile("images/saved-games.png");
             // Create Game
             createGameBackground = new MinuetoImageFile("images/create-game-elfenland.png");
             createGameBackgroundElfengold = new MinuetoImageFile("images/create-game-elfengold.png");
@@ -1236,13 +1657,7 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
-            // players = Game.getPlayers();
-
-            // for(Player p : players) {
-            // if(p != currentPlayer) {
-            // players.add(p);
-            // }
-            // }
+            played = false;
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1256,7 +1671,7 @@ public class ClientMain {
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
-        WINDOW.setMaxFrameRate(60);
+        WINDOW.setMaxFrameRate(0);
 
         // make window visible
         gui.window.setVisible(true);
@@ -1275,6 +1690,10 @@ public class ClientMain {
         // lobby screen mouse handler
         lobbyScreenQueue = new MinuetoEventQueue();
         gui.window.registerMouseHandler(lobbyMouseHandler, lobbyScreenQueue);
+
+        // saved game screen mouse handler
+        savedGamesScreenQueue = new MinuetoEventQueue();
+        gui.window.registerMouseHandler(savedGamesMouseHandler, savedGamesScreenQueue);
 
         // create game screen keyboard handler
         createGameQueue = new MinuetoEventQueue();
@@ -1310,9 +1729,13 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBY) {
-                gui.window.draw(lobbyBackground, 0, 0);
                 while (lobbyScreenQueue.hasNext()) {
                     lobbyScreenQueue.handle();
+                }
+
+            } else if (gui.currentBackground == GUI.Screen.SAVEDGAMES) {
+                while (savedGamesScreenQueue.hasNext()) {
+                    savedGamesScreenQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.CREATELOBBY) {
@@ -1400,37 +1823,36 @@ public class ClientMain {
                 }
 
             } else if (gui.currentBackground == GUI.Screen.CHOOSEBOOT) {
-                gui.window.draw(chooseBootBackground, 0, 0);
                 while (chooseBootQueue.hasNext()) {
                     chooseBootQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENLAND) {
                 gui.window.draw(lobbyElfenlandBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    if (currentUser.getName().equals(currentSession.getCreator())) {
+                        lobbyElfenlandBackground.draw(startButton, 822, 580);
+                    } else {
+                        ClientMain.gui.window.draw(ClientMain.waitingForLaunch, 822, 580);
+                    }
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
 
             } else if (gui.currentBackground == GUI.Screen.LOBBYELFENGOLD) {
                 gui.window.draw(lobbyElfengoldBackground, 0, 0);
+                if (currentSession.isLaunchable()) {
+                    lobbyElfengoldBackground.draw(startButton, 822, 580);
+                }
                 while (elfenlandLobbyQueue.hasNext()) {
                     elfenlandLobbyQueue.handle();
                 }
 
-            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
-                    // mouseHandler to click on route
-                    while (placeCounterQueue.hasNext()) {
-                        placeCounterQueue.handle();
-                    }
-                }
-
+            } else if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
                 }
-
-            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
-                gui.window.draw(elfengoldImage, 0, 0);
             }
 
             // Add a button in the bottom right to pause the music
@@ -1443,8 +1865,6 @@ public class ClientMain {
             WINDOW.render();
             Thread.yield();
         }
-
-        // swing gui
     }
 
     /**
@@ -1454,14 +1874,17 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            loadedClip = AudioSystem.getClip();
-            loadedClip.open(audioIn);
-            loadedClip.start();
-        } catch (Exception e) {
-            throw new Error("Unable to play sound file");
+        if (played == false) {
+            File f = new File("./" + soundFile);
+            try {
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+                loadedClip = AudioSystem.getClip();
+                loadedClip.open(audioIn);
+                loadedClip.start();
+                played = true;
+            } catch (Exception e) {
+                throw new Error("Unable to play sound file");
+            }
         }
     }
 
@@ -1481,6 +1904,218 @@ public class ClientMain {
         loadedClip.start();
     }
 
+    /**
+     * Displays game board elements
+     * 
+     * @throws MinuetoFileException
+     */
+    public static void displayBoardElements() throws MinuetoFileException {
+        MinuetoImage currentBackground = null;
+        if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+            currentBackground = elfenlandImage;
+        } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
+            currentBackground = elfengoldImage;
+        }
+
+        System.out.println("displaying board elements");
+
+        // REDRAW CLEAN BACKGROUND
+        gui.window.draw(currentBackground, 0, 0);
+
+        // ADD ELEMENTS
+
+        // organize tokens in inventory
+        List<TokenSprite> listOfTokens = currentPlayer.getTokensInHand();
+        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();
+        if (listOfTokens.size() == 1) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            gui.window.draw(p1, 642, 640);
+        } else if (listOfTokens.size() == 2) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            gui.window.draw(p1, 587, 640);
+            gui.window.draw(p2, 695, 640);
+        } else if (listOfTokens.size() == 3) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            gui.window.draw(p1, 615, 636);
+            gui.window.draw(p2, 709, 636);
+            gui.window.draw(p3, 663, 698);
+        } else if (listOfTokens.size() == 4) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            MinuetoImage p4 = listOfTokens.get(3);
+            gui.window.draw(p1, 615, 636);
+            gui.window.draw(p2, 709, 636);
+            gui.window.draw(p3, 615, 698);
+            gui.window.draw(p4, 709, 698);
+
+        } else if (listOfTokens.size() == 5) {
+            MinuetoImage p1 = listOfTokens.get(0);
+            MinuetoImage p2 = listOfTokens.get(1);
+            MinuetoImage p3 = listOfTokens.get(2);
+            MinuetoImage p4 = listOfTokens.get(3);
+            MinuetoImage p5 = listOfTokens.get(4);
+            gui.window.draw(p1, 592, 636);
+            gui.window.draw(p2, 663, 636);
+            gui.window.draw(p3, 734, 636);
+            gui.window.draw(p4, 615, 698);
+            gui.window.draw(p5, 709, 698);
+        }
+
+        // organize cards in inventory
+        if (listOfCards.size() == 1) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            gui.window.draw(p1, 314, 634);
+        } else if (listOfCards.size() == 2) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            gui.window.draw(p1, 258, 634);
+            gui.window.draw(p2, 370, 634);
+        } else if (listOfCards.size() == 3) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            gui.window.draw(p1, 202, 634);
+            gui.window.draw(p2, 314, 634);
+            gui.window.draw(p3, 426, 634);
+        } else if (listOfCards.size() == 4) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+            gui.window.draw(p1, 153, 634);
+            gui.window.draw(p2, 261, 634);
+            gui.window.draw(p3, 369, 634);
+            gui.window.draw(p4, 477, 634);
+        } else if (listOfCards.size() == 5) {
+            MinuetoImage p1 = listOfCards.get(0).getMediumImage();
+            MinuetoImage p2 = listOfCards.get(1).getMediumImage();
+            MinuetoImage p3 = listOfCards.get(2).getMediumImage();
+            MinuetoImage p4 = listOfCards.get(3).getMediumImage();
+            MinuetoImage p5 = listOfCards.get(4).getMediumImage();
+            gui.window.draw(p1, 150, 634);
+            gui.window.draw(p2, 232, 634);
+            gui.window.draw(p3, 314, 634);
+            gui.window.draw(p4, 396, 634);
+            gui.window.draw(p5, 478, 634);
+        } else if (listOfCards.size() == 6) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            gui.window.draw(p1, 235, 605);
+            gui.window.draw(p2, 348, 605);
+            gui.window.draw(p3, 461, 605);
+            gui.window.draw(p4, 235, 685);
+            gui.window.draw(p5, 348, 685);
+            gui.window.draw(p6, 461, 685);
+        } else if (listOfCards.size() == 7) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+            gui.window.draw(p1, 235, 605);
+            gui.window.draw(p2, 318, 605);
+            gui.window.draw(p3, 414, 605);
+            gui.window.draw(p4, 235, 685);
+            gui.window.draw(p5, 318, 685);
+            gui.window.draw(p6, 414, 685);
+            gui.window.draw(p7, 510, 646);
+        } else if (listOfCards.size() == 8) {
+            MinuetoImage p1 = listOfCards.get(0).getSmallImage();
+            MinuetoImage p2 = listOfCards.get(1).getSmallImage();
+            MinuetoImage p3 = listOfCards.get(2).getSmallImage();
+            MinuetoImage p4 = listOfCards.get(3).getSmallImage();
+            MinuetoImage p5 = listOfCards.get(4).getSmallImage();
+            MinuetoImage p6 = listOfCards.get(5).getSmallImage();
+            MinuetoImage p7 = listOfCards.get(6).getSmallImage();
+            MinuetoImage p8 = listOfCards.get(7).getSmallImage();
+            gui.window.draw(p1, 222, 605);
+            gui.window.draw(p2, 318, 605);
+            gui.window.draw(p3, 414, 605);
+            gui.window.draw(p4, 510, 605);
+            gui.window.draw(p5, 222, 685);
+            gui.window.draw(p6, 318, 685);
+            gui.window.draw(p7, 414, 685);
+            gui.window.draw(p8, 510, 685);
+        }
+
+        // whose turn it is
+        if (currentPlayer.isTurn()) {
+            MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
+            gui.window.draw(itsYourTurnText, 836, 504);
+        } else {
+            for (ClientPlayer p : currentGame.getPlayers()) {
+                if (p.isTurn) {
+                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn",
+                            fontArial22Bold, MinuetoColor.BLACK);
+                    gui.window.draw(otherPlayerTurnText, 836, 504);
+                }
+            }
+        }
+
+        // round card
+        int roundNumber = currentGame.getCurrentRound();
+        if (roundNumber == 1) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+        } else if (roundNumber == 2) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+        } else if (roundNumber == 3) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R3small.png");
+        } else if (roundNumber == 4) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R4small.png");
+        }
+        gui.window.draw(roundNumberImage, 719, 40);
+
+        // indication on all of the routes
+        MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
+        if (currentPlayer.isTurn) {
+            // turn indicators (can travel here)
+            for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
+                gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
+            }
+        }
+
+        // draw the tokens onto the route
+        for (ClientRoute r : Game.getAllRoutes()) {
+            if (r.getTokenOnRoute().isEmpty() == false) {
+                for (TokenSprite tok : r.getTokenOnRoute()) {
+                    gui.window.draw(tok.getRouteImage(), r.getMinX(), r.getMinY());
+                }
+            }
+        }
+
+        // boots
+        for (int i = 0; i < players.size(); i++) {
+            ClientPlayer player = players.get(i);
+            player.drawBoot(i);
+        }
+        currentPlayer.drawBoot(players.size());
+
+        // gold value if elfengold
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
+            MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
+            gui.window.draw(goldValueCircle, 792, 522);
+            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20,
+                    MinuetoColor.BLACK);
+            gui.window.draw(goldAmnt, 806, 530);
+        }
+    }
+
+    /**
+     * Displays the winner's name and their boot color
+     * 
+     * @param winnerName winner's username
+     * @throws MinuetoFileException if an image file is not found
+     */
     public static void displayWinnerByString(String winnerName) throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         MinuetoText winnerText = new MinuetoText(winnerName, font, MinuetoColor.WHITE);
@@ -1515,7 +2150,17 @@ public class ClientMain {
 
     }
 
+    /**
+     * Display boot colors
+     * 
+     * @param colors available colors to display
+     * @throws MinuetoFileException when an image file is not found
+     */
     public static void displayColors(ArrayList<String> colors) throws MinuetoFileException {
+
+        gui.currentBackground = GUI.Screen.CHOOSEBOOT;
+        gui.window.draw(chooseBootBackground, 0, 0);
+
         int counter = 0; // how many colors are displayed so far
 
         System.out.println(colors.toString());
@@ -1535,7 +2180,7 @@ public class ClientMain {
             }
 
             // display the boot
-            chooseBootBackground.draw(boot, 75 + counter * 150, 300);
+            gui.window.draw(boot, 75 + counter * 150, 300);
 
             // keep track of the button location
             Integer maxX = 150 + (counter * 150);
@@ -1543,7 +2188,7 @@ public class ClientMain {
             Integer maxY = 410;
             Integer minY = 300;
             ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-            AbstractMap.SimpleEntry<ImmutableList, Color> entry = new AbstractMap.SimpleEntry<>(
+            AbstractMap.SimpleEntry<ImmutableList<Integer>, Color> entry = new AbstractMap.SimpleEntry<>(
                     listOfCoordinates, c);
             colorButtonCoordinates.add(entry);
 
@@ -1551,20 +2196,60 @@ public class ClientMain {
         }
     }
 
+    /**
+     * Display an error message saying that the game name is already taken (on game
+     * creation screen)
+     */
+    public static void displayNameTaken() {
+        // reset name to empty
+        nameString = "";
+        // cover the last entry
+        createGameBackground.draw(nameTextField, 168, 101);
+        // display error message
+        MinuetoText nameIsTaken = new MinuetoText("Name already taken.", fontArial22Bold, MinuetoColor.RED);
+        createGameBackground.draw(nameIsTaken, 178, 120);
+    }
+
     public static void displayOriginalBoard() {
         // display background depending on the mode
         Mode currentMode = currentGame.getMode();
+        MinuetoImage currentBackground = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
             gui.currentBackground = GUI.Screen.ELFENLAND;
+            currentBackground = elfenlandImage;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             gui.currentBackground = GUI.Screen.ELFENGOLD;
+            currentBackground = elfengoldImage;
         }
+
+        System.out.println("displaying original game board");
+
+        // draw opponent inventory boxes
+        int numberPlayers = players.size();
+        for (int i = 0; i < numberPlayers; i++) {
+            ClientPlayer opponent = players.get(i);
+            int xName = 835;
+            int yName = 70 + (i * 92);
+            MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
+            currentBackground.draw(playerBackground, xName - 10, yName - 10);
+            MinuetoText pName = new MinuetoText(opponent.getName(), ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+            currentBackground.draw(pName, xName, yName);
+            MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
+            currentBackground.draw(seeInv, xName + 25, yName + 35);
+            MinuetoImage bopp = opponent.getBoppel();
+            currentBackground.draw(bopp, xName, yName + 35);
+        }
+
+        // display on the windows
+        gui.window.draw(currentBackground, 0, 0);
     }
 
+    /**
+     * Display a game lobby's information (settings + name)
+     */
     public static void displayLobbyInfo() {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
-        LobbyServiceGame lsGame = currentSession.getGameService();
-        String name = lsGame.getDisplayName();
+        String name = currentSession.getDisplayName();
         MinuetoText nameText = new MinuetoText(name, font, MinuetoColor.BLACK);
         Game game = currentSession.getGame();
         Mode currentMode = game.getMode();
@@ -1616,6 +2301,11 @@ public class ClientMain {
 
     }
 
+    /**
+     * Displays all users registered in a game session
+     * 
+     * @throws MinuetoFileException
+     */
     public static void displayUsers() throws MinuetoFileException {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         ArrayList<User> users = currentSession.getUsers();
@@ -1671,12 +2361,15 @@ public class ClientMain {
                 }
             }
 
-            MinuetoText uReady;
-            if (ready) {
-                uReady = new MinuetoText("Ready", font, MinuetoColor.GREEN);
-            } else {
-                uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
-            }
+            /*
+             * MinuetoText uReady;
+             * if (ready) {
+             * uReady = new MinuetoText("Ready", font, MinuetoColor.GREEN);
+             * } else {
+             * uReady = new MinuetoText("Not ready", font, MinuetoColor.BLACK);
+             * }
+             * background.draw(uReady, 475, 240 + counter * 50);
+             */
 
             background.draw(uName, 45, 240 + counter * 50);
             if (uColor == null) {
@@ -1684,7 +2377,6 @@ public class ClientMain {
             } else {
                 background.draw(uColor, 290, 240 + counter * 50);
             }
-            background.draw(uReady, 475, 240 + counter * 50);
 
             counter++;
         }
@@ -1692,25 +2384,37 @@ public class ClientMain {
         gui.window.draw(background, 0, 0);
     }
 
+    /**
+     * Displays all available game sessions (NOT game services)
+     * If there are no sessions, then display a message saying so.
+     */
     public static void displayAvailableGames() {
+        // retrieve info on the server
+        GetAvailableSessionsAction action = new GetAvailableSessionsAction(currentUser.getName());
+        ACTION_MANAGER.sendAction(action);
+
+        // reset buttons
+        joinButtonCoordinates.clear();
+
+        // display
+        gui.currentBackground = GUI.Screen.LOBBY;
+        gui.window.draw(lobbyBackground, 0, 0);
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
         try {
-            ArrayList<LobbyServiceGame> availableGamesList = Registrator.getAvailableGames();
-            ArrayList<LobbyServiceGameSession> availableSessionsList = Registrator.getAvailableSessions();
+            ArrayList<LobbyServiceGameSession> availableSessionsList = LobbyServiceGameSession.getAvailableSessions();
 
-            int nbAvailableGameServices = availableGamesList.size();
+            // display a message when no sessions are available to join
             int nbAvailableGameSessions = availableSessionsList.size();
-
-            if (nbAvailableGameSessions == 0 && nbAvailableGameServices == 0) {
+            if (nbAvailableGameSessions == 0) {
                 MinuetoText noneAvailableText = new MinuetoText(
                         "There are no games yet. Please refresh or create a new game.", font, MinuetoColor.BLACK);
-                lobbyBackground.draw(noneAvailableText, 200, 340);
+                gui.window.draw(noneAvailableText, 200, 340);
             }
 
             // display next button
-            if (nbAvailableGameServices + nbAvailableGameSessions > 9) {
+            if (nbAvailableGameSessions > 9) {
                 MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
-                lobbyBackground.draw(nextButton, 700, 676);
+                gui.window.draw(nextButton, 700, 676);
             }
 
             int totalCounter = 0; // how many games are displayed so far
@@ -1719,10 +2423,10 @@ public class ClientMain {
             // display available game sessions (i.e. games with a creator)
             for (LobbyServiceGameSession gs : availableSessionsList) {
                 if (!gs.isLaunched()) { // only show unlaunched sessions
-                    String gsName = gs.getGameService().getDisplayName();
+                    String gsName = gs.getDisplayName();
                     String gsCreator = gs.getCreator();
                     String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
-                    String gsMaxPlayerNumber = String.valueOf(gs.getGameService().getNumberOfUsers());
+                    String gsMaxPlayerNumber = String.valueOf(gs.getGame().getNumberOfPlayers());
 
                     MinuetoText displayName = new MinuetoText(gsName, font, MinuetoColor.BLACK);
                     MinuetoText creator = new MinuetoText(gsCreator, font, MinuetoColor.BLACK);
@@ -1731,11 +2435,11 @@ public class ClientMain {
                     MinuetoRectangle joinButton = new MinuetoRectangle(100, 35, MinuetoColor.WHITE, true);
                     MinuetoText joinText = new MinuetoText("JOIN", font, MinuetoColor.BLACK);
 
-                    lobbyBackground.draw(displayName, 65, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(creator, 350, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(size, 655, 215 + (pageCounter * 50));
-                    lobbyBackground.draw(joinButton, 835, 210 + (pageCounter * 50));
-                    lobbyBackground.draw(joinText, 855, 215 + (pageCounter * 50));
+                    gui.window.draw(displayName, 65, 215 + (pageCounter * 50));
+                    gui.window.draw(creator, 350, 215 + (pageCounter * 50));
+                    gui.window.draw(size, 655, 215 + (pageCounter * 50));
+                    gui.window.draw(joinButton, 835, 210 + (pageCounter * 50));
+                    gui.window.draw(joinText, 855, 215 + (pageCounter * 50));
 
                     // keep track of the button location
                     Integer maxX = 935;
@@ -1743,7 +2447,7 @@ public class ClientMain {
                     Integer maxY = 245 + (pageCounter * 50);
                     Integer minY = 210 + (pageCounter * 50);
                     ImmutableList<Integer> listOfCoordinates = ImmutableList.of(maxX, minX, maxY, minY);
-                    AbstractMap.SimpleEntry<ImmutableList, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
+                    AbstractMap.SimpleEntry<ImmutableList<Integer>, LobbyServiceGameSession> entry = new AbstractMap.SimpleEntry<>(
                             listOfCoordinates, gs);
                     joinButtonCoordinates.add(entry);
 
@@ -1757,13 +2461,33 @@ public class ClientMain {
         }
     }
 
-    public static void recievePhaseOne(String playerID, ArrayList<String> cardArray) throws MinuetoFileException {
-        for (Player p : currentGame.getPlayers())
-            p.addCardStringArray(cardArray);
+    public static void displaySavedGames() {
+        // TODO: retrieve info on the server
+
+        // TODO: reset buttons
+
+        // display
+        gui.window.draw(saveGameBackground, 0, 0);
+        gui.currentBackground = GUI.Screen.SAVEDGAMES;
+
+        MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
+
+        // TODO: display all saved games and keep track of the Join button location
+    }
+
+    public static void recievePhaseOne(HashMap<String, List<String>> cardsHashMap) throws MinuetoFileException {
+        players.forEach((p) -> {
+            try {
+                p.addCardStringArray(cardsHashMap.get(p.getName()));
+            } catch (MinuetoFileException e) {
+                e.printStackTrace();
+            }
+        });
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
-        Player.getPlayerByName(playerString).addTokenStringList(tokenStrings);
+        ClientPlayer.getPlayerByName(playerString).addTokenStringList(tokenStrings);
     }
 
     public static void diaplayWinnerByString(String winner) {

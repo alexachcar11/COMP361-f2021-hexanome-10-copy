@@ -39,4 +39,16 @@ public class Obstacle extends Token {
     public Token getInnerToken() {
         return tokenOnPath.get();
     }
+    
+    @Override
+    public boolean equals(Object o){
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Obstacle)) {
+            return false;
+        }
+        Obstacle obs = (Obstacle) o;
+        return this.isObstacle() && obs.isObstacle();
+    }
 }

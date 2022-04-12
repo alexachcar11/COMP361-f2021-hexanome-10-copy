@@ -6,18 +6,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.minueto.MinuetoFileException;
+import org.minueto.image.MinuetoImage;
 import org.minueto.image.MinuetoImageFile;
 
-public class Player {
+public class ClientPlayer {
     boolean isTurn = false;
 
     private int gold;
-    private GUI guiDisplayed; // TODO: initialize this
-    private List<TravelCard> cardsInHand;
-    private List<TokenImage> tokensInHand;
-    private Town inTown;
+    private List<CardSprite> cardsInHand;
+    private List<TokenSprite> tokensInHand;
+    private ClientTown inTown;
+    private ClientTown targetDestinationTown;
 
     private MinuetoImageFile bootImage;
+    private MinuetoImageFile boppel;
     private Color color;
 
     private String aName;
@@ -25,12 +27,12 @@ public class Player {
     // used in ActionManager
     private User aUser;
     private Game currentGame;
-    private static ArrayList<Player> allPlayers = new ArrayList<Player>();
+    private static ArrayList<ClientPlayer> allPlayers = new ArrayList<ClientPlayer>();
 
-    public Player(Color pColor, User pUser, Game currentGame) {
+    public ClientPlayer(Color pColor, User pUser, Game currentGame) {
 
         // inTown = elvenhold; // fix this
-        this.gold = 0;
+        this.gold = 12;
         this.cardsInHand = new ArrayList<>();
         this.tokensInHand = new ArrayList<>();
         this.aUser = pUser;
@@ -38,8 +40,13 @@ public class Player {
         this.color = pColor;
         this.aName = pUser.getName();
         try {
+            String lower = pColor.toString().toLowerCase().substring(1);
+            String upper = pColor.toString().toLowerCase().substring(0,1);
+            String bootFileName = upper.toUpperCase() + lower;
             this.bootImage = new MinuetoImageFile(
-                    "images/boot" + pColor.toString().toLowerCase() + ".png");
+                    "images/boot" + bootFileName + ".png");
+            this.boppel = new MinuetoImageFile(
+                    "images/böppels-and-boots/böppel-" + pColor.toString().toLowerCase() + ".png");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,8 +55,8 @@ public class Player {
         allPlayers.add(this);
     }
 
-    public static Player getPlayerByName(String name) {
-        for (Player p : allPlayers) {
+    public static ClientPlayer getPlayerByName(String name) {
+        for (ClientPlayer p : allPlayers) {
             if (p.getServerUser().getName().equals(name)) {
                 return p;
             }
@@ -59,6 +66,27 @@ public class Player {
 
     public String getName() {
         return aUser.getName();
+    }
+
+    public ClientTown getCurrentLocation() {
+        return inTown;
+    }
+
+    public void setTargetDestinationTown(ClientTown pTown) {
+        this.targetDestinationTown = pTown;
+    }
+
+    // get TargetTown
+    public ClientTown getTargetDestinationTown() {
+        return this.targetDestinationTown;
+    }
+
+    public void drawTargetDestination() throws MinuetoFileException {
+        ClientTown targetTown = getTargetDestinationTown();
+
+        MinuetoImage destTownFlag = new MinuetoImageFile("images/flag.png");
+        ClientMain.gui.window.draw(destTownFlag, targetTown.getMaxX() + 8, targetTown.getMaxY() + 8);
+
     }
 
     public Game getCurrentGame() {
@@ -77,28 +105,23 @@ public class Player {
         return isTurn;
     }
 
-    public GUI getGui() {
-        return guiDisplayed;
+    public void incrementGold(int townGoldValue) {
+        this.gold += townGoldValue;
     }
 
-    // public void draw() {
-    // int x = boot.getCoords()[0];
-    // int y = boot.getCoords()[2];
-    // guiDisplayed.getWindow().draw(boot.getMImage(), x, y);
-    // }
+    public int getGoldAmount() {
+        return this.gold;
+    }
 
-    // public Action getBootAction() {
-    // return aBootAction;
-    // }
-
-    public void addCardStringArray(ArrayList<String> cardArray) throws MinuetoFileException {
+    public void addCardStringArray(List<String> cardArray) throws MinuetoFileException {
+        cardsInHand.clear();
         for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }
     }
 
     public void addTokenString(String token) throws MinuetoFileException {
-        tokensInHand.add(TokenImage.getTokenImageByString(token));
+        tokensInHand.add(TokenSprite.getTokenSpriteByString(token));
     }
 
     /**
@@ -107,10 +130,10 @@ public class Player {
      * @param tokenStrings
      */
     public void addTokenStringList(List<String> tokenStrings) {
-        List<TokenImage> tokenImages = tokenStrings.stream()
+        List<TokenSprite> tokenImages = tokenStrings.stream()
                 .map((tokenString) -> {
                     try {
-                        return TokenImage.getTokenImageByString(tokenString);
+                        return TokenSprite.getTokenSpriteByString(tokenString);
                     } catch (MinuetoFileException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
@@ -123,191 +146,59 @@ public class Player {
         tokensInHand.addAll(tokenImages);
     }
 
-    public List<TravelCard> getCardsInHand() {
+    public List<CardSprite> getCardsInHand() {
         return cardsInHand;
     }
 
-    public List<TokenImage> getTokensInHand() {
+    public List<TokenSprite> getTokensInHand() {
         return tokensInHand;
     }
 
-    public void drawBoot() { 
-        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+    public MinuetoImageFile getBoppel() { 
+        return boppel;
     }
 
-    /*
-     * Operation: Player::startGame(gameSession: Session)
-     * Scope: Player; Session;
-     * Messages: Player::{gameStartConfirmation; gameStartFailed_e}
-     * Post: Upon success, sends the player a message to confirm that the game has
-     * started successfully and moves all players to the game screen. Otherwise,
-     * sends a “gameStartFailed_e” message.
-     */
-
-    /*
-     * Operation: Player::quitGameSession()
-     * Scope: Player; Session;
-     * Messages: Player::{quitConfirmation; quitFailed_e}
-     * Post: Upon success, sends the player a message to confirm they have quit
-     * successfully and returns the player back to the lobby. Otherwise, sends a
-     * “quitFailed_e” message.
-     */
-
-    /*
-     * Operation: Player::saveGameSession()
-     * Scope: Session; Game; Player;
-     * Messages: Player::{saveConfirmation}
-     * Post: Sends a message to the player to notify the player that the session is
-     * saved.
-     * 
-     */
-
-    /*
-     * Operation: Player::getAvailableBootColors(bootColors: Set{Color})
-     * Scope: Game; Player;
-     * Messages: Player::{availableBootColors}
-     * Post: Sends the player a set of boot colors available for the player to
-     * choose from.
-     * 
-     */
-
-    /*
-     * Operation: Player::pickBootColor(bootColor: Color)
-     * Scope: Player; Boot;
-     * New: newBoot: Boot;
-     * Messages: Player::{gameState; bootColorInvalid_e};
-     * Post: Sends a new game state to the player that they are allocated a boot
-     * with color of their choice if their choice of color is available. If the
-     * chosen colour is taken, sends the player a message, which informs them to
-     * pick another boot color.
-     * 
-     */
-
-    /*
-     * Operation: Player::drawTransportationCounter()
-     * Scope: Player; Token; Game;
-     * Messages: Player::{}
-     * Post: Sends a new game state to the player indicating that the requested
-     * travel card is allocated to their hand.
-     * 
-     */
-
-    /*
-     * Operation: Player::makeTokensFaceDown(tokens: Set{Token})
-     * Scope: Player; Game; Token;
-     * Messages: Player::{}
-     * Post: The tokens chosen by the player are now face down.
-     * 
-     */
-
-    /*
-     * Operation: Player::drawFaceUpToken(token: Token)
-     * Scope: Player; Game; Token;
-     * Messages: Player::{}
-     * Post: Sends a new game state to the player indicating that the requested
-     * travel card is allocated to their hand face-up.
-     * 
-     */
-
-    /*
-     * Operation: Player::drawTravelCard()
-     * Scope: Player; Game; Card;
-     * Messages: Player::{}
-     * Post: Sends a new game state to the player indicating that a travel card is
-     * allocated to their hand.
-     * 
-     */
-
-    /*
-     * Operation: Player::drawFaceUpCard(travelCard: travelCard)
-     * Scope: Player; Game; Card;
-     * Messages: Player::{}
-     * Post: Sends a new game state to the player indicating that the requested
-     * travel card is allocated to their hand face-up.
-     * 
-     */
-
-    /*
-     * Operation: Player::collectGoldPile()
-     * Scope: Game; Player;
-     * Messages: Player::{gameState}
-     * Post: Sends a new game state to the player indicating that they have received
-     * gold relative to the amount in the ‘pile’.
-     * 
-     */
-
-    /*
-     * Operation: Player::passTurn()
-     * Scope: Player; Game; Auction;
-     * Messages: Player::{gameState}
-     * Post: Sends a new game state to the player that their turn is passed and no
-     * further action can be taken in the current round.
-     * 
-     */
-
-    /*
-     * Operation: Player::moveBoot(travelRoute: Route, transportationCards:
-     * Set{TransportationCard})
-     * Scope: Boot; Player;
-     * Messages: Player::{gameState}
-     * Post: Upon success, sends a new game state to the player.
-     * 
-     */
-
-    // // TODO: transportationCards input missing ? or change it to not include
-    // it...
-    // // moveBoot that returns 1 if moveBoot was successful, else return -1 for
-    // unsuccessful
-    // public int moveBoot(Town toTown, int x, int y){
-    // // Player clicks on town he wishes to travel to
-    // // Check if it's valid input (player can only travel to adjacent towns)
-    // // if not then request player to choose again
-    // // if it's valid, move player's boot to new town
-
-    // if (inTown.hasAdjascent(toTown)){
-    // // check if player has the required cards to move to this town
-    // Route route = inTown.getRoute(toTown);
-    // // if player has cards, take away those cards from player's hand and move
-    // boot
-    // if (route.checkCards(this.cardsInHand)){ // note each Token should have field
-    // "aRequiredCards"// in Route class implement getRequiredCards(){ token.get}
-    // for (Card cardToDelete: route.getRequiredCards()){ // IMPORTANT OVERRIDE
-    // EQUAL IN Card CLASS
-    // this.cardsInHand.remove(this.cardsInHand.indexOf(cardToDelete));
-    // }
-    // // update inTown to the new Town
-    // inTown = toTown;
-
-    // // TODO: move boot on the gui using aBoot field from Player class
-
-    // return 1;
-    // }
-    // // otherwise moveBoot ends in failure and returns -1
-
-    // }
-    // // ??? end player's turn ???
-    // return -1;
-    // }
-    // // update inTown to the new Town
-    // inTown = toTown;
-
     /**
-     * Sets the inTown parameter to Town t
-     * 
-     * @param t
+     * Draw the player's boot
+     * @param order this player's "spot" at the town (to stack the boots)
      */
-    public void setTown(Town t) {
+    public void drawBoot(int order) {
+        this.incrementGold(inTown.getGoldValue());
+        ClientMain.gui.window.draw(bootImage, inTown.minX + order*20, inTown.minY + order*15);
+    }
+
+    public void clearTokenHand() {
+        tokensInHand.clear();
+    }
+
+    public void consumeToken(TokenSprite token) {
+        assert token != null;
+
+        if (tokensInHand.contains(token)) {
+            tokensInHand.remove(token);
+            System.out.println("removed token from hand: " + token.getTokenName());
+            // do we need to put the token back into the pool of tokens?
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void setTown(ClientTown t) {
         inTown = t;
         t.addPlayer(this);
     }
 
-    public void moveBoot(Town t) {
+    public void moveBoot(ClientTown t) {
+        // prints
+        System.out.print("Moving boot, removing player from town: " + inTown.getTownName());
         // remove the player from the old town
         inTown.playersHere.remove(this);
 
         // set the town of the player to the new town
         this.inTown = t;
 
+        // prints
+        System.out.print("Moving boot, moving player to town: " + inTown.getTownName());
         // add the player to the list of players located at the new town
         t.addPlayer(this);
         // drawBoot();
@@ -382,15 +273,10 @@ public class Player {
      * Post: Sends a new game state to the player.
      */
 
-    public void consumeToken(TokenImage token) {
-        assert token != null;
-
-        if (tokensInHand.contains(token)) {
-            tokensInHand.remove(token);
-            // do we need to put the token back into the pool of tokens?
-        } else {
-            throw new IllegalArgumentException();
-        }
+    
+    // returns the removed card and removes card from hand
+    public void removeCard(CardSprite card) {
+        this.cardsInHand.remove(card);
     }
 
     /*

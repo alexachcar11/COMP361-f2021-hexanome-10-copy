@@ -5,33 +5,54 @@ Represents one user from the moment the game is launched (they may not be a play
 
 import java.util.ArrayList;
 
-// import clientsrc.Color;
+import org.json.simple.JSONObject;
 
 public class ServerUser {
 
     // FIELDS
     private boolean ready;
     private Color color;
-    private String name;
+    private String username;
+    private JSONObject currentToken;
     private static ArrayList<ServerUser> allUsers = new ArrayList<ServerUser>();
 
     // CONSTRUCTOR
-    public ServerUser(String name) {
-        this.name = name;
+    public ServerUser(String username, JSONObject currentToken) {
+        this.username = username;
+        this.currentToken = currentToken;
         allUsers.add(this);
     }
 
-    public static ServerUser getServerUser(String name) {
+    public static ServerUser getServerUser(String username) {
         for (ServerUser sUser : allUsers) {
-            if (sUser.getName().equals(name)) {
+            if (sUser.getName().equals(username)) {
                 return sUser;
             }
         }
         return null;
     }
 
+    public void setToken(JSONObject token) {
+        this.currentToken = token;
+    }
+
     public String getName() {
-        return name;
+        return username;
+    }
+
+    /**
+     * GETTER: returns the user's current token from the LS
+     * 
+     * @return token in String format
+     */
+    public String getToken() {
+        String token = (String) currentToken.get("access_token");
+        token = token.replace("+", "%2B");
+        return token;
+    }
+
+    public JSONObject getTokenObject() {
+        return this.currentToken;
     }
 
     /**
@@ -43,6 +64,7 @@ public class ServerUser {
 
     /**
      * GETTER: returns user.ready
+     * 
      * @return true if the user is ready to play, false otherwise.
      */
     public boolean isReady() {

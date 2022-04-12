@@ -8,9 +8,9 @@ import java.util.List;
 
 // import serversrc.Token;
 
-public class TokenStack implements Iterable<TokenImage> {
+public class TokenStack implements Iterable<TokenSprite> {
 
-    private final List<TokenImage> aTokens;
+    private final List<TokenSprite> aTokens;
 
     // Creates an empty TokenStack.
     public TokenStack() {
@@ -22,7 +22,7 @@ public class TokenStack implements Iterable<TokenImage> {
      * 
      * @param pList The tokens to initialize the stack with.
      */
-    public TokenStack(List<TokenImage> pList) {
+    public TokenStack(List<TokenSprite> pList) {
         this();
         aTokens.addAll(pList);
     }
@@ -41,7 +41,7 @@ public class TokenStack implements Iterable<TokenImage> {
      * @return The token on top of the stack.
      * @pre !isEmpty()
      */
-    public TokenImage pop() {
+    public TokenSprite pop() {
         assert !isEmpty();
         return aTokens.remove(aTokens.size() - 1);
     }
@@ -61,7 +61,7 @@ public class TokenStack implements Iterable<TokenImage> {
     }
 
     @Override
-    public Iterator<TokenImage> iterator() {
+    public Iterator<TokenSprite> iterator() {
         return aTokens.iterator();
     }
 
