@@ -24,7 +24,6 @@ import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 
-import serversrc.Route;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -2067,8 +2066,10 @@ public class ClientMain {
 
         // draw the tokens onto the route
         for(ClientRoute r: Game.getAllRoutes()) { 
-            if(r.aToken != null) { 
-                gui.window.draw(r.aToken.getSmallImage(), r.getMinX(), r.getMinY());
+            if(r.getTokenOnRoute().isEmpty()) { 
+                for(TokenSprite tok: r.getTokenOnRoute()) { 
+                    gui.window.draw(tok.getSmallImage(), r.getMinX(), r.getMinY());
+                }
             }
         }
 
