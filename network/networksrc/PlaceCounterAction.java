@@ -40,7 +40,7 @@ public class PlaceCounterAction implements Action {
         // Town d = Town.getTownByName(destTown);
         // Route rou = playersCurrentGame.getTownGraph().getRoute(s, d, this.isWater);
 
-        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        Route selectedRoute = null;
         
         for(Route r: ServerGame.getAllRoutes()) { 
             if(Arrays.equals(r.getHitbox(), this.aHitBox)) { 
@@ -83,7 +83,7 @@ public class PlaceCounterAction implements Action {
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         
-        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        Route selectedRoute = null;
         
         for(Route r: ServerGame.getAllRoutes()) { 
             if(Arrays.equals(r.getHitbox(), this.aHitBox)) { 

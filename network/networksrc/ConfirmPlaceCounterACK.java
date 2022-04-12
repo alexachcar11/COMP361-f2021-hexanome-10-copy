@@ -8,6 +8,8 @@ import clientsrc.ClientPlayer;
 import clientsrc.ClientRoute;
 import clientsrc.ClientTown;
 import clientsrc.Game;
+import serversrc.Route;
+import serversrc.ServerGame;
 
 public class ConfirmPlaceCounterACK implements Action {
 
@@ -31,7 +33,7 @@ public class ConfirmPlaceCounterACK implements Action {
     @Override
     public void execute() {
         // set token to route
-        ClientRoute r = Game.getAllRoutes().get(0);
+        ClientRoute r = null;
         for(ClientRoute rou : Game.getAllRoutes()) { 
             if(rou.getSourceTownString().equals(srcT) && rou.getDestTownString().equals(destT)) { 
                 r = rou;

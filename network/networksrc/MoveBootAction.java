@@ -49,7 +49,7 @@ public class MoveBootAction implements Action {
         // Town dTown = playersCurrentGame.getTownByName(dstTown);
         // Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
 
-        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        Route selectedRoute = null ;
         
         for(Route r: ServerGame.getAllRoutes()) { 
             if(Arrays.equals(r.getHitbox(), this.aHitbox)) { 
@@ -86,7 +86,7 @@ public class MoveBootAction implements Action {
         // Town dTown = playersCurrentGame.getTownByName(dstTown);
         // Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
 
-        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        Route selectedRoute = null;
         
         for(Route r: ServerGame.getAllRoutes()) { 
             if(Arrays.equals(r.getHitbox(), this.aHitbox)) { 
