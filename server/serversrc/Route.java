@@ -370,11 +370,11 @@ public class Route {
     }
 
     public Town getDestTown() { 
-        return source;
+        return dest;
     }
 
     public String getDestTownString() { 
-        return source.getTownName();
+        return dest.getTownName();
     }
 
     public int getMinX(){ 
