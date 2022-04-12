@@ -272,16 +272,7 @@ public class ClientPlayer {
      * Post: Sends a new game state to the player.
      */
 
-    public void consumeToken(TokenSprite token) {
-        assert token != null;
-
-        if (tokensInHand.contains(token)) {
-            tokensInHand.remove(token);
-            // do we need to put the token back into the pool of tokens?
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
+    
     // returns the removed card and removes card from hand
     public void removeCard(CardSprite card) {
         this.cardsInHand.remove(card);

@@ -51,7 +51,7 @@ public class CardSprite extends AbstractSprite {
         return smallImage;
     }
 
-    public cardType getCardType(){
+    public CardType getCardType(){
         return this.aType;
     }
 
@@ -72,9 +72,4 @@ public class CardSprite extends AbstractSprite {
         // Compare them by name
         return c.getCardType() == this.getCardType();
     }
-
-    public CardSprite getCardType() {
-        return aType;
-    }
-    
 }

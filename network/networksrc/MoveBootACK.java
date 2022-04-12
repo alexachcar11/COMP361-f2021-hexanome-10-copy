@@ -10,7 +10,7 @@ public class MoveBootACK implements Action {
     private String newTown;
     private String playerThatMovedName;
     private String aCardType;
-    private int aCost
+    private int aCost;
 
     public MoveBootACK(String newTown, String playerThatMovedName, String pCardType, int pCost) {
         this.newTown = newTown;
