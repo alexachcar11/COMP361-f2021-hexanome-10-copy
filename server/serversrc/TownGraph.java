@@ -66,7 +66,7 @@ public class TownGraph {
 
     // function to get the route between 2 towns
     // @pre town s and d needs to have an existing edge
-    public Route getRoute(Town s, Town d){
+    public Route getRoute(Town s, Town d, boolean isWater){
         assert hasEdge(s, d);
         List<Route> routes = map.get(s);
         // loop through routes to find the right one
@@ -75,7 +75,13 @@ public class TownGraph {
             Town dest = r.getDest();
             // return if d matches one of the towns in route
             if (d.equal(source)||d.equal(dest)){
-                return r;
+                if(isWater && r.isWater()){
+                    return r;
+                }
+
+                else if(!isWater && !r.isWater()){
+                    return r;
+                }
             }
         }
         return null;

@@ -51,6 +51,15 @@ public class Route {
         return dest;
     }
 
+    public boolean isWater(){
+        if (this.type == RouteType.LAKE || this.type == RouteType.RIVER){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     // public int[] getHitBox() {
     // return hitbox;
     // }
@@ -146,6 +155,10 @@ public class Route {
             result += "one boat card.";
         }
         return result;
+    }
+
+    public int[] getHitbox() { 
+        return this.hitbox;
     }
 
     // DIJIAN'S VERSION OF GETREQUIREDCARDS
@@ -357,11 +370,11 @@ public class Route {
     }
 
     public Town getDestTown() { 
-        return source;
+        return dest;
     }
 
     public String getDestTownString() { 
-        return source.getTownName();
+        return dest.getTownName();
     }
 
     public int getMinX(){ 

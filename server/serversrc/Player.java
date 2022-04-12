@@ -37,7 +37,7 @@ public class Player {
     public Player(ServerUser pServerUser, ServerGame currentGame) {
         aBoot = new Boot();
 
-        // inTown = elvenhold; // fix this
+        this.inTown = Town.getTownByName("Elvenhold");
         // start with 12 gold for elfengold
         this.gold = 12;
         this.cardsInHand = new ArrayList<>();
@@ -49,6 +49,7 @@ public class Player {
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
         allPlayers.add(this);
+        this.townsPassed = new ArrayList<>();
 
         // aBootAction = new BootAction(this);
     }
@@ -108,10 +109,12 @@ public class Player {
         return this.turnPassed;
     }
 
+    // cardList is the list of cards needed
     public boolean hasCards(List<AbstractCard> cardList) {
+       
         // copy the cardList
-        List<AbstractCard> copyList = new ArrayList<AbstractCard>(cardList.size());
-        Collections.copy(copyList, cardList);
+        List<AbstractCard> copyList = new ArrayList<AbstractCard>();
+        copyList.addAll(this.cardsInHand);
 
         for (AbstractCard c : cardList) {
             // check if player doesn't have card c

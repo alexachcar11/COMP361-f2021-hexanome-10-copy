@@ -899,6 +899,7 @@ public class ServerGame {
                 dstTown = r.getSource();
             }
             // update player's town location done in Player.moveBoot(Town t)
+            System.out.println("trying to moveboot to town: "+ dstTown.getTownName());
             p.moveBoot(dstTown);
             // update the town's player list is done in p.moveBoot(dstTown)
 

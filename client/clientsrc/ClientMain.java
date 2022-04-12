@@ -24,8 +24,6 @@ import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 
-import serversrc.Route;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -344,9 +342,17 @@ public class ClientMain {
             // lowercase letters
             else {
                 if (userNameSel) {
-                    userString = userString + (char) (i + 32);
+                    if (i == 45) {
+                        userString = userString + "_";
+                    } else {
+                        userString = userString + (char) (i + 32);
+                    }
                 } else if (passWordSel) {
-                    passString = passString + (char) (i + 32);
+                    if (i == 45) {
+                        passString = passString + "_";
+                    } else {
+                        passString = passString + (char) (i + 32);
+                    }
                 }
             }
             // cover the last entry, draw username
@@ -407,6 +413,13 @@ public class ClientMain {
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
 
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size() - 1).setFaceDown();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         for (CardSprite tCard : p.getCardsInHand()) {
             ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
             Image scaledImage = imageIcon.getImage()
@@ -416,8 +429,13 @@ public class ClientMain {
             cardPanel.add(pic);
         }
         for (TokenSprite tCounterImage : p.getTokensInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
-            tokenPanel.add(pic);
+            if (tCounterImage.isTokenFaceDown() == true) {
+                JLabel pic = new JLabel(new ImageIcon("images/elfenroads-sprites/M08small.png"));
+                tokenPanel.add(pic);
+            } else {
+                JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
+                tokenPanel.add(pic);
+            }
         }
 
         inventory.add(Box.createVerticalStrut(30));
@@ -456,6 +474,13 @@ public class ClientMain {
 
         opponentFrame.setVisible(true);
 
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size() - 1).setFaceUp();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     static void openRouteInformation(ClientRoute r) {
@@ -487,16 +512,25 @@ public class ClientMain {
         routeInformation.add(Box.createVerticalStrut(10));
         routeInformation.add(requirements);
 
-        if(r.getTokenOnRoute() != null) { 
+        if (!r.getTokenOnRoute().isEmpty()) {
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
-            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName() + " token on it";
+            String temp = "";
+            for (int i = 0; i < r.getTokenOnRoute().size(); i++) {
+                temp += r.getTokenOnRoute().get(i).getTokenName().toLowerCase();
+                if (i == r.getTokenOnRoute().size() - 2) {
+                    temp += " and ";
+                } else {
+                    temp += ", ";
+                }
+            }
+            String tokenOnRouteString = "This route currently has a " + temp + "token on it";
             JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
             tokenOnRouteText.setText(tokenOnRouteString);
             tokenOnRoute.add(tokenOnRouteText);
             routeInformation.add(Box.createVerticalStrut(10));
             routeInformation.add(tokenOnRoute);
-        } else { 
+        } else {
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
             String tokenOnRouteString = "This route currently has no tokens on it";
@@ -541,7 +575,7 @@ public class ClientMain {
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
 
         HashSet<ClientPlayer> playersPassedNoDups = new HashSet<>();
-        for (ClientPlayer p: playersThatPassed) { 
+        for (ClientPlayer p : playersThatPassed) {
             playersPassedNoDups.add(p);
         }
 
@@ -689,7 +723,7 @@ public class ClientMain {
                             // send message to server on pickedRoute
                             if (pickedRoute != null) {
                                 ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
-                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                                        pickedRoute.getHitbox(), r.isRiver));
                             }
                             break;
                         }
@@ -710,7 +744,8 @@ public class ClientMain {
                     for (ClientRoute r : Game.getAllRoutes()) {
                         // // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
                         // System.out.println("Looking at route: " + r.getDestTownString() + " to "
-                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
+                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin
+                        // x: " + r.getMinX()
                         // + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
                         if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
@@ -724,8 +759,7 @@ public class ClientMain {
                                         + pickedRoute.getDestTownString() + " to " + pickedRoute.getSourceTownString());
                                 ActionManager.getInstance()
                                         .sendAction(new PlaceCounterAction(currentPlayer.getName(),
-                                                pickedRoute.getSource().getTownName(),
-                                                pickedRoute.getDest().getTownName(),
+                                                pickedRoute.getHitbox(), pickedRoute.isRiver,
                                                 pickedTok.getTokenName()));
                             }
                             break;
@@ -739,53 +773,53 @@ public class ClientMain {
                     if (listOfTokens.size() == 0) {
                         // do nothin :)
                     } else if (listOfTokens.size() == 1) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
                     } else if (listOfTokens.size() == 2) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(1);
                         }
                     } else if (listOfTokens.size() == 3) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
                     } else if (listOfTokens.size() == 4) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(3);
                         }
                     } else if (listOfTokens.size() == 5) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(4);
                         }
                     }
@@ -803,56 +837,55 @@ public class ClientMain {
                     if (listOfTokens.size() == 0) {
                         // do nothin :)
                     } else if (listOfTokens.size() == 1) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 642 && x <= 694 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
                     } else if (listOfTokens.size() == 2) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 587 && x <= 639 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 695 && x <= 747 && y >= 640 && y <= 692) {
                             pickedTok = listOfTokens.get(1);
                         }
                     } else if (listOfTokens.size() == 3) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 696 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
                     } else if (listOfTokens.size() == 4) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 748) {
                             pickedTok = listOfTokens.get(3);
                         }
                     } else if (listOfTokens.size() == 5) {
-                        if (x >= 592 && x <= 637 && y >= 636 && y <= 706) {
+                        if (x >= 592 && x <= 664 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(0);
                         }
-                        if (x >= 663 && x <= 708 && y >= 636 && y <= 706) {
+                        if (x >= 663 && x <= 715 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(1);
                         }
-                        if (x >= 734 && x <= 779 && y >= 636 && y <= 706) {
+                        if (x >= 734 && x <= 786 && y >= 636 && y <= 688) {
                             pickedTok = listOfTokens.get(2);
                         }
-                        if (x >= 615 && x <= 660 && y >= 636 && y <= 706) {
+                        if (x >= 615 && x <= 667 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(3);
                         }
-                        if (x >= 709 && x <= 754 && y >= 636 && y <= 706) {
+                        if (x >= 709 && x <= 761 && y >= 698 && y <= 750) {
                             pickedTok = listOfTokens.get(4);
                         }
-
                     }
                     if (pickedTok != null) {
                         System.out.println(
@@ -1638,7 +1671,7 @@ public class ClientMain {
         }
 
         gui = new GUI(WINDOW, GUI.Screen.MENU);
-        WINDOW.setMaxFrameRate(60);
+        WINDOW.setMaxFrameRate(0);
 
         // make window visible
         gui.window.setVisible(true);
@@ -1873,6 +1906,7 @@ public class ClientMain {
 
     /**
      * Displays game board elements
+     * 
      * @throws MinuetoFileException
      */
     public static void displayBoardElements() throws MinuetoFileException {
@@ -1892,7 +1926,7 @@ public class ClientMain {
 
         // organize tokens in inventory
         List<TokenSprite> listOfTokens = currentPlayer.getTokensInHand();
-        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();        
+        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();
         if (listOfTokens.size() == 1) {
             MinuetoImage p1 = listOfTokens.get(0);
             gui.window.draw(p1, 642, 640);
@@ -2015,13 +2049,14 @@ public class ClientMain {
         }
 
         // whose turn it is
-        if(currentPlayer.isTurn()) { 
+        if (currentPlayer.isTurn()) {
             MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
             gui.window.draw(itsYourTurnText, 836, 504);
-        } else { 
-            for (ClientPlayer p: currentGame.getPlayers()) { 
-                if(p.isTurn) {
-                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn", fontArial22Bold, MinuetoColor.BLACK);
+        } else {
+            for (ClientPlayer p : currentGame.getPlayers()) {
+                if (p.isTurn) {
+                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn",
+                            fontArial22Bold, MinuetoColor.BLACK);
                     gui.window.draw(otherPlayerTurnText, 836, 504);
                 }
             }
@@ -2034,28 +2069,26 @@ public class ClientMain {
         } else if (roundNumber == 2) {
             roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
         } else if (roundNumber == 3) {
-            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R3small.png");
         } else if (roundNumber == 4) {
-            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R4small.png");
         }
         gui.window.draw(roundNumberImage, 719, 40);
 
         // indication on all of the routes
-        MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
         MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
-        if (!currentPlayer.isTurn) { 
-            for(ClientRoute r: Game.getAllRoutes()) { 
-                gui.window.draw(indicator, r.getMinX(), r.getMinY());
-            }
-        } else {
-            // turn indicators  (can travel here)
+        if (currentPlayer.isTurn) {
+            // turn indicators (can travel here)
             for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
                 gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
             }
-            // indicators (cant travel here)
-            for (ClientRoute r : Game.getAllRoutes()) { 
-                if(!currentPlayer.getCurrentLocation().getRoutes().contains(r)) { 
-                    gui.window.draw(indicator, r.getMinX(), r.getMinY());
+        }
+
+        // draw the tokens onto the route
+        for (ClientRoute r : Game.getAllRoutes()) {
+            if (r.getTokenOnRoute().isEmpty() == false) {
+                for (TokenSprite tok : r.getTokenOnRoute()) {
+                    gui.window.draw(tok.getRouteImage(), r.getMinX(), r.getMinY());
                 }
             }
         }
@@ -2071,7 +2104,8 @@ public class ClientMain {
         if (currentGame.getMode() == Mode.ELFENGOLD) {
             MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
             gui.window.draw(goldValueCircle, 792, 522);
-            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20, MinuetoColor.BLACK);
+            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20,
+                    MinuetoColor.BLACK);
             gui.window.draw(goldAmnt, 806, 530);
         }
     }
@@ -2182,28 +2216,13 @@ public class ClientMain {
         MinuetoImage currentBackground = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
             gui.currentBackground = GUI.Screen.ELFENLAND;
-             currentBackground = elfenlandImage;
+            currentBackground = elfenlandImage;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             gui.currentBackground = GUI.Screen.ELFENGOLD;
             currentBackground = elfengoldImage;
         }
 
         System.out.println("displaying original game board");
-
-        // draw Cards text
-        MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(cardsText, 145, 600);
-
-        // draw Tokens text
-        MinuetoText tokensText = new MinuetoText("Tokens:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(tokensText, 580, 600);
-
-        // draw line between the text:
-        currentBackground.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
-
-        // pass turn button
-        MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-        currentBackground.draw(passTurnText, 42, 650);
 
         // draw opponent inventory boxes
         int numberPlayers = players.size();
@@ -2218,7 +2237,7 @@ public class ClientMain {
             MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
             currentBackground.draw(seeInv, xName + 25, yName + 35);
             MinuetoImage bopp = opponent.getBoppel();
-            currentBackground.draw(bopp,xName, yName + 35);
+            currentBackground.draw(bopp, xName, yName + 35);
         }
 
         // display on the windows
@@ -2464,7 +2483,7 @@ public class ClientMain {
                 e.printStackTrace();
             }
         });
-        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));  
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
