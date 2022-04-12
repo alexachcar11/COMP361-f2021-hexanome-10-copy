@@ -406,6 +406,13 @@ public class ClientMain {
         cardPanel.add(travelCardText);
         tokenPanel.add(tokenText);
 
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size()-1).setFaceDown();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         for (CardSprite tCard : p.getCardsInHand()) {
             ImageIcon imageIcon = new ImageIcon(tCard.getFileAddress());
             Image scaledImage = imageIcon.getImage()
@@ -415,8 +422,13 @@ public class ClientMain {
             cardPanel.add(pic);
         }
         for (TokenSprite tCounterImage : p.getTokensInHand()) {
-            JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
-            tokenPanel.add(pic);
+            if(tCounterImage.isTokenFaceDown() == true) { 
+                JLabel pic = new JLabel(new ImageIcon("images/elfenroads-sprites/M08small.png"));
+                tokenPanel.add(pic);
+            } else {
+                JLabel pic = new JLabel(new ImageIcon(tCounterImage.getFileAddress()));
+                tokenPanel.add(pic);
+            }
         }
 
         inventory.add(Box.createVerticalStrut(30));
