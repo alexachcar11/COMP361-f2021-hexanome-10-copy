@@ -151,8 +151,8 @@ public class TestMinueto {
             public void handleMousePress(int x, int y, int arg2) {
                 // Thread testThread = new Thread(() -> System.out.println("Hello"));
                 // testThread.start();
-                System.out.println("x coord is : " + x + ", and the y coord is : " + y );
-                for(Town t: towns){ 
+                System.out.println("x coord is : " + x + ", and the y coord is : " + y);
+                for (Town t : towns) {
                     if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && y > t.getMinY()) {
                         // temporary print statement to make sure we're clicking on a specific town
                         System.out.println("Clicking on " + t.getTownName());
@@ -171,7 +171,7 @@ public class TestMinueto {
         eventQueue = new MinuetoEventQueue();
         window.registerMouseHandler(handler, eventQueue);
 
-        while(true){ 
+        while (true) {
             while (eventQueue.hasNext()) {
                 eventQueue.handle();
             }
