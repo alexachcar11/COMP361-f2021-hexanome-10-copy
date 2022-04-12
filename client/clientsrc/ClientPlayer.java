@@ -114,6 +114,7 @@ public class ClientPlayer {
     }
 
     public void addCardStringArray(List<String> cardArray) throws MinuetoFileException {
+        cardsInHand.clear();
         for (String cardString : cardArray) {
             cardsInHand.add(Game.getFaceDownCard(cardString));
         }

@@ -113,8 +113,7 @@ public class MoveBootAction implements Action {
         else {
             goToTown = selectedRoute.getSourceTownString();
         }
-        MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName, selectedRoute.getType().name(), 
-                selectedRoute.cost(playerWhoSent.getTown()));
+        MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName, selectedRoute.getType().name(), selectedRoute.cost(playerWhoSent.getTown()));
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
     }
 }
