@@ -467,6 +467,13 @@ public class ClientMain {
 
         opponentFrame.setVisible(true);
 
+        try {
+            p.getTokensInHand().get(p.getTokensInHand().size()-1).setFaceUp();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     static void openRouteInformation(ClientRoute r) {
