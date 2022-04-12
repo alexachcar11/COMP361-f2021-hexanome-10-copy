@@ -1,5 +1,7 @@
 package networksrc;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.*;
 
 public class UpdateDestinationTownACK implements Action{
@@ -21,7 +23,13 @@ public class UpdateDestinationTownACK implements Action{
         ClientPlayer p = ClientMain.currentPlayer;
         ClientTown t = Game.getTownByName(TargetTown);
         p.setTargetDestinationTown(t);
-        
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
 }

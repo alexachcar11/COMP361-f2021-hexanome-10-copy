@@ -28,6 +28,14 @@ public class AuctionACK implements Action {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
 }

@@ -32,6 +32,10 @@ public class ServerUser {
         return null;
     }
 
+    public void setToken(JSONObject token) {
+        this.currentToken = token;
+    }
+
     public String getName() {
         return username;
     }

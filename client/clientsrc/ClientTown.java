@@ -173,6 +173,26 @@ public class ClientTown {
         return returnTown;
     }
 
+    /**
+     * Return all ClientRoutes associated with this town
+     * @return ArrayList<ClientRoute> associated with this town
+     */
+    public ArrayList<ClientRoute> getRoutes() { 
+
+        // initialize list of routes for return 
+        ArrayList<ClientRoute> listOfRoutes = new ArrayList<>(); 
+
+        // get all routes that are going out of the current town 
+        // look over all routes 
+        for(ClientRoute r : Game.getAllRoutes()) { 
+            if(r.getDest().equals(this) || r.getSource().equals(this)) { 
+                listOfRoutes.add(r);
+            }
+        }
+
+        return listOfRoutes;
+    }
+
     public int getNumberPlayersHere() {
         return playersHere.size();
     }

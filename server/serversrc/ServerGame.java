@@ -15,15 +15,6 @@ import java.util.stream.Collectors;
 import java.util.HashMap;
 
 import networksrc.*;
-import unirest.shaded.com.google.gson.Gson;
-
-import org.minueto.MinuetoEventQueue;
-import org.minueto.MinuetoFileException;
-import org.minueto.handlers.MinuetoMouseHandler;
-import org.minueto.window.MinuetoWindow;
-
-import clientsrc.ClientMain;
-import clientsrc.TokenSprite;
 
 public class ServerGame implements Serializable {
 
@@ -52,6 +43,7 @@ public class ServerGame implements Serializable {
     public CardStack aCardStack;
     private List<AbstractCard> disposedCardPile;
     private Player startingPlayer;
+    private int doingPhase3 = 1;
 
     /**
      * CONSTRUCTOR : creates an instance of Game object
@@ -513,6 +505,34 @@ public class ServerGame implements Serializable {
             this.auction.getLastPassedPlayer()
                     .passTurn(this.auction.getBiddersList().get(auction.getIndLastPassedPlayer()));
 
+        } else if (currentPhase == 3) {
+            // go to next player
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).getIsTurn()) {
+                    // if it's last player in list, go back to start of list
+                    if (i == players.size() - 1) {
+                        players.get(i).passTurn(players.get(0));
+                    } else {
+                        players.get(i).passTurn(players.get(i + 1));
+                    }
+                    break;
+                }
+            }
+            if (doingPhase3 == 3) {
+                if (didAllPlayersPassTurn() && currentPhase != 10) {
+                    this.doingPhase3++;
+                    nextPhase();
+                    return;
+                }
+            } else {
+                if (didAllPlayersPassTurn() && currentPhase != 10) {
+                    // reset turn passed for all players
+                    for (Player p : players) {
+                        p.resetTurnPassed();
+                    }
+                    doingPhase3++;
+                }
+            }
         }
         // change next player
         else {
@@ -566,6 +586,7 @@ public class ServerGame implements Serializable {
                 phaseThree();
                 break;
             case 4:
+                this.doingPhase3 = 1;
                 phaseFour();
                 break;
             case 5:
@@ -623,18 +644,22 @@ public class ServerGame implements Serializable {
     }
 
     public void phaseThree() {
-        for (int i = 0; i < 5; i++)
+        if (doingPhase3 > 3) {
+            return;
+        }
+        int numOfTokens = faceUpTokenPile.size();
+        for (int i = 0; i < 5 - numOfTokens; i++)
             faceUpTokenPile.add(faceDownTokenStack.pop());
         final List<String> faceUpCopy = faceUpTokenPile.stream().map((token) -> token.toString())
                 .collect(Collectors.toList());
         final String currentPlayerName = this.getCurrentPlayer().getName();
         // displays tokens to client
         ACK_MANAGER.sendToSender(new DisplayPhaseThreeACK(faceUpCopy), currentPlayerName);
-        // transition to nextphase handled elsewhere
     }
 
     // for planning travel routes phase (4)
     public void playerPlaceCounter(Player p, Route r, Token tok) {
+
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r
@@ -646,31 +671,6 @@ public class ServerGame implements Serializable {
         // ...
         ACK_MANAGER.sentToAllPlayersInGame(new WinnerACK(winner.getName()), this);
     }
-
-    // old version of phaseFour
-    // public void phaseFour() {
-    // while (true) {
-    // // breaks once all players pass turn
-    // if (didAllPlayersPassTurn()) {
-    // break;
-    // }
-    // Player currentPlayer = getCurrentPlayer();
-    // // server sends message ACK to client to get input
-    // ACK_MANAGER.sendToSender(new PlaceCounterACK(), currentPlayer.getName());
-    // // client sends back input to server
-
-    // // we get a Token input
-    // // we get a route input
-    // // this done inside the Action class: playerPlaceCounter(currentPlayer, r,
-    // tok);
-
-    // // calls nextPlayer() in the PassTurnAction
-    // }
-    // for (Player p : players) {
-    // p.resetTurnPassed();
-    // }
-    // nextPhase();
-    // }
 
     // new version of phaseFour
     // pre: currentPhase should be 4 right now

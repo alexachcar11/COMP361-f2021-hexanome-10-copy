@@ -25,6 +25,13 @@ public class TokenSelectedAction implements Action {
     @Override
     public boolean isValid() {
         ServerGame game = GameLobby.getGameLobby(this.serverGameID).getServerGame();
+        if (game.getCurrentPhase() != 3){
+            return false;
+        }
+        if (this.tokenString.equals("random"))
+        {
+            return !game.faceDownTokenStack.isEmpty();
+        }
         Token tokenToAdd = Token.getTokenByName(this.tokenString);
         return game.faceUpTokenPile.contains(tokenToAdd)
                 || game.faceDownTokenStack.contains(tokenToAdd);
@@ -45,15 +52,15 @@ public class TokenSelectedAction implements Action {
         player.addToken(tokenToAdd);
         HashMap<String, List<String>> playerTokens = game.getTokenInventoryMap();
         ActionManager.getInstance().sentToAllPlayersInGame(new DealTokenACK(playerTokens), game);
+        String playerName = game.getCurrentPlayer().getName();
+        System.out.println(playerName + " just picked a token.");
         game.nextPlayer();
-        List<String> tokenStrings = game.faceUpTokenPile.stream().map((token) -> token.toString())
-                .collect(Collectors.toList());
-        if (game.getCurrentPlayer().getTokensInHand().size() < 3) {
-            ActionManager.getInstance().sendToSender(new DisplayPhaseThreeACK(tokenStrings),
-                    game.getCurrentPlayer().getName());
-        } else {
-            game.nextPhase();
+        System.out.println("Now it's " + game.getCurrentPlayer().getName() + "'s turn.");
+        if (game.getCurrentPhase() == 3){
+            System.out.println("Calling phaseThree, current phase: " + game.getCurrentPhase());
+            game.phaseThree();
         }
+        
     }
 
 }

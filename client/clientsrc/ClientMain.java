@@ -10,7 +10,6 @@ import org.minueto.handlers.MinuetoMouseHandler;
 import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
-import org.minueto.window.MinuetoPanel;
 
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
@@ -24,28 +23,14 @@ import networksrc.LoginAction;
 import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
-import networksrc.TestAction;
-// import serversrc.Token;
 
 import serversrc.Route;
-import serversrc.Token;
-import serversrc.ServerGame;
-
-import javax.imageio.ImageIO;
-
-// import serversrc.Color;
-// import serversrc.Mode;
-// import serversrc.Player;
-// import serversrc.TownGoldOption;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.image.*;
-
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -54,11 +39,10 @@ import javax.swing.JLabel;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 
@@ -135,6 +119,7 @@ public class ClientMain {
     static MinuetoImage loserScreen;
     static MinuetoImage soundOnButton;
     static MinuetoImage soundOffButton;
+    static boolean played;
     // currentGame.getNumberOfPlayers()
     static int numberPlayers = 2;
 
@@ -473,7 +458,7 @@ public class ClientMain {
 
     }
 
-    static void openRouteInformation(Route r) {
+    static void openRouteInformation(ClientRoute r) {
 
         JFrame routeOverview = new JFrame("Route");
 
@@ -502,6 +487,26 @@ public class ClientMain {
         routeInformation.add(Box.createVerticalStrut(10));
         routeInformation.add(requirements);
 
+        if(r.getTokenOnRoute() != null) { 
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName() + " token on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
+        } else { 
+            JPanel tokenOnRoute = new JPanel();
+            tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
+            String tokenOnRouteString = "This route currently has no tokens on it";
+            JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
+            tokenOnRouteText.setText(tokenOnRouteString);
+            tokenOnRoute.add(tokenOnRouteText);
+            routeInformation.add(Box.createVerticalStrut(10));
+            routeInformation.add(tokenOnRoute);
+        }
+
         routeOverview.add(routeInformation);
 
         routeOverview.setLocation(300, 200);
@@ -523,7 +528,7 @@ public class ClientMain {
         playerBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
 
         JPanel otherPlayersBeen = new JPanel();
-        otherPlayersBeen.setLayout(new BoxLayout(playerBeen, BoxLayout.Y_AXIS));
+        otherPlayersBeen.setLayout(new BoxLayout(otherPlayersBeen, BoxLayout.Y_AXIS));
 
         String townName = t.getTownName();
         JFrame townOverview = new JFrame(townName);
@@ -534,10 +539,20 @@ public class ClientMain {
         JLabel hasBeenText;
 
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
+
+        HashSet<ClientPlayer> playersPassedNoDups = new HashSet<>();
+        for (ClientPlayer p: playersThatPassed) { 
+            playersPassedNoDups.add(p);
+        }
+
         String text = "The following players have passed:";
-        for (ClientPlayer p : playersThatPassed) {
-            text += " and ";
+        int count = 0;
+        for (ClientPlayer p : playersPassedNoDups) {
+            if (count != 0 && count != playersPassedNoDups.size()) {
+                text += " and ";
+            }
             text += p.getName();
+            count++;
         }
         JLabel otherPlayersBeenText = new JLabel(text);
 
@@ -665,8 +680,8 @@ public class ClientMain {
                 }
 
                 // IF PLAYERS TURN TO PICK A ROUTE TO MOVE TO
-                if (currentPlayer.isTurn() == true && currentGame.getCurrentPhase() == 5) {
-                    for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
+                if (currentGame.getCurrentPhase() == 5) {
+                    for (ClientRoute r : Game.getAllRoutes()) {
                         if (x > r.getMinX() && x < r.getMaxX() && y > r.getMinY() && y < r.getMaxY()) {
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
                                     + r.getSourceTownString());
@@ -681,7 +696,7 @@ public class ClientMain {
                     }
                 }
                 // place counter on routes phase
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
+                if (currentGame.getCurrentPhase() == 4) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
                     if (pickedRoute != null) {
@@ -689,7 +704,14 @@ public class ClientMain {
                                 + " to " + pickedRoute.getSourceTownString());
                     }
 
-                    for (Route r : Route.getAllRoutes()) {
+                    // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+                    System.out.println("Clicked on coordinates: \nx: " + x + "\ny: " + y);
+
+                    for (ClientRoute r : Game.getAllRoutes()) {
+                        // // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+                        // System.out.println("Looking at route: " + r.getDestTownString() + " to "
+                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
+                        // + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
                         if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
                             System.out.println("You have selected the route from " + r.getDestTownString() + " to "
@@ -767,8 +789,12 @@ public class ClientMain {
                             pickedTok = listOfTokens.get(4);
                         }
                     }
+                    // testingggg
+                    if (pickedTok != null) {
+                        System.out.println("pickedTok is: " + pickedTok.getTokenName());
+                    }
                 }
-                if (currentGame.getCurrentPhase() == 6 && currentPlayer.isTurn()) {
+                if (currentGame.getCurrentPhase() == 6) {
                     List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
                     // testingggg
                     if (pickedTok != null) {
@@ -844,7 +870,7 @@ public class ClientMain {
                 // iterate over all towns
                 for (ClientTown t : Game.getTowns()) {
                     // we are clicking on a town
-                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && x > t.getMinY()) {
+                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && y > t.getMinY()) {
                         // temporary print statement to make sure we're clicking on a specific town
                         System.out.println("Clicking on " + t.getTownName());
 
@@ -852,8 +878,8 @@ public class ClientMain {
                         openTownInformation(t);
                     }
                 }
-                for (Route r : Route.getAllRoutes()) {
-                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && x > r.getMinY()) {
+                for (ClientRoute r : Game.getAllRoutes()) {
+                    if (x < r.getMaxX() && x > r.getMinX() && y < r.getMaxY() && y > r.getMinY()) {
                         System.out.println("You are clicking on a route");
                         openRouteInformation(r);
                     }
@@ -1407,7 +1433,7 @@ public class ClientMain {
     };
 
     // keep track of route and token
-    private static Route pickedRoute = null;
+    private static ClientRoute pickedRoute = null;
     private static TokenSprite pickedTok = null;
 
     // not using this anymore
@@ -1538,18 +1564,6 @@ public class ClientMain {
     // ******************************************MAIN CODE STARTS
     // HERE********************************************
     public static void main(String[] args) throws IOException {
-        /*
-         * in the Boot class
-         * File bootDir = new File("images/böppels-and-boots/"); // dir containing boot
-         * image files
-         * 
-         * List<String> bootFileNames = new ArrayList<>();
-         * // add file names of boot images to the bootFiles list
-         * for (File file : bootDir.listFiles()) {
-         * if (file.getName().startsWith("boot-"))
-         * bootFileNames.add("images/böppels-and-boots/" + file.getName());
-         * }
-         */
 
         try {
             elfengoldImage = new MinuetoImageFile("images/elfengold.png");
@@ -1610,6 +1624,7 @@ public class ClientMain {
             // mute button
             soundOnButton = new MinuetoImageFile("images/SoundImages/muted.png");
             soundOffButton = new MinuetoImageFile("images/SoundImages/unmuted.png");
+            played = false;
 
         } catch (MinuetoFileException e) {
             System.out.println("Could not load image file");
@@ -1801,157 +1816,10 @@ public class ClientMain {
                     elfenlandLobbyQueue.handle();
                 }
 
-            } else if (gui.currentBackground == GUI.Screen.ELFENLAND) {
-                if (currentGame.getCurrentPhase() == 4 && currentPlayer.isTurn()) {
-                    // mouseHandler to click on route
-                    while (placeCounterQueue.hasNext()) {
-                        placeCounterQueue.handle();
-                    }
-                }
-
+            } else if (gui.currentBackground == GUI.Screen.ELFENLAND || gui.currentBackground == GUI.Screen.ELFENGOLD) {
                 while (elfenlandQueue.hasNext()) {
                     elfenlandQueue.handle();
                 }
-
-                // draw Cards text
-                MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(cardsText, 145, 600);
-
-                // draw Tokens text
-                MinuetoText tokensText = new MinuetoText("Tokens:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(tokensText, 580, 600);
-
-                // draw line between the text:
-                ClientMain.gui.window.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
-
-                // draw indication on all of the routes
-                MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
-                MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
-
-                ClientMain.gui.window.draw(indicator, 90, 55);
-                ClientMain.gui.window.draw(indicator, 38, 189);
-                ClientMain.gui.window.draw(indicator, 169, 126);
-                ClientMain.gui.window.draw(indicator, 121, 162);
-                ClientMain.gui.window.draw(indicator, 45, 318);
-                ClientMain.gui.window.draw(indicator, 78, 307);
-                ClientMain.gui.window.draw(indicator, 119, 231);
-                ClientMain.gui.window.draw(indicator, 125, 282);
-                ClientMain.gui.window.draw(indicator, 246, 130);
-                ClientMain.gui.window.draw(indicator, 259, 210);
-                ClientMain.gui.window.draw(indicator, 194, 424);
-                ClientMain.gui.window.draw(indicator, 165, 510);
-                ClientMain.gui.window.draw(indicator, 283, 442);
-                ClientMain.gui.window.draw(indicator, 378, 545);
-                ClientMain.gui.window.draw(indicator, 279, 57);
-                ClientMain.gui.window.draw(indicator, 381, 199);
-                ClientMain.gui.window.draw(indicator, 241, 342);
-                ClientMain.gui.window.draw(indicator, 354, 401);
-                ClientMain.gui.window.draw(indicator, 368, 462);
-                ClientMain.gui.window.draw(indicator, 451, 467);
-                ClientMain.gui.window.draw(indicator, 563, 431);
-                ClientMain.gui.window.draw(indicator, 577, 483);
-                ClientMain.gui.window.draw(indicator, 584, 557);
-                ClientMain.gui.window.draw(indicator, 728, 489);
-                ClientMain.gui.window.draw(indicator, 620, 171);
-                ClientMain.gui.window.draw(indicator, 726, 373);
-                ClientMain.gui.window.draw(indicator, 635, 252);
-                ClientMain.gui.window.draw(indicator, 49, 450);
-                ClientMain.gui.window.draw(indicator, 244, 551);
-                ClientMain.gui.window.draw(indicator, 621, 423);
-                ClientMain.gui.window.draw(indicator, 443, 219);
-                ClientMain.gui.window.draw(indicator, 376, 255);
-                ClientMain.gui.window.draw(indicator, 302, 311);
-                ClientMain.gui.window.draw(indicator, 699, 395);
-                ClientMain.gui.window.draw(indicator, 488, 80);
-                ClientMain.gui.window.draw(indicator, 383, 131);
-                ClientMain.gui.window.draw(indicator, 302, 313);
-                ClientMain.gui.window.draw(indicator, 555, 141);
-                ClientMain.gui.window.draw(indicator, 717, 291);
-                ClientMain.gui.window.draw(indicator, 450, 339);
-                ClientMain.gui.window.draw(indicator, 489, 254);
-                ClientMain.gui.window.draw(indicator, 526, 390);
-                ClientMain.gui.window.draw(indicator, 364, 315);
-                ClientMain.gui.window.draw(indicator, 687, 174);
-                ClientMain.gui.window.draw(indicator, 510, 310);
-                ClientMain.gui.window.draw(indicator, 149, 102);
-                ClientMain.gui.window.draw(indicator, 533, 185);
-                ClientMain.gui.window.draw(indicator, 438, 549);
-                ClientMain.gui.window.draw(indicator, 536, 185);
-                ClientMain.gui.window.draw(indicator, 88, 439);
-
-                MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial20, MinuetoColor.BLACK);
-                ClientMain.gui.window.draw(passTurnText, 42, 650);
-
-                // IF WE CLICK ON PASSTURN THEN PASS THE TURN
-
-                // HARDCODED
-                int roundNumber = currentGame.getCurrentRound();
-                if (roundNumber == 1) {
-                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
-                } else if (roundNumber == 2) {
-                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
-                } else if (roundNumber == 3) {
-                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
-                } else if (roundNumber == 4) {
-                    roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
-                }
-
-                // draw the round card on the screen
-                ClientMain.gui.window.draw(roundNumberImage, 719, 40);
-
-                if (currentGame.getMode() == Mode.ELFENGOLD) {
-                    MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
-                    ClientMain.gui.window.draw(goldValueCircle, 792, 522);
-                    MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()),
-                            ClientMain.fontArial20, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(goldAmnt, 806, 530);
-                }
-
-                int numberPlayers = players.size();
-
-                for (int i = 0; i < numberPlayers; i++) {
-                    ClientPlayer opponent = players.get(i);
-                    int xName = 835;
-                    int yName = 70 + (i * 92);
-
-                    // MinuetoText pName = new MinuetoText(opponent.getName(), fontArial20,
-                    // opponent.getColor());
-                    MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
-                    ClientMain.gui.window.draw(playerBackground, xName - 10, yName - 10);
-
-                    MinuetoText pName = new MinuetoText(opponent.getName(), ClientMain.fontArial20, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(pName, xName, yName);
-                    MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
-                    ClientMain.gui.window.draw(seeInv, xName + 25, yName + 35);
-                }
-
-                // HARDCODED TOKEN ON THE MAP
-                // Token testToken = new Token(CardType.DRAGON);
-                // MinuetoImage testTokImage = testToken.getSmallImage();
-                // ClientMain.gui.window.draw(testTokImage, 368, 462);
-
-                if (currentPlayer.isTurn == true) {
-                    // for(Route r : currentPlayer.getCurrentLocation().getRoutes()) {
-                    for (Route r : currentPlayer.getCurrentLocation().getServerTown().getRoutes()) {
-                        gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
-                    }
-
-                }
-
-                // display boots
-                // draw other players
-                for (int i = 0; i < players.size(); i++) {
-                    ClientPlayer player = players.get(i);
-                    player.drawBoot(i);
-                }
-                // draw your boot
-                currentPlayer.drawBoot(players.size());
-
-                // update gui
-                ClientMain.gui.window.render();
-
-            } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
-                gui.window.draw(elfengoldImage, 0, 0);
             }
 
             // Add a button in the bottom right to pause the music
@@ -1964,8 +1832,6 @@ public class ClientMain {
             WINDOW.render();
             Thread.yield();
         }
-
-        // swing gui
     }
 
     /**
@@ -1975,14 +1841,17 @@ public class ClientMain {
      * @param soundFile sound file to play
      */
     static void playSound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            loadedClip = AudioSystem.getClip();
-            loadedClip.open(audioIn);
-            loadedClip.start();
-        } catch (Exception e) {
-            throw new Error("Unable to play sound file");
+        if (played == false) {
+            File f = new File("./" + soundFile);
+            try {
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+                loadedClip = AudioSystem.getClip();
+                loadedClip.open(audioIn);
+                loadedClip.start();
+                played = true;
+            } catch (Exception e) {
+                throw new Error("Unable to play sound file");
+            }
         }
     }
 
@@ -2003,41 +1872,51 @@ public class ClientMain {
     }
 
     /**
-     * Displays inventories
+     * Displays game board elements
+     * @throws MinuetoFileException
      */
-    public static void displayInventories() {
+    public static void displayBoardElements() throws MinuetoFileException {
+        MinuetoImage currentBackground = null;
+        if (gui.currentBackground == GUI.Screen.ELFENLAND) {
+            currentBackground = elfenlandImage;
+        } else if (gui.currentBackground == GUI.Screen.ELFENGOLD) {
+            currentBackground = elfengoldImage;
+        }
 
-        // display
-        gui.window.draw(elfenlandImage, 0, 0);
+        System.out.println("displaying board elements");
 
-        List<TokenSprite> listOfTokens = ClientMain.currentPlayer.getTokensInHand();
-        List<CardSprite> listOfCards = ClientMain.currentPlayer.getCardsInHand();
+        // REDRAW CLEAN BACKGROUND
+        gui.window.draw(currentBackground, 0, 0);
+
+        // ADD ELEMENTS
 
         // organize tokens in inventory
+        List<TokenSprite> listOfTokens = currentPlayer.getTokensInHand();
+        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();        
         if (listOfTokens.size() == 1) {
             MinuetoImage p1 = listOfTokens.get(0);
-            ClientMain.gui.window.draw(p1, 642, 640);
+            gui.window.draw(p1, 642, 640);
         } else if (listOfTokens.size() == 2) {
             MinuetoImage p1 = listOfTokens.get(0);
             MinuetoImage p2 = listOfTokens.get(1);
-            ClientMain.gui.window.draw(p1, 587, 640);
-            ClientMain.gui.window.draw(p2, 695, 640);
+            gui.window.draw(p1, 587, 640);
+            gui.window.draw(p2, 695, 640);
         } else if (listOfTokens.size() == 3) {
             MinuetoImage p1 = listOfTokens.get(0);
             MinuetoImage p2 = listOfTokens.get(1);
             MinuetoImage p3 = listOfTokens.get(2);
-            ClientMain.gui.window.draw(p1, 615, 636);
-            ClientMain.gui.window.draw(p2, 709, 636);
-            ClientMain.gui.window.draw(p3, 663, 698);
+            gui.window.draw(p1, 615, 636);
+            gui.window.draw(p2, 709, 636);
+            gui.window.draw(p3, 663, 698);
         } else if (listOfTokens.size() == 4) {
             MinuetoImage p1 = listOfTokens.get(0);
             MinuetoImage p2 = listOfTokens.get(1);
             MinuetoImage p3 = listOfTokens.get(2);
             MinuetoImage p4 = listOfTokens.get(3);
-            ClientMain.gui.window.draw(p1, 615, 636);
-            ClientMain.gui.window.draw(p2, 709, 636);
-            ClientMain.gui.window.draw(p3, 615, 698);
-            ClientMain.gui.window.draw(p4, 709, 698);
+            gui.window.draw(p1, 615, 636);
+            gui.window.draw(p2, 709, 636);
+            gui.window.draw(p3, 615, 698);
+            gui.window.draw(p4, 709, 698);
 
         } else if (listOfTokens.size() == 5) {
             MinuetoImage p1 = listOfTokens.get(0);
@@ -2045,49 +1924,49 @@ public class ClientMain {
             MinuetoImage p3 = listOfTokens.get(2);
             MinuetoImage p4 = listOfTokens.get(3);
             MinuetoImage p5 = listOfTokens.get(4);
-            ClientMain.gui.window.draw(p1, 592, 636);
-            ClientMain.gui.window.draw(p2, 663, 636);
-            ClientMain.gui.window.draw(p3, 734, 636);
-            ClientMain.gui.window.draw(p4, 615, 698);
-            ClientMain.gui.window.draw(p5, 709, 698);
+            gui.window.draw(p1, 592, 636);
+            gui.window.draw(p2, 663, 636);
+            gui.window.draw(p3, 734, 636);
+            gui.window.draw(p4, 615, 698);
+            gui.window.draw(p5, 709, 698);
         }
 
         // organize cards in inventory
         if (listOfCards.size() == 1) {
             MinuetoImage p1 = listOfCards.get(0).getMediumImage();
-            ClientMain.gui.window.draw(p1, 314, 634);
+            gui.window.draw(p1, 314, 634);
         } else if (listOfCards.size() == 2) {
             MinuetoImage p1 = listOfCards.get(0).getMediumImage();
             MinuetoImage p2 = listOfCards.get(1).getMediumImage();
-            ClientMain.gui.window.draw(p1, 258, 634);
-            ClientMain.gui.window.draw(p2, 370, 634);
+            gui.window.draw(p1, 258, 634);
+            gui.window.draw(p2, 370, 634);
         } else if (listOfCards.size() == 3) {
             MinuetoImage p1 = listOfCards.get(0).getMediumImage();
             MinuetoImage p2 = listOfCards.get(1).getMediumImage();
             MinuetoImage p3 = listOfCards.get(2).getMediumImage();
-            ClientMain.gui.window.draw(p1, 202, 634);
-            ClientMain.gui.window.draw(p2, 314, 634);
-            ClientMain.gui.window.draw(p3, 426, 634);
+            gui.window.draw(p1, 202, 634);
+            gui.window.draw(p2, 314, 634);
+            gui.window.draw(p3, 426, 634);
         } else if (listOfCards.size() == 4) {
             MinuetoImage p1 = listOfCards.get(0).getMediumImage();
             MinuetoImage p2 = listOfCards.get(1).getMediumImage();
             MinuetoImage p3 = listOfCards.get(2).getMediumImage();
             MinuetoImage p4 = listOfCards.get(3).getMediumImage();
-            ClientMain.gui.window.draw(p1, 153, 634);
-            ClientMain.gui.window.draw(p2, 261, 634);
-            ClientMain.gui.window.draw(p3, 369, 634);
-            ClientMain.gui.window.draw(p4, 477, 634);
+            gui.window.draw(p1, 153, 634);
+            gui.window.draw(p2, 261, 634);
+            gui.window.draw(p3, 369, 634);
+            gui.window.draw(p4, 477, 634);
         } else if (listOfCards.size() == 5) {
             MinuetoImage p1 = listOfCards.get(0).getMediumImage();
             MinuetoImage p2 = listOfCards.get(1).getMediumImage();
             MinuetoImage p3 = listOfCards.get(2).getMediumImage();
             MinuetoImage p4 = listOfCards.get(3).getMediumImage();
             MinuetoImage p5 = listOfCards.get(4).getMediumImage();
-            ClientMain.gui.window.draw(p1, 150, 634);
-            ClientMain.gui.window.draw(p2, 232, 634);
-            ClientMain.gui.window.draw(p3, 314, 634);
-            ClientMain.gui.window.draw(p4, 396, 634);
-            ClientMain.gui.window.draw(p5, 478, 634);
+            gui.window.draw(p1, 150, 634);
+            gui.window.draw(p2, 232, 634);
+            gui.window.draw(p3, 314, 634);
+            gui.window.draw(p4, 396, 634);
+            gui.window.draw(p5, 478, 634);
         } else if (listOfCards.size() == 6) {
             MinuetoImage p1 = listOfCards.get(0).getSmallImage();
             MinuetoImage p2 = listOfCards.get(1).getSmallImage();
@@ -2095,12 +1974,12 @@ public class ClientMain {
             MinuetoImage p4 = listOfCards.get(3).getSmallImage();
             MinuetoImage p5 = listOfCards.get(4).getSmallImage();
             MinuetoImage p6 = listOfCards.get(5).getSmallImage();
-            ClientMain.gui.window.draw(p1, 235, 605);
-            ClientMain.gui.window.draw(p2, 348, 605);
-            ClientMain.gui.window.draw(p3, 461, 605);
-            ClientMain.gui.window.draw(p4, 235, 685);
-            ClientMain.gui.window.draw(p5, 348, 685);
-            ClientMain.gui.window.draw(p6, 461, 685);
+            gui.window.draw(p1, 235, 605);
+            gui.window.draw(p2, 348, 605);
+            gui.window.draw(p3, 461, 605);
+            gui.window.draw(p4, 235, 685);
+            gui.window.draw(p5, 348, 685);
+            gui.window.draw(p6, 461, 685);
         } else if (listOfCards.size() == 7) {
             MinuetoImage p1 = listOfCards.get(0).getSmallImage();
             MinuetoImage p2 = listOfCards.get(1).getSmallImage();
@@ -2109,13 +1988,13 @@ public class ClientMain {
             MinuetoImage p5 = listOfCards.get(4).getSmallImage();
             MinuetoImage p6 = listOfCards.get(5).getSmallImage();
             MinuetoImage p7 = listOfCards.get(6).getSmallImage();
-            ClientMain.gui.window.draw(p1, 235, 605);
-            ClientMain.gui.window.draw(p2, 318, 605);
-            ClientMain.gui.window.draw(p3, 414, 605);
-            ClientMain.gui.window.draw(p4, 235, 685);
-            ClientMain.gui.window.draw(p5, 318, 685);
-            ClientMain.gui.window.draw(p6, 414, 685);
-            ClientMain.gui.window.draw(p7, 510, 646);
+            gui.window.draw(p1, 235, 605);
+            gui.window.draw(p2, 318, 605);
+            gui.window.draw(p3, 414, 605);
+            gui.window.draw(p4, 235, 685);
+            gui.window.draw(p5, 318, 685);
+            gui.window.draw(p6, 414, 685);
+            gui.window.draw(p7, 510, 646);
         } else if (listOfCards.size() == 8) {
             MinuetoImage p1 = listOfCards.get(0).getSmallImage();
             MinuetoImage p2 = listOfCards.get(1).getSmallImage();
@@ -2125,16 +2004,76 @@ public class ClientMain {
             MinuetoImage p6 = listOfCards.get(5).getSmallImage();
             MinuetoImage p7 = listOfCards.get(6).getSmallImage();
             MinuetoImage p8 = listOfCards.get(7).getSmallImage();
-            ClientMain.gui.window.draw(p1, 222, 605);
-            ClientMain.gui.window.draw(p2, 318, 605);
-            ClientMain.gui.window.draw(p3, 414, 605);
-            ClientMain.gui.window.draw(p4, 510, 605);
-            ClientMain.gui.window.draw(p5, 222, 685);
-            ClientMain.gui.window.draw(p6, 318, 685);
-            ClientMain.gui.window.draw(p7, 414, 685);
-            ClientMain.gui.window.draw(p8, 510, 685);
+            gui.window.draw(p1, 222, 605);
+            gui.window.draw(p2, 318, 605);
+            gui.window.draw(p3, 414, 605);
+            gui.window.draw(p4, 510, 605);
+            gui.window.draw(p5, 222, 685);
+            gui.window.draw(p6, 318, 685);
+            gui.window.draw(p7, 414, 685);
+            gui.window.draw(p8, 510, 685);
         }
-        gui.window.render();
+
+        // whose turn it is
+        if(currentPlayer.isTurn()) { 
+            MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
+            gui.window.draw(itsYourTurnText, 836, 504);
+        } else { 
+            for (ClientPlayer p: currentGame.getPlayers()) { 
+                if(p.isTurn) {
+                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn", fontArial22Bold, MinuetoColor.BLACK);
+                    gui.window.draw(otherPlayerTurnText, 836, 504);
+                }
+            }
+        }
+
+        // round card
+        int roundNumber = currentGame.getCurrentRound();
+        if (roundNumber == 1) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+        } else if (roundNumber == 2) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+        } else if (roundNumber == 3) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R1small.png");
+        } else if (roundNumber == 4) {
+            roundNumberImage = new MinuetoImageFile("images/elfenroads-sprites/R2small.png");
+        }
+        gui.window.draw(roundNumberImage, 719, 40);
+
+        // indication on all of the routes
+        MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
+        MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
+        if (!currentPlayer.isTurn) { 
+            for(ClientRoute r: Game.getAllRoutes()) { 
+                gui.window.draw(indicator, r.getMinX(), r.getMinY());
+            }
+        } else {
+            // turn indicators  (can travel here)
+            for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
+                gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
+            }
+            // indicators (cant travel here)
+            for (ClientRoute r : Game.getAllRoutes()) { 
+                if(!currentPlayer.getCurrentLocation().getRoutes().contains(r)) { 
+                    gui.window.draw(indicator, r.getMinX(), r.getMinY());
+                }
+            }
+        }
+
+        // boots
+        for (int i = 0; i < players.size(); i++) {
+            ClientPlayer player = players.get(i);
+            player.drawBoot(i);
+        }
+        currentPlayer.drawBoot(players.size());
+
+        // gold value if elfengold
+        if (currentGame.getMode() == Mode.ELFENGOLD) {
+            MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
+            gui.window.draw(goldValueCircle, 792, 522);
+            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20, MinuetoColor.BLACK);
+            gui.window.draw(goldAmnt, 806, 530);
+        }
     }
 
     /**
@@ -2240,11 +2179,50 @@ public class ClientMain {
     public static void displayOriginalBoard() {
         // display background depending on the mode
         Mode currentMode = currentGame.getMode();
+        MinuetoImage currentBackground = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
             gui.currentBackground = GUI.Screen.ELFENLAND;
+             currentBackground = elfenlandImage;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             gui.currentBackground = GUI.Screen.ELFENGOLD;
+            currentBackground = elfengoldImage;
         }
+
+        System.out.println("displaying original game board");
+
+        // draw Cards text
+        MinuetoText cardsText = new MinuetoText("Cards:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+        currentBackground.draw(cardsText, 145, 600);
+
+        // draw Tokens text
+        MinuetoText tokensText = new MinuetoText("Tokens:", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+        currentBackground.draw(tokensText, 580, 600);
+
+        // draw line between the text:
+        currentBackground.drawLine(MinuetoColor.BLACK, 570, 602, 570, 763);
+
+        // pass turn button
+        MinuetoText passTurnText = new MinuetoText("PASS", ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+        currentBackground.draw(passTurnText, 42, 650);
+
+        // draw opponent inventory boxes
+        int numberPlayers = players.size();
+        for (int i = 0; i < numberPlayers; i++) {
+            ClientPlayer opponent = players.get(i);
+            int xName = 835;
+            int yName = 70 + (i * 92);
+            MinuetoRectangle playerBackground = new MinuetoRectangle(190, 85, MinuetoColor.WHITE, true);
+            currentBackground.draw(playerBackground, xName - 10, yName - 10);
+            MinuetoText pName = new MinuetoText(opponent.getName(), ClientMain.fontArial22Bold, MinuetoColor.BLACK);
+            currentBackground.draw(pName, xName, yName);
+            MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
+            currentBackground.draw(seeInv, xName + 25, yName + 35);
+            MinuetoImage bopp = opponent.getBoppel();
+            currentBackground.draw(bopp,xName, yName + 35);
+        }
+
+        // display on the windows
+        gui.window.draw(currentBackground, 0, 0);
     }
 
     /**
@@ -2486,14 +2464,11 @@ public class ClientMain {
                 e.printStackTrace();
             }
         });
-        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
-        displayInventories();
-        
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));  
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {
         ClientPlayer.getPlayerByName(playerString).addTokenStringList(tokenStrings);
-        displayInventories();
     }
 
     public static void diaplayWinnerByString(String winner) {

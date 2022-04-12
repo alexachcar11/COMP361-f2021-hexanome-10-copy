@@ -1,5 +1,7 @@
 package networksrc;
 
+import org.minueto.MinuetoFileException;
+
 import clientsrc.ClientMain;
 import clientsrc.ClientPlayer;
 
@@ -20,5 +22,13 @@ public class MovingBootACK implements Action{
         ClientMain.currentGame.setPhase(5);
 
         // currentPlayer.setTurn(true);
+
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

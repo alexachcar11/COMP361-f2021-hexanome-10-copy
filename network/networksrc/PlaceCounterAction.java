@@ -1,5 +1,6 @@
 package networksrc;
 
+import serversrc.Obstacle;
 import serversrc.Player;
 import serversrc.Route;
 import serversrc.ServerGame;
@@ -27,14 +28,14 @@ public class PlaceCounterAction implements Action {
         }
         // check if it's player's turn
         Player playerWhoSent = Player.getPlayerByName(senderName);
+        if (!playerWhoSent.getIsTurn()){
+            return false;
+        }
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         Town s = Town.getTownByName(srcTown);
         Town d = Town.getTownByName(destTown);
         Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
         Token t = Token.getTokenByName(tok);
-        if (!playerWhoSent.getIsTurn()){
-            return false;
-        }
         // check if it's phase 4 for placing counters
         // TODO: might need modification for elfengold
         if (playerWhoSent.getCurrentGame().getCurrentPhase() != 4){
@@ -64,8 +65,17 @@ public class PlaceCounterAction implements Action {
         Town s = Town.getTownByName(srcTown);
         Town d = Town.getTownByName(destTown);
         Route rou = playersCurrentGame.getTownGraph().getRoute(s, d);
-        Token t = Token.getTokenByName(tok);
-
+        Token t;
+        if (tok.equalsIgnoreCase("obstacle")){
+            System.out.println("it's an obstacle !");
+            t = new Obstacle();
+            t = (Obstacle) t;
+        }
+        else {
+            System.out.println("it's a Token !");
+            t = Token.getTokenByName(tok);
+        }
+        
         playersCurrentGame.playerPlaceCounter(playerWhoSent, rou, t);
 
         ActionManager ackManager = ActionManager.getInstance();

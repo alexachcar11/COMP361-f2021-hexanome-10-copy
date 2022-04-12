@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+import serversrc.ServerGame;
+import serversrc.Town;
 
 public class TestMinueto {
 
@@ -34,6 +38,52 @@ public class TestMinueto {
         window.setVisible(true);
 
         window.draw(elfenlandImage, 0, 0);
+
+        ArrayList<Town> towns = new ArrayList<>();
+
+        Town esselen = new Town("Esselen", 38, 103, 99, 152, 4);
+        Town yttar = new Town("Yttar", 35, 98, 222, 274, 4);
+        Town wylhien = new Town("Wylhien", 187, 234, 30, 75, 3);
+        Town parundia = new Town("Parundia", 172, 241, 172, 227, 4);
+        Town jaccaranda = new Town("Jaccaranda", 312, 381, 61, 119, 5);
+        Town albaran = new Town("AlBaran", 280, 343, 227, 283, 7);
+        Town thortmanni = new Town("Throtmanni", 451, 518, 129, 188, 3);
+        Town rivinia = new Town("Rivinia", 555, 621, 205, 256, 3);
+        Town tichih = new Town("Tichih", 604, 662, 79, 135, 3);
+        Town ergeren = new Town("ErgEren", 716, 776, 210, 259, 5);
+        Town grangor = new Town("Grangor", 49, 112, 366, 411, 5);
+        Town mahdavikia = new Town("MahDavikia", 57, 136, 482, 533, 5);
+        Town kihromah = new Town("Kihromah", 164, 223, 314, 367, 6);
+        Town ixara = new Town("Ixara", 257, 322, 489, 534, 3);
+        Town dagamura = new Town("DagAmura", 281, 339, 345, 394, 4);
+        Town lapphalya = new Town("Lapphalya", 415, 482, 383, 437, 2);
+        Town feodori = new Town("Feodori", 411, 472, 259, 317, 4);
+        Town virst = new Town("Virst", 478, 536, 491, 541, 3);
+        Town elvenhold = new Town("Elvenhold", 575, 666, 290, 370, 0);
+        Town beata = new Town("Beata", 724, 779, 407, 456, 2);
+        Town strykhaven = new Town("Strkhaven", 616, 679, 463, 502, 4);
+
+        towns.add(esselen);
+        towns.add(yttar);
+        towns.add(wylhien);
+        towns.add(parundia);
+        towns.add(jaccaranda);
+        towns.add(albaran);
+        towns.add(thortmanni);
+        towns.add(rivinia);
+        towns.add(tichih);
+        towns.add(ergeren);
+        towns.add(grangor);
+        towns.add(mahdavikia);
+        towns.add(kihromah);
+        towns.add(ixara);
+        towns.add(dagamura);
+        towns.add(lapphalya);
+        towns.add(feodori);
+        towns.add(virst);
+        towns.add(elvenhold);
+        towns.add(beata);
+        towns.add(strykhaven);
 
         MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
         window.draw(indicator, 90, 55);
@@ -98,11 +148,16 @@ public class TestMinueto {
             }
 
             @Override
-            public void handleMousePress(int arg0, int arg1, int arg2) {
+            public void handleMousePress(int x, int y, int arg2) {
                 // Thread testThread = new Thread(() -> System.out.println("Hello"));
                 // testThread.start();
-                System.out.println("x coord is : " + arg0 + ", and the y coord is : " + arg1 );
-
+                System.out.println("x coord is : " + x + ", and the y coord is : " + y );
+                for(Town t: towns){ 
+                    if (x < t.getMaxX() && x > t.getMinX() && y < t.getMaxY() && y > t.getMinY()) {
+                        // temporary print statement to make sure we're clicking on a specific town
+                        System.out.println("Clicking on " + t.getTownName());
+                    }
+                }
             }
 
             @Override

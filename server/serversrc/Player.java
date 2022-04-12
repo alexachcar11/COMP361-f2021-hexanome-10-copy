@@ -90,12 +90,14 @@ public class Player implements Serializable {
     public void passTurn(Player nextPlayer) {
         this.turnPassed = true;
         this.isTurn = false;
+        ActionManager.getInstance().sendToSender(new ChangePlayerTurnACK(this.isTurn), this.getName());
         // next player's turn
         nextPlayer.setTrueIsTurn();
     }
 
     public void setTrueIsTurn() {
         this.isTurn = true;
+        ActionManager.getInstance().sendToSender(new ChangePlayerTurnACK(this.isTurn), this.getName());
     }
 
     public void resetTurnPassed() {

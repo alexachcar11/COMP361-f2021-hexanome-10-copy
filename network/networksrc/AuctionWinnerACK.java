@@ -24,7 +24,13 @@ public class AuctionWinnerACK implements Action {
         } catch (MinuetoFileException e) {
             e.printStackTrace();
         }
-        
+        // display
+        try {
+            ClientMain.displayBoardElements();
+        } catch (MinuetoFileException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
