@@ -29,7 +29,7 @@ public class ConfirmPlaceCounterSingleACK implements Action {
         } catch (MinuetoFileException e) {
             System.out.println("MinuetoFileException");
         } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException");
+            System.out.println("IllegalArgumentException inside ConfirmPlaceCounterSingleACK");
         }
         // note: setting token to route is done in ConfirmPlaceCounterACK
 
