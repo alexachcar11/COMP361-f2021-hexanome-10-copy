@@ -36,12 +36,5 @@ public class ConfirmPlaceCounterSingleACK implements Action {
         
         // note: setting token to route is done in ConfirmPlaceCounterACK
 
-        // display
-        try {
-            ClientMain.displayBoardElements();
-        } catch (MinuetoFileException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 }

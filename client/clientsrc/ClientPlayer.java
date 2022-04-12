@@ -188,12 +188,16 @@ public class ClientPlayer {
     }
 
     public void moveBoot(ClientTown t) {
+        // prints
+        System.out.print("Moving boot, removing player from town: " + inTown.getTownName());
         // remove the player from the old town
         inTown.playersHere.remove(this);
 
         // set the town of the player to the new town
         this.inTown = t;
 
+        // prints
+        System.out.print("Moving boot, moving player to town: " + inTown.getTownName());
         // add the player to the list of players located at the new town
         t.addPlayer(this);
         // drawBoot();
