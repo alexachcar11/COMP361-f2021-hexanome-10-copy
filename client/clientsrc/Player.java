@@ -131,8 +131,14 @@ public class Player {
         return tokensInHand;
     }
 
+    public void incrementGold(int x){
+        this.gold = this.gold + x;
+    }
+
     public void drawBoot() { 
-        ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
+        this.incrementGold(inTown.getGoldValue());
+        if (this.inTown.getPlayersHere().size() ==0) {
+            ClientMain.gui.window.draw(bootImage, inTown.minX, inTown.maxY);
     }
 
     /*
