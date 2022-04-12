@@ -1,25 +1,25 @@
 package networksrc;
 
 import java.util.ArrayList;
+
+import clientsrc.ClientRoute;
 import serversrc.*;
 
 public class MoveBootAction implements Action {
 
     private String senderName;
-    private String srcTown;
-    private String dstTown;
+    private ClientRoute pickedRoute;
     private boolean isWater;
 
-    public MoveBootAction(String senderName, String srcTown, String dstTown, boolean pIsWater) {
+    public MoveBootAction(String senderName, ClientRoute pickedRoute, boolean pIsWater) {
         this.senderName = senderName;
-        this.srcTown = srcTown;
-        this.dstTown = dstTown;
+        this.pickedRoute = pickedRoute;
         this.isWater = pIsWater;
     }
 
     @Override
     public boolean isValid() {
-        if(this.senderName == null || this.srcTown == null || this.dstTown == null){
+        if(this.senderName == null || this.pickedRoute == null){
             return false;
         }
         Player playerWhoSent = Player.getPlayerByName(senderName);
@@ -44,21 +44,31 @@ public class MoveBootAction implements Action {
             return false;
         }
         
-        Town sTown = playersCurrentGame.getTownByName(srcTown);
-        Town dTown = playersCurrentGame.getTownByName(dstTown);
-        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
+        // Town sTown = playersCurrentGame.getTownByName(srcTown);
+        // Town dTown = playersCurrentGame.getTownByName(dstTown);
+        // Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
+
+        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        
+        for(Route r: ServerGame.getAllRoutes()) { 
+            if(r.getHitbox() == pickedRoute.getHitbox()) { 
+                selectedRoute = r;
+            }
+        }
+
+
         // check if route is not adjacent to player
-        if (!(route.getSource().equal(playerWhoSent.getTown()) || route.getDest().equal(playerWhoSent.getTown()))) {
+        if (!(selectedRoute.getSource().equal(playerWhoSent.getTown()) || selectedRoute.getDest().equal(playerWhoSent.getTown()))) {
             // do nothing ?
             System.out.println("ERROR: Invalid route (not adjacent to player's location)!");
             return false;
         }
         // check if player has the cards required to travel that route
-        if (!playerWhoSent.hasCards(route.getRequiredCards(playerWhoSent.getTown()))) {
+        if (!playerWhoSent.hasCards(selectedRoute.getRequiredCards(playerWhoSent.getTown()))) {
             System.out.println("ERROR: Player doesn't have all cards required!");
             return false;
         }
-        if (!route.hasCounter()){
+        if (!selectedRoute.hasCounter()){
             return false;
         }
         return true;
@@ -71,26 +81,34 @@ public class MoveBootAction implements Action {
 
         Player playerWhoSent = Player.getPlayerByName(senderName);
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
-        Town sTown = playersCurrentGame.getTownByName(srcTown);
-        Town dTown = playersCurrentGame.getTownByName(dstTown);
-        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
+        // Town sTown = playersCurrentGame.getTownByName(srcTown);
+        // Town dTown = playersCurrentGame.getTownByName(dstTown);
+        // Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
+
+        Route selectedRoute = ServerGame.getAllRoutes().get(0);
+        
+        for(Route r: ServerGame.getAllRoutes()) { 
+            if(r.getHitbox() == pickedRoute.getHitbox()) { 
+                selectedRoute = r;
+            }
+        }
 
         // increase the amount of gold that the player has based on how much gold the town is worth 
-        playerWhoSent.incrementGold(dTown.getGoldValue());
+        playerWhoSent.incrementGold(selectedRoute.getDestTown().getGoldValue());
 
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
-        playersCurrentGame.playerMovedBoot(playerWhoSent, route);
+        playersCurrentGame.playerMovedBoot(playerWhoSent, selectedRoute);
 
         // send an ACK to all clients in the game
         ActionManager ackManager = ActionManager.getInstance();
         // set the right dst town
         String goToTown;
-        if (playerWhoSent.getTown().equal(dTown)){
-            goToTown = srcTown;
+        if (playerWhoSent.getTown().equal(selectedRoute.getDest())){
+            goToTown = selectedRoute.getSourceTownString();
         }
         else {
-            goToTown = dstTown;
+            goToTown = selectedRoute.getDestTownString();
         }
         MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);

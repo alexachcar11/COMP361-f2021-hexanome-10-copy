@@ -154,4 +154,8 @@ public class ClientRoute {
         return aTokens;
     }
 
+    public int[] getHitbox() { 
+        return this.hitbox;
+    }
+
 }

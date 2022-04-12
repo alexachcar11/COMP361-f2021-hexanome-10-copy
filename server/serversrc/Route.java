@@ -157,6 +157,10 @@ public class Route {
         return result;
     }
 
+    public int[] getHitbox() { 
+        return this.hitbox;
+    }
+
     // DIJIAN'S VERSION OF GETREQUIREDCARDS
     // // @pre should check if there's a counter on road first
     // // (extra note, check region type is valid for the counter when placing
