@@ -48,7 +48,7 @@ public class MoveBootAction implements Action {
         Town dTown = playersCurrentGame.getTownByName(dstTown);
         Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
         // check if route is not adjacent to player
-        if (!(route.getSource() == playerWhoSent.getTown() || route.getDest() == playerWhoSent.getTown())) {
+        if (!(route.getSource().equal(playerWhoSent.getTown()) || route.getDest().equal(playerWhoSent.getTown()))) {
             // do nothing ?
             System.out.println("ERROR: Invalid route (not adjacent to player's location)!");
             return false;
