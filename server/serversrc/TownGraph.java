@@ -75,16 +75,13 @@ public class TownGraph {
             Town dest = r.getDest();
             // return if d matches one of the towns in route
             if (d.equal(source)||d.equal(dest)){
-                if(isWater){
-                    // check if route is waterway
-                    if (r.isWater()){
-                        return r;
-                    }
-                }
-                else {
+                if(isWater && r.isWater()){
                     return r;
                 }
-                
+
+                else if(!isWater && !r.isWater()){
+                    return r;
+                }
             }
         }
         return null;
