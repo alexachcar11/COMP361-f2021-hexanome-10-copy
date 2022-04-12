@@ -135,6 +135,11 @@ public class Town {
         return location;
     }
 
+    public ArrayList<Player> getPlayersHere() {
+        return playersHere;
+    }
+
+
     // public boolean notClickingOnATown(int x, int y) { 
     //     for(Town t : ServerGame.getTowns()) { 
 
