@@ -24,20 +24,26 @@ import networksrc.LoginAction;
 import networksrc.MoveBootAction;
 import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
-
+import serversrc.GameLobby;
+import serversrc.Registrator;
 import serversrc.Route;
 import serversrc.SaveGameManager;
+import serversrc.ServerGame;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
+
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 // import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -48,6 +54,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.ImmutableList;
 
 public class ClientMain {
@@ -346,9 +354,17 @@ public class ClientMain {
             // uppercase or not a letter
             else if (shift || i < 65 || i > 90) {
                 if (userNameSel) {
-                    userString = userString + (char) i;
+                    if (i == 45) {
+                        userString = userString + "_";
+                    } else {
+                        userString = userString + (char) i;
+                    }
                 } else if (passWordSel) {
-                    passString = passString + (char) i;
+                    if (i == 45) {
+                        passString = passString + "_";
+                    } else {
+                        passString = passString + (char) i;
+                    }
                 }
             }
             // lowercase letters
@@ -920,7 +936,58 @@ public class ClientMain {
                 // save game
                 if ((x >= 435 && x <= 585 && y >= 378 && y <= 410) && menuPopupActive) {
                     // do save game stuff
+                    // register save game with the ls, and save to server
                     System.out.println("Clicked on SAVE game button");
+                    ACTION_MANAGER.sendAction(new Action() {
+
+                        @Override
+                        public boolean isValid() {
+                            return true;
+                        }
+
+                        @Override
+                        public void execute() {
+                            ServerGame serverGame = GameLobby.getGameLobby(ClientMain.currentSession.getSessionID())
+                                    .getServerGame();
+                            List<String> playerNames = serverGame.getAllPlayers().stream()
+                                    .map((player) -> player.getName()).collect(Collectors.toList());
+                            if (Registrator.instance().registerSaveGame(serverGame.getGameID(), playerNames,
+                                    serverGame.getGameID())
+                                    && SaveGameManager.instance().saveGame(serverGame)) {
+                                System.out.println("Saved game.");
+                                // notify client game was successfully saved
+                                ACTION_MANAGER.sendToSender(new Action() {
+
+                                    @Override
+                                    public boolean isValid() {
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void execute() {
+                                        System.out.println("Successfully saved game!");
+                                    }
+
+                                }, ClientMain.currentPlayer.getName());
+                                // notify client we could not save the game
+                            } else {
+                                System.out.println("Unable to save game.");
+                                ACTION_MANAGER.sendToSender(new Action() {
+
+                                    @Override
+                                    public boolean isValid() {
+                                        return true;
+                                    }
+
+                                    @Override
+                                    public void execute() {
+                                        System.out.println("Error: unable to save game.");
+                                    }
+
+                                }, ClientMain.currentPlayer.getName());
+                            }
+                        }
+                    });
                 }
 
                 // quit game
@@ -2552,7 +2619,64 @@ public class ClientMain {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            JFrame frame = new JFrame();
+            frame.setLocation(300, 200);
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            frame.add(panel);
+            for (String savedGame : savedGameNames) {
+                JButton button = new JButton(savedGame);
+                panel.add(button);
+                button.addMouseListener(new MouseInputListener() {
 
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        ACTION_MANAGER.sendAction(new Action() {
+
+                            @Override
+                            public boolean isValid() {
+                                return true;
+                            }
+
+                            @Override
+                            public void execute() {
+                                ServerGame game = SaveGameManager.instance().loadGame(savedGame);
+                                Game clientGame = new Game(game.getNumberOfPlayers(), game.getGameRoundsLimit(),
+                                        game.destinationTownEnabled, game.witchEnabled,
+                                        Mode.values()[game.getMode().ordinal()],
+                                        TownGoldOption.values()[game.getTownGoldOption().ordinal()]);
+                                // make lobby service game session here
+                            }
+
+                        });
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                    }
+
+                });
+            }
         }
     }
 
