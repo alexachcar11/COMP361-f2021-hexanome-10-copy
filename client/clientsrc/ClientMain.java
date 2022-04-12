@@ -2071,7 +2071,7 @@ public class ClientMain {
 
         // draw the tokens onto the route
         for(ClientRoute r: Game.getAllRoutes()) { 
-            if(r.getTokenOnRoute().isEmpty()) { 
+            if(r.getTokenOnRoute().isEmpty() == false) { 
                 for(TokenSprite tok: r.getTokenOnRoute()) { 
                     gui.window.draw(tok.getSmallImage(), r.getMinX(), r.getMinY());
                 }
