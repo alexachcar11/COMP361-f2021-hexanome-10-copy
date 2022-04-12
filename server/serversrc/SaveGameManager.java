@@ -6,10 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SaveGameManager {
 
     private static final SaveGameManager INSTANCE = new SaveGameManager();
+    private static final Registrator REGISTRATOR = Registrator.instance();
 
     private SaveGameManager() {
 
@@ -59,5 +63,14 @@ public class SaveGameManager {
         }
         // returns null if something goes wrong
         return null;
+    }
+
+    public List<String> getSavedGameNames() {
+        File savedGamesDir = new File("saved-games/");
+        File[] savedGames = savedGamesDir.listFiles();
+        List<File> savedGamesList = Arrays.asList(savedGames);
+        List<String> savedGameNames = savedGamesList.stream().map((file) -> file.getName())
+                .collect(Collectors.toList());
+        return savedGameNames;
     }
 }

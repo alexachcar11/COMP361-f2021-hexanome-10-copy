@@ -11,6 +11,7 @@ import org.minueto.image.*;
 import org.minueto.window.MinuetoFrame;
 import org.minueto.window.MinuetoWindow;
 
+import networksrc.Action;
 import networksrc.ActionManager;
 import networksrc.ChooseBootColorAction;
 import networksrc.ChooseTokenToKeepAction;
@@ -25,12 +26,15 @@ import networksrc.PassTurnAction;
 import networksrc.PlaceCounterAction;
 
 import serversrc.Route;
+import serversrc.SaveGameManager;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
+
+// import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -122,6 +126,8 @@ public class ClientMain {
     static boolean played;
     // currentGame.getNumberOfPlayers()
     static int numberPlayers = 2;
+
+    private static List<String> savedGameNames;
 
     public static final ActionManager ACTION_MANAGER = ActionManager.getInstance();
 
@@ -487,16 +493,17 @@ public class ClientMain {
         routeInformation.add(Box.createVerticalStrut(10));
         routeInformation.add(requirements);
 
-        if(r.getTokenOnRoute() != null) { 
+        if (r.getTokenOnRoute() != null) {
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
-            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName() + " token on it";
+            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName()
+                    + " token on it";
             JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
             tokenOnRouteText.setText(tokenOnRouteString);
             tokenOnRoute.add(tokenOnRouteText);
             routeInformation.add(Box.createVerticalStrut(10));
             routeInformation.add(tokenOnRoute);
-        } else { 
+        } else {
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
             String tokenOnRouteString = "This route currently has no tokens on it";
@@ -541,7 +548,7 @@ public class ClientMain {
         ArrayList<ClientPlayer> playersThatPassed = t.playersThatPassed;
 
         HashSet<ClientPlayer> playersPassedNoDups = new HashSet<>();
-        for (ClientPlayer p: playersThatPassed) { 
+        for (ClientPlayer p : playersThatPassed) {
             playersPassedNoDups.add(p);
         }
 
@@ -710,7 +717,8 @@ public class ClientMain {
                     for (ClientRoute r : Game.getAllRoutes()) {
                         // // TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
                         // System.out.println("Looking at route: " + r.getDestTownString() + " to "
-                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin x: " + r.getMinX()
+                        // + r.getSourceTownString() + "with hitbox: \nmax x: " + r.getMaxX() + "\nmin
+                        // x: " + r.getMinX()
                         // + "\nmax y: " + r.getMaxY() + "\nmin y: " + r.getMinY());
                         if (x <= r.getMaxX() && x >= r.getMinX() && y <= r.getMaxY() && y >= r.getMinY()) {
                             // pick route
@@ -1873,6 +1881,7 @@ public class ClientMain {
 
     /**
      * Displays game board elements
+     * 
      * @throws MinuetoFileException
      */
     public static void displayBoardElements() throws MinuetoFileException {
@@ -1892,7 +1901,7 @@ public class ClientMain {
 
         // organize tokens in inventory
         List<TokenSprite> listOfTokens = currentPlayer.getTokensInHand();
-        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();        
+        List<CardSprite> listOfCards = currentPlayer.getCardsInHand();
         if (listOfTokens.size() == 1) {
             MinuetoImage p1 = listOfTokens.get(0);
             gui.window.draw(p1, 642, 640);
@@ -2015,13 +2024,14 @@ public class ClientMain {
         }
 
         // whose turn it is
-        if(currentPlayer.isTurn()) { 
+        if (currentPlayer.isTurn()) {
             MinuetoText itsYourTurnText = new MinuetoText("It's your turn", fontArial22Bold, MinuetoColor.BLACK);
             gui.window.draw(itsYourTurnText, 836, 504);
-        } else { 
-            for (ClientPlayer p: currentGame.getPlayers()) { 
-                if(p.isTurn) {
-                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn", fontArial22Bold, MinuetoColor.BLACK);
+        } else {
+            for (ClientPlayer p : currentGame.getPlayers()) {
+                if (p.isTurn) {
+                    MinuetoText otherPlayerTurnText = new MinuetoText("It is " + p.getName() + "'s turn",
+                            fontArial22Bold, MinuetoColor.BLACK);
                     gui.window.draw(otherPlayerTurnText, 836, 504);
                 }
             }
@@ -2043,18 +2053,18 @@ public class ClientMain {
         // indication on all of the routes
         MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
         MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
-        if (!currentPlayer.isTurn) { 
-            for(ClientRoute r: Game.getAllRoutes()) { 
+        if (!currentPlayer.isTurn) {
+            for (ClientRoute r : Game.getAllRoutes()) {
                 gui.window.draw(indicator, r.getMinX(), r.getMinY());
             }
         } else {
-            // turn indicators  (can travel here)
+            // turn indicators (can travel here)
             for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
                 gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
             }
             // indicators (cant travel here)
-            for (ClientRoute r : Game.getAllRoutes()) { 
-                if(!currentPlayer.getCurrentLocation().getRoutes().contains(r)) { 
+            for (ClientRoute r : Game.getAllRoutes()) {
+                if (!currentPlayer.getCurrentLocation().getRoutes().contains(r)) {
                     gui.window.draw(indicator, r.getMinX(), r.getMinY());
                 }
             }
@@ -2071,7 +2081,8 @@ public class ClientMain {
         if (currentGame.getMode() == Mode.ELFENGOLD) {
             MinuetoCircle goldValueCircle = new MinuetoCircle(20, MinuetoColor.YELLOW, true);
             gui.window.draw(goldValueCircle, 792, 522);
-            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20, MinuetoColor.BLACK);
+            MinuetoText goldAmnt = new MinuetoText(String.valueOf(currentPlayer.getGoldAmount()), fontArial20,
+                    MinuetoColor.BLACK);
             gui.window.draw(goldAmnt, 806, 530);
         }
     }
@@ -2182,7 +2193,7 @@ public class ClientMain {
         MinuetoImage currentBackground = null;
         if (currentMode.equals(Mode.ELFENLAND)) {
             gui.currentBackground = GUI.Screen.ELFENLAND;
-             currentBackground = elfenlandImage;
+            currentBackground = elfenlandImage;
         } else if (currentMode.equals(Mode.ELFENGOLD)) {
             gui.currentBackground = GUI.Screen.ELFENGOLD;
             currentBackground = elfengoldImage;
@@ -2218,7 +2229,7 @@ public class ClientMain {
             MinuetoText seeInv = new MinuetoText("See Inventory", ClientMain.fontArial20, MinuetoColor.BLACK);
             currentBackground.draw(seeInv, xName + 25, yName + 35);
             MinuetoImage bopp = opponent.getBoppel();
-            currentBackground.draw(bopp,xName, yName + 35);
+            currentBackground.draw(bopp, xName, yName + 35);
         }
 
         // display on the windows
@@ -2443,10 +2454,39 @@ public class ClientMain {
     }
 
     public static void displaySavedGames() {
-        // TODO: retrieve info on the server
-        // TODO: use GetSavedGamesAction here
-        GetSavedGamesAction action = new GetSavedGamesAction(currentUser.getName());
-        ACTION_MANAGER.sendAction(action);
+
+        // is this the same as the client name?
+        final String currentPlayer = ClientMain.currentPlayer.getName();
+        Action getSavedGames = new Action() {
+
+            @Override
+            public boolean isValid() {
+                return true;
+            }
+
+            @Override
+            public void execute() {
+                List<String> savedGames = SaveGameManager.instance().getSavedGameNames();
+                Action sendSavedGamesToClient = new Action() {
+
+                    @Override
+                    public boolean isValid() {
+                        return true;
+                    }
+
+                    @Override
+                    public void execute() {
+                        synchronized (savedGameNames) {
+                            savedGameNames = savedGames;
+                            savedGameNames.notify();
+                        }
+                    }
+                };
+                ActionManager.getInstance().sendToSender(sendSavedGamesToClient, currentPlayer);
+            }
+
+        };
+        ActionManager.getInstance().sendAction(getSavedGames);
 
 
         // TODO: reset buttons
@@ -2458,31 +2498,39 @@ public class ClientMain {
         MinuetoFont font = new MinuetoFont("Arial", 22, true, false);
 
         // TODO: display all saved games and keep track of the Join button location
-        try {
-            // TODO: imma clone it idk
-            ArrayList<String> savedGamesList = savedGameNames.clone();
 
-            // display a message when there are no saved games
-            int nbSavedGameSessions = savedGamesList.size();
-            if (nbSavedGameSessions == 0) {
-                MinuetoText noneAvailableText = new MinuetoText(
-                        "There are no saved games.", font, MinuetoColor.BLACK);
-                gui.window.draw(noneAvailableText, 200, 340);
+
+        synchronized (savedGameNames) {
+            try {
+                savedGameNames.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            // CANON'S CODE HERE
+            try {
+                // TODO: imma clone it idk
 
-            // display next button
-            if (nbSavedGameSessions > 9) {
-                MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
-                gui.window.draw(nextButton, 700, 676);
-            }
+                // display a message when there are no saved games
+                int nbSavedGameSessions = savedGameNames.size();
+                if (nbSavedGameSessions == 0) {
+                    MinuetoText noneAvailableText = new MinuetoText(
+                            "There are no saved games.", font, MinuetoColor.BLACK);
+                    gui.window.draw(noneAvailableText, 200, 340);
+                }
 
-            int totalCounter = 0; // how many games are displayed so far
-            int pageCounter = 0; // how many games are displayed on one page so far
+                // display next button
+                if (nbSavedGameSessions > 9) {
+                    MinuetoImage nextButton = new MinuetoImageFile("images/next-button.png");
+                    gui.window.draw(nextButton, 700, 676);
+                }
 
-            // display saved games
-            for (String gameName : savedGamesList) {
+                int totalCounter = 0; // how many games are displayed so far
+                int pageCounter = 0; // how many games are displayed on one page so far
 
-                //if (!gs.isLaunched()) { // only show unlaunched sessions
+                // display saved games
+                for (String gameName : savedGameNames) {
+
+                    //if (!gs.isLaunched()) { // only show unlaunched sessions
                     //String gsName = gameName;
                     //String gsCreator = gs.getCreator();
                     //String gsCurrentPlayerNumber = String.valueOf(gs.getNumberOfUsersCurrently());
@@ -2515,11 +2563,12 @@ public class ClientMain {
 
                     pageCounter++;
                     totalCounter++;
-                // }
-            }
+                    // }
+                }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -2531,7 +2580,7 @@ public class ClientMain {
                 e.printStackTrace();
             }
         });
-        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));  
+        currentPlayer.addCardStringArray(cardsHashMap.get(currentPlayer.getName()));
     }
 
     public static void receiveTokens(String playerString, List<String> tokenStrings) throws MinuetoFileException {

@@ -149,7 +149,7 @@ public class Registrator {
                         + this.getToken().replace("+", "%2B"))
                 .header("Authorization", "Basic " + encoded)
                 .asString();
-        
+
         if (jsonResponse.getBody().contains("Access token expired")) {
             currentToken = this.refreshToken();
         } else if (jsonResponse.getStatus() != 200) {
@@ -232,7 +232,7 @@ public class Registrator {
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic " + encoded)
                 .body(GSON.toJson(fields)).asString();
-        
+
         if (jsonResponse.getStatus() != 200) {
             System.out.println(jsonResponse.getStatus() + jsonResponse.getBody());
             throw new IllegalArgumentException("Cannot create user: " + userName);
@@ -297,7 +297,7 @@ public class Registrator {
         if (jsonResponse.getBody().contains("Access token expired")) {
             this.refreshUserToken(creator);
             gameID = this.createGameSession(name, creator, "");
-        } else  if (jsonResponse.getStatus() == 400) {
+        } else if (jsonResponse.getStatus() == 400) {
             System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
         } else if (jsonResponse.getStatus() != 200) {
             System.err.println(jsonResponse.getStatus() + ": " + jsonResponse.getBody());
@@ -341,7 +341,7 @@ public class Registrator {
         if (jsonResponse.getBody().contains("Access token expired")) {
             this.refreshUserToken(creator);
             id = jsonResponse.getBody();
-        } else  if (jsonResponse.getStatus() != 200) {
+        } else if (jsonResponse.getStatus() != 200) {
             System.err.println("Error" + jsonResponse.getStatus() + ": " + jsonResponse.getBody());
         } else {
             // success !
@@ -479,8 +479,8 @@ public class Registrator {
          * 
          * // verify response
          * if (jsonResponse.getBody().contains("Access token expired")) {
-            this.refreshUserToken(userAskingToLaunch);
-        } else if (jsonResponse.getStatus() != 200) {
+         * this.refreshUserToken(userAskingToLaunch);
+         * } else if (jsonResponse.getStatus() != 200) {
          * throw new Exception("Error" + jsonResponse.getStatus() +
          * jsonResponse.getBody());
          * }
