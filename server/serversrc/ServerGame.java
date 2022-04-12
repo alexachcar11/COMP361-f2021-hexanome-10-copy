@@ -617,6 +617,7 @@ public class ServerGame {
         HashMap<String, List<String>> cards = new HashMap<>();
 
         for (Player p : players) {
+            p.getCards().clear();
             for (int i = 0; i < 8; i++) {
                 p.addCard(aCardStack.pop());
             }

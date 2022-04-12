@@ -579,7 +579,7 @@ public class ClientMain {
             playersPassedNoDups.add(p);
         }
 
-        String text = "The following players have passed:";
+        String text = "The following players have passed: ";
         int count = 0;
         for (ClientPlayer p : playersPassedNoDups) {
             if (count != 0 && count != playersPassedNoDups.size()) {
