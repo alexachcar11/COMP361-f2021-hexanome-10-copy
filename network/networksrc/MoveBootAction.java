@@ -99,7 +99,9 @@ public class MoveBootAction implements Action {
 
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
-        playersCurrentGame.playerMovedBoot(playerWhoSent, selectedRoute);
+
+        // here you can do stuff with playerWhoSent and playersCurrentGame
+        playersCurrentGame.playerMovedBoot(playerWhoSent, route, route.getType().name(), route.cost());
 
         // send an ACK to all clients in the game
         ActionManager ackManager = ActionManager.getInstance();
