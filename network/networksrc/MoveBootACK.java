@@ -23,7 +23,7 @@ public class MoveBootACK implements Action {
     @Override
     public void execute() {
         System.out.println("MoveBootACK received");
-        ClientPlayer p = ClientMain.currentPlayer;
+        ClientPlayer p = ClientPlayer.getPlayerByName(playerThatMovedName);
         // TODO: call a method that updates GUI by changing the boot with bootColor to
         // newTown
         // get town by name
