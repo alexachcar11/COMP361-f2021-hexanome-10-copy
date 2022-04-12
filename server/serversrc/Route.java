@@ -123,6 +123,10 @@ public class Route {
             return costWithCardType(this.aToken.getTokenType(), startingTown);
     }
 
+    public CardType getType(){
+        return this.aToken.getTokenType();
+    }
+
     // reset route's token delets obstacle from game and returns it
     public Token removeToken() {
         Token temp = this.aToken;
