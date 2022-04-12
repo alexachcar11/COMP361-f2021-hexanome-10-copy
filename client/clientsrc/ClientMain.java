@@ -2050,22 +2050,11 @@ public class ClientMain {
         gui.window.draw(roundNumberImage, 719, 40);
 
         // indication on all of the routes
-        MinuetoCircle indicator = new MinuetoCircle(10, MinuetoColor.GREEN, true);
         MinuetoCircle turnIndicator = new MinuetoCircle(10, MinuetoColor.BLUE, true);
-        if (!currentPlayer.isTurn) { 
-            for(ClientRoute r: Game.getAllRoutes()) { 
-                gui.window.draw(indicator, r.getMinX(), r.getMinY());
-            }
-        } else {
+        if (currentPlayer.isTurn) { 
             // turn indicators  (can travel here)
             for (ClientRoute r : currentPlayer.getCurrentLocation().getRoutes()) {
                 gui.window.draw(turnIndicator, r.getMinX(), r.getMinY());
-            }
-            // indicators (cant travel here)
-            for (ClientRoute r : Game.getAllRoutes()) { 
-                if(!currentPlayer.getCurrentLocation().getRoutes().contains(r)) { 
-                    gui.window.draw(indicator, r.getMinX(), r.getMinY());
-                }
             }
         }
 
