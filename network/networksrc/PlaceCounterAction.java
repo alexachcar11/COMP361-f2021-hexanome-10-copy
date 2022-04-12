@@ -2,7 +2,7 @@ package networksrc;
 
 import java.util.Arrays;
 
-import clientsrc.ClientRoute;
+
 import serversrc.Obstacle;
 import serversrc.Player;
 import serversrc.Route;
@@ -14,14 +14,14 @@ public class PlaceCounterAction implements Action {
 
     String senderName;
     String tok;
+    int[] aHitBox;
     
-    ClientRoute pickedRoute;
     boolean isWater;
 
-    public PlaceCounterAction(String sender, ClientRoute pickedRoute, Boolean pIsWater, String pTok) {
+    public PlaceCounterAction(String sender, int[] hitbox, Boolean pIsWater, String pTok) {
         this.tok = pTok;
         this.senderName = sender;
-        this.pickedRoute = pickedRoute;
+        this.aHitBox = hitbox;
         this.isWater = pIsWater;
     }
 
@@ -43,7 +43,7 @@ public class PlaceCounterAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+            if(Arrays.equals(r.getHitbox(), this.aHitBox)) { 
                 selectedRoute = r;
             }
         }
@@ -86,7 +86,7 @@ public class PlaceCounterAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+            if(Arrays.equals(r.getHitbox(), this.aHitBox)) { 
                 selectedRoute = r;
             }
         }
