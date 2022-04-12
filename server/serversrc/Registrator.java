@@ -454,6 +454,24 @@ public class Registrator {
         }
     }
 
+    public boolean registerSaveGame(String gameName, List<String> playerNames, String saveGameID) {
+        HashMap<String, Object> fields = new HashMap<>();
+        fields.put("gamename", gameName);
+        fields.put("players", playerNames);
+        fields.put("savegameid", saveGameID);
+
+        HttpResponse<String> jsonResponse = Unirest
+                .put("http://127.0.0.1:4242/api/gameservices/" + gameName + "/savegames/" + saveGameID
+                        + "?access_token=" + this.getToken())
+                .body(GSON.toJson(fields))
+                .asString();
+        if (jsonResponse.getStatus() != 200) {
+            System.out.println("Unable to register game service.");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Send an LS request to launch a session
      * 
