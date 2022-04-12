@@ -108,6 +108,8 @@ public class PlaceCounterAction implements Action {
 
         // consume token on client side
         ackManager.sendToSender(new ConfirmPlaceCounterSingleACK(this.tok), this.senderName);
+
+        System.out.println("Sending confirmPlaceCounterACK with Route: source: " + selectedRoute.getSourceTownString() + " dest: " +selectedRoute.getDestTownString());
         
         ConfirmPlaceCounterACK actionToSend = new ConfirmPlaceCounterACK(senderName, selectedRoute.getSourceTownString(), selectedRoute.getDestTownString(),
                 this.tok);
