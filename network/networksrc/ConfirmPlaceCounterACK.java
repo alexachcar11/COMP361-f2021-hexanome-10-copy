@@ -7,6 +7,7 @@ import clientsrc.TokenSprite;
 import clientsrc.ClientPlayer;
 import clientsrc.ClientRoute;
 import clientsrc.ClientTown;
+import clientsrc.Game;
 
 public class ConfirmPlaceCounterACK implements Action {
 
@@ -30,7 +31,13 @@ public class ConfirmPlaceCounterACK implements Action {
     @Override
     public void execute() {
         // set token to route
-        ClientRoute r = ClientMain.currentGame.getTownGraph().getRoute(ClientTown.getTownByName(srcT), ClientTown.getTownByName(destT));
+        ClientRoute r = Game.getAllRoutes().get(0);
+        for(ClientRoute rou : Game.getAllRoutes()) { 
+            if(rou.getSourceTownString().equals(srcT) && rou.getDestTownString().equals(destT)) { 
+                r = rou;
+            } 
+        }
+        // ClientRoute r = ClientMain.currentGame.getTownGraph().getRoute(ClientTown.getTownByName(srcT), ClientTown.getTownByName(destT));
         try {
             ClientPlayer p = ClientPlayer.getPlayerByName(senderName);
             p.consumeToken(TokenSprite.getTokenSpriteByString(tok));
