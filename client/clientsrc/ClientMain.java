@@ -717,7 +717,7 @@ public class ClientMain {
                             // send message to server on pickedRoute
                             if (pickedRoute != null) {
                                 ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
-                                        pickedRoute, r.isRiver));
+                                        pickedRoute.getHitbox(), r.isRiver));
                             }
                             break;
                         }

@@ -9,18 +9,18 @@ import serversrc.*;
 public class MoveBootAction implements Action {
 
     private String senderName;
-    private ClientRoute pickedRoute;
+    private int[] aHitbox;
     private boolean isWater;
 
-    public MoveBootAction(String senderName, ClientRoute pickedRoute, boolean pIsWater) {
+    public MoveBootAction(String senderName, int[] hitbox, boolean pIsWater) {
         this.senderName = senderName;
-        this.pickedRoute = pickedRoute;
+        this.aHitbox = hitbox;
         this.isWater = pIsWater;
     }
 
     @Override
     public boolean isValid() {
-        if(this.senderName == null || this.pickedRoute == null){
+        if(this.senderName == null || this.aHitbox == null){
             return false;
         }
         Player playerWhoSent = Player.getPlayerByName(senderName);
@@ -52,7 +52,7 @@ public class MoveBootAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+            if(Arrays.equals(r.getHitbox(), this.aHitbox)) { 
                 selectedRoute = r;
             }
         }
@@ -89,7 +89,7 @@ public class MoveBootAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
+            if(Arrays.equals(r.getHitbox(), this.aHitbox)) { 
                 selectedRoute = r;
             }
         }
