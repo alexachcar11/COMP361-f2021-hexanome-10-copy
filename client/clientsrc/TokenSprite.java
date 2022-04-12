@@ -98,6 +98,6 @@ public class TokenSprite extends AbstractSprite {
         }
         TokenSprite ts = (TokenSprite) o;
 
-        return ts.getTokenName().equalsIgnoreCase(ts.getTokenName());
+        return this.getTokenName().equalsIgnoreCase(ts.getTokenName());
     }
 }
