@@ -1,6 +1,7 @@
 package networksrc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import clientsrc.ClientRoute;
 import serversrc.*;
@@ -51,7 +52,7 @@ public class MoveBootAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(r.getHitbox() == pickedRoute.getHitbox()) { 
+            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
                 selectedRoute = r;
             }
         }
@@ -88,7 +89,7 @@ public class MoveBootAction implements Action {
         Route selectedRoute = ServerGame.getAllRoutes().get(0);
         
         for(Route r: ServerGame.getAllRoutes()) { 
-            if(r.getHitbox() == pickedRoute.getHitbox()) { 
+            if(Arrays.equals(r.getHitbox(), pickedRoute.getHitbox())) { 
                 selectedRoute = r;
             }
         }
