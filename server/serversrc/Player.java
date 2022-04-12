@@ -49,6 +49,7 @@ public class Player {
         this.currentGame = currentGame;
         currentGame.addPlayer(this);
         allPlayers.add(this);
+        this.townsPassed = new ArrayList<>();
 
         // aBootAction = new BootAction(this);
     }
