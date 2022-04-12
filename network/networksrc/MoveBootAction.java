@@ -8,11 +8,13 @@ public class MoveBootAction implements Action {
     private String senderName;
     private String srcTown;
     private String dstTown;
+    private boolean isWater;
 
-    public MoveBootAction(String senderName, String srcTown, String dstTown) {
+    public MoveBootAction(String senderName, String srcTown, String dstTown, boolean pIsWater) {
         this.senderName = senderName;
         this.srcTown = srcTown;
         this.dstTown = dstTown;
+        this.isWater = pIsWater;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class MoveBootAction implements Action {
         
         Town sTown = playersCurrentGame.getTownByName(srcTown);
         Town dTown = playersCurrentGame.getTownByName(dstTown);
-        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
+        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
         // check if route is not adjacent to player
         if (!(route.getSource() == playerWhoSent.getTown() || route.getDest() == playerWhoSent.getTown())) {
             // do nothing ?
@@ -69,7 +71,7 @@ public class MoveBootAction implements Action {
         ServerGame playersCurrentGame = playerWhoSent.getCurrentGame();
         Town sTown = playersCurrentGame.getTownByName(srcTown);
         Town dTown = playersCurrentGame.getTownByName(dstTown);
-        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown);
+        Route route = playersCurrentGame.getTownGraph().getRoute(sTown, dTown, this.isWater);
 
         // increase the amount of gold that the player has based on how much gold the town is worth 
         playerWhoSent.incrementGold(dTown.getGoldValue());

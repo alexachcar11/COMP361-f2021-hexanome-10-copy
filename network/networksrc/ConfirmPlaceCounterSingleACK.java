@@ -24,13 +24,16 @@ public class ConfirmPlaceCounterSingleACK implements Action {
         ClientMain.clearPickedRoute();
         ClientMain.clearPickedTok();
         // consume token from player's hand
-        try {
-            ClientMain.currentPlayer.consumeToken(TokenSprite.getTokenSpriteByString(tok));
-        } catch (MinuetoFileException e) {
-            System.out.println("MinuetoFileException");
-        } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException inside ConfirmPlaceCounterSingleACK");
-        }
+        // try {
+        //     System.out.println("Consuming token: " + this.tok);
+        //     ClientMain.currentPlayer.consumeToken(TokenSprite.getTokenSpriteByString(tok));
+        //     System.out.println("After consuming token: " + this.tok);
+        // } catch (MinuetoFileException e) {
+        //     System.out.println("MinuetoFileException");
+        // } catch (IllegalArgumentException e) {
+        //     System.out.println("IllegalArgumentException inside ConfirmPlaceCounterSingleACK");
+        // }
+        
         // note: setting token to route is done in ConfirmPlaceCounterACK
 
         // display

@@ -175,6 +175,7 @@ public class ClientPlayer {
 
         if (tokensInHand.contains(token)) {
             tokensInHand.remove(token);
+            System.out.println("removed token from hand: " + token.getTokenName());
             // do we need to put the token back into the pool of tokens?
         } else {
             throw new IllegalArgumentException();

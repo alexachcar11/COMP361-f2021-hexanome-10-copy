@@ -14,7 +14,7 @@ public class ClientRoute {
 
     ClientTown aStartingTown;
     ClientTown aEndTown;
-    TokenSprite aToken; // TODO: there could be multiple tokens, list ?
+    ArrayList<TokenSprite> aTokens;
     // road or river
     boolean isRiver = false;
     // upstream
@@ -28,7 +28,7 @@ public class ClientRoute {
     public ClientRoute(ClientTown pStartingTown, ClientTown pEndTown, RouteType rType, int[] pHitbox) {
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
-        this.aToken = null;
+        this.aTokens = new ArrayList<>();
         this.type = rType;
         this.hitbox = pHitbox;
 
@@ -50,7 +50,7 @@ public class ClientRoute {
         }
         this.aStartingTown = pStartingTown;
         this.aEndTown = pEndTown;
-        this.aToken = null;
+        this.aTokens = new ArrayList<>();
         allRoutes.add(this);
     }
 
@@ -75,33 +75,34 @@ public class ClientRoute {
         return this.aEndTown;
     }
 
-    /**
-     * Place a token on a valid route.
-     * 
-     * Ensure that the route isn't already occupied and that the token exists
-     * 
-     * @param token
-     */
-    public void placeToken(ClientPlayer player, TokenSprite token) {
-        assert token != null;
+    // /**
+    //  * Place a token on a valid route.
+    //  * 
+    //  * Ensure that the route isn't already occupied and that the token exists
+    //  * 
+    //  * @param token
+    //  */
+    // public void placeToken(ClientPlayer player, TokenSprite token) {
+    //     assert token != null;
 
-        if (this.aToken == null) {
-            throw new IllegalArgumentException();
-        } else {
-            // remove token from the players inventory
-            player.consumeToken(token);
-            // update token field
-            this.aToken = token;
-        }
-    }
+    //     if (this.aTokens == null) {
+    //         throw new IllegalArgumentException();
+    //     } else {
+    //         // remove token from the players inventory
+    //         player.consumeToken(token);
+    //         // update token field
+    //         this.aTokens = token;
+    //     }
+    // }
 
+    // acts as addToken
     public void setToken(TokenSprite pToken){
-        this.aToken = pToken;
+        this.aTokens.add(pToken);
     }
 
     public void clearToken() {
         // update token field
-        this.aToken = null;
+        this.aTokens.clear();
     }
 
     public int getMinX(){ 
@@ -149,8 +150,8 @@ public class ClientRoute {
         return result;
     }
 
-    public TokenSprite getTokenOnRoute() { 
-        return aToken;
+    public ArrayList<TokenSprite> getTokenOnRoute() { 
+        return aTokens;
     }
 
 }

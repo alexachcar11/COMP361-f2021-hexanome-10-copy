@@ -660,6 +660,7 @@ public class ServerGame {
 
     // for planning travel routes phase (4)
     public void playerPlaceCounter(Player p, Route r, Token tok) {
+        
         // remove token from player's hand
         p.consumeToken(tok);
         // add token to route r

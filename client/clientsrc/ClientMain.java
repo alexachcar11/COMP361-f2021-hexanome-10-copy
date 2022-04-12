@@ -487,10 +487,15 @@ public class ClientMain {
         routeInformation.add(Box.createVerticalStrut(10));
         routeInformation.add(requirements);
 
-        if(r.getTokenOnRoute() != null) { 
+        if(!r.getTokenOnRoute().isEmpty()) { 
             JPanel tokenOnRoute = new JPanel();
             tokenOnRoute.setLayout(new BoxLayout(tokenOnRoute, BoxLayout.Y_AXIS));
-            String tokenOnRouteString = "This route currently has a " + r.getTokenOnRoute().getTokenName() + " token on it";
+            String temp = "";
+            for (TokenSprite t: r.getTokenOnRoute()){
+                temp += t.getTokenName();
+                temp += " ";
+            }
+            String tokenOnRouteString = "This route currently has a " + temp + "token on it";
             JLabel tokenOnRouteText = new JLabel(tokenOnRouteString);
             tokenOnRouteText.setText(tokenOnRouteString);
             tokenOnRoute.add(tokenOnRouteText);
@@ -689,7 +694,7 @@ public class ClientMain {
                             // send message to server on pickedRoute
                             if (pickedRoute != null) {
                                 ACTION_MANAGER.sendAction(new MoveBootAction(currentPlayer.getName(),
-                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString()));
+                                        pickedRoute.getSourceTownString(), pickedRoute.getDestTownString(), r.isRiver));
                             }
                             break;
                         }
@@ -725,7 +730,7 @@ public class ClientMain {
                                 ActionManager.getInstance()
                                         .sendAction(new PlaceCounterAction(currentPlayer.getName(),
                                                 pickedRoute.getSource().getTownName(),
-                                                pickedRoute.getDest().getTownName(),
+                                                pickedRoute.getDest().getTownName(), pickedRoute.isRiver,
                                                 pickedTok.getTokenName()));
                             }
                             break;
