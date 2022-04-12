@@ -890,10 +890,11 @@ public class ServerGame {
         // if it's valid, move boot
         if (r.getSource() == p.getTown() || r.getDest() == p.getTown()) {
             // remove the cards from the player
+            System.out.println("removing player's cards on server");
             p.getCards().removeAll(r.getRequiredCards(p.getTown()));
             // get the town player's trying to go to
             Town dstTown;
-            if (r.getSource() == p.getTown()) {
+            if (r.getSource().equal(p.getTown())) {
                 dstTown = r.getDest();
             } else {
                 dstTown = r.getSource();

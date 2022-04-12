@@ -50,5 +50,26 @@ public class CardSprite extends AbstractSprite {
     public MinuetoImage getSmallImage() { 
         return smallImage;
     }
-    
+
+    public CardType getCardType(){
+        return this.aType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // if compared with itself then true
+        if (o == this) {
+            return true;
+        }
+        // check if o is instance of Card
+        if (!(o instanceof CardSprite)) {
+            return false;
+        }
+
+        // typecast o to Card to compare
+        CardSprite c = (CardSprite) o;
+
+        // Compare them by name
+        return c.getCardType() == this.getCardType();
+    }
 }

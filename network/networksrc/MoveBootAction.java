@@ -99,6 +99,8 @@ public class MoveBootAction implements Action {
 
         System.out.println(playerWhoSent + " is in game " + playersCurrentGame.getGameID());
 
+
+        // here you can do stuff with playerWhoSent and playersCurrentGame
         playersCurrentGame.playerMovedBoot(playerWhoSent, selectedRoute);
 
         // send an ACK to all clients in the game
@@ -111,7 +113,8 @@ public class MoveBootAction implements Action {
         else {
             goToTown = selectedRoute.getSourceTownString();
         }
-        MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName);
+        MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName, selectedRoute.getType().name(), 
+                selectedRoute.cost(playerWhoSent.getTown()));
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
     }
 }

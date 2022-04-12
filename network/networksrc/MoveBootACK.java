@@ -9,10 +9,14 @@ public class MoveBootACK implements Action {
 
     private String newTown;
     private String playerThatMovedName;
+    private String aCardType;
+    private int aCost;
 
-    public MoveBootACK(String newTown, String playerThatMovedName) {
+    public MoveBootACK(String newTown, String playerThatMovedName, String pCardType, int pCost) {
         this.newTown = newTown;
         this.playerThatMovedName = playerThatMovedName;
+        this.aCardType = pCardType;
+        this.aCost = pCost;
     }
 
     @Override
@@ -23,7 +27,7 @@ public class MoveBootACK implements Action {
     @Override
     public void execute() {
         System.out.println("MoveBootACK received");
-        ClientPlayer p = ClientMain.currentPlayer;
+        ClientPlayer p = ClientPlayer.getPlayerByName(playerThatMovedName);
         // TODO: call a method that updates GUI by changing the boot with bootColor to
         // newTown
         // get town by name
