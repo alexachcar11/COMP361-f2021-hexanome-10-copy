@@ -6,10 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 public class SaveGameManager {
 
     private static final SaveGameManager INSTANCE = new SaveGameManager();
+    private static final Registrator REGISTRATOR = Registrator.instance();
 
     private SaveGameManager() {
 
@@ -58,6 +60,10 @@ public class SaveGameManager {
             e.printStackTrace();
         }
         // returns null if something goes wrong
+        return null;
+    }
+
+    public List<ServerGame> getSavedGames() {
         return null;
     }
 }
