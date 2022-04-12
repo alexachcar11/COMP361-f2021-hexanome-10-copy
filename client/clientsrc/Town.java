@@ -14,6 +14,7 @@ public class Town {
     int maxX;
     int minY;
     int maxY;
+    int goldValue;
     ArrayList<TownMarker> townMarkers = new ArrayList<>();
 
     // keeps track of the player boots that are on the town
@@ -137,6 +138,10 @@ public class Town {
 
     public ArrayList<Player> getPlayersHere() {
         return playersHere;
+    }
+
+    public int getGoldValue() {
+        return goldValue;
     }
 
 
