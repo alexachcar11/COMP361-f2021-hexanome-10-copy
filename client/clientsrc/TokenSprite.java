@@ -84,4 +84,20 @@ public class TokenSprite extends AbstractSprite {
     public MinuetoImage getSmallImage() { 
         return smallImage;
     }
+
+    @Override
+    public boolean equals(Object o){
+        // If the object is compared with itself then return true 
+        if (o == this) {
+            return true;
+        }
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof TokenSprite)) {
+            return false;
+        }
+        TokenSprite ts = (TokenSprite) o;
+
+        return ts.getTokenName().equalsIgnoreCase(ts.getTokenName());
+    }
 }
