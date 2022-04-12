@@ -12,6 +12,7 @@ public class TokenSprite extends AbstractSprite {
     private CardType tokenType;
     private MinuetoImage mediumImage;
     private MinuetoImage smallImage;
+    private MinuetoImage routeImage;
 
     private boolean isFaceDown;
     
@@ -33,6 +34,7 @@ public class TokenSprite extends AbstractSprite {
         this.isFaceDown = false;
         mediumImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "medium.png");
         smallImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "small.png");
+        routeImage = new MinuetoImageFile("images/elfenroads-sprites/M0" + (tokenType.ordinal() + 1) + "route.png");
     }
 
     /**
@@ -86,6 +88,10 @@ public class TokenSprite extends AbstractSprite {
 
     public MinuetoImage getSmallImage() { 
         return smallImage;
+    }
+
+    public MinuetoImage getRouteImage() { 
+        return routeImage;
     }
 
     public void setFaceDown() throws MinuetoFileException { 
