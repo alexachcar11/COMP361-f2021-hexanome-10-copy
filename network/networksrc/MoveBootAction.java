@@ -106,10 +106,10 @@ public class MoveBootAction implements Action {
         // set the right dst town
         String goToTown;
         if (playerWhoSent.getTown().equal(selectedRoute.getDest())){
-            goToTown = selectedRoute.getSourceTownString();
+            goToTown = selectedRoute.getDestTownString();
         }
         else {
-            goToTown = selectedRoute.getDestTownString();
+            goToTown = selectedRoute.getSourceTownString();
         }
         MoveBootACK actionToSend = new MoveBootACK(goToTown, senderName);
         ackManager.sentToAllPlayersInGame(actionToSend, playersCurrentGame);
