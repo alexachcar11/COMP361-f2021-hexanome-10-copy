@@ -12,6 +12,7 @@ public class TokenSprite extends AbstractSprite {
     private CardType tokenType;
     private MinuetoImage mediumImage;
     private MinuetoImage smallImage;
+    
 
     /**
      * CONSTRUCTOR : Creates a Hitbox object.

@@ -37,7 +37,7 @@ public class Player {
     public Player(ServerUser pServerUser, ServerGame currentGame) {
         aBoot = new Boot();
 
-        // inTown = elvenhold; // fix this
+        this.inTown = Town.getTownByName("Elvenhold");
         // start with 12 gold for elfengold
         this.gold = 12;
         this.cardsInHand = new ArrayList<>();
