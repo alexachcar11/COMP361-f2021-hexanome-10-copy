@@ -167,7 +167,20 @@ public class ClientPlayer {
     }
 
     public void clearTokenHand() {
+        TokenSprite temp = null;
+        for (TokenSprite token: tokensInHand)
+        {
+            if (token.getTokenType() == serversrc.CardType.OBSTACLE)
+            {
+                temp = token;
+                break;
+            }
+        }
         tokensInHand.clear();
+        if (temp != null)
+        {
+            tokensInHand.add(temp);
+        }
     }
 
     public void consumeToken(TokenSprite token) {

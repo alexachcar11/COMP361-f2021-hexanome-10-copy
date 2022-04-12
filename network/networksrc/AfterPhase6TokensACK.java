@@ -2,6 +2,7 @@ package networksrc;
 import org.minueto.MinuetoFileException;
 
 import clientsrc.ClientMain;
+import serversrc.CardType;
 public class AfterPhase6TokensACK implements Action{
 
     String senderName;
