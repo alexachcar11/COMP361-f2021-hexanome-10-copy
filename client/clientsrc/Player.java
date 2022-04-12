@@ -147,6 +147,8 @@ public class Player {
         ClientMain.gui.window.draw(bootImage, (inTown.minX-2), (inTown.maxY-2));
     } else if (this.inTown.getPlayersHere().size() == 4) {
         ClientMain.gui.window.draw(bootImage, (inTown.minX+2), (inTown.maxY+2));
+    } else if (this.inTown.getPlayersHere().size() == 5) {
+        ClientMain.gui.window.draw(bootImage, (inTown.minX+3), (inTown.maxY+3));
     }
 }
 
