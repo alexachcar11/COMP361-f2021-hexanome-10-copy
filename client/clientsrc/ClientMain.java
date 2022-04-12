@@ -2060,6 +2060,13 @@ public class ClientMain {
             }
         }
 
+        // draw the tokens onto the route
+        for(ClientRoute r: Game.getAllRoutes()) { 
+            if(r.aToken != null) { 
+                gui.window.draw(r.aToken.getSmallImage(), r.getMinX(), r.getMinY());
+            }
+        }
+
         // boots
         for (int i = 0; i < players.size(); i++) {
             ClientPlayer player = players.get(i);
